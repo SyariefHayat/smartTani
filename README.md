@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+### 1. Persiapan Awal (Fork & Setup)
 
-## Getting Started
+Langkah pertama adalah membuat salinan project ini di akun pribadimu agar kamu bebas bereksperimen.
 
-First, run the development server:
+1.  **Fork Repositori:** Klik tombol **Fork** di pojok kanan atas halaman GitHub SmartTani ini.
+2.  **Clone ke Lokal:** Buka terminal, arahkan ke folder tempat kamu menyimpan project, lalu jalankan:
+    ```bash
+    git clone https://github.com/[USERNAME_GITHUB_KAMU]/smart_tani.git
+    cd smart_tani
+    ```
+3.  **Hubungkan ke Upstream:** Agar tetap sinkron dengan update terbaru dari tim, jalankan:
+    ```bash
+    git remote add upstream https://github.com/SyariefHayat/smartTani.git
+    ```
+4.  **Install Dependensi:**
+    ```bash
+    npm install
+    ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Memulai Tugas (GitHub Issues)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Kami menggunakan **Issues** sebagai daftar antrean kerja. Begini cara mengambil tugas:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1.  **Cari Issue:** Buka tab **Issues** di repo utama. Cari label `good first issue` atau yang sesuai dengan halaman/fitur yang ingin kamu kerjakan.
+2.  **Assign Diri Sendiri:** Jika sudah menemukan yang cocok, berikan komentar: *"I'm interested in this issue, may I work on it?"*. Moderator akan menunjukmu sebagai `Assignee`.
+3.  **Buat Branch Baru:** **PENTING!** Jangan pernah koding langsung di branch `main`. Selalu buat branch baru dari `main` yang sudah ter-update:
+    ```bash
+    git checkout main
+    git pull upstream main
+    git checkout -b feature/issue-[NOMOR_ISSUE]-[nama-singkat-tugas]
+    # Contoh: git checkout -b feature/issue-1-setup-constants
+    ```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Proses Pengerjaan (Koding & Commit)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1.  **Koding:** Ikuti instruksi di kolom `### Tasks` pada issue tersebut.
+2.  **Gunakan Konvensi:** Pastikan mengikuti panduan aset atau konstanta yang sudah ditentukan (cek di body issue).
+3.  **Commit Berkala:** Gunakan pesan commit yang deskriptif menggunakan format [Conventional Commits](https://www.conventionalcommits.org/):
+    ```bash
+    # Contoh pesan commit
+    git add .
+    git commit -m "feat: setup types untuk konstanta halaman beranda (#12)"
+    ```
+    *(Tips: Selalu sertakan nomor issue dalam kurung jika memungkinkan)*.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+### 4. Mengirimkan Perubahan (Pull Request)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Setelah selesai, saatnya mengirimkan hasil kerjamu untuk di-review oleh Senior Developer.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1.  **Sinkronisasi Terakhir:** Pastikan tidak ada konflik dengan kode terbaru:
+    ```bash
+    git fetch upstream
+    git merge upstream/main
+    ```
+2.  **Push ke GitHub-mu:**
+    ```bash
+    git push origin HEAD
+    ```
+3.  **Buka Pull Request (PR):**
+    - Di halaman GitHub-mu, akan muncul tombol **Compare & pull request**. Klik tombol tersebut.
+    - **Judul PR:** Gunakan format `feat: [Deskripsi Singkat] (Resolves #[NOMOR_ISSUE])`.
+      *Contoh: `feat: implementasi konstanta footer (Resolves #11)`*
+    - **Deskripsi PR:** Jelaskan secara singkat apa saja yang kamu ubah atau tambahkan. Lampirkan screenshot jika ada perubahan tampilan (UI).
+    - Klik **Create pull request**.
+
+---
+
+### 💡 Tips Sukses Pull Request
+- **Resolves Keyword:** Menggunakan kata `Resolves #nomor` di judul atau deskripsi PR akan otomatis menutup issue terkait saat PR di-merge.
+- **Code Review:** Jika Senior memberikan feedback atau meminta perubahan (*Requested Changes*), jangan berkecil hati! Itu bagian dari proses belajar. Cukup perbaiki kodenya di komputer, commit, dan push lagi ke branch yang sama. PR akan terupdate otomatis.
+
+Jika bingung, jangan ragu bertanya di tab **Discussions** atau langsung di komentar issue! Selamat berkarya! 🚀
+
