@@ -8,4 +8,4 @@ export * from "./distributor";
 export * from "./logistic";
 export * from "./sitani-academy";
 export * from "./artikel";
-export * from "./tentang";
+export * from "./about";
