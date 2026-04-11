@@ -58,3 +58,10 @@ export interface FormField {
   placeholder?: string;
   required?: boolean;
 }
+
+export interface JenisKeanggotaan {
+  id: string;
+  label: string;
+  description: string;
+  icon: string;
+}
