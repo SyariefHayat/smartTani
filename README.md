@@ -24,7 +24,7 @@ Langkah pertama adalah membuat salinan project ini di akun pribadimu agar kamu b
 Kami menggunakan **Issues** sebagai daftar antrean kerja. Begini cara mengambil tugas:
 
 1.  **Cari Issue:** Buka tab **Issues** di repo utama. Cari label `good first issue` atau yang sesuai dengan halaman/fitur yang ingin kamu kerjakan.
-2.  **Assign Diri Sendiri:** Jika sudah menemukan yang cocok, berikan komentar: *"I'm interested in this issue, may I work on it?"*. Moderator akan menunjukmu sebagai `Assignee`.
+2.  **Assign Diri Sendiri:** Jika sudah menemukan yang cocok, berikan komentar: _"I'm interested in this issue, may I work on it?"_. Moderator akan menunjukmu sebagai `Assignee`.
 3.  **Buat Branch Baru:** **PENTING!** Jangan pernah koding langsung di branch `main`. Selalu buat branch baru dari `main` yang sudah ter-update:
     ```bash
     git checkout main
@@ -45,7 +45,7 @@ Kami menggunakan **Issues** sebagai daftar antrean kerja. Begini cara mengambil 
     git add .
     git commit -m "feat: setup types untuk konstanta halaman beranda (#12)"
     ```
-    *(Tips: Selalu sertakan nomor issue dalam kurung jika memungkinkan)*.
+    _(Tips: Selalu sertakan nomor issue dalam kurung jika memungkinkan)_.
 
 ---
 
@@ -65,15 +65,15 @@ Setelah selesai, saatnya mengirimkan hasil kerjamu untuk di-review oleh Senior D
 3.  **Buka Pull Request (PR):**
     - Di halaman GitHub-mu, akan muncul tombol **Compare & pull request**. Klik tombol tersebut.
     - **Judul PR:** Gunakan format `feat: [Deskripsi Singkat] (Resolves #[NOMOR_ISSUE])`.
-      *Contoh: `feat: implementasi konstanta footer (Resolves #11)`*
+      _Contoh: `feat: implementasi konstanta footer (Resolves #11)`_
     - **Deskripsi PR:** Jelaskan secara singkat apa saja yang kamu ubah atau tambahkan. Lampirkan screenshot jika ada perubahan tampilan (UI).
     - Klik **Create pull request**.
 
 ---
 
 ### 💡 Tips Sukses Pull Request
+
 - **Resolves Keyword:** Menggunakan kata `Resolves #nomor` di judul atau deskripsi PR akan otomatis menutup issue terkait saat PR di-merge.
-- **Code Review:** Jika Senior memberikan feedback atau meminta perubahan (*Requested Changes*), jangan berkecil hati! Itu bagian dari proses belajar. Cukup perbaiki kodenya di komputer, commit, dan push lagi ke branch yang sama. PR akan terupdate otomatis.
+- **Code Review:** Jika Senior memberikan feedback atau meminta perubahan (_Requested Changes_), jangan berkecil hati! Itu bagian dari proses belajar. Cukup perbaiki kodenya di komputer, commit, dan push lagi ke branch yang sama. PR akan terupdate otomatis.
 
 Jika bingung, jangan ragu bertanya di tab **Discussions** atau langsung di komentar issue! Selamat berkarya! 🚀
-
