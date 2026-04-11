@@ -1,6 +1,6 @@
 export * from "./types";
 export * from "./navigation";
-export * from "./beranda";
+export * from "./home";
 export * from "./daftar";
 export * from "./marketplace";
 export * from "./investasi";
