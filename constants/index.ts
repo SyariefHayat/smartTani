@@ -5,7 +5,7 @@ export * from "./daftar";
 export * from "./marketplace";
 export * from "./investasi";
 export * from "./distributor";
-export * from "./logistik";
+export * from "./logistic";
 export * from "./sitani-academy";
 export * from "./artikel";
 export * from "./tentang";
