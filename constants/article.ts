@@ -11,6 +11,7 @@ export const ARTICLE_HERO = {
     "Wawasan, Inspirasi, dan Informasi Terpercaya untuk Petani Indonesia",
   subtext:
     "Temukan pengetahuan terbaru, tips praktis, dan kisah sukses dari para ahli dan petani hebat di seluruh Indonesia.",
+  image: "/images/article/hero-bg.webp",
   searchPlaceholder: "Cari artikel, topik, atau kata kunci...",
   searchCta: "Cari",
   highlights: [
@@ -48,7 +49,12 @@ export const ARTICLE_DUMMY = [
     title: "5 Tips Meningkatkan Hasil Panen Padi hingga 30%",
     description:
       "Langkah praktis dari pemilihan benih unggul hingga manajemen air yang tepat.",
-    penulis: { nama: "Dr. Ir. Budi Santoso", gelar: "Pakar Budidaya Tanaman" },
+    image: "/images/article/hasil-panen.webp",
+    penulis: {
+      nama: "Dr. Ir. Budi Santoso",
+      gelar: "Pakar Budidaya Tanaman",
+      avatar: "/images/article/avatar-budi.webp",
+    },
   },
   {
     kategori: "TEKNOLOGI",
@@ -57,7 +63,12 @@ export const ARTICLE_DUMMY = [
     title: "Teknologi Drone dalam Pertanian: Manfaat dan Cara Penggunaan",
     description:
       "Drone kini jadi sahabat petani modern. Ketahui manfaat dan cara kerjanya.",
-    penulis: { nama: "Fajar Nugroho, M.Eng", gelar: "Praktisi Pertanian" },
+    image: "/images/article/teknologi-drone.webp",
+    penulis: {
+      nama: "Fajar Nugroho, M.Eng",
+      gelar: "Praktisi Pertanian",
+      avatar: "/images/article/avatar-fajar.webp",
+    },
   },
   {
     kategori: "PETERNAKAN",
@@ -66,7 +77,12 @@ export const ARTICLE_DUMMY = [
     title: "Manajemen Pakan Sapi Modern untuk Hasil Maksimal",
     description:
       "Strategi pemberian pakan yang efisien untuk pertumbuhan optimal dan hemat biaya.",
-    penulis: { nama: "Drh. Andi Wijaya", gelar: "Dokter Hewan" },
+    image: "/images/article/pakan-sapi.webp",
+    penulis: {
+      nama: "Drh. Andi Wijaya",
+      gelar: "Dokter Hewan",
+      avatar: "/images/article/avatar-andi.webp",
+    },
   },
   {
     kategori: "PASCA PANEN",
@@ -75,7 +91,12 @@ export const ARTICLE_DUMMY = [
     title: "Cara Menjaga Kualitas Hasil Panen agar Tahan Lebih Lama",
     description:
       "Tips pasca panen yang benar untuk menjaga kesegaran dan nilai jual produk.",
-    penulis: { nama: "Siti Rahmawati, SP", gelar: "Praktisi Pasca Panen" },
+    image: "/images/article/kualitas-hasil-panen.webp",
+    penulis: {
+      nama: "Siti Rahmawati, SP",
+      gelar: "Praktisi Pasca Panen",
+      avatar: "/images/article/avatar-siti.webp",
+    },
   },
   {
     kategori: "PUPUK & NUTRISI",
@@ -84,7 +105,12 @@ export const ARTICLE_DUMMY = [
     title: "Panduan Lengkap Pemupukan Berimbang untuk Semua Tanaman",
     description:
       "Pemupukan yang tepat: waktu, jenis, dan dosis untuk hasil optimal dan tanah sehat.",
-    penulis: { nama: "Dr. Rina Yuliani, SP", gelar: "Ahli Kesuburan Tanah" },
+    image: "/images/article/pemupukan.webp",
+    penulis: {
+      nama: "Dr. Rina Yuliani, SP",
+      gelar: "Ahli Kesuburan Tanah",
+      avatar: "/images/article/avatar-rina.webp",
+    },
   },
   {
     kategori: "MANAJEMEN USAHA",
@@ -93,7 +119,12 @@ export const ARTICLE_DUMMY = [
     title: "Strategi Kelola Keuangan Usaha Tani agar Lebih Untung",
     description:
       "Kelola modal, catat pengeluaran, dan hitung keuntungan dengan cara sederhana.",
-    penulis: { nama: "Rudi Hartono, MM", gelar: "Konsultan Agribisnis" },
+    image: "/images/article/kelola-keuangan.webp",
+    penulis: {
+      nama: "Rudi Hartono, MM",
+      gelar: "Konsultan Agribisnis",
+      avatar: "/images/article/avatar-rudi.webp",
+    },
   },
   {
     kategori: "KEBIJAKAN",
@@ -102,7 +133,12 @@ export const ARTICLE_DUMMY = [
     title: "Update Kebijakan Pertanian 2024 yang Perlu Anda Ketahui",
     description:
       "Informasi terbaru seputar kebijakan dan program pemerintah untuk petani.",
-    penulis: { nama: "Tim Smarttani", gelar: "Redaksi" },
+    image: "/images/article/kebijakan.webp",
+    penulis: {
+      nama: "Tim Smarttani",
+      gelar: "Redaksi",
+      avatar: "/images/article/avatar-redaksi.webp",
+    },
   },
   {
     kategori: "KISAH SUKSES",
@@ -111,7 +147,12 @@ export const ARTICLE_DUMMY = [
     title: "Kisah Sukses Petani Milenial Ubah Lahan Kritis Jadi Emas Hijau",
     description:
       "Inspirasi dari anak muda yang berhasil membangun bisnis pertanian berkelanjutan.",
-    penulis: { nama: "Dewi Lestari", gelar: "Redaksi Smarttani" },
+    image: "/images/article/petani-sukses.webp",
+    penulis: {
+      nama: "Dewi Lestari",
+      gelar: "Redaksi Smarttani",
+      avatar: "/images/article/avatar-dewi.webp",
+    },
   },
 ];
 
