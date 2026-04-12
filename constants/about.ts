@@ -10,6 +10,7 @@ export const ABOUT_HERO = {
   subtext:
     "PT. Smarttani Indonesia berkomitmen menjadi mitra terpercaya dalam transformasi pertanian Indonesia menuju masa depan yang lebih cerdas, dan berkelanjutan.",
   cta: [{ label: "Pelajari Lebih Lanjut" }, { label: "Hubungi Kami" }],
+  backgroundImage: "/images/about/Hero-background-foto.png",
 };
 
 export const ABOUT_DESKRIPSI = {
@@ -154,10 +155,23 @@ export const ABOUT_PENCAPAIAN = {
 export const ABOUT_PIMPINAN = {
   heading: "Kepemimpinan Kami",
   items: [
-    { nama: "Arif Wijaya", jabatan: "Direktur Utama" },
-    { nama: "Budi Santoso", jabatan: "Direktur Operasional" },
-    { nama: "Siti Aminah", jabatan: "Direktur Edukasi" },
+    {
+      nama: "Arif Wijaya",
+      jabatan: "Direktur Utama",
+      foto: "/images/about/pimpinan-arif-wijaya.jpeg",
+    },
+    {
+      nama: "Budi Santoso",
+      jabatan: "Direktur Operasional",
+      foto: "/images/about/pimpinan-budi-santoso.jpeg",
+    },
+    {
+      nama: "Siti Aminah",
+      jabatan: "Direktur Edukasi",
+      foto: "/images/about/pimpinan-siti-aminah.jpeg",
+    },
   ],
+  placeholder: "/images/about/Placeholder-profesional.jpeg",
 };
 
 export const ABOUT_ALAMAT = {
@@ -170,12 +184,12 @@ export const ABOUT_ALAMAT = {
 export const ABOUT_MITRA_STRATEGIS = {
   heading: "Mitra Strategis Kami",
   items: [
-    "Pupuk Indonesia",
-    "Pos Indonesia",
-    "Bank BRI",
-    "Telkom Indonesia",
-    "JNE",
-    "BATER",
+    { nama: "Pupuk Indonesia", logo: "/images/partners/partner-pupuk-indonesia.png" },
+    { nama: "Pos Indonesia", logo: "/images/partners/partner-pos-indonesia.png" },
+    { nama: "Bank BRI", logo: "/images/partners/partner-bri.png" },
+    { nama: "Telkom Indonesia", logo: "/images/partners/partner-telkom.png" },
+    { nama: "JNE", logo: "/images/partners/partner-jne.png" },
+    { nama: "Bayer", logo: "/images/partners/partner-bayer.png" },
   ],
 };
 
