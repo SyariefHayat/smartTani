@@ -9,6 +9,7 @@ export const ACADEMY_HERO = {
   heading: "Belajar Hari Ini, Panen Sukses Esok Hari",
   subtext:
     "Tingkatkan pengetahuan dan keterampilan bertani bersama para ahli. Kursus praktis, mudah dipahami, dan bisa diakses kapan saja.",
+  image: "/images/academy/hero-bg.webp",
   badges: [
     {
       label: "Kelas Online & Offline",
@@ -21,6 +22,7 @@ export const ACADEMY_HERO = {
     heading: "Mulai Belajar Sekarang!",
     subtext:
       "Ribuan petani telah meningkatkan hasil panen mereka bersama kami.",
+    image: "/images/academy/sidebar.webp",
     ctaPrimary: "Daftar Gratis",
     ctaSecondary: "Lihat Cara Kerja →",
   },
@@ -99,6 +101,7 @@ export const ACADEMY_KURSUS = {
       title: "Budidaya Padi Berkualitas Tinggi",
       description:
         "Teknik lengkap dari pemilihan benih hingga panen untuk hasil maksimal.",
+      image: "/images/academy/budidaya-padi.webp",
       instruktur: { nama: "Dr. Ir. Budi Santoso", gelar: "Pakar Agronomi" },
       rating: 4.9,
       ulasan: 1250,
@@ -111,6 +114,7 @@ export const ACADEMY_KURSUS = {
       title: "Hidroponik untuk Pemula",
       description:
         "Belajar hidroponik sederhana dengan biaya cepat dan menguntungkan.",
+      image: "/images/academy/hidroponik.webp",
       instruktur: { nama: "Rina Yuliani, SP", gelar: "Praktisi Hidroponik" },
       rating: 4.7,
       ulasan: 980,
@@ -123,6 +127,7 @@ export const ACADEMY_KURSUS = {
       title: "Manajemen Ternak Sapi Modern",
       description:
         "Panduan lengkap manajemen pakan, kesehatan, dan reproduksi.",
+      image: "/images/academy/ternak-sapi-modern.webp",
       instruktur: { nama: "Drh. Andi Wijaya", gelar: "Dokter Hewan" },
       rating: 4.9,
       ulasan: 1100,
@@ -134,6 +139,7 @@ export const ACADEMY_KURSUS = {
       badge: "BARU",
       title: "Penggunaan Drone untuk Pertanian",
       description: "Cara menggunakan drone untuk pemantauan dan penyemprotan.",
+      image: "/images/academy/penggunaan-drone.webp",
       instruktur: {
         nama: "Fajar Nugroho, M.Eng",
         gelar: "Teknologi Pertanian",
@@ -148,6 +154,7 @@ export const ACADEMY_KURSUS = {
       badge: null,
       title: "Kesuburan Tanah & Pemupukan Tepat",
       description: "Memahami tanah dan strategi pemupukan yang efektif.",
+      image: "/images/academy/kesuburan-tanah.webp",
       instruktur: { nama: "Dr. Anita Rahmawati", gelar: "Ahli Tanah" },
       rating: 4.7,
       ulasan: 620,
@@ -160,6 +167,7 @@ export const ACADEMY_KURSUS = {
       title: "Teknik Pasca Panen Hasil Pertanian",
       description:
         "Cara mengurangi kehilangan hasil dan meningkatkan nilai jual produk.",
+      image: "/images/academy/pasca-panen.webp",
       instruktur: { nama: "Agus Hidayat, SP", gelar: "Praktisi Pasca Panen" },
       rating: 4.9,
       ulasan: 540,
@@ -203,12 +211,14 @@ export const ACADEMY_INSTRUKTUR = {
     {
       nama: "Dr. Ir. Budi Santoso",
       gelar: "Pakar Agronomi di bidang budidaya tanaman",
+      image: "/images/academy/instruktur-budi.webp",
       rating: 4.9,
       jumlahPeserta: 2100,
     },
     {
       nama: "Drh. Andi Wijaya",
       gelar: "Ahli peternakan berpengalaman 15+ tahun",
+      image: "/images/academy/instruktur-andi.webp",
       rating: 4.9,
       jumlahPeserta: 1750,
     },
@@ -221,6 +231,7 @@ export const ACADEMY_TESTIMONI = {
     {
       nama: "Siti Aminah",
       role: "Petani Padi, Jawa Barat",
+      avatar: "/images/academy/avatar-siti.webp",
       rating: 5,
       quote:
         "Materi sangat praktis dan mudah dipahami. Setelah ikut kursus, hasil panen saya meningkat 30%. Terima kasih SiTani Academy!",
@@ -236,12 +247,14 @@ export const ACADEMY_WEBINAR = {
       title: "Webinar: Masa Depan Pertanian Digital",
       tanggal: "22 Mei 2024",
       waktu: "19.00 WIB",
+      image: "/images/academy/masa-depan-pertanian.webp",
       cta: "Daftar",
     },
     {
       title: "Workshop: Manajemen Ternak Modern",
       tanggal: "30 Mei 2024",
       waktu: "09.00 WIB",
+      image: "/images/academy/ternak-modern.webp",
       cta: "Daftar",
     },
   ],
