@@ -8,6 +8,7 @@ export const LOGISTIC_HERO = {
   heading: "Logistik Terintegrasi untuk Pertanian Indonesia yang Lebih Maju",
   subtext:
     "Layanan pengiriman cepat, aman, dan efisien untuk semua kebutuhan pertanian Anda. Dari hasil panen hingga sarana produksi, kami pastikan sampai tujuan dengan tepat waktu.",
+  image: "/images/logistic/hero-bg.webp",
   badges: [
     { label: "Aman & Terpercaya", sublabel: "Asuransi Pengiriman" },
     { label: "Cepat & Tepat Waktu", sublabel: "Jangkauan Seluruh Indonesia" },
@@ -40,36 +41,42 @@ export const LOGISTIC_LAYANAN = {
       title: "Pengiriman Hasil Panen",
       description:
         "Distribusi hasil pertanian segar ke pasar, pabrik, atau gudang.",
+      image: "/images/logistic/pengiriman-hasil-panen.webp",
       cta: "Selengkapnya →",
     },
     {
       title: "Distribusi Sarana Produksi",
       description:
         "Pengiriman pupuk, benih, dan alat pertanian ke seluruh indonesia.",
+      image: "/images/logistic/distribusi-sarana-produksi.webp",
       cta: "Selengkapnya →",
     },
     {
       title: "Pergudangan & Penyimpanan",
       description:
         "Fasilitas gudang modern dengan sistem manajemen stok terintegrasi.",
+      image: "/images/logistic/pergudangan.webp",
       cta: "Selengkapnya →",
     },
     {
       title: "Pengiriman Antar Pulau",
       description:
         "Layanan kargo laut dan udara untuk jangkauan ke seluruh nusantara.",
+      image: "/images/logistic/pengiriman-antar-pulau.webp",
       cta: "Selengkapnya →",
     },
     {
       title: "Asuransi Kargo",
       description:
-        "Perlindungan penuh untuk setiap pengiriman, aman dan tenang.",
+        "Perlindungan penuh for setiap pengiriman, aman dan tenang.",
+      image: "/images/logistic/asuransi-kargo.webp",
       cta: "Selengkapnya →",
     },
     {
       title: "Pelacakan Real-time",
       description:
         "Pantau status pengiriman Anda kapan saja melalui sistem terintegrasi.",
+      image: "/images/logistic/pelacakan-real-time.webp",
       cta: "Selengkapnya →",
     },
   ],
@@ -79,8 +86,10 @@ export const LOGISTIC_KEUNGGULAN = {
   jangkauan: {
     heading: "Jangkauan Luas, Sampai ke Pelosok Negeri",
     subtext:
-      "Smarttani Logistik melayani pengiriman ke 34 provinsi dan 514 kabupaten/kota di seluruh Indonesia.",
+      "Smarttani Logistik melayani pengiriman ke 34 provinsi and 514 kabupaten/kota di seluruh Indonesia.",
+    image: "/images/distributor/map.webp",
     stats: [
+
       { value: "34", label: "Provinsi" },
       { value: "514+", label: "Kabupaten/Kota" },
       { value: "1.200+", label: "Rute Aktif" },
@@ -153,13 +162,13 @@ export const LOGISTIC_MITRA = {
   heading: "Mitra Transportasi Terpercaya",
   subtext: "Bekerja sama dengan perusahaan logistik terbaik di Indonesia",
   items: [
-    "Pelindo",
-    "JNE",
-    "TIKI",
-    "Pos Indonesia",
-    "DAMRI",
-    "Garuda Indonesia Cargo",
-    "SIBA",
+    { name: "Pelindo", logo: "/images/partners/pelindo.webp" },
+    { name: "JNE", logo: "/images/partners/partner-jne.png" },
+    { name: "TIKI", logo: "/images/partners/tiki.webp" },
+    { name: "Pos Indonesia", logo: "/images/partners/partner-pos-indonesia.png" },
+    { name: "DAMRI", logo: "/images/partners/damri.webp" },
+    { name: "Garuda Indonesia Cargo", logo: "/images/partners/garuda-indonesia.webp" },
+    { name: "SIBA", logo: "/images/partners/siba.webp" },
   ],
 };
 
@@ -167,5 +176,6 @@ export const LOGISTIC_CTA_BANNER = {
   heading: "Butuh Solusi Logistik untuk Bisnis Pertanian Anda?",
   subtext:
     "Tim kami siap membantu dengan solusi terbaik yang disesuaikan dengan kebutuhan Anda.",
+  image: "/images/home/truk-logistik.webp",
   cta: [{ label: "Konsultasi Gratis" }, { label: "Hubungi Kami" }],
 };
