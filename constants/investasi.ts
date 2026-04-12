@@ -9,6 +9,7 @@ export const INVESTASI_HERO = {
   heading: "Investasi Cerdas untuk Pertanian Berkelanjutan",
   subtext:
     "Dukung proyek-proyek pertanian potensial di Indonesia dan raih keuntungan menarik sambil memberi dampak nyata bagi petani dan ketahanan pangan negeri.",
+  image: "/images/investasi/hero-bg.webp",
   cta: [{ label: "Jelajahi Proyek" }, { label: "Cara Investasi" }],
   badges: [
     { label: "Aman & Terpercaya", sublabel: "Proyek diversifikasi ketat" },
@@ -39,6 +40,7 @@ export const INVESTASI_PROYEK = {
       terkumpul: "Rp2,4 Miliar",
       progress: 80,
       minimalInvestasi: "Rp100.000",
+      image: "/images/investasi/budidaya-padi-premium.webp",
     },
     {
       badge: "BARU",
@@ -49,6 +51,7 @@ export const INVESTASI_PROYEK = {
       terkumpul: "Rp1,8 Miliar",
       progress: 24,
       minimalInvestasi: "Rp100.000",
+      image: "/images/investasi/greenhouse.webp",
     },
     {
       badge: "POPULER",
@@ -59,6 +62,7 @@ export const INVESTASI_PROYEK = {
       terkumpul: "Rp3,7 Miliar",
       progress: 74,
       minimalInvestasi: "Rp250.000",
+      image: "/images/investasi/perkebunan-tebu-modern.webp",
     },
     {
       badge: null,
@@ -69,6 +73,7 @@ export const INVESTASI_PROYEK = {
       terkumpul: "Rp2,1 Miliar",
       progress: 55,
       minimalInvestasi: "Rp100.000",
+      image: "/images/investasi/cold-storage.webp",
     },
     {
       badge: null,
@@ -79,6 +84,7 @@ export const INVESTASI_PROYEK = {
       terkumpul: "Rp1,5 Miliar",
       progress: 68,
       minimalInvestasi: "Rp100.000",
+      image: "/images/investasi/pembibitan-kelapa-sawit.webp",
     },
     {
       badge: null,
@@ -89,6 +95,7 @@ export const INVESTASI_PROYEK = {
       terkumpul: "Rp2,9 Miliar",
       progress: 82,
       minimalInvestasi: "Rp250.000",
+      image: "/images/investasi/smart-farming-iot.webp",
     },
   ],
 };
@@ -163,6 +170,7 @@ export const INVESTASI_TESTIMONI = {
     {
       name: "Ahmad Surya",
       role: "Investor Aktif",
+      avatar: "/images/investasi/avatar-ahmad.webp",
       rating: 5,
       quote:
         "Platform Smarttani sangat terpercaya. Proyeknya jelas, return-nya menarik, dan paling penting bisa membantu petani Indonesia.",
@@ -170,6 +178,7 @@ export const INVESTASI_TESTIMONI = {
     {
       name: "Dewi Lestari",
       role: "Investor Aktif",
+      avatar: "/images/investasi/avatar-dewi.webp",
       rating: 5,
       quote:
         "Sudah 1 tahun investasi di Smarttani, imbal hasilnya selalu sesuai harapan. Transparan dan laporannya juga sangat baik.",
