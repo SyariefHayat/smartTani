@@ -10,6 +10,7 @@ export const DISTRIBUTOR_HERO = {
   heading: "Bersama Tumbuh, Bersama Membangun Pertanian Indonesia",
   subtext:
     "Jadilah bagian dari jaringan distributor resmi Smarttani dan dapatkan produk berkualitas, dukungan penuh, serta peluang keuntungan maksimal.",
+  image: "/images/distributor/hero-bg.webp",
   cta: [{ label: "Daftar Menjadi Distributor" }, { label: "Unduh Brosur" }],
   advantages: [
     { label: "Produk Terjamin", sublabel: "Kualitas asli dari Smarttani" },
@@ -17,6 +18,12 @@ export const DISTRIBUTOR_HERO = {
     { label: "Dukungan Penuh", sublabel: "Training, marketing & teknis" },
     { label: "Pasar Luas", sublabel: "Permintaan tinggi di seluruh Indonesia" },
   ],
+};
+
+export const DISTRIBUTOR_MAP = {
+  image: "/images/distributor/map.webp",
+  heading: "Jangkauan Distributor Kami",
+  subtext: "Lebih dari 520 distributor aktif di seluruh wilayah Indonesia.",
 };
 
 export const DISTRIBUTOR_STATS_BAR = [
@@ -68,13 +75,41 @@ export const DISTRIBUTOR_PRODUK_KATEGORI = {
   subtext:
     "Berbagai kategori produk berkualitas tinggi dengan permintaan pasar yang terus meningkat.",
   items: [
-    { label: "Pupuk & Nutrisi", jumlahProduk: "320+" },
-    { label: "Benih & Bibit", jumlahProduk: "180+" },
-    { label: "Pestisida", jumlahProduk: "150+" },
-    { label: "Alat & Mesin", jumlahProduk: "120+" },
-    { label: "Irigasi", jumlahProduk: "80+" },
-    { label: "Pakan Ternak", jumlahProduk: "60+" },
-    { label: "Hasil Panen", jumlahProduk: "100+" },
+    {
+      label: "Pupuk & Nutrisi",
+      jumlahProduk: "320+",
+      image: "/images/distributor/pupuk-&-nutrisi.webp",
+    },
+    {
+      label: "Benih & Bibit",
+      jumlahProduk: "180+",
+      image: "/images/distributor/benih-&-bibit.webp",
+    },
+    {
+      label: "Pestisida",
+      jumlahProduk: "150+",
+      image: "/images/distributor/pestisida.webp",
+    },
+    {
+      label: "Alat & Mesin",
+      jumlahProduk: "120+",
+      image: "/images/distributor/alat-&-mesin.webp",
+    },
+    {
+      label: "Irigasi",
+      jumlahProduk: "80+",
+      image: "/images/distributor/irigasi.webp",
+    },
+    {
+      label: "Pakan Ternak",
+      jumlahProduk: "60+",
+      image: "/images/distributor/pakan-ternak.webp",
+    },
+    {
+      label: "Hasil Panen",
+      jumlahProduk: "100+",
+      image: "/images/distributor/hasil-panen.webp",
+    },
   ],
 };
 
@@ -126,6 +161,7 @@ export const DISTRIBUTOR_TESTIMONI = {
     {
       name: "Budi Hartono",
       role: "Distributor Jawa Tengah",
+      avatar: "/images/distributor/avatar-budi.webp",
       rating: 5,
       quote:
         "Sejak menjadi distributor Smarttani, omzet bisnis saya meningkat 300%. Produk berkualitas, dukungan tim luar biasa!",
@@ -133,6 +169,7 @@ export const DISTRIBUTOR_TESTIMONI = {
     {
       name: "Siti Aisyah",
       role: "Distributor Sulawesi Selatan",
+      avatar: "/images/distributor/avatar-siti.webp",
       rating: 5,
       quote:
         "Sistem mudah, produk lengkap, dan margin keuntungan sangat menguntungkan. Terima kasih Smarttani!",
@@ -144,5 +181,6 @@ export const DISTRIBUTOR_CTA_BANNER = {
   heading: "Siap Menjadi Bagian dari Keluarga Besar Smarttani?",
   subtext:
     "Daftarkan diri Anda sekarang dan raih peluang bisnis terbaik di sektor pertanian Indonesia.",
+  image: "/images/distributor/sidebar.webp",
   cta: [{ label: "Daftar Sekarang" }, { label: "Hubungi Tim Sales" }],
 };
