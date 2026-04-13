@@ -60,6 +60,6 @@ export default function BerandaPage() {
       <StepsSection />
       <KategoriTestimoniArtikelSection />
       <CTABannerSection />
-    </main>
+    </main
   );
 }
