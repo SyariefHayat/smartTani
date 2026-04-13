@@ -12,8 +12,12 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Smarttani Indonesia — Solusi Pertanian Modern",
-  description: "Platform ekosistem pertanian terintegrasi agricultural ecosystem for farmers, investors, and buyers.",
+  metadataBase: new URL("https://smarttani.id"),
+  title: {
+    default: "Smarttani Indonesia — Solusi Pertanian Modern",
+    template: "%s | Smarttani Indonesia",
+  },
+  description: "Platform ekosistem pertanian terintegrasi untuk petani, investor, dan pembeli.",
 };
 
 export default function RootLayout({
@@ -24,7 +28,9 @@ export default function RootLayout({
   return (
     <html lang="id" className={cn("h-full", plusJakartaSans.variable)}>
       <body className="min-h-full flex flex-col font-sans antialiased">
-        <TooltipProvider>{children}</TooltipProvider>
+        <TooltipProvider>
+          {children}
+        </TooltipProvider>
       </body>
     </html>
   );

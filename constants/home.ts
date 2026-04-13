@@ -2,6 +2,16 @@ export const HOME_META = {
   title: "Smarttani Indonesia — Platform Terintegrasi Ekosistem Pertanian",
   description:
     "PT. Smarttani Indonesia menghadirkan teknologi dan ekosistem terintegrasi untuk membantu petani, pelaku usaha, dan mitra mencapai hasil terbaik. Platform yang lebih cerdas, produktif, dan berkelanjutan.",
+  keywords: [
+    "Smarttani",
+    "Pertanian Modern",
+    "Investasi Pertanian",
+    "Marketplace Hasil Tani",
+    "Logistik Pertanian",
+    "SiTani Academy",
+    "Smart Farming Indonesia",
+  ],
+  ogImage: "/images/home/hero.webp",
 };
 
 export const HOME_HERO = {
