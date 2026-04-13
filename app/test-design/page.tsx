@@ -157,7 +157,7 @@ export default function TestDesignPage() {
             </CardHeader>
             <CardContent>
               <p className="text-body italic text-muted-foreground">
-                "Platform ini sangat membantu saya dalam memantau harga pasar secara real-time."
+                &quot;Platform ini sangat membantu saya dalam memantau harga pasar secara real-time.&quot;
               </p>
             </CardContent>
           </Card>

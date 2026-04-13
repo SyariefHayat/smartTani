@@ -1,1 +1,3 @@
-export default function HeroSection() { return <section>Hero Placeholder</section>; }
+export default function HeroSection() {
+  return <section>Hero Placeholder</section>;
+}

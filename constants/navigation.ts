@@ -55,3 +55,18 @@ export const SOCIAL_LINKS: SocialLink[] = [
   { label: "LinkedIn", href: "https://linkedin.com", icon: "linkedin" },
   { label: "TikTok", href: "https://tiktok.com", icon: "tiktok" },
 ];
+
+export const FOOTER_CONTACT = {
+  address: "Jl. Pertanian No. 123, Jakarta Selatan 12345",
+  phone: "(021) 1234-5678",
+  email: "info@smarttani.id",
+  website: "www.smarttani.id",
+};
+
+export const FOOTER_BRAND = {
+  description:
+    "PT. Smarttani Indonesia berkomitmen menjadi mitra terpercaya dalam transformasi pertanian Indonesia menuju masa depan yang lebih cerdas dan berkelanjutan.",
+  copyright: "© 2024 PT. Smarttani Indonesia. All rights reserved.",
+  tagline:
+    "Mendukung Petani • Membangun Negeri • Masa Depan Pertanian Indonesia",
+};

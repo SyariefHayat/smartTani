@@ -3,6 +3,8 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import Navbar from "@/components/sections/Navbar";
+import Footer from "@/components/sections/Footer";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -17,7 +19,8 @@ export const metadata: Metadata = {
     default: "Smarttani Indonesia — Solusi Pertanian Modern",
     template: "%s | Smarttani Indonesia",
   },
-  description: "Platform ekosistem pertanian terintegrasi untuk petani, investor, dan pembeli.",
+  description:
+    "Platform ekosistem pertanian terintegrasi untuk petani, investor, dan pembeli.",
 };
 
 export default function RootLayout({
@@ -29,7 +32,9 @@ export default function RootLayout({
     <html lang="id" className={cn("h-full", plusJakartaSans.variable)}>
       <body className="min-h-full flex flex-col font-sans antialiased">
         <TooltipProvider>
-          {children}
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
         </TooltipProvider>
       </body>
     </html>
