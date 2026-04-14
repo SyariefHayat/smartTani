@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default function FeatureSection() {
   return (
-    <section className="pb-16 pt-8 md:pb-24">
+    <section className="py-8">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
         {/* Header */}
         <div className="mb-12 flex flex-col items-center text-center">

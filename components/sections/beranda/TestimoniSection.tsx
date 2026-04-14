@@ -12,7 +12,7 @@ import Link from "next/link";
 
 export default function TestimoniSection() {
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-8">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
           {/* Column 1: Kategori */}
