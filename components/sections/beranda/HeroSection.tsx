@@ -12,7 +12,7 @@ import { ShieldCheck, Sprout } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="bg-[#f6f8f2] pb-8 md:pb-10">
+    <section className="pb-8 md:pb-10">
       <div className="w-full">
         <div className="relative overflow-hidden bg-[#245a2f]">
           <Image
