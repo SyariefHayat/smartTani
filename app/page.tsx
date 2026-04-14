@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { HOME_META } from "@/constants";
 import HeroSection from "@/components/sections/beranda/HeroSection";
 import StatsBarSection from "@/components/sections/beranda/StatsBarSection";
-import FiturSection from "@/components/sections/beranda/FiturSection";
 import StepsSection from "@/components/sections/beranda/StepsSection";
-import KategoriTestimoniArtikelSection from "@/components/sections/beranda/KategoriTestimoniArtikelSection";
 import CTABannerSection from "@/components/sections/beranda/CTABannerSection";
+import FeatureSection from "@/components/sections/beranda/FeatureSection";
+import TestimoniSection from "@/components/sections/beranda/TestimoniSection";
 
 export const metadata: Metadata = {
   title: {
@@ -56,9 +56,9 @@ export default function BerandaPage() {
     <>
       <HeroSection />
       <StatsBarSection />
-      <FiturSection />
+      <FeatureSection />
       <StepsSection />
-      <KategoriTestimoniArtikelSection />
+      <TestimoniSection />
       <CTABannerSection />
     </>
   );

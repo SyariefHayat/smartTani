@@ -6,6 +6,8 @@ import {
   ShoppingCart,
   Sprout,
   TrendingUp,
+  Truck,
+  UserRoundCheck,
   UsersRound,
 } from "lucide-react";
 
@@ -22,7 +24,7 @@ export const HOME_META = {
     "SiTani Academy",
     "Smart Farming Indonesia",
   ],
-  ogImage: "/images/home/hero.webp",
+  ogImage: "/images/home/hero.png",
 };
 
 export const HOME_HERO = {
@@ -111,7 +113,16 @@ export const HOME_STATS_BAR = [
   { value: "1,2 Juta+ Ton", label: "Tonase Distribusi" },
 ];
 
-export const HOME_FITUR = [
+export const STAT_BAR_ICONS = [
+  UsersRound,
+  ShoppingCart,
+  ChartNoAxesCombined,
+  UserRoundCheck,
+  GraduationCap,
+  Truck,
+];
+
+export const HOME_FEATURES = [
   {
     title: "Marketplace Hasil Tani",
     description:
@@ -144,6 +155,22 @@ export const HOME_FITUR = [
   },
 ];
 
+export const FEATURES_IMAGES = [
+  "/images/home/keranjang-belanja.webp",
+  "/images/home/grafik-investasi.webp",
+  "/images/home/gudang-truk.webp",
+  "/images/home/truk-logistik.webp",
+  "/images/home/buku-akademi.webp",
+];
+
+export const FEATURES_BG_COLORS = [
+  "bg-[#EAF3DE]",
+  "bg-[#FAEEDA]",
+  "bg-[#E6F1FB]",
+  "bg-[#F3E8FB]",
+  "bg-[#F1EFE8]",
+];
+
 export const HOME_STEPS = [
   {
     step: 1,
@@ -167,34 +194,7 @@ export const HOME_STEPS = [
   },
 ];
 
-export const BERANDA_STEPS = {
-  heading: "Bagaimana Smarttani Bekerja?",
-  subtext: "4 langkah mudah untuk memulai",
-  items: [
-    {
-      step: 1,
-      title: "Daftar Akun",
-      description: "Pilih peran Anda dan lengkapi profil",
-    },
-    {
-      step: 2,
-      title: "Jelajahi & Pilih",
-      description: "Temukan produk, proyek, atau pelatihan yang Anda butuhkan",
-    },
-    {
-      step: 3,
-      title: "Transaksi Aman",
-      description: "Sistem pembayaran dan proteksi yang terjamin",
-    },
-    {
-      step: 4,
-      title: "Sukses Bersama",
-      description: "Raih keuntungan dan kembangkan ekosistem pertanian",
-    },
-  ],
-};
-
-export const HOME_KATEGORI = [
+export const HOME_CATEGORY = [
   "Padi & Gabah",
   "Beras",
   "Jagung",
@@ -202,6 +202,16 @@ export const HOME_KATEGORI = [
   "Buah",
   "Kedelai",
   "Komoditas Lokal",
+];
+
+export const CATEGORY_IMAGES = [
+  "/images/home/padi-gabah.webp",
+  "/images/home/beras.webp",
+  "/images/home/jagung.webp",
+  "/images/home/sayur.webp",
+  "/images/home/buah.webp",
+  "/images/home/kedelai.webp",
+  "/images/home/komoditas-lokal.webp",
 ];
 
 export const HOME_TESTIMONI = [
@@ -221,7 +231,18 @@ export const HOME_TESTIMONI = [
   },
 ];
 
-export const HOME_ARTIKEL = [
+export const TESTIMONI_AVATARS = [
+  "/images/about/pimpinan-siti-aminah.jpeg",
+  "/images/about/pimpinan-budi-santoso.jpeg",
+];
+
+export const ARTICLE_IMAGES = [
+  "/images/article/kualitas-hasil-panen.webp",
+  "/images/article/kelola-keuangan.webp",
+  "/images/article/teknologi-drone.webp",
+];
+
+export const HOME_ARTICLE = [
   {
     title: "5 Tips Meningkatkan Hasil Panen Padi",
     date: "15 Mei 2024",

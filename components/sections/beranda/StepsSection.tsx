@@ -1,52 +1,65 @@
-import React from "react";
-import { UserPlus, ShoppingBasket, ShieldCheck, ChartColumnIncreasing, ChevronRight } from "lucide-react";
-import { BERANDA_STEPS } from "@/constants";
-import { StepItem } from "@/components/ui/StepItem";
+import { HOME_STEPS } from "@/constants";
+import {
+  ArrowRight,
+  Handshake,
+  Search,
+  ShieldCheck,
+  UserPlus,
+} from "lucide-react";
 
-const STEP_ICONS = [
-  <UserPlus key="user" size={48} strokeWidth={1.5} />,
-  <ShoppingBasket key="basket" size={48} strokeWidth={1.5} />,
-  <ShieldCheck key="shield" size={48} strokeWidth={1.5} />,
-  <ChartColumnIncreasing key="chart" size={48} strokeWidth={1.5} />,
-];
+const STEP_ICONS = [UserPlus, Search, ShieldCheck, Handshake];
 
 export default function StepsSection() {
   return (
-    <section className="py-16 bg-white">
-      <div className="container-smarttani px-4">
-        <div className="bg-[#F0F7F0] rounded-[16px] py-12 px-6 md:px-[60px] border-none shadow-none">
-          {/* Section Header */}
-          <div className="text-center mb-8">
-            <h2 className="text-[24px] font-bold text-[#1a3a1a] leading-tight">
-              {BERANDA_STEPS.heading}
-            </h2>
-            <p className="text-[14px] text-[#555] mt-1">
-              {BERANDA_STEPS.subtext}
-            </p>
+    <section className="bg-white py-16 md:py-24">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
+        {/* Header */}
+        <div className="mb-20 flex flex-col items-center text-center">
+          <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
+            Bagaimana Smarttani Bekerja?
+          </h2>
+          <p className="mt-4 text-sm font-medium text-[#5d7a64] md:text-base">
+            4 langkah mudah untuk memulai
+          </p>
+        </div>
+
+        {/* Steps Grid */}
+        <div className="relative">
+          {/* Arrow Desktop */}
+          <div className="absolute top-12 left-0 hidden w-full px-20 lg:block">
+            <div className="flex justify-between">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex-1 text-[#b5d296]/30">
+                  <ArrowRight className="mx-auto size-10 stroke-[1.5]" />
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Steps Grid */}
-          <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-10 lg:gap-0">
-            {BERANDA_STEPS.items.map((item, index) => (
-              <React.Fragment key={item.step}>
-                <StepItem
-                  step={item.step}
-                  icon={STEP_ICONS[index]}
-                  title={item.title}
-                  description={item.description}
-                />
-                {index < BERANDA_STEPS.items.length - 1 && (
-                  <div className="hidden lg:flex items-center self-center mx-3">
-                    <ChevronRight className="text-[#4a8c4a] size-5 stroke-[2.5px]" />
+          <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+            {HOME_STEPS.map((step, index) => {
+              const Icon = STEP_ICONS[index] ?? UserPlus;
+              return (
+                <div key={step.step} className="relative flex flex-col items-start px-4">
+                  <div className="mb-6 flex items-center gap-4">
+                    <div className="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
+                      {step.step}
+                    </div>
+                    <div className="flex size-14 items-center justify-center rounded-2xl bg-primary-light text-primary">
+                      <Icon className="size-7" />
+                    </div>
                   </div>
-                )}
-                {index < BERANDA_STEPS.items.length - 1 && (
-                  <div className="lg:hidden flex items-center justify-center rotate-90">
-                    <ChevronRight className="text-[#4a8c4a] size-5 stroke-[2.5px]" />
+                  <div className="space-y-2">
+                    <h3 className="text-lg font-extrabold text-[#17391f]">
+                      {step.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-[#5d7a64]">
+                      {step.description}
+                    </p>
                   </div>
-                )}
-              </React.Fragment>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
