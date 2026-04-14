@@ -1,1 +1,3 @@
-export default function StepsSection() { return <section>Steps Placeholder</section>; }
+export default function StepsSection() {
+  return <section>Steps Placeholder</section>;
+}

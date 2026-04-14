@@ -1,3 +1,14 @@
+import {
+  ChartNoAxesCombined,
+  CloudSun,
+  Droplets,
+  GraduationCap,
+  ShoppingCart,
+  Sprout,
+  TrendingUp,
+  UsersRound,
+} from "lucide-react";
+
 export const HOME_META = {
   title: "Smarttani Indonesia — Platform Terintegrasi Ekosistem Pertanian",
   description:
@@ -27,25 +38,67 @@ export const HOME_HERO = {
   ],
 };
 
+export const HERO_ACTION = [
+  {
+    prefix: "Daftar sebagai",
+    role: "Petani",
+    icon: Sprout,
+    className: "bg-[#1A6B2F] text-[#EAF3DE] hover:bg-[#14521F]",
+  },
+  {
+    prefix: "Gabung sebagai",
+    role: "Investor",
+    icon: ChartNoAxesCombined,
+    className: "bg-[#BA7517] text-[#FAEEDA] hover:bg-[#854F0B]",
+  },
+  {
+    prefix: "Belanja",
+    role: "Hasil Tani",
+    icon: ShoppingCart,
+    className: "bg-[#185FA5] text-[#E6F1FB] hover:bg-[#0C447C]",
+  },
+  {
+    prefix: "Ikuti",
+    role: "Pelatihan",
+    icon: GraduationCap,
+    className: "bg-[#5F5E5A] text-[#F1EFE8] hover:bg-[#444441]",
+  },
+];
+
+export const STAT_ICONS = [UsersRound, TrendingUp, Droplets, CloudSun];
+
 export const HOME_HERO_STATS = [
   {
-    label: "Lebih dari 50.000 Petani",
-    sublabel: "tergabung di Smarttani",
+    value: "50.000 Petani",
+    label: "Lebih dari",
+    sublabel: "tergabung",
+    sublabelColor: "#3B6D11",
+    iconBg: "#EAF3DE",
+    iconColor: "#3B6D11",
   },
   {
     value: "2,4 Ton/Ha",
     label: "Prediksi Panen",
     sublabel: "+12% dari musim lalu",
+    sublabelColor: "#BA7517",
+    iconBg: "#FAEEDA",
+    iconColor: "#854F0B",
   },
   {
     value: "65%",
     label: "Kelembaban Tanah",
     sublabel: "Optimal",
+    sublabelColor: "#185FA5",
+    iconBg: "#E6F1FB",
+    iconColor: "#185FA5",
   },
   {
     value: "28°C",
     label: "Cuaca Hari Ini",
     sublabel: "Cerah",
+    sublabelColor: "#BA7517",
+    iconBg: "#FAEEDA",
+    iconColor: "#854F0B",
   },
 ];
 
@@ -160,8 +213,5 @@ export const HOME_CTA_BANNER = {
   heading: "Bergabunglah dengan Ekosistem Pertanian Terbesar di Indonesia",
   subtext:
     "Ribuan petani, investor, dan mitra telah merasakan manfaatnya. Sekarang giliran Anda!",
-  cta: [
-    { label: "Pelajari Lebih Lanjut" },
-    { label: "Daftar Sekarang" },
-  ],
+  cta: [{ label: "Pelajari Lebih Lanjut" }, { label: "Daftar Sekarang" }],
 };

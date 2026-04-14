@@ -45,11 +45,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close mobile menu on route change
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
-
   return (
     <header
       id="main-navbar"
@@ -69,7 +64,7 @@ export default function Navbar() {
           >
             <div className="relative w-20 h-12 md:w-32 md:h-20 lg:w-28 lg:h-16">
               <Image
-                src="/images/home/logo.webp"
+                src="/images/home/logo.png"
                 alt="Logo Smarttani Indonesia"
                 className="object-contain"
                 loading="eager"
@@ -212,32 +207,41 @@ export default function Navbar() {
                         ? pathname === "/"
                         : pathname.startsWith(item.href);
                     return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className={cn(
-                          "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
-                          isActive
-                            ? "bg-primary-light text-primary font-semibold"
-                            : "text-foreground hover:bg-muted",
-                        )}
-                      >
-                        {item.label}
-                      </Link>
+                      <SheetClose asChild key={item.href}>
+                        <Link
+                          href={item.href}
+                          className={cn(
+                            "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
+                            isActive
+                              ? "bg-primary-light text-primary font-semibold"
+                              : "text-foreground hover:bg-muted",
+                          )}
+                        >
+                          {item.label}
+                        </Link>
+                      </SheetClose>
                     );
                   })}
                 </nav>
 
                 {/* Mobile Auth Buttons */}
                 <div className="p-4 border-t border-border space-y-2">
-                  <Button variant="outline" className="w-full gap-2" size="lg">
-                    <LogIn className="size-4" />
-                    Masuk
-                  </Button>
-                  <Button variant="accent" className="w-full gap-2" size="lg">
-                    <UserPlus className="size-4" />
-                    Daftar
-                  </Button>
+                  <SheetClose asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full gap-2"
+                      size="lg"
+                    >
+                      <LogIn className="size-4" />
+                      Masuk
+                    </Button>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Button variant="accent" className="w-full gap-2" size="lg">
+                      <UserPlus className="size-4" />
+                      Daftar
+                    </Button>
+                  </SheetClose>
                 </div>
               </SheetContent>
             </Sheet>
@@ -271,7 +275,7 @@ export default function Navbar() {
                         {item.label}
                         {/* Active indicator */}
                         {isActive && (
-                          <span className="absolute bottom-0 left-4 right-4 h-[2.5px] bg-primary rounded-full" />
+                          <span className="absolute bottom-0 left-4 right-4 h-[2.5px] bg-primary rounded-full mb-1.5" />
                         )}
                       </Link>
                     </NavigationMenuLink>
