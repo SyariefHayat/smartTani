@@ -194,7 +194,7 @@ export const HOME_STEPS = [
   },
 ];
 
-export const HOME_KATEGORI = [
+export const HOME_CATEGORY = [
   "Padi & Gabah",
   "Beras",
   "Jagung",
@@ -202,6 +202,16 @@ export const HOME_KATEGORI = [
   "Buah",
   "Kedelai",
   "Komoditas Lokal",
+];
+
+export const CATEGORY_IMAGES = [
+  "/images/home/padi-gabah.webp",
+  "/images/home/beras.webp",
+  "/images/home/jagung.webp",
+  "/images/home/sayur.webp",
+  "/images/home/buah.webp",
+  "/images/home/kedelai.webp",
+  "/images/home/komoditas-lokal.webp",
 ];
 
 export const HOME_TESTIMONI = [
@@ -221,7 +231,18 @@ export const HOME_TESTIMONI = [
   },
 ];
 
-export const HOME_ARTIKEL = [
+export const TESTIMONI_AVATARS = [
+  "/images/about/pimpinan-siti-aminah.jpeg",
+  "/images/about/pimpinan-budi-santoso.jpeg",
+];
+
+export const ARTICLE_IMAGES = [
+  "/images/article/kualitas-hasil-panen.webp",
+  "/images/article/kelola-keuangan.webp",
+  "/images/article/teknologi-drone.webp",
+];
+
+export const HOME_ARTICLE = [
   {
     title: "5 Tips Meningkatkan Hasil Panen Padi",
     date: "15 Mei 2024",
