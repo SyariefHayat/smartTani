@@ -167,6 +167,33 @@ export const HOME_STEPS = [
   },
 ];
 
+export const BERANDA_STEPS = {
+  heading: "Bagaimana Smarttani Bekerja?",
+  subtext: "4 langkah mudah untuk memulai",
+  items: [
+    {
+      step: 1,
+      title: "Daftar Akun",
+      description: "Pilih peran Anda dan lengkapi profil",
+    },
+    {
+      step: 2,
+      title: "Jelajahi & Pilih",
+      description: "Temukan produk, proyek, atau pelatihan yang Anda butuhkan",
+    },
+    {
+      step: 3,
+      title: "Transaksi Aman",
+      description: "Sistem pembayaran dan proteksi yang terjamin",
+    },
+    {
+      step: 4,
+      title: "Sukses Bersama",
+      description: "Raih keuntungan dan kembangkan ekosistem pertanian",
+    },
+  ],
+};
+
 export const HOME_KATEGORI = [
   "Padi & Gabah",
   "Beras",
