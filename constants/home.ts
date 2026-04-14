@@ -122,7 +122,7 @@ export const STAT_BAR_ICONS = [
   Truck,
 ];
 
-export const HOME_FITUR = [
+export const HOME_FEATURES = [
   {
     title: "Marketplace Hasil Tani",
     description:
@@ -153,6 +153,22 @@ export const HOME_FITUR = [
       "Tingkatkan pengetahuan dan keterampilan dengan pelatihan bersertifikat.",
     cta: "Mulai Belajar →",
   },
+];
+
+export const FEATURES_IMAGES = [
+  "/images/home/keranjang-belanja.webp",
+  "/images/home/grafik-investasi.webp",
+  "/images/home/gudang-truk.webp",
+  "/images/home/truk-logistik.webp",
+  "/images/home/buku-akademi.webp",
+];
+
+export const FEATURES_BG_COLORS = [
+  "bg-[#EAF3DE]",
+  "bg-[#FAEEDA]",
+  "bg-[#E6F1FB]",
+  "bg-[#F3E8FB]",
+  "bg-[#F1EFE8]",
 ];
 
 export const HOME_STEPS = [
