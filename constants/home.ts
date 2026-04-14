@@ -3,10 +3,13 @@ import {
   CloudSun,
   Droplets,
   GraduationCap,
+  ShieldCheck,
+  ShoppingBasket,
   ShoppingCart,
   Sprout,
   TrendingUp,
   Truck,
+  UserPlus,
   UserRoundCheck,
   UsersRound,
 } from "lucide-react";
@@ -170,6 +173,8 @@ export const FEATURES_BG_COLORS = [
   "bg-[#F3E8FB]",
   "bg-[#F1EFE8]",
 ];
+
+export const STEP_ICONS = [UserPlus, ShoppingBasket, ShieldCheck, TrendingUp];
 
 export const HOME_STEPS = [
   {
