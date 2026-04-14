@@ -53,13 +53,13 @@ export const metadata: Metadata = {
 
 export default function BerandaPage() {
   return (
-    <main>
+    <>
       <HeroSection />
       <StatsBarSection />
       <FiturSection />
       <StepsSection />
       <KategoriTestimoniArtikelSection />
       <CTABannerSection />
-    </main>
+    </>
   );
 }
