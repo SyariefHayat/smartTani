@@ -122,47 +122,53 @@ export const STAT_BAR_ICONS = [
   Truck,
 ];
 
-export const HOME_FITUR = [
+export const HOME_FEATURES = [
   {
     title: "Marketplace Hasil Tani",
     description:
       "Jual dan beli hasil pertanian langsung dari petani dengan harga terbaik.",
     cta: "Lihat Produk →",
-    bgColor: "bg-[#EAF3DE]",
-    textColor: "text-[#3B6D11]",
   },
   {
     title: "Investasi Pertanian",
     description:
       "Danai proyek pertanian potensial dan dapatkan keuntungan menjanjikan.",
     cta: "Mulai Investasi →",
-    bgColor: "bg-[#FAEEDA]",
-    textColor: "text-[#BA7517]",
   },
   {
     title: "Distributor & Supply Chain",
     description:
       "Kelola stok, gudang, dan distribusi secara efisien dan transparan.",
     cta: "Jelajahi →",
-    bgColor: "bg-[#E6F1FB]",
-    textColor: "text-[#185FA5]",
   },
   {
     title: "Logistik Terintegrasi",
     description:
       "Layanan pengiriman cepat dan aman hingga ke seluruh Indonesia.",
     cta: "Cek Tarif →",
-    bgColor: "bg-[#F3E8FB]",
-    textColor: "text-[#7C3AED]",
   },
   {
     title: "SiTani Academy",
     description:
       "Tingkatkan pengetahuan dan keterampilan dengan pelatihan bersertifikat.",
     cta: "Mulai Belajar →",
-    bgColor: "bg-[#F1EFE8]",
-    textColor: "text-[#5F5E5A]",
   },
+];
+
+export const FEATURES_IMAGES = [
+  "/images/home/keranjang-belanja.webp",
+  "/images/home/grafik-investasi.webp",
+  "/images/home/gudang-truk.webp",
+  "/images/home/truk-logistik.webp",
+  "/images/home/buku-akademi.webp",
+];
+
+export const FEATURES_BG_COLORS = [
+  "bg-[#EAF3DE]",
+  "bg-[#FAEEDA]",
+  "bg-[#E6F1FB]",
+  "bg-[#F3E8FB]",
+  "bg-[#F1EFE8]",
 ];
 
 export const HOME_STEPS = [
