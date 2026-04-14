@@ -6,6 +6,8 @@ import {
   ShoppingCart,
   Sprout,
   TrendingUp,
+  Truck,
+  UserRoundCheck,
   UsersRound,
 } from "lucide-react";
 
@@ -22,7 +24,7 @@ export const HOME_META = {
     "SiTani Academy",
     "Smart Farming Indonesia",
   ],
-  ogImage: "/images/home/hero.webp",
+  ogImage: "/images/home/hero.png",
 };
 
 export const HOME_HERO = {
@@ -109,6 +111,15 @@ export const HOME_STATS_BAR = [
   { value: "8.750+", label: "Investor Terdaftar" },
   { value: "45.680+", label: "Peserta Pelatihan" },
   { value: "1,2 Juta+ Ton", label: "Tonase Distribusi" },
+];
+
+export const STAT_BAR_ICONS = [
+  UsersRound,
+  ShoppingCart,
+  ChartNoAxesCombined,
+  UserRoundCheck,
+  GraduationCap,
+  Truck,
 ];
 
 export const HOME_FITUR = [
