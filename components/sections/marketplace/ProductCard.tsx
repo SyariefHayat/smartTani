@@ -8,85 +8,81 @@ interface ProductCardProps {
   product: Product;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
+const formatPrice = (price: number) => {
+  if (price >= 1_000_000) {
+    const juta = price / 1_000_000;
+    return `${juta.toLocaleString("id-ID", {
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    })
-      .format(price)
-      .replace(/,00$/, "");
-  };
+      maximumFractionDigits: 1,
+    })} juta`;
+  }
 
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price);
+};
+
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
-    <div className="group flex flex-col h-full bg-white rounded-lg border border-neutral-200 overflow-hidden transition-all duration-300 hover:shadow-md">
-      {/* Product Image Container */}
-      <div className="relative aspect-square w-full bg-[#f3f4f6] p-4 flex items-center justify-center">
-        <div className="relative w-full h-full">
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            className="object-contain transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-          />
-        </div>
+    <Link
+      href={`/marketplace/product/${product.id}`}
+      className="group flex flex-col h-full bg-white rounded-xl border border-neutral-200/80 overflow-hidden transition-all duration-300 hover:shadow-md hover:border-neutral-300"
+    >
+      {/* Image */}
+      <div className="relative aspect-square w-full bg-[#E6E6E6] overflow-hidden">
+        <Image
+          src={product.image}
+          alt={product.name}
+          fill
+          className="object-contain p-3 transition-transform duration-500 group-hover:scale-105"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+        />
+        {product.isPromo && (
+          <span className="absolute top-2 left-2 bg-green-50 text-green-700 text-[10px] font-medium px-2 py-0.5 rounded-full border border-green-100">
+            Promo
+          </span>
+        )}
       </div>
 
-      {/* Product Info */}
-      <div className="flex flex-col flex-1 p-3">
-        {/* Product Name */}
-        <Link
-          href={`/marketplace/product/${product.id}`}
-          className="block mb-1"
-        >
-          <h3 className="text-[15px] font-bold text-[#17391f] line-clamp-2 leading-tight min-h-[40px]">
-            {product.name}
-          </h3>
-        </Link>
+      {/* Info */}
+      <div className="flex flex-col flex-1 p-2.5 gap-1.5">
+        {/* Name */}
+        <h3 className="text-[12px] md:text-[13px] font-medium text-neutral-800 line-clamp-2 leading-snug min-h-8.5">
+          {product.name}
+        </h3>
 
-        {/* Product Description */}
-        <p className="text-[12px] text-[#5d7a64] line-clamp-2 mb-3 leading-snug min-h-[32px]">
-          {product.description}
-        </p>
-
-        {/* Price Section */}
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-[16px] font-extrabold text-[#17391f]">
-            {formatPrice(product.price).replace("Rp", "Rp ")}
+        {/* Price */}
+        <div className="flex flex-col gap-0.5">
+          <span className="text-[14px] font-semibold text-[#17391f] leading-tight">
+            {formatPrice(product.price)}
           </span>
           {product.originalPrice && (
-            <span className="text-[12px] text-neutral-400 line-through decoration-neutral-400">
-              {formatPrice(product.originalPrice).replace("Rp", "Rp ")}
+            <span className="text-[11px] text-neutral-400 line-through leading-tight">
+              {formatPrice(product.originalPrice)}
             </span>
           )}
         </div>
 
-        {/* Rating & Sales */}
-        <div className="flex items-center gap-1.5 mb-3">
-          <div className="flex items-center gap-0.5">
-            <Star className="size-3.5 fill-yellow-400 text-yellow-400" />
-            <span className="text-[12px] font-semibold text-neutral-700">
-              {product.rating}
-            </span>
-          </div>
-          <span className="text-[12px] text-neutral-400">|</span>
-          <span className="text-[12px] text-neutral-500 font-medium">
-            Terjual {product.terjual}
+        {/* Rating + Terjual */}
+        <div className="flex items-center gap-1">
+          <Star className="size-3 fill-yellow-400 text-yellow-400 shrink-0" />
+          <span className="text-[11px] text-neutral-500 leading-none">
+            {product.rating} · Terjual {product.terjual}
           </span>
         </div>
 
-        {/* Store Label - At Bottom */}
-        <div className="mt-auto pt-2 flex items-center gap-1.5 border-t border-neutral-100">
-          <CheckCircle2 className="size-3.5 text-primary fill-primary text-white" />
-          <span className="text-[12px] font-bold text-primary">
+        {/* Store */}
+        <div className="mt-auto pt-2 flex items-center gap-1 border-t border-neutral-100">
+          <CheckCircle2 className="size-3 text-primary fill-primary shrink-0" />
+          <span className="text-[11px] font-medium text-primary truncate">
             {product.storeType}
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

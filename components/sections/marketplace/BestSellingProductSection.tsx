@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { MARKETPLACE_TERLARIS_DATA } from "@/constants/marketplace";
 import ProductCard from "./ProductCard";
@@ -42,13 +41,13 @@ const BestSellingProductSection = () => {
         {items.slice(0, 6).map((product, index) => (
           <div key={product.id} className="relative">
             <ProductCard product={product} />
-            
+
             {/* Rank Badge for Top 3 */}
             {index < 3 && (
-              <div 
+              <div
                 className={cn(
                   "absolute top-2 right-2 z-10 size-6 md:size-7 rounded-full flex items-center justify-center text-[10px] md:text-xs font-bold shadow-md pointer-events-none",
-                  getRankBadgeStyles(index)
+                  getRankBadgeStyles(index),
                 )}
               >
                 {index + 1}

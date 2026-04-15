@@ -1,20 +1,16 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { MARKETPLACE_KATEGORI_POPULER } from "@/constants/marketplace";
 
-const CategoriSection = () => {
+const CategorySection = () => {
   const generateSlug = (label: string) => {
-    return label
-      .toLowerCase()
-      .replace(/ & /g, "-")
-      .replace(/ /g, "-");
+    return label.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-");
   };
 
   return (
-    <div className="bg-white">
+    <div className="mb-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg md:text-xl font-bold text-[#17391f]">
@@ -28,17 +24,20 @@ const CategoriSection = () => {
         </Link>
       </div>
 
-      {/* Categories Grid */}
-      <div className="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-8 gap-3 md:gap-4">
+      <div className="flex justify-between gap-2 md:gap-3">
         {MARKETPLACE_KATEGORI_POPULER.map((category) => {
           const slug = generateSlug(category.label);
           const isLast = category.label === "Lainnya";
-          
+
           return (
             <Link
               key={category.label}
-              href={isLast ? "/marketplace/categories" : `/marketplace?kategori=${slug}`}
-              className="group flex flex-col items-center text-center gap-2.5 transition-all duration-200"
+              href={
+                isLast
+                  ? "/marketplace/categories"
+                  : `/marketplace?kategori=${slug}`
+              }
+              className="group flex flex-col items-center text-center gap-2.5 transition-all duration-200 flex-1"
             >
               {/* Circular Image Container */}
               <div className="relative size-14 md:size-16 lg:size-20 rounded-full border border-neutral-100 p-1 bg-white overflow-hidden transition-all duration-300 group-hover:border-primary group-hover:scale-105 group-hover:shadow-md">
@@ -48,7 +47,7 @@ const CategoriSection = () => {
                     alt={category.label}
                     fill
                     className="object-cover"
-                    sizes="(max-width: 640px) 25vw, 12vw"
+                    sizes="(max-width: 640px) 12vw, 8vw"
                   />
                 </div>
               </div>
@@ -70,4 +69,4 @@ const CategoriSection = () => {
   );
 };
 
-export default CategoriSection;
+export default CategorySection;
