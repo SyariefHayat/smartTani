@@ -28,7 +28,7 @@ const LogisticLayananSection = () => {
               className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/5"
             >
               {/* Image Container */}
-              <div className="relative aspect-[16/10] w-full overflow-hidden">
+              <div className="relative aspect-16/10 w-full overflow-hidden">
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -36,7 +36,7 @@ const LogisticLayananSection = () => {
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
               </div>
 
               {/* Content */}

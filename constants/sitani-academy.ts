@@ -184,13 +184,13 @@ export const ACADEMY_JALUR = {
   items: [
     {
       level: "Pemula",
-      description: "Dasar-dasar pertanian untuk mengenal dunia pertanian diri.",
+      description: "Dasar-dasar pertanian untuk memulai dengan percaya diri.",
       jumlahKursus: 12,
       jumlahJam: 20,
     },
     {
       level: "Menengah",
-      description: "Tingkatkan kemampuan dengan teknik yang lebih advanced.",
+      description: "Tingkatkan keterampilan dengan teknik yang lebih advanced.",
       jumlahKursus: 18,
       jumlahJam: 35,
     },
@@ -210,14 +210,14 @@ export const ACADEMY_INSTRUKTUR = {
   items: [
     {
       nama: "Dr. Ir. Budi Santoso",
-      gelar: "Pakar Agronomi di bidang budidaya tanaman",
+      gelar: "Pakar Agronomi",
       image: "/images/academy/instruktur-budi.webp",
       rating: 4.9,
       jumlahPeserta: 2100,
     },
     {
       nama: "Drh. Andi Wijaya",
-      gelar: "Ahli peternakan berpengalaman 15+ tahun",
+      gelar: "Dokter Hewan",
       image: "/images/academy/instruktur-andi.webp",
       rating: 4.9,
       jumlahPeserta: 1750,
@@ -226,36 +226,66 @@ export const ACADEMY_INSTRUKTUR = {
 };
 
 export const ACADEMY_TESTIMONI = {
-  heading: "Testimoni Peserta",
+  heading: "Apa Kata Mereka?",
+  subtext: "Ribuan petani telah merasakan manfaat nyata dari program pembelajaran di SiTani Academy.",
   items: [
     {
       nama: "Siti Aminah",
       role: "Petani Padi, Jawa Barat",
-      avatar: "/images/academy/avatar-siti.webp",
+      avatar: "/images/about/pimpinan-siti-aminah.jpeg",
       rating: 5,
       quote:
-        "Materi sangat praktis dan mudah dipahami. Setelah ikut kursus, hasil panen saya meningkat 30%. Terima kasih SiTani Academy!",
+        "Materi sangat praktis dan mudah dipahami. Setelah ikut kursus budidaya padi, hasil panen saya meningkat 30% dan biaya pupuk jadi lebih efisien. Terima kasih SiTani Academy!",
+    },
+    {
+      nama: "Budi Santoso",
+      role: "Petani Jagung, Jawa Timur",
+      avatar: "/images/about/pimpinan-budi-santoso.jpeg",
+      rating: 5,
+      quote:
+        "Dulu saya bertani hanya berdasarkan kebiasaan. Sekarang saya paham cara mengelola tanah yang benar. Komunitasnya juga sangat membantu untuk berbagi kendala di lapangan.",
+    },
+    {
+      nama: "Arif Wijaya",
+      role: "Petani Hortikultura, Jawa Tengah",
+      avatar: "/images/about/pimpinan-arif-wijaya.jpeg",
+      rating: 4,
+      quote:
+        "Belajar hidroponik dari nol ternyata seru dan menjanjikan. Instrukturnya sabar membimbing sampai saya benar-benar bisa panen sendiri di pekarangan rumah.",
     },
   ],
 };
 
 export const ACADEMY_WEBINAR = {
-  heading: "Webinar & Event",
-  subtext: "Belajar langsung dari para ahli di acara spesial kami.",
+  heading: "Webinar & Event Mendatang",
+  subtext: "Ikuti sesi diskusi interaktif secara live bersama para pakar pertanian.",
   items: [
     {
-      title: "Webinar: Masa Depan Pertanian Digital",
+      title: "Masa Depan Pertanian Digital di Indonesia",
       tanggal: "22 Mei 2024",
-      waktu: "19.00 WIB",
+      waktu: "19.00 - 20.30 WIB",
       image: "/images/academy/masa-depan-pertanian.webp",
-      cta: "Daftar",
+      cta: "Daftar Sekarang",
+      kategori: "WEBINAR",
+      narasumber: "Dr. Ir. Budi Santoso",
     },
     {
-      title: "Workshop: Manajemen Ternak Modern",
+      title: "Workshop: Manajemen Ternak Sapi Modern",
       tanggal: "30 Mei 2024",
-      waktu: "09.00 WIB",
+      waktu: "09.00 - 15.00 WIB",
       image: "/images/academy/ternak-modern.webp",
-      cta: "Daftar",
+      cta: "Daftar Sekarang",
+      kategori: "WORKSHOP",
+      narasumber: "Drh. Andi Wijaya",
+    },
+    {
+      title: "Optimasi Lahan Sempit dengan Hidroponik",
+      tanggal: "05 Juni 2024",
+      waktu: "14.00 - 16.00 WIB",
+      image: "/images/academy/hidroponik.webp",
+      cta: "Daftar Sekarang",
+      kategori: "WEBINAR",
+      narasumber: "Rina Yuliani, SP",
     },
   ],
 };

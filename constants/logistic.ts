@@ -5,6 +5,7 @@ export const LOGISTIC_META = {
 };
 
 export const LOGISTIC_HERO = {
+  badge: "Logistik Smarttani",
   heading: "Logistik Terintegrasi untuk Pertanian Indonesia yang Lebih Maju",
   subtext:
     "Layanan pengiriman cepat, aman, dan efisien untuk semua kebutuhan pertanian Anda. Dari hasil panen hingga sarana produksi, kami pastikan sampai tujuan dengan tepat waktu.",

@@ -3,19 +3,18 @@
 import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { LOGISTIC_HERO } from "@/constants/logistic";
-import { ShieldCheck, Truck, Globe, Search, ArrowRight } from "lucide-react";
+import { ACADEMY_HERO } from "@/constants/sitani-academy";
+import { GraduationCap, Monitor, Users, Award, ArrowRight } from "lucide-react";
 
-const ICON_MAP = [ShieldCheck, Truck, Globe];
+const ICON_MAP = [Monitor, Users, Award];
 
-const LogisticHeroSection = () => {
+const AcademyHeroSection = () => {
   return (
-    <section className="relative min-h-[600px] flex items-center overflow-hidden bg-[#1a4d2e]">
+    <section className="relative min-h-[600px] flex items-center overflow-hidden bg-[#163e1f]">
       {/* Background Image */}
       <Image
-        src={LOGISTIC_HERO.image}
-        alt="Logistic Smarttani"
+        src={ACADEMY_HERO.image}
+        alt="Academy Smarttani"
         fill
         priority
         quality={90}
@@ -34,24 +33,24 @@ const LogisticHeroSection = () => {
           <div className="lg:col-span-7 xl:col-span-8">
             {/* Top Badge/Logo */}
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/20 px-4 py-2 text-white backdrop-blur-sm">
-              <Truck className="h-5 w-5 text-yellow-400" />
+              <GraduationCap className="h-5 w-5 text-yellow-400" />
               <span className="text-sm font-bold tracking-tight">
-                {LOGISTIC_HERO.badge}
+                {ACADEMY_HERO.badge}
               </span>
             </div>
 
             <h1 className="mb-6 text-3xl font-bold leading-[1.15] text-white sm:text-4xl lg:text-5xl xl:text-6xl max-w-2xl">
-              {LOGISTIC_HERO.heading}
+              {ACADEMY_HERO.heading}
             </h1>
 
             <p className="mb-10 max-w-xl text-base leading-relaxed text-white/90 sm:text-lg">
-              {LOGISTIC_HERO.subtext}
+              {ACADEMY_HERO.subtext}
             </p>
 
             {/* Badges */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              {LOGISTIC_HERO.badges.map((badge, index) => {
-                const Icon = ICON_MAP[index] || ShieldCheck;
+              {ACADEMY_HERO.badges.map((badge, index) => {
+                const Icon = ICON_MAP[index] || Monitor;
                 return (
                   <div
                     key={index}
@@ -64,7 +63,7 @@ const LogisticHeroSection = () => {
                       <p className="text-xs font-bold text-[#17391f] leading-tight sm:text-sm">
                         {badge.label}
                       </p>
-                      <p className="mt-1 text-[10px] text-slate-500 font-medium uppercase tracking-wider">
+                      <p className="mt-1 text-[10px] text-slate-500 font-medium">
                         {badge.sublabel}
                       </p>
                     </div>
@@ -74,32 +73,24 @@ const LogisticHeroSection = () => {
             </div>
           </div>
 
-          {/* Right Column: Tracking Form */}
+          {/* Right Column: CTA Card */}
           <div className="lg:col-span-5 xl:col-span-4">
             <div className="rounded-2xl bg-white p-6 shadow-2xl sm:p-8">
-              <h3 className="mb-1 text-xl font-bold text-[#17391f] sm:text-2xl">
-                {LOGISTIC_HERO.tracking.label}
+              <h3 className="mb-2 text-xl font-bold text-[#17391f] sm:text-2xl">
+                {ACADEMY_HERO.sidebar.heading}
               </h3>
-              <p className="mb-6 text-sm text-slate-500">
-                {LOGISTIC_HERO.tracking.placeholder}
+              <p className="mb-8 text-sm text-slate-500 leading-relaxed">
+                {ACADEMY_HERO.sidebar.subtext}
               </p>
 
               <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <Input
-                    type="text"
-                    placeholder={LOGISTIC_HERO.tracking.inputHint}
-                    className="h-12 border-slate-200 bg-slate-50 px-4 focus:ring-primary rounded-xl"
-                  />
-                </div>
-                
                 <Button className="h-12 w-full bg-primary text-base font-bold text-white hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
-                  <Search className="mr-2 h-5 w-5" />
-                  {LOGISTIC_HERO.tracking.ctaPrimary}
+                  {ACADEMY_HERO.sidebar.ctaPrimary}
                 </Button>
 
-                <button className="flex w-full items-center justify-center gap-2 text-sm font-bold text-primary hover:text-primary/80 transition-colors py-2 group">
-                  {LOGISTIC_HERO.tracking.ctaSecondary}
+                <button className="flex w-full items-center justify-center gap-2 text-sm font-bold text-primary hover:text-primary/80 transition-all py-2 group">
+                  {ACADEMY_HERO.sidebar.ctaSecondary}
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </button>
               </div>
             </div>
@@ -111,4 +102,4 @@ const LogisticHeroSection = () => {
   );
 };
 
-export default LogisticHeroSection;
+export default AcademyHeroSection;
