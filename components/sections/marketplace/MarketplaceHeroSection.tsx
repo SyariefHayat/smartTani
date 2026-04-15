@@ -1,66 +1,58 @@
-import React from 'react';
-import Image from 'next/image';
-import { Badge } from '@/components/ui/badge';
-import { MARKETPLACE_HERO } from '@/constants/marketplace';
-import { ShieldCheck, Tag, Truck } from 'lucide-react';
-import { cn } from '@/lib/utils';
-
-const iconMap = [ShieldCheck, Tag, Truck];
+import Image from "next/image";
+import { ICON_MAP, MARKETPLACE_HERO } from "@/constants/marketplace";
 
 const MarketplaceHeroSection = () => {
   return (
-    <section className="relative overflow-hidden min-h-[320px] lg:min-h-[400px] bg-primary-dark">
-      {/* Background Image Container */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/images/marketplace/hero-bg.webp"
-          alt=""
-          fill
-          className="object-cover object-right opacity-40 lg:opacity-70"
-          priority
-        />
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/95 via-primary-dark/70 to-transparent" />
-      </div>
+    <section className="relative overflow-hidden bg-[#245a2f]">
+      {/* Background Image */}
+      <Image
+        src="/images/marketplace/hero-bg.webp"
+        alt="Marketplace Smarttani"
+        width={1920}
+        height={1080}
+        priority
+        quality={90}
+        className="absolute inset-0 w-full h-full object-cover object-center"
+        sizes="100vw"
+      />
 
-      {/* Content Container */}
-      <div className="relative z-10 container-smarttani py-10 lg:py-20">
-        <div className="max-w-3xl">
-          {/* Top Badge */}
-          <Badge 
-            variant="secondary" 
-            className="bg-accent text-primary-dark font-semibold mb-4 px-3 py-1 hover:bg-accent/90"
-          >
+      {/* Content */}
+      <div className="relative z-10 container-smarttani py-8 sm:py-12 lg:py-10">
+        <div className="max-w-2xl">
+          {/* Badge Label */}
+          <p className="text-white/70 text-[11px] sm:text-xs font-medium uppercase tracking-widest mb-3">
             {MARKETPLACE_HERO.badge}
-          </Badge>
+          </p>
 
           {/* Heading */}
-          <h1 className="text-heading-1 lg:text-display text-white font-bold leading-tight mb-4">
+          <h1 className="max-w-2xl text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white font-bold leading-tight mb-3 sm:mb-4">
             {MARKETPLACE_HERO.heading}
           </h1>
 
           {/* Subtext */}
-          <p className="text-body md:text-body-lg text-white/85 max-w-xl mb-8">
+          <p className="text-sm sm:text-base text-white/80 max-w-lg leading-relaxed mb-8 sm:mb-10">
             {MARKETPLACE_HERO.subtext}
           </p>
 
           {/* Trust Badges */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {MARKETPLACE_HERO.badges.map((item, index) => {
-              const Icon = iconMap[index];
+              const Icon = ICON_MAP[index];
               return (
-                <div 
-                  key={index} 
-                  className="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 hover:bg-white/20 transition-all cursor-default"
+                <div
+                  key={index}
+                  className="flex items-center gap-3 rounded-xl border border-white/60 bg-white p-3 sm:p-4 shadow-[0_18px_40px_rgba(9,35,17,0.18)] backdrop-blur-md"
                 >
-                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                    {Icon && <Icon className="w-5 h-5 text-accent" />}
+                  <div className="shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    {Icon && (
+                      <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                    )}
                   </div>
-                  <div className="flex flex-col">
-                    <span className="text-body-sm font-semibold text-white leading-tight">
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-xs sm:text-sm font-semibold text-[#17391f] leading-tight truncate">
                       {item.label}
                     </span>
-                    <span className="text-[10px] text-white/60 uppercase tracking-wider font-medium mt-0.5">
+                    <span className="text-[9px] sm:text-[10px] text-[#5d7a64] uppercase tracking-wider font-medium mt-0.5 truncate">
                       {item.sublabel}
                     </span>
                   </div>
