@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { DISTRIBUTOR_META } from "@/constants/distributor";
 import DistributorHeroSection from "@/components/sections/distributor/DistributorHeroSection";
-import DistributorStatsBarSection from "@/components/sections/distributor/DistributorStatsBarSection";
+import StatsBarDistributorSection from "@/components/sections/distributor/StatsBarDistributorSection";
 import DistributorKeuntunganSection from "@/components/sections/distributor/DistributorKeuntunganSection";
 import DistributorProdukKategoriSection from "@/components/sections/distributor/DistributorProdukKategoriSection";
 import DistributorStepsSection from "@/components/sections/distributor/DistributorStepsSection";
@@ -16,7 +16,7 @@ export default function DistributorPage() {
   return (
     <main className="min-h-screen bg-white">
       <DistributorHeroSection />
-      <DistributorStatsBarSection />
+      <StatsBarDistributorSection />
       <DistributorKeuntunganSection />
       <DistributorProdukKategoriSection />
       <DistributorStepsSection />
