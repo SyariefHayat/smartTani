@@ -5,7 +5,7 @@ import StatsBarDistributorSection from "@/components/sections/distributor/StatsB
 import DistributorKeuntunganSection from "@/components/sections/distributor/DistributorKeuntunganSection";
 import DistributorProdukKategoriSection from "@/components/sections/distributor/DistributorProdukKategoriSection";
 import DistributorInfoCardsSection from "@/components/sections/distributor/DistributorInfoCardsSection";
-import DistributorCTABannerSection from "@/components/sections/distributor/DistributorCTABannerSection";
+import DistributorSuccessAndCTASection from "@/components/sections/distributor/DistributorSuccessAndCTASection";
 
 export const metadata: Metadata = {
   title: DISTRIBUTOR_META.title,
@@ -20,7 +20,7 @@ export default function DistributorPage() {
       <DistributorKeuntunganSection />
       <DistributorProdukKategoriSection />
       <DistributorInfoCardsSection />
-      <DistributorCTABannerSection />
+      <DistributorSuccessAndCTASection />
     </main>
   );
 }
