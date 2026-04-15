@@ -1,3 +1,4 @@
+import { ShieldCheck, Tag, Truck } from "lucide-react";
 import { Product } from "./types";
 
 export const MARKETPLACE_META = {
@@ -18,6 +19,8 @@ export const MARKETPLACE_HERO = {
     { label: "Pengiriman Cepat", sublabel: "Sampai ke Lokasi Anda" },
   ],
 };
+
+export const ICON_MAP = [ShieldCheck, Tag, Truck];
 
 export const MARKETPLACE_TABS = [
   "Terlaris",
