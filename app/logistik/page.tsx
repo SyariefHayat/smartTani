@@ -3,11 +3,10 @@ import { LOGISTIC_META } from "@/constants/logistic";
 import LogisticHeroSection from "@/components/sections/logistik/LogisticHeroSection";
 import LogisticStatsBarSection from "@/components/sections/logistik/LogisticStatsBarSection";
 import LogisticLayananSection from "@/components/sections/logistik/LogisticLayananSection";
-import LogisticCekOngkirSection from "@/components/sections/logistik/LogisticCekOngkirSection";
-import LogisticKeunggulanSection from "@/components/sections/logistik/LogisticKeunggulanSection";
-import LogisticStepsSection from "@/components/sections/logistik/LogisticStepsSection";
-import LogisticMitraSection from "@/components/sections/logistik/LogisticMitraSection";
-import LogisticCTABannerSection from "@/components/sections/logistik/LogisticCTABannerSection";
+import JangkauanKeunggulanOngkirSection from "@/components/sections/logistik/JangkauanKeunggulanOngkirSection";
+import AlurPengirimanSection from "@/components/sections/logistik/AlurPengirimanSection";
+import MitraTransportasiSection from "@/components/sections/logistik/MitraTransportasiSection";
+import CTABannerLogistikSection from "@/components/sections/logistik/CTABannerLogistikSection";
 
 export const metadata: Metadata = {
   title: LOGISTIC_META.title,
@@ -20,11 +19,10 @@ export default function LogisticPage() {
       <LogisticHeroSection />
       <LogisticStatsBarSection />
       <LogisticLayananSection />
-      <LogisticCekOngkirSection />
-      <LogisticKeunggulanSection />
-      <LogisticStepsSection />
-      <LogisticMitraSection />
-      <LogisticCTABannerSection />
+      <JangkauanKeunggulanOngkirSection />
+      <AlurPengirimanSection />
+      <MitraTransportasiSection />
+      <CTABannerLogistikSection />
     </main>
   );
 }
