@@ -5,6 +5,12 @@ import {
   Smile,
   Banknote,
   TrendingUp,
+  Tag,
+  Box,
+  Megaphone,
+  GraduationCap,
+  Monitor,
+  Trophy,
 } from "lucide-react";
 
 export const DISTRIBUTOR_META = {
@@ -52,29 +58,35 @@ export const DISTRIBUTOR_KEUNTUNGAN = {
     {
       title: "Harga Spesial",
       description: "Dapatkan harga grosir dengan margin keuntungan menarik.",
+      icon: Tag,
     },
     {
       title: "Stok Terjamin",
       description: "Ketersediaan produk terjamin dengan suplai berkelanjutan.",
+      icon: Box,
     },
     {
       title: "Dukungan Pemasaran",
       description:
         "Materi promosi, konten edukasi, dan strategi pemasaran siap pakai.",
+      icon: Megaphone,
     },
     {
       title: "Pelatihan Eksklusif",
       description:
         "Training produk, teknis, dan pengembangan bisnis secara berkala.",
+      icon: GraduationCap,
     },
     {
       title: "Sistem Mudah",
       description:
         "Akses platform digital untuk pemesanan dan manajemen bisnis.",
+      icon: Monitor,
     },
     {
       title: "Bonus & Insentif",
       description: "Raih bonus penjualan dan penghargaan berdasarkan performa.",
+      icon: Trophy,
     },
   ],
 };
