@@ -25,30 +25,43 @@ export const MARKETPLACE_TABS = [
 ];
 
 export const MARKETPLACE_KATEGORI_SIDEBAR = [
-  "Benih & Bibit",
-  "Pupuk & Nutrisi",
-  "Pestisida",
-  "Alat & Mesin",
-  "Irigasi",
-  "Pakan Ternak",
-  "Hasil Panen",
-  "Lainnya",
+  { label: "Benih & Bibit", count: "1.250+" },
+  { label: "Pupuk & Nutrisi", count: "2.350+" },
+  { label: "Pestisida", count: "1.120+" },
+  { label: "Alat & Mesin", count: "980+" },
+  { label: "Irigasi", count: "640+" },
+  { label: "Pakan Ternak", count: "520+" },
+  { label: "Hasil Panen", count: "1.100+" },
+  { label: "Lainnya", count: "200+" },
 ];
 
-export const MARKETPLACE_FILTER_MEREK = [
-  "Smarttani",
-  "Biotis",
-  "Petroganic",
-  "DGW",
-];
-
-export const MARKETPLACE_FILTER_TIPE_PENJUAL = [
-  "Official Store",
-  "Distributor Resmi",
-  "UMKM",
-  "Semua Penjual",
-  "Lainnya",
-];
+export const MARKETPLACE_FILTER = {
+  brands: [
+    { label: "Smarttani", count: 240 },
+    { label: "Biotis", count: 180 },
+    { label: "Petroganic", count: 120 },
+    { label: "DGW", count: 95 },
+    { label: "Syngenta", count: 150 },
+  ],
+  ratings: [
+    { label: "5", value: 5, count: 450 },
+    { label: "4 ke atas", value: 4, count: 820 },
+    { label: "3 ke atas", value: 3, count: 120 },
+  ],
+  sellerTypes: [
+    { label: "Official Store", value: "official" },
+    { label: "Distributor Resmi", value: "distributor" },
+    { label: "UMKM", value: "umkm" },
+  ],
+  locations: [
+    "DKI Jakarta",
+    "Jawa Barat",
+    "Jawa Tengah",
+    "Jawa Timur",
+    "Sumatera Utara",
+    "Sulawesi Selatan",
+  ],
+};
 
 export const MARKETPLACE_KATEGORI_POPULER = [
   { label: "Benih & Bibit", jumlahProduk: "1.250+" },

@@ -6,6 +6,7 @@ import TrustBarSection from "@/components/sections/marketplace/TrustBarSection";
 import CategoriSection from "@/components/sections/marketplace/CategoriSection";
 import BestSellingProductSection from "@/components/sections/marketplace/BestSellingProductSection";
 import WhyMarketplaceSection from "@/components/sections/marketplace/WhyMarketplaceSection";
+import MarketplaceLayoutSection from "@/components/sections/marketplace/MarketplaceLayoutSection";
 
 export const metadata: Metadata = {
   title: MARKETPLACE_META.title,
@@ -14,13 +15,23 @@ export const metadata: Metadata = {
 
 export default function MarketplacePage() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-white">
+      {/* 1. Hero Banner */}
       <MarketplaceHeroSection />
-      <ProductTabsSection />
+      
+      {/* 2. Trust Bar (Small section after hero) */}
       <TrustBarSection />
+
+      {/* 3. Kategori Populer (Before layout for wide view) */}
       <CategoriSection />
-      <BestSellingProductSection />
-      <WhyMarketplaceSection />
+
+      {/* 4. Main Marketplace Layout (Sidebar Filter + Content) */}
+      <MarketplaceLayoutSection>
+        {/* All product content goes here */}
+        <ProductTabsSection />
+        <BestSellingProductSection />
+        <WhyMarketplaceSection />
+      </MarketplaceLayoutSection>
     </main>
   );
 }
