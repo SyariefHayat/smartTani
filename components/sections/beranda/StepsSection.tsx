@@ -30,7 +30,7 @@ export default function StepsSection() {
 
                     {/* Icon */}
                     <div className="flex size-12 shrink-0 items-center justify-center text-[#2D6A2D]">
-                      <Icon className="size-8" strokeWidth={1.5} />
+                      <Icon className="size-8" strokeWidth={1.5} aria-hidden="true" />
                     </div>
 
                     {/* Content */}
@@ -50,6 +50,7 @@ export default function StepsSection() {
                       <ChevronRight
                         className="size-6 text-[#2D6A2D]/40"
                         strokeWidth={1.5}
+                        aria-hidden="true"
                       />
                     </div>
                   )}

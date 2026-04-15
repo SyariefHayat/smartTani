@@ -45,7 +45,7 @@ export default function TestimoniSection() {
                       src={
                         CATEGORY_IMAGES[index] ?? "/images/home/padi-gabah.webp"
                       }
-                      alt={item}
+                      alt={`Kategori ${item}`}
                       fill
                       className="object-cover p-1.5"
                       sizes="100%"
@@ -63,7 +63,7 @@ export default function TestimoniSection() {
                   <div className="relative w-9 h-9 rounded-lg bg-[#EAF3DE] overflow-hidden shrink-0">
                     <Image
                       src={CATEGORY_IMAGES[6] ?? "/images/home/padi-gabah.webp"}
-                      alt={HOME_CATEGORY[6]}
+                      alt={`Kategori ${HOME_CATEGORY[6]}`}
                       fill
                       className="object-cover p-1.5"
                       sizes="100%"
@@ -80,7 +80,7 @@ export default function TestimoniSection() {
           {/* Column 2: Testimoni */}
           <div className="lg:col-span-4">
             <div className="mb-6 flex items-center gap-2">
-              <Quote className="size-5 fill-[#3B6D11] text-[#3B6D11] shrink-0" />
+              <Quote className="size-5 fill-[#3B6D11] text-[#3B6D11] shrink-0" aria-hidden="true" />
               <h2 className="text-base font-extrabold text-[#17391f] md:text-lg">
                 Testimoni Pengguna
               </h2>
@@ -99,7 +99,7 @@ export default function TestimoniSection() {
                             TESTIMONI_AVATARS[index] ??
                             "/images/about/Placeholder-profesional.jpeg"
                           }
-                          alt={item.name}
+                          alt={`Foto profil ${item.name}`}
                           fill
                           className="object-cover"
                           sizes="100%"
@@ -114,11 +114,12 @@ export default function TestimoniSection() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-0.5">
+                    <div className="flex gap-0.5" aria-label="Rating 5 bintang">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
                           className="size-3 fill-[#f5c35b] text-[#f5c35b]"
+                          aria-hidden="true"
                         />
                       ))}
                     </div>
@@ -154,6 +155,7 @@ export default function TestimoniSection() {
                 <Link
                   key={item.title}
                   href="#"
+                  aria-label={`Baca artikel: ${item.title}`}
                   className="group flex items-start gap-4 transition-transform hover:translate-x-1"
                 >
                   <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-xl border border-gray-100 shadow-sm">
@@ -161,7 +163,7 @@ export default function TestimoniSection() {
                       src={
                         ARTICLE_IMAGES[index] ?? "/images/article/hero-bg.webp"
                       }
-                      alt={item.title}
+                      alt={`Thumbnail artikel ${item.title}`}
                       fill
                       className="object-cover transition-transform group-hover:scale-110"
                       sizes="100%"
