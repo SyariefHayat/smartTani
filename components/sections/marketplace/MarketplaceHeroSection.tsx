@@ -25,12 +25,12 @@ const MarketplaceHeroSection = () => {
           </p>
 
           {/* Heading */}
-          <h1 className="max-w-2xl text-2xl sm:text-3xl lg:text-4xl xl:text-5xl text-white font-bold leading-tight mb-3 sm:mb-4">
+          <h1 className="text-display mb-4 text-white max-w-2xl">
             {MARKETPLACE_HERO.heading}
           </h1>
 
           {/* Subtext */}
-          <p className="text-sm sm:text-base text-white/80 max-w-lg leading-relaxed mb-8 sm:mb-10">
+          <p className="text-body-lg mb-8 text-white/80 max-w-lg">
             {MARKETPLACE_HERO.subtext}
           </p>
 

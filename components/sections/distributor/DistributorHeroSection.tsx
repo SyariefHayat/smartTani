@@ -40,11 +40,11 @@ const DistributorHeroSection = () => {
               {DISTRIBUTOR_HERO.badge}
             </p>
 
-            <h1 className="mb-4 text-3xl font-bold leading-[1.1] sm:text-4xl lg:text-5xl xl:text-6xl">
+            <h1 className="text-display mb-4 text-white">
               {DISTRIBUTOR_HERO.heading}
             </h1>
 
-            <p className="mb-8 max-w-lg text-sm leading-relaxed text-white/90 sm:text-base lg:text-lg">
+            <p className="text-body-lg mb-8 max-w-lg text-white/90">
               {DISTRIBUTOR_HERO.subtext}
             </p>
 

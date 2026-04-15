@@ -40,11 +40,11 @@ const LogisticHeroSection = () => {
               </span>
             </div>
 
-            <h1 className="mb-6 text-3xl font-bold leading-[1.15] text-white sm:text-4xl lg:text-5xl xl:text-6xl max-w-2xl">
+            <h1 className="text-display mb-6 text-white max-w-2xl">
               {LOGISTIC_HERO.heading}
             </h1>
 
-            <p className="mb-10 max-w-xl text-base leading-relaxed text-white/90 sm:text-lg">
+            <p className="text-body-lg mb-10 max-w-xl text-white/90">
               {LOGISTIC_HERO.subtext}
             </p>
 

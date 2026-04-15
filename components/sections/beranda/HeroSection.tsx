@@ -30,10 +30,10 @@ export default function HeroSection() {
           <div className="relative z-10 grid gap-8 px-5 py-8 sm:px-8 md:px-10 lg:grid-cols-[minmax(0,1.3fr)_340px] lg:gap-10 lg:px-12 lg:py-12">
             {/* Hero Text */}
             <div className="max-w-3xl text-white">
-              <h1 className="max-w-xl text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
+              <h1 className="text-display mb-4 text-white max-w-xl">
                 {HOME_HERO.heading}
               </h1>
-              <p className="mt-4 max-w-lg text-sm leading-7 text-white sm:text-base">
+              <p className="text-body-lg mt-4 max-w-lg text-white/90">
                 {HOME_HERO.subtext}
               </p>
 

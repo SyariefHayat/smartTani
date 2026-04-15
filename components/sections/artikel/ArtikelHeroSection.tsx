@@ -42,11 +42,11 @@ const ArtikelHeroSection = () => {
               </span>
             </div>
 
-            <h1 className="mb-6 text-4xl font-black leading-[1.1] text-white sm:text-5xl lg:text-6xl max-w-2xl">
+            <h1 className="text-display mb-6 text-white max-w-2xl">
               {ARTICLE_HERO.heading}
             </h1>
 
-            <p className="mb-10 max-w-xl text-base font-bold leading-relaxed text-white/80 sm:text-lg">
+            <p className="text-body-lg mb-10 max-w-xl text-white/80">
               {ARTICLE_HERO.subtext}
             </p>
 

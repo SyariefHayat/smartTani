@@ -30,10 +30,10 @@ export default function InvestasiHeroSection() {
           <span className="text-sm font-semibold tracking-wide text-[#b5d296] md:text-base">
             {INVESTASI_HERO.badge}
           </span>
-          <h1 className="mt-4 text-3xl font-extrabold leading-[1.1] sm:text-4xl md:text-5xl lg:text-6xl">
+          <h1 className="text-display mt-4 text-white">
             {INVESTASI_HERO.heading}
           </h1>
-          <p className="mt-6 max-w-lg text-sm leading-relaxed text-white sm:text-base md:text-lg">
+          <p className="text-body-lg mt-6 max-w-lg text-white/90">
             {INVESTASI_HERO.subtext}
           </p>
 
