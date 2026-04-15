@@ -3,8 +3,8 @@ import { DISTRIBUTOR_KEUNTUNGAN } from "@/constants/distributor";
 
 const DistributorKeuntunganSection = () => {
   return (
-    <section className="py-12 md:py-16 lg:py-20 bg-white">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
+    <section className="bg-white">
+      <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-12 flex flex-col items-center text-center">
           <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl lg:text-4xl">
@@ -22,10 +22,10 @@ const DistributorKeuntunganSection = () => {
             return (
               <div
                 key={index}
-                className="group flex flex-col items-center p-5 text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1 rounded-2xl border border-gray-100 bg-gray-50/30"
+                className="group flex flex-col items-center p-5 text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1 rounded-lg border border-gray-100 bg-[#E6E6E6]"
               >
                 {/* Icon Container */}
-                <div className="mb-4 flex size-12 items-center justify-center rounded-xl border-2 border-primary/20 bg-white text-primary transition-colors group-hover:bg-primary group-hover:text-white md:size-14">
+                <div className="mb-4 flex size-12 items-center justify-center rounded-sm border-2 border-primary/20 bg-white text-primary transition-colors group-hover:bg-primary group-hover:text-white md:size-14">
                   <Icon className="size-6 md:size-7" strokeWidth={1.5} />
                 </div>
 
