@@ -7,76 +7,80 @@ export default function InvestasiHeroSection() {
   const icons = [ShieldCheck, TrendingUp, Sprout];
 
   return (
-    <section className="relative overflow-hidden bg-[#17391f]">
-      {/* Background Image */}
-      <div className="absolute inset-0">
+    <section className="relative w-full overflow-hidden bg-[#17391f]">
+      {/* Background Image - Full Bleed */}
+      <div className="absolute inset-0 z-0">
         <Image
           src={INVESTASI_HERO.image}
-          alt="Petani sedang memantau lahan pertanian modern"
+          alt="Petani Smarttani sedang memantau lahan"
           fill
           priority
-          className="object-cover"
+          className="object-cover object-center"
           sizes="100vw"
         />
-        {/* Overlays */}
-        <div className="absolute inset-0 bg-black/40 lg:hidden" />
-        <div className="absolute inset-0 hidden bg-[linear-gradient(90deg,rgba(23,57,31,0.95)_0%,rgba(23,57,31,0.85)_35%,rgba(23,57,31,0.25)_60%,rgba(23,57,31,0.15)_100%)] lg:block" />
+        {/* Overlay Gradient - Sesuai Beranda */}
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,56,27,0.92)_0%,rgba(18,56,27,0.85)_28%,rgba(18,56,27,0.18)_45%,rgba(18,56,27,0.15)_100%)]" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-5 py-16 sm:px-8 md:px-10 lg:px-12 lg:py-24">
-        <div className="grid gap-12 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-          {/* Left Content */}
-          <div className="max-w-2xl text-white">
-            <span className="inline-block rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
-              {INVESTASI_HERO.badge}
-            </span>
-            <h1 className="mt-6 text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
-              {INVESTASI_HERO.heading}
-            </h1>
-            <p className="mt-6 text-lg leading-relaxed text-gray-100/90 lg:max-w-lg">
-              {INVESTASI_HERO.subtext}
-            </p>
+      {/* Content Wrapper - Mengikuti padding Beranda (px-5 sm:px-8 md:px-10 lg:px-12) */}
+      <div className="relative z-10 grid gap-10 px-5 py-10 sm:px-8 md:px-10 lg:grid-cols-[1fr_340px] lg:gap-16 lg:px-12 lg:py-16">
+        
+        {/* Left Content Area - Mepet Kiri */}
+        <div className="max-w-3xl text-white">
+          <span className="text-sm font-semibold tracking-wide text-[#b5d296] md:text-base">
+            {INVESTASI_HERO.badge}
+          </span>
+          <h1 className="mt-4 text-3xl font-extrabold leading-[1.1] sm:text-4xl md:text-5xl lg:text-6xl">
+            {INVESTASI_HERO.heading}
+          </h1>
+          <p className="mt-6 max-w-lg text-sm leading-relaxed text-white sm:text-base md:text-lg">
+            {INVESTASI_HERO.subtext}
+          </p>
 
-            <div className="mt-10 flex flex-wrap gap-4">
-              <Button 
-                size="lg" 
-                className="h-14 rounded-full bg-[#2D6A2D] px-8 text-base font-bold hover:bg-[#235323] transition-colors"
-              >
-                <Search className="mr-2 h-5 w-5" />
-                {INVESTASI_HERO.cta[0].label}
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="h-14 rounded-full border-2 border-white bg-white/10 px-8 text-base font-bold text-white backdrop-blur-sm hover:bg-white hover:text-[#17391f] transition-all"
-              >
-                <PlayCircle className="mr-2 h-5 w-5" />
-                {INVESTASI_HERO.cta[1].label}
-              </Button>
-            </div>
-          </div>
-
-          {/* Right Badges */}
-          <div className="flex flex-col gap-4 lg:items-end">
-            {INVESTASI_HERO.badges.map((badge, index) => {
-              const Icon = icons[index];
-              return (
-                <div
-                  key={badge.label}
-                  className="flex w-full max-w-[340px] items-start gap-4 rounded-2xl border border-white/20 bg-white/10 p-5 backdrop-blur-md transition-all hover:bg-white/20"
-                >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#b5d296] text-[#17391f]">
-                    <Icon className="h-6 w-6" />
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="text-sm font-bold text-white sm:text-base">{badge.label}</h3>
-                    <p className="mt-1 text-xs text-gray-200 sm:text-sm">{badge.sublabel}</p>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Button 
+              size="lg" 
+              className="h-12 rounded-xl bg-[#2D6A2D] px-6 text-sm font-bold text-white shadow-lg hover:bg-[#235323] sm:h-14 sm:px-8 sm:text-base cursor-pointer"
+            >
+              <Search className="mr-2 size-5" strokeWidth={2.5} />
+              {INVESTASI_HERO.cta[0].label}
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="h-12 rounded-xl border-none bg-white px-6 text-sm font-bold text-[#17391f] shadow-lg hover:bg-neutral-100 sm:h-14 sm:px-8 sm:text-base cursor-pointer"
+            >
+              <PlayCircle className="mr-2 size-5 text-[#2D6A2D]" strokeWidth={2.5} />
+              {INVESTASI_HERO.cta[1].label}
+            </Button>
           </div>
         </div>
+
+        {/* Right Area - Badges Mepet Kanan */}
+        <div className="flex flex-col gap-3 lg:justify-end lg:mb-4">
+          {INVESTASI_HERO.badges.map((badge, index) => {
+            const Icon = icons[index];
+            return (
+              <div
+                key={badge.label}
+                className="flex w-full max-w-[340px] items-start gap-4 rounded-2xl bg-white p-4 shadow-xl backdrop-blur-md sm:p-5"
+              >
+                <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#EAF3DE] text-[#2D6A2D] sm:size-12">
+                  <Icon className="size-6 sm:size-7" strokeWidth={2} />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-sm font-extrabold text-[#17391f] sm:text-base">
+                    {badge.label}
+                  </h3>
+                  <p className="mt-0.5 text-[10px] font-medium text-[#5d7a64] sm:text-xs">
+                    {badge.sublabel}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        
       </div>
     </section>
   );
