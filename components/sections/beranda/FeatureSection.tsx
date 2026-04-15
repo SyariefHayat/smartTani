@@ -31,7 +31,7 @@ export default function FeatureSection() {
               <div className="relative size-40 shrink-0">
                 <Image
                   src={FEATURES_IMAGES[index]}
-                  alt={features.title}
+                  alt={`Ikon fitur ${features.title}`}
                   fill
                   className="object-contain"
                   sizes="100%"
@@ -49,6 +49,7 @@ export default function FeatureSection() {
 
               <Link
                 href="#"
+                aria-label={`${features.cta} - ${features.title}`}
                 className="mt-4 group flex items-center gap-1.5 text-xs font-bold text-primary transition-colors hover:text-primary/80"
               >
                 {features.cta}

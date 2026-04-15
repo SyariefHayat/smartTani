@@ -42,6 +42,7 @@ export default function HeroSection() {
                   <Button
                     key={role}
                     size="lg"
+                    aria-label={`${prefix} sebagai ${role}`}
                     className={`h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer ${className}`}
                   >
                     <Icon className="size-7 shrink-0 mr-3" />
