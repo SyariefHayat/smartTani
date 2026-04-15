@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 
 const StatsBarDistributorSection = () => {
   return (
-    <section className="relative px-5 sm:px-8 md:px-10 lg:px-12">
+    <section className="relative px-5 sm:px-8 md:px-10 lg:px-12 py-8">
       <div className="mx-auto max-w-7xl rounded-2xl bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.08)] md:p-8">
         <div className="grid grid-cols-2 gap-y-8 sm:grid-cols-3 md:grid-cols-6 md:gap-y-0">
           {DISTRIBUTOR_STATS_BAR.map((item, index) => {
@@ -23,7 +23,7 @@ const StatsBarDistributorSection = () => {
                 {index < DISTRIBUTOR_STATS_BAR.length - 1 && (
                   <Separator
                     orientation="vertical"
-                    className="absolute -right-px hidden h-12 md:block bg-slate-200"
+                    className="absolute -right-px hidden h-full md:block bg-slate-200"
                   />
                 )}
               </div>
