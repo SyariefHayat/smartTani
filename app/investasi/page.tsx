@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
 import { INVESTASI_META } from "@/constants/investasi";
+import InvestasiHeroSection from "@/components/sections/investasi/InvestasiHeroSection";
+import InvestasiStatsBarSection from "@/components/sections/investasi/InvestasiStatsBarSection";
+import ProjectSection from "@/components/sections/investasi/ProjectSection";
+import WhySection from "@/components/sections/investasi/WhySection";
+import HowSection from "@/components/sections/investasi/HowSection";
+import TestimoniSection from "@/components/sections/investasi/TestimoniSection";
+import CtaSection from "@/components/sections/investasi/CtaSection";
 
 export const metadata: Metadata = {
   title: {
@@ -10,12 +17,14 @@ export const metadata: Metadata = {
 
 export default function InvestasiPage() {
   return (
-    <main className="min-h-screen bg-white">
-      {/* Content will be added per section issue */}
-      <section className="py-20 text-center">
-        <h1 className="text-3xl font-bold text-[#17391f]">Halaman Investasi</h1>
-        <p className="text-gray-500">Halaman ini sedang dalam pengembangan...</p>
-      </section>
+    <main>
+      <InvestasiHeroSection />
+      <InvestasiStatsBarSection />
+      <ProjectSection />
+      <WhySection />
+      <HowSection />
+      <TestimoniSection />
+      <CtaSection />
     </main>
   );
 }
