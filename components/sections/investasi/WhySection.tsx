@@ -1,0 +1,1 @@
+﻿export default function WhySection() { return <section className='py-20 text-center border-b'><div>WhySection (Pending)</div></section>; }

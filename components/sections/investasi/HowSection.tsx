@@ -1,0 +1,1 @@
+﻿export default function HowSection() { return <section className='py-20 text-center border-b'><div>HowSection (Pending)</div></section>; }

@@ -1,0 +1,1 @@
+﻿export default function TestimoniSection() { return <section className='py-20 text-center border-b'><div>TestimoniSection (Pending)</div></section>; }

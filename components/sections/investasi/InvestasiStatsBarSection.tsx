@@ -1,0 +1,1 @@
+﻿export default function InvestasiStatsBarSection() { return <section className='py-20 text-center border-b'><div>InvestasiStatsBarSection (Pending)</div></section>; }

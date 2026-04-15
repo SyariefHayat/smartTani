@@ -1,0 +1,1 @@
+﻿export default function CtaSection() { return <section className='py-20 text-center border-b'><div>CtaSection (Pending)</div></section>; }

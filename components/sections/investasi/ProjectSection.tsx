@@ -1,0 +1,1 @@
+﻿export default function ProjectSection() { return <section className='py-20 text-center border-b'><div>ProjectSection (Pending)</div></section>; }
