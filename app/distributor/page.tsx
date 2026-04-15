@@ -4,8 +4,8 @@ import DistributorHeroSection from "@/components/sections/distributor/Distributo
 import StatsBarDistributorSection from "@/components/sections/distributor/StatsBarDistributorSection";
 import DistributorKeuntunganSection from "@/components/sections/distributor/DistributorKeuntunganSection";
 import DistributorProdukKategoriSection from "@/components/sections/distributor/DistributorProdukKategoriSection";
-import DistributorStepsSection from "@/components/sections/distributor/DistributorStepsSection";
-import DistributorCTABannerSection from "@/components/sections/distributor/DistributorCTABannerSection";
+import DistributorInfoCardsSection from "@/components/sections/distributor/DistributorInfoCardsSection";
+import DistributorSuccessAndCTASection from "@/components/sections/distributor/DistributorSuccessAndCTASection";
 
 export const metadata: Metadata = {
   title: DISTRIBUTOR_META.title,
@@ -19,8 +19,8 @@ export default function DistributorPage() {
       <StatsBarDistributorSection />
       <DistributorKeuntunganSection />
       <DistributorProdukKategoriSection />
-      <DistributorStepsSection />
-      <DistributorCTABannerSection />
+      <DistributorInfoCardsSection />
+      <DistributorSuccessAndCTASection />
     </main>
   );
 }
