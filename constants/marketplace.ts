@@ -114,6 +114,12 @@ export const MARKETPLACE_PRODUK: Record<string, Product[]> = {
   "Rating Tertinggi": SAMPLE_PRODUCTS.sort((a, b) => b.rating - a.rating),
 };
 
+export const MARKETPLACE_TERLARIS_DATA = {
+  heading: "Produk Terlaris",
+  items: SAMPLE_PRODUCTS,
+  cta: "Lihat Semua",
+};
+
 export const MARKETPLACE_KATEGORI_SIDEBAR = [
   { label: "Benih & Bibit", count: "1.250+" },
   { label: "Pupuk & Nutrisi", count: "2.350+" },
@@ -154,14 +160,46 @@ export const MARKETPLACE_FILTER = {
 };
 
 export const MARKETPLACE_KATEGORI_POPULER = [
-  { label: "Benih & Bibit", jumlahProduk: "1.250+" },
-  { label: "Pupuk & Nutrisi", jumlahProduk: "2.350+" },
-  { label: "Pestisida", jumlahProduk: "1.120+" },
-  { label: "Alat & Mesin", jumlahProduk: "980+" },
-  { label: "Irigasi", jumlahProduk: "640+" },
-  { label: "Pakan Ternak", jumlahProduk: "520+" },
-  { label: "Hasil Panen", jumlahProduk: "1.100+" },
-  { label: "Lainnya", sublabel: "Lihat Semua" },
+  {
+    label: "Benih & Bibit",
+    jumlahProduk: "1.250+",
+    image: "/images/distributor/benih-&-bibit.webp",
+  },
+  {
+    label: "Pupuk & Nutrisi",
+    jumlahProduk: "2.350+",
+    image: "/images/distributor/pupuk-&-nutrisi.webp",
+  },
+  {
+    label: "Pestisida",
+    jumlahProduk: "1.120+",
+    image: "/images/distributor/pestisida.webp",
+  },
+  {
+    label: "Alat & Mesin",
+    jumlahProduk: "980+",
+    image: "/images/distributor/alat-&-mesin.webp",
+  },
+  {
+    label: "Irigasi",
+    jumlahProduk: "640+",
+    image: "/images/distributor/irigasi.webp",
+  },
+  {
+    label: "Pakan Ternak",
+    jumlahProduk: "520+",
+    image: "/images/distributor/pakan-ternak.webp",
+  },
+  {
+    label: "Hasil Panen",
+    jumlahProduk: "1.100+",
+    image: "/images/distributor/hasil-panen.webp",
+  },
+  {
+    label: "Lainnya",
+    sublabel: "Lihat Semua",
+    image: "/images/distributor/sidebar.webp",
+  },
 ];
 
 export const MARKETPLACE_TRUST_BAR = [
@@ -171,7 +209,7 @@ export const MARKETPLACE_TRUST_BAR = [
   { label: "Layanan Pelanggan", sublabel: "Siap membantu 24/7" },
 ];
 
-export const MARKETPLACE_ALASAN = {
+export const MARKETPLACE_WHY = {
   heading: "Kenapa Belanja di Marketplace Smarttani?",
   items: [
     {

@@ -16,22 +16,28 @@ export const metadata: Metadata = {
 export default function MarketplacePage() {
   return (
     <main className="min-h-screen bg-white">
-      {/* 1. Hero Banner */}
+      {/* 1. Hero Banner (Full Width) */}
       <MarketplaceHeroSection />
       
-      {/* 2. Trust Bar (Small section after hero) */}
-      <TrustBarSection />
-
-      {/* 3. Kategori Populer (Before layout for wide view) */}
-      <CategoriSection />
-
-      {/* 4. Main Marketplace Layout (Sidebar Filter + Content) */}
+      {/* 2. Main Layout (Sidebar + Main Content) */}
       <MarketplaceLayoutSection>
-        {/* All product content goes here */}
+        {/* Seksi-seksi di bawah ini akan muncul di sisi kanan sidebar */}
+        
+        {/* A. Produk Pilihan (Tab + Grid) */}
         <ProductTabsSection />
+
+        {/* B. Trust Bar (Fitur Layanan) */}
+        <TrustBarSection />
+
+        {/* C. Kategori Populer */}
+        <CategoriSection />
+
+        {/* D. Produk Terlaris */}
         <BestSellingProductSection />
-        <WhyMarketplaceSection />
       </MarketplaceLayoutSection>
+
+      {/* 3. Kenapa Belanja (Full Width - Di bawah sistem sidebar) */}
+      <WhyMarketplaceSection />
     </main>
   );
 }
