@@ -1,10 +1,9 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
-import { DISTRIBUTOR_HERO } from "@/constants/distributor";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { DISTRIBUTOR_HERO } from "@/constants/distributor";
+
 import {
   ShieldCheck,
   Tag,
@@ -17,51 +16,47 @@ const ICON_MAP = [ShieldCheck, Tag, Headphones, UsersRound];
 
 const DistributorHeroSection = () => {
   return (
-    <section className="relative min-h-[600px] flex items-center overflow-hidden bg-[#245a2f] lg:min-h-[700px]">
+    <section className="relative flex min-h-screen md:min-h-[65vh] items-center overflow-hidden bg-[#245a2f] lg:min-h-[80vh] lg:py-0">
       {/* Background Image */}
       <Image
         src={DISTRIBUTOR_HERO.image}
         alt="Distributor Smarttani"
         fill
         priority
-        quality={100}
+        quality={90}
         className="object-cover object-center"
         sizes="100vw"
       />
 
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,56,27,0.95)_0%,rgba(18,56,27,0.85)_35%,rgba(18,56,27,0.4)_60%,rgba(18,56,27,0.2)_100%)]" />
+      {/* Gradient Overlay - Ditingkatkan untuk keterbacaan di Mobile */}
+      <div className="absolute inset-0 bg-linear-to-r from-[#12381b]/95 via-[#12381b]/80 to-transparent lg:bg-[linear-gradient(90deg,rgba(18,56,27,0.95)_0%,rgba(18,56,27,0.85)_35%,rgba(18,56,27,0.4)_45%,rgba(18,56,27,0.2)_100%)]" />
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-12 lg:py-20">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_360px] lg:gap-16">
+      <div className="container-smarttani relative z-10 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_380px] lg:gap-16">
           {/* Left Column: Text Content */}
-          <div className="max-w-3xl text-white">
-            <Badge
-              variant="outline"
-              className="mb-6 rounded-full border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-sm sm:text-sm"
-            >
+          <div className="text-white">
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-white/80 sm:text-xs">
               {DISTRIBUTOR_HERO.badge}
-            </Badge>
+            </p>
 
-            <h1 className="text-display mb-6 text-white drop-shadow-sm">
+            <h1 className="mb-4 text-3xl font-bold leading-[1.1] sm:text-4xl lg:text-5xl xl:text-6xl">
               {DISTRIBUTOR_HERO.heading}
             </h1>
 
-            <p className="text-body-lg mb-10 max-w-xl leading-relaxed text-white/90">
+            <p className="mb-8 max-w-lg text-sm leading-relaxed text-white/90 sm:text-base lg:text-lg">
               {DISTRIBUTOR_HERO.subtext}
             </p>
 
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               {DISTRIBUTOR_HERO.cta.map((cta, index) => (
                 <Button
                   key={index}
-                  variant={index === 0 ? "accent" : "outline"}
                   size="lg"
-                  className={`h-14 rounded-full px-8 text-base font-bold transition-all duration-300 hover:scale-105 active:scale-95 ${
+                  className={`h-12 w-full rounded-md px-8 text-sm font-bold transition-transform active:scale-95 sm:h-14 sm:w-auto sm:text-base cursor-pointer ${
                     index === 1
-                      ? "border-white text-white hover:bg-white/10"
-                      : ""
+                      ? "bg-white text-[#245a2f] hover:bg-white/90"
+                      : "bg-primary hover:bg-primary/90"
                   }`}
                 >
                   {index === 1 && <Download className="mr-2 size-5" />}
@@ -72,23 +67,23 @@ const DistributorHeroSection = () => {
           </div>
 
           {/* Right Column: Advantage Cards */}
-          <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:flex lg:flex-col lg:gap-4">
             {DISTRIBUTOR_HERO.advantages.map((advantage, index) => {
               const Icon = ICON_MAP[index] || ShieldCheck;
               return (
                 <div
                   key={index}
-                  className="group rounded-2xl border border-white/60 bg-white p-5 shadow-[0_18px_40px_rgba(9,35,17,0.25)] backdrop-blur-md transition-all duration-300 hover:translate-x-2"
+                  className="group rounded-xl border border-white/20 bg-white/95 p-4 shadow-xl backdrop-blur-sm transition-all duration-300 hover:bg-white lg:hover:translate-x-2"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
-                      <Icon className="size-6 text-primary" />
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white sm:size-12">
+                      <Icon className="size-5 sm:size-6" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="mb-0.5 text-[10px] font-bold uppercase tracking-widest text-[#5d7a64] sm:text-xs">
+                      <p className="mb-0.5 text-[9px] font-bold uppercase tracking-wider text-primary/70 sm:text-[10px]">
                         {advantage.label}
                       </p>
-                      <p className="text-sm font-extrabold leading-tight text-[#17391f] sm:text-base">
+                      <p className="truncate text-xs font-extrabold text-[#17391f] sm:text-sm md:whitespace-normal">
                         {advantage.sublabel}
                       </p>
                     </div>
