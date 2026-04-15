@@ -1,3 +1,12 @@
+import {
+  UsersRound,
+  Map,
+  Package,
+  Smile,
+  Banknote,
+  TrendingUp,
+} from "lucide-react";
+
 export const DISTRIBUTOR_META = {
   title:
     "Program Distributor Smarttani — Bersama Tumbuh, Bersama Membangun Pertanian Indonesia",
@@ -27,12 +36,12 @@ export const DISTRIBUTOR_MAP = {
 };
 
 export const DISTRIBUTOR_STATS_BAR = [
-  { value: "520+", label: "Distributor Aktif" },
-  { value: "34", label: "Provinsi Terjangkau" },
-  { value: "1.250+", label: "Produk Tersedia" },
-  { value: "98,6%", label: "Kepuasan Mitra" },
-  { value: "Rp320 Miliar", label: "Total Transaksi 2024" },
-  { label: "Tumbuh Bersama", sublabel: "Membangun Pertanian Negeri" },
+  { value: "520+", label: "Distributor Aktif", icon: UsersRound },
+  { value: "34", label: "Provinsi Terjangkau", icon: Map },
+  { value: "1.250+", label: "Produk Tersedia", icon: Package },
+  { value: "98,6%", label: "Kepuasan Mitra", icon: Smile },
+  { value: "Rp320 Miliar", label: "Total Transaksi 2024", icon: Banknote },
+  { value: "Tumbuh", label: "Bersama Membangun Negeri", icon: TrendingUp },
 ];
 
 export const DISTRIBUTOR_KEUNTUNGAN = {
