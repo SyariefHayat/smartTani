@@ -7,7 +7,7 @@ export default function InvestasiHeroSection() {
   const icons = [ShieldCheck, TrendingUp, Sprout];
 
   return (
-    <section className="relative w-full overflow-hidden bg-[#17391f]">
+    <section className="relative w-full overflow-hidden bg-[#17391f] pb-8 md:pb-10">
       {/* Background Image - Full Bleed */}
       <div className="absolute inset-0 z-0">
         <Image
