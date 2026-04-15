@@ -1,3 +1,5 @@
+import { Product } from "./types";
+
 export const MARKETPLACE_META = {
   title:
     "Marketplace Smarttani — Semua Kebutuhan Pertanian dalam Satu Platform",
@@ -23,6 +25,94 @@ export const MARKETPLACE_TABS = [
   "Promo",
   "Rating Tertinggi",
 ];
+
+const SAMPLE_PRODUCTS: Product[] = [
+  {
+    id: "1",
+    name: "Benih Padi Inpari 32 5 Kg",
+    description: "Benih berkualitas, hasil tinggi, tahan penyakit.",
+    price: 95000,
+    originalPrice: 110000,
+    image: "/images/marketplace/benih-padi.webp",
+    rating: 4.8,
+    terjual: "1.250+",
+    isPromo: true,
+    storeType: "Official Store",
+    storeName: "Official Store",
+  },
+  {
+    id: "2",
+    name: "Pupuk NPK Mutiara 16-16-16 - 50 Kg",
+    description: "Nutrisi seimbang untuk pertumbuhan optimal.",
+    price: 210000,
+    originalPrice: 250000,
+    image: "/images/marketplace/pupuk-npk-mutiara.webp",
+    rating: 4.9,
+    terjual: "950+",
+    isPromo: true,
+    storeType: "Official Store",
+    storeName: "Official Store",
+  },
+  {
+    id: "3",
+    name: "Pestisida Amistar 250 SC - 1 Liter",
+    description: "Ampuh basmi jamur, aman untuk tanaman.",
+    price: 175000,
+    originalPrice: 200000,
+    image: "/images/marketplace/pestisida-amistar.webp",
+    rating: 4.7,
+    terjual: "780+",
+    isPromo: true,
+    storeType: "Official Store",
+    storeName: "Official Store",
+  },
+  {
+    id: "4",
+    name: "Traktor Roda 4 25 HP",
+    description: "Tangguh di segala medan, irit bahan bakar.",
+    price: 75500000,
+    originalPrice: 82000000,
+    image: "/images/marketplace/traktor-roda-4.webp",
+    rating: 4.9,
+    terjual: "120+",
+    isPromo: true,
+    storeType: "Distributor Resmi",
+    storeName: "Distributor Resmi",
+  },
+  {
+    id: "5",
+    name: "Alat Semprot Elektrik 16L",
+    description: "Praktis, hemat tenaga, hasil semprotan merata.",
+    price: 350000,
+    originalPrice: 450000,
+    image: "/images/marketplace/alat-semprot.webp",
+    rating: 4.6,
+    terjual: "1.100+",
+    isPromo: true,
+    storeType: "Official Store",
+    storeName: "Official Store",
+  },
+  {
+    id: "6",
+    name: "Pipa Irigasi PVC 3 Inch - 4 Meter",
+    description: "Kuat, tahan lama, cocok untuk sistem irigasi.",
+    price: 125000,
+    originalPrice: 150000,
+    image: "/images/marketplace/pipa-pvc.webp",
+    rating: 4.7,
+    terjual: "600+",
+    isPromo: true,
+    storeType: "Official Store",
+    storeName: "Official Store",
+  },
+];
+
+export const MARKETPLACE_PRODUK: Record<string, Product[]> = {
+  Terlaris: SAMPLE_PRODUCTS,
+  Terbaru: SAMPLE_PRODUCTS.slice().reverse(),
+  Promo: SAMPLE_PRODUCTS.filter((p) => p.isPromo),
+  "Rating Tertinggi": SAMPLE_PRODUCTS.sort((a, b) => b.rating - a.rating),
+};
 
 export const MARKETPLACE_KATEGORI_SIDEBAR = [
   { label: "Benih & Bibit", count: "1.250+" },
