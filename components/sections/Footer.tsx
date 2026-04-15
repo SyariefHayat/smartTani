@@ -46,7 +46,7 @@ export default function Footer() {
             <Link href="/" className="inline-block">
               <div className="relative h-26 w-65 md:h-46 md:w-85">
                 <Image
-                  src="/images/home/logo.webp"
+                  src="/images/home/logo.png"
                   alt="Logo Smarttani Indonesia"
                   className="object-contain object-left"
                   sizes="100%"
