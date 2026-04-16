@@ -20,11 +20,11 @@ export default function TestDesignPage() {
       <section className="space-y-6">
         <h2 className="text-heading-1 underline decoration-primary/30">1. Typography Scale</h2>
         <div className="space-y-4">
-          <p className="text-display">text-display: Plus Jakarta Sans 6xl</p>
-          <p className="text-heading-1">text-heading-1: Plus Jakarta Sans 4xl</p>
-          <p className="text-heading-2">text-heading-2: Plus Jakarta Sans 3xl</p>
-          <p className="text-heading-3">text-heading-3: Plus Jakarta Sans 2xl</p>
-          <p className="text-body-lg">text-body-lg: Font badan paragraf besar (18px/20px)</p>
+          <p className="text-display">text-display: Plus Jakarta Sans 5xl (Bold)</p>
+          <p className="text-heading-1">text-heading-1: Plus Jakarta Sans 4xl (Bold)</p>
+          <p className="text-heading-2">text-heading-2: Plus Jakarta Sans 3xl (Semibold)</p>
+          <p className="text-heading-3">text-heading-3: Plus Jakarta Sans 2xl (Semibold)</p>
+          <p className="text-body-lg">text-body-lg: Font badan paragraf besar (16px/18px)</p>
           <p className="text-body">text-body: Font badan paragraf standar (16px)</p>
           <p className="text-body-sm">text-body-sm: Font badan paragraf kecil (14px)</p>
           <p className="text-caption">text-caption: Teks keterangan/label sangat kecil (12px)</p>

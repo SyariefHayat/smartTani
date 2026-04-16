@@ -1,43 +1,43 @@
-import React from "react";
-import { ABOUT_CTA_BANNER } from "@/constants/about";
 import { Button } from "@/components/ui/button";
-import { Phone, ArrowRight } from "lucide-react";
+import { ABOUT_CTA_BANNER } from "@/constants/about";
+import Image from "next/image";
 
-const CTABannerTentangSection = () => {
+export default function CTABannerTentangSection() {
   return (
-    <section className="py-12 md:py-16">
-      <div className="container-smarttani">
-        <div className="relative overflow-hidden rounded-3xl bg-cta-gradient p-8 md:p-12 lg:p-16 text-white text-center md:text-left">
-          {/* Decorative circles */}
-          <div className="absolute -top-24 -right-24 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-primary-dark/20 rounded-full blur-3xl" />
+    <section className="pb-8 pt-8 bg-white">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
+        <div className="relative overflow-hidden rounded-2xl bg-[#1a4d2e] px-8 py-8 md:px-16">
+          {/* Background Image */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/images/home/cta-background-2.webp"
+              alt="CTA Background"
+              fill
+              className="object-cover object-center"
+            />
+          </div>
 
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="max-w-2xl">
-              <h2 className="text-2xl md:text-4xl font-bold mb-4">
+          <div className="relative z-10 flex flex-col items-center justify-between gap-10 lg:flex-row lg:gap-16">
+            {/* Text Content */}
+            <div className="max-w-2xl text-center lg:text-left">
+              <h2 className="text-xl font-bold leading-tight text-white sm:text-2xl lg:text-3xl">
                 {ABOUT_CTA_BANNER.heading}
               </h2>
-              <p className="text-white/80 text-sm md:text-base lg:text-lg">
+              <p className="mt-3 text-sm font-medium text-[#eef8e5]/80 md:text-base">
                 {ABOUT_CTA_BANNER.subtext}
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center md:justify-end gap-4 shrink-0">
+            {/* Actions */}
+            <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row lg:shrink-0">
               <Button
-                size="lg"
                 variant="outline"
-                className="rounded-full px-8 border-white text-white hover:bg-white hover:text-primary h-12 md:h-14 font-semibold transition-all"
+                className="h-12 rounded-lg border-white/40 bg-transparent px-8 text-sm font-semibold text-white hover:bg-white/10 hover:text-white cursor-pointer"
               >
-                <Phone className="mr-2 h-5 w-5" />
-                {ABOUT_CTA_BANNER.cta[0].label}
+                {ABOUT_CTA_BANNER.cta[0]?.label}
               </Button>
-              <Button
-                size="lg"
-                variant="accent"
-                className="rounded-full px-8 h-12 md:h-14 font-bold text-white shadow-lg transition-all hover:scale-105"
-              >
-                {ABOUT_CTA_BANNER.cta[1].label}
-                <ArrowRight className="ml-2 h-5 w-5" />
+              <Button className="h-12 rounded-lg border-none bg-[#FFB21C] px-8 text-sm font-bold text-white hover:bg-[#FFB21C]/90 cursor-pointer">
+                {ABOUT_CTA_BANNER.cta[1]?.label}
               </Button>
             </div>
           </div>
@@ -45,6 +45,4 @@ const CTABannerTentangSection = () => {
       </div>
     </section>
   );
-};
-
-export default CTABannerTentangSection;
+}

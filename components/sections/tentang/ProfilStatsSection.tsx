@@ -1,12 +1,14 @@
 import React from "react";
-import { ABOUT_DESKRIPSI, ABOUT_STATS_BAR } from "@/constants/about";
-import { Button } from "@/components/ui/button";
+import { ABOUT_STATS_BAR } from "@/constants/about";
+import { StatItem } from "../beranda/StatItem";
+import { Separator } from "@/components/ui/separator";
 import {
   CalendarDays,
   Users,
   Store,
   MapPin,
   GraduationCap,
+  Package,
 } from "lucide-react";
 
 const STAT_ICONS = [
@@ -15,53 +17,60 @@ const STAT_ICONS = [
   Store,
   MapPin,
   GraduationCap,
+  Package,
 ];
 
 const ProfilStatsSection = () => {
-  return (
-    <section className="section-padding bg-white">
-      <div className="container-smarttani">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          {/* Description Content */}
-          <div className="lg:col-span-5">
-            <h2 className="text-heading-2 text-foreground mb-6">
-              {ABOUT_DESKRIPSI.heading}
-            </h2>
-            <p className="text-body text-muted-foreground mb-8 text-justify">
-              {ABOUT_DESKRIPSI.content}
-            </p>
-            <Button
-              variant="default"
-              className="bg-primary hover:bg-primary-dark rounded-lg font-semibold px-6"
-            >
-              {ABOUT_DESKRIPSI.cta}
-            </Button>
-          </div>
+  const total = ABOUT_STATS_BAR.length;
 
-          {/* Stats Grid */}
-          <div className="lg:col-span-7">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-              {ABOUT_STATS_BAR.map((stat, index) => {
-                const Icon = STAT_ICONS[index] || Users;
-                return (
-                  <div
-                    key={stat.label}
-                    className="flex flex-col items-center p-4 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow text-center"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center mb-3">
-                      <Icon className="w-5 h-5 text-primary" />
-                    </div>
-                    <div className="text-xl font-bold text-foreground mb-1">
-                      {stat.value}
-                    </div>
-                    <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider leading-tight">
-                      {stat.label}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+  return (
+    <section className="relative -mt-12 z-20 px-4 sm:px-6 md:px-10 lg:px-12 pb-8">
+      <div className="mx-auto max-w-7xl rounded-2xl bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.08)] md:p-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-y-8 lg:gap-y-0">
+          {ABOUT_STATS_BAR.map((item, index) => {
+            const Icon = STAT_ICONS[index] || Users;
+
+            const showDesktopSep = index < total - 1;
+
+            const colPosTablet = index % 3;
+            const showTabletSep = colPosTablet !== 2 && index < total - 1;
+
+            const colPosMobile = index % 2;
+            const showMobileSep = colPosMobile !== 1 && index < total - 1;
+
+            return (
+              <div
+                key={item.label}
+                className="relative flex items-center justify-center py-2 lg:py-0"
+              >
+                <StatItem icon={Icon} value={item.value} label={item.label} />
+
+                {/* Separator vertikal — desktop */}
+                {showDesktopSep && (
+                  <Separator
+                    orientation="vertical"
+                    className="absolute -right-px hidden lg:block h-full bg-slate-200"
+                  />
+                )}
+
+                {/* Separator vertikal — tablet */}
+                {showTabletSep && (
+                  <Separator
+                    orientation="vertical"
+                    className="absolute -right-px hidden sm:block lg:hidden h-full bg-slate-200"
+                  />
+                )}
+
+                {/* Separator vertikal — mobile */}
+                {showMobileSep && (
+                  <Separator
+                    orientation="vertical"
+                    className="absolute -right-px block sm:hidden h-full bg-slate-200"
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
