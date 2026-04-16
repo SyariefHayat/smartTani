@@ -12,13 +12,8 @@ export const metadata: Metadata = {
 export default function KontakPage() {
   return (
     <main className="min-h-screen bg-white">
-      {/* Hero Section */}
       <KontakHeroSection />
-
-      {/* Middle Section: Info & Form */}
       <KontakMiddleSection />
-
-      {/* Map Section */}
       <KontakLokasiSection />
     </main>
   );

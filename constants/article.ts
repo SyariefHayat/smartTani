@@ -53,7 +53,7 @@ export const ARTICLE_DUMMY = [
     penulis: {
       nama: "Dr. Ir. Budi Santoso",
       gelar: "Pakar Budidaya Tanaman",
-      avatar: "/images/article/avatar-budi.webp",
+      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
     },
   },
   {
@@ -67,7 +67,7 @@ export const ARTICLE_DUMMY = [
     penulis: {
       nama: "Fajar Nugroho, M.Eng",
       gelar: "Praktisi Pertanian",
-      avatar: "/images/article/avatar-fajar.webp",
+      avatar: "https://randomuser.me/api/portraits/men/2.jpg",
     },
   },
   {
@@ -81,7 +81,7 @@ export const ARTICLE_DUMMY = [
     penulis: {
       nama: "Drh. Andi Wijaya",
       gelar: "Dokter Hewan",
-      avatar: "/images/article/avatar-andi.webp",
+      avatar: "https://randomuser.me/api/portraits/men/3.jpg",
     },
   },
   {
@@ -95,7 +95,7 @@ export const ARTICLE_DUMMY = [
     penulis: {
       nama: "Siti Rahmawati, SP",
       gelar: "Praktisi Pasca Panen",
-      avatar: "/images/article/avatar-siti.webp",
+      avatar: "https://randomuser.me/api/portraits/women/1.jpg",
     },
   },
   {
@@ -109,7 +109,7 @@ export const ARTICLE_DUMMY = [
     penulis: {
       nama: "Dr. Rina Yuliani, SP",
       gelar: "Ahli Kesuburan Tanah",
-      avatar: "/images/article/avatar-rina.webp",
+      avatar: "https://randomuser.me/api/portraits/women/2.jpg",
     },
   },
   {
@@ -123,7 +123,7 @@ export const ARTICLE_DUMMY = [
     penulis: {
       nama: "Rudi Hartono, MM",
       gelar: "Konsultan Agribisnis",
-      avatar: "/images/article/avatar-rudi.webp",
+      avatar: "https://randomuser.me/api/portraits/men/4.jpg",
     },
   },
   {
@@ -137,7 +137,7 @@ export const ARTICLE_DUMMY = [
     penulis: {
       nama: "Tim Smarttani",
       gelar: "Redaksi",
-      avatar: "/images/article/avatar-redaksi.webp",
+      avatar: "https://randomuser.me/api/portraits/lego/1.jpg",
     },
   },
   {
@@ -151,7 +151,7 @@ export const ARTICLE_DUMMY = [
     penulis: {
       nama: "Dewi Lestari",
       gelar: "Redaksi Smarttani",
-      avatar: "/images/article/avatar-dewi.webp",
+      avatar: "https://randomuser.me/api/portraits/women/3.jpg",
     },
   },
 ];

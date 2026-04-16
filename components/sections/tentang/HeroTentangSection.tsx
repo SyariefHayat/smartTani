@@ -6,7 +6,7 @@ import { ArrowRight, Phone } from "lucide-react";
 
 const HeroTentangSection = () => {
   return (
-    <section className="relative min-h-[60vh] w-full overflow-hidden flex items-end md:items-center">
+    <section className="relative min-h-[500px] lg:min-h-[650px] w-full overflow-hidden flex items-center">
       {/* Background Image */}
       <Image
         src={ABOUT_HERO.backgroundImage}
@@ -20,20 +20,30 @@ const HeroTentangSection = () => {
       />
 
       {/* Dark overlay for text readability */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-primary-dark via-primary-dark/90 to-primary-dark/20 lg:via-primary-dark/60 lg:to-transparent" />
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-16 md:py-24">
-        <div className="max-w-xl text-white">
-          <h1 className="text-display mb-6 leading-tight">
-            {ABOUT_HERO.heading}
-          </h1>
+      <div className="container-smarttani relative z-10 py-16 lg:py-24">
+        <div className="max-w-xl">
+          {/* Badge */}
+          <div className="inline-block rounded-lg bg-primary-medium/80 backdrop-blur-sm px-4 py-2 text-caption font-bold text-white md:text-body-sm">
+            {ABOUT_HERO.badge}
+          </div>
 
-          <p className="text-body-lg mb-10 text-white/90 max-w-2xl">
+          {/* Headings */}
+          <div className="mt-8 space-y-2">
+            <h1 className="text-display text-white">
+              {ABOUT_HERO.heading}
+            </h1>
+          </div>
+
+          {/* Subtext */}
+          <p className="mt-8 max-w-2xl text-body-lg text-white/85">
             {ABOUT_HERO.subtext}
           </p>
 
-          <div className="flex flex-wrap gap-4">
+          {/* CTA Buttons */}
+          <div className="mt-10 flex flex-wrap gap-4">
             <Button
               size="lg"
               className="rounded-full px-8 h-12 md:h-14 text-base font-semibold transition-all hover:scale-105"

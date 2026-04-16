@@ -11,7 +11,7 @@ const ICON_MAP = [ShieldCheck, Zap, RotateCcw];
 
 const ArtikelHeroSection = () => {
   return (
-    <section className="relative min-h-[500px] flex items-center overflow-hidden bg-[#1e3a1f]">
+    <section className="relative min-h-[500px] lg:min-h-[650px] flex items-center overflow-hidden">
       {/* Background Image */}
       <Image
         src={ARTICLE_HERO.image}
@@ -24,43 +24,38 @@ const ArtikelHeroSection = () => {
       />
 
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#1e3a1f] via-[#1e3a1f]/80 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-primary-dark via-primary-dark/90 to-primary-dark/20 lg:via-primary-dark/60 lg:to-transparent" />
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 px-4 py-16 sm:px-6 lg:px-8">
+      <div className="container-smarttani relative z-10 py-16 lg:py-24">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center">
 
           {/* Left Column: Text & Search */}
           <div className="lg:col-span-8">
             {/* Badge */}
-            <div className="mb-6 inline-flex items-center gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-yellow-400 text-[#1e3a1f]">
-                <ShieldCheck className="h-4 w-4" />
-              </div>
-              <span className="text-sm font-black tracking-tight text-white uppercase">
-                {ARTICLE_HERO.badge}
-              </span>
+            <div className="mb-6 inline-block rounded-lg bg-primary-medium/80 backdrop-blur-sm px-4 py-2 text-caption font-bold text-white md:text-body-sm">
+              {ARTICLE_HERO.badge}
             </div>
 
-            <h1 className="text-display mb-6 text-white max-w-2xl">
+            <h1 className="text-display text-white mb-6 max-w-2xl">
               {ARTICLE_HERO.heading}
             </h1>
 
-            <p className="text-body-lg mb-10 max-w-xl text-white/80">
+            <p className="text-body-lg mb-10 max-w-xl text-white/85">
               {ARTICLE_HERO.subtext}
             </p>
 
             {/* Search Bar */}
             <div className="flex max-w-xl items-center gap-2 rounded-xl bg-white p-1.5 shadow-2xl">
               <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#94a3b8]" />
+                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   type="text"
                   placeholder={ARTICLE_HERO.searchPlaceholder}
-                  className="h-12 border-none bg-transparent pl-12 text-sm font-bold text-[#1e3a1f] placeholder:text-[#94a3b8] focus-visible:ring-0"
+                  className="h-12 border-none bg-transparent pl-12 text-body-sm font-semibold text-foreground placeholder:text-muted-foreground focus-visible:ring-0"
                 />
               </div>
-              <Button className="h-12 bg-[#2d7a3a] px-8 font-black text-white transition-all hover:bg-[#1e3a1f]">
+              <Button className="h-12 bg-primary px-8 font-bold !text-white transition-all hover:bg-primary-dark">
                 {ARTICLE_HERO.searchCta}
               </Button>
             </div>
@@ -74,14 +69,14 @@ const ArtikelHeroSection = () => {
                   const Icon = ICON_MAP[index] || ShieldCheck;
                   return (
                     <div key={index} className="flex items-start gap-4">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#e1f5ee] text-[#2d7a3a]">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-light text-primary">
                         <Icon className="h-5 w-5" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-black text-[#1e3a1f]">
+                        <h4 className="text-body-sm font-bold text-foreground">
                           {highlight.title}
                         </h4>
-                        <p className="mt-1 text-[11px] font-bold text-[#64748b] leading-relaxed">
+                        <p className="mt-1 text-caption text-muted-foreground">
                           {highlight.description}
                         </p>
                       </div>

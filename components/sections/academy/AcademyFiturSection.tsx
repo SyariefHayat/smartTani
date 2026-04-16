@@ -3,37 +3,37 @@
 import React from "react";
 import Link from "next/link";
 import { ACADEMY_KEUNGGULAN } from "@/constants/sitani-academy";
-import { 
-  BookOpen, 
-  Clock, 
-  Award, 
-  Users, 
+import {
+  BookOpen,
+  Clock,
+  Award,
+  Users,
   LifeBuoy,
-  ChevronRight 
+  ChevronRight
 } from "lucide-react";
 
 const ACADEMY_FEATURES_ICONS = [BookOpen, Clock, Award, Users, LifeBuoy];
 const ACADEMY_FEATURES_BG_COLORS = [
-  "bg-[#EAF3DE]", // Hijau Muda
-  "bg-[#FAEEDA]", // Jingga Muda
-  "bg-[#E6F1FB]", // Biru Muda
-  "bg-[#F3E8FB]", // Ungu Muda
-  "bg-[#F1EFE8]", // Abu-abu Muda
+  "bg-primary-light",
+  "bg-amber-50",
+  "bg-blue-50",
+  "bg-purple-50",
+  "bg-slate-100",
 ];
 
 const AcademyFiturSection = () => {
   return (
-    <section className="py-16 md:py-24">
-      <div className="container-smarttani mx-auto px-5 sm:px-8 md:px-10 lg:px-12">
-        
+    <section className="section-padding bg-white">
+      <div className="container-smarttani">
+
         {/* Header */}
         <div className="mb-16 flex flex-col items-center text-center">
-          <h2 className="text-3xl font-bold text-[#17391f] md:text-4xl">
+          <h2 className="section-title text-foreground">
             Keunggulan Belajar di SiTani Academy
           </h2>
           <div className="mt-4 h-1.5 w-20 rounded-full bg-primary" />
-          <p className="mt-6 max-w-2xl text-base font-medium text-[#5d7a64] md:text-lg">
-            Kami menyediakan ekosistem pembelajaran yang dirancang khusus untuk 
+          <p className="mt-6 max-w-2xl text-body-lg text-muted-foreground">
+            Kami menyediakan ekosistem pembelajaran yang dirancang khusus untuk
             meningkatkan kompetensi dan hasil panen petani Indonesia.
           </p>
         </div>
@@ -55,17 +55,17 @@ const AcademyFiturSection = () => {
                 </div>
 
                 <div className="flex flex-col flex-1 items-center">
-                  <h3 className="mb-4 text-xl font-bold text-[#17391f]">
+                  <h3 className="mb-4 text-heading-3 text-foreground">
                     {feature.title}
                   </h3>
-                  <p className="text-sm leading-relaxed text-[#5d7a64]">
+                  <p className="text-body-sm text-muted-foreground">
                     {feature.description}
                   </p>
                 </div>
 
                 <Link
                   href="#"
-                  className="mt-6 group flex items-center gap-1.5 text-xs font-bold text-primary transition-colors hover:text-primary/80 uppercase tracking-wider"
+                  className="mt-6 group flex items-center gap-1.5 text-caption font-bold text-primary transition-colors hover:text-primary/80 uppercase tracking-wider"
                 >
                   Pelajari Selengkapnya
                   <ChevronRight className="size-3.5 transition-transform group-hover:translate-x-1" />

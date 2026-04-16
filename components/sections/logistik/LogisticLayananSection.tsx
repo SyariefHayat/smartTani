@@ -8,20 +8,20 @@ import { ArrowRight } from "lucide-react";
 
 const LogisticLayananSection = () => {
   return (
-    <section className="py-20 bg-white">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
+    <section className="section-padding bg-white">
+      <div className="container-smarttani">
         {/* Header */}
         <div className="mb-16 flex flex-col items-center text-center">
-          <h2 className="text-3xl font-bold text-[#17391f] md:text-4xl">
+          <h2 className="section-title text-foreground">
             {LOGISTIC_LAYANAN.heading}
           </h2>
-          <p className="mt-4 max-w-2xl text-base font-medium text-[#5d7a64] md:text-lg">
+          <p className="mt-4 max-w-2xl text-body-lg text-muted-foreground">
             {LOGISTIC_LAYANAN.subtext}
           </p>
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {LOGISTIC_LAYANAN.items.map((item, index) => (
             <div
               key={index}
@@ -41,16 +41,16 @@ const LogisticLayananSection = () => {
 
               {/* Content */}
               <div className="flex flex-1 flex-col p-6 sm:p-8">
-                <h3 className="mb-3 text-xl font-bold text-[#17391f] group-hover:text-primary transition-colors">
+                <h3 className="mb-3 text-heading-3 text-foreground group-hover:text-primary transition-colors">
                   {item.title}
                 </h3>
-                <p className="mb-6 flex-1 text-sm leading-relaxed text-[#5d7a64] sm:text-base">
+                <p className="mb-6 flex-1 text-body-sm text-muted-foreground sm:text-body">
                   {item.description}
                 </p>
 
                 <Link
                   href="#"
-                  className="inline-flex items-center gap-2 text-sm font-bold text-primary transition-colors hover:text-primary/80"
+                  className="inline-flex items-center gap-2 text-body-sm font-bold text-primary transition-colors hover:text-primary/80"
                 >
                   {item.cta}
                 </Link>

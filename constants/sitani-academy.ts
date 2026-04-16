@@ -211,14 +211,14 @@ export const ACADEMY_INSTRUKTUR = {
     {
       nama: "Dr. Ir. Budi Santoso",
       gelar: "Pakar Agronomi",
-      image: "/images/academy/instruktur-budi.webp",
+      image: "https://randomuser.me/api/portraits/men/32.jpg",
       rating: 4.9,
       jumlahPeserta: 2100,
     },
     {
       nama: "Drh. Andi Wijaya",
       gelar: "Dokter Hewan",
-      image: "/images/academy/instruktur-andi.webp",
+      image: "https://randomuser.me/api/portraits/men/45.jpg",
       rating: 4.9,
       jumlahPeserta: 1750,
     },
@@ -232,7 +232,7 @@ export const ACADEMY_TESTIMONI = {
     {
       nama: "Siti Aminah",
       role: "Petani Padi, Jawa Barat",
-      avatar: "/images/about/pimpinan-siti-aminah.jpeg",
+      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
       rating: 5,
       quote:
         "Materi sangat praktis dan mudah dipahami. Setelah ikut kursus budidaya padi, hasil panen saya meningkat 30% dan biaya pupuk jadi lebih efisien. Terima kasih SiTani Academy!",
@@ -240,7 +240,7 @@ export const ACADEMY_TESTIMONI = {
     {
       nama: "Budi Santoso",
       role: "Petani Jagung, Jawa Timur",
-      avatar: "/images/about/pimpinan-budi-santoso.jpeg",
+      avatar: "https://randomuser.me/api/portraits/men/22.jpg",
       rating: 5,
       quote:
         "Dulu saya bertani hanya berdasarkan kebiasaan. Sekarang saya paham cara mengelola tanah yang benar. Komunitasnya juga sangat membantu untuk berbagi kendala di lapangan.",
@@ -248,7 +248,7 @@ export const ACADEMY_TESTIMONI = {
     {
       nama: "Arif Wijaya",
       role: "Petani Hortikultura, Jawa Tengah",
-      avatar: "/images/about/pimpinan-arif-wijaya.jpeg",
+      avatar: "https://randomuser.me/api/portraits/men/91.jpg",
       rating: 4,
       quote:
         "Belajar hidroponik dari nol ternyata seru dan menjanjikan. Instrukturnya sabar membimbing sampai saya benar-benar bisa panen sendiri di pekarangan rumah.",

@@ -1,60 +1,57 @@
 import { KONTAK_LOKASI } from "@/constants/kontak";
 import { CheckCircle2, ExternalLink } from "lucide-react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
 export default function KontakLokasiSection() {
   return (
-    <section className="bg-slate-50 py-16 md:py-24">
+    <section className="pb-10 md:pb-14">
       <div className="container-smarttani">
-        {/* Single Unified Card */}
-        <div className="group relative overflow-hidden rounded-[2.5rem] bg-white shadow-2xl shadow-slate-200/60 transition-all hover:shadow-green-900/5">
-          {/* Map Image as Full Background */}
-          <div className="absolute inset-0 z-0">
-            <Image
-              src={KONTAK_LOKASI.mapImage}
-              alt="Lokasi Smarttani"
-              fill
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            {/* Gradient Overlay for Text Readability */}
-            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/20 lg:via-white/80 lg:to-transparent" />
-          </div>
+        <div className="group relative overflow-hidden rounded-3xl border border-slate-200 shadow-lg transition-all hover:shadow-xl min-h-[480px] md:min-h-[520px]">
 
-          <div className="relative z-10 grid lg:grid-cols-2">
-            {/* Left Side Content */}
-            <div className="p-8 md:p-12 lg:p-16">
-              <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl lg:text-4xl">
+          {/* Google Maps Full Background */}
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d31679.56831668499!2d112.49909760000001!3d-7.015628799999981!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sid!4v1776331594170!5m2!1sen!2sid"
+            className="absolute inset-0 h-full w-full"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+
+          {/* Floating Content Card */}
+          <div className="absolute inset-0 z-10 flex items-center p-6 md:p-10 lg:p-14">
+            <div className="w-full max-w-sm rounded-2xl border border-slate-200/80 bg-[#F8FAFC] p-8 shadow-xl md:p-10">
+
+              <h2 className="text-heading-1 font-bold text-foreground">
                 {KONTAK_LOKASI.heading}
               </h2>
-              <p className="mt-4 text-sm font-medium text-gray-500 md:text-base">
+              <p className="mt-3 text-body-sm text-muted-foreground md:text-body">
                 {KONTAK_LOKASI.subtext}
               </p>
 
-              <div className="mt-8 space-y-4">
+              <div className="mt-6 space-y-3">
                 {KONTAK_LOKASI.bullets.map((bullet) => (
                   <div key={bullet} className="flex items-center gap-3">
-                    <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[#EAF3DE]">
-                      <CheckCircle2 className="size-4 text-[#2D6A2D]" />
+                    <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary-light">
+                      <CheckCircle2 className="size-4 text-primary" />
                     </div>
-                    <span className="text-sm font-bold text-[#17391f] md:text-base">
+                    <span className="text-body-sm font-semibold text-foreground md:text-body">
                       {bullet}
                     </span>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-10">
-                <Button className="rounded-xl bg-[#2D6A2D] px-8 py-6 text-sm font-bold text-white hover:bg-[#235323] md:text-base shadow-lg shadow-green-100 transition-all active:scale-[0.98]">
+              <div className="mt-8">
+                <Button className="w-full rounded-xl bg-primary px-8 py-6 text-body-sm font-bold text-white hover:bg-primary-dark shadow-lg shadow-primary/10 transition-all hover:scale-[1.02] active:scale-[0.98]">
                   {KONTAK_LOKASI.button}
                   <ExternalLink className="ml-2 size-5" />
                 </Button>
               </div>
-            </div>
 
-            {/* Right Side Spacer (Visual Balance) */}
-            <div className="min-h-[250px] lg:min-h-full" />
+            </div>
           </div>
+
         </div>
       </div>
     </section>

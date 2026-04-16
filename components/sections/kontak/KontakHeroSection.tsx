@@ -17,28 +17,28 @@ export default function KontakHeroSection() {
           priority
         />
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#17391f] via-[#17391f]/90 to-[#17391f]/20 lg:via-[#17391f]/60 lg:to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-dark via-primary-dark/90 to-primary-dark/20 lg:via-primary-dark/60 lg:to-transparent" />
       </div>
 
       <div className="container-smarttani relative z-10 py-16 lg:py-24">
         <div className="max-w-4xl">
           {/* Badge */}
-          <div className="inline-block rounded-lg bg-[#2D6A2D]/80 backdrop-blur-sm px-4 py-2 text-xs font-bold text-white md:text-sm">
+          <div className="inline-block rounded-lg bg-primary-medium/80 backdrop-blur-sm px-4 py-2 text-caption font-bold text-white md:text-body-sm">
             {KONTAK_HERO.badge}
           </div>
 
           {/* Headings */}
           <div className="mt-8 space-y-2">
-            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
+            <h1 className="text-display text-white">
               {KONTAK_HERO.heading}
             </h1>
-            <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
+            <h2 className="text-heading-1 text-white/90 font-semibold">
               {KONTAK_HERO.subheading}
             </h2>
           </div>
 
           {/* Subtext */}
-          <p className="mt-8 max-w-2xl text-base font-medium text-white/90 md:text-lg">
+          <p className="mt-8 max-w-2xl text-body-lg text-white/85">
             {KONTAK_HERO.subtext}
           </p>
 
@@ -51,14 +51,14 @@ export default function KontakHeroSection() {
                   key={feature.title}
                   className="flex items-center gap-4"
                 >
-                  <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-[#EAF3DE] text-[#2D6A2D]">
+                  <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary-light text-primary">
                     <Icon className="size-7" strokeWidth={2.5} />
                   </div>
                   <div>
-                    <h3 className="text-base font-extrabold text-[#17391f]">
+                    <h3 className="text-body-sm font-bold text-foreground">
                       {feature.title}
                     </h3>
-                    <p className="mt-0.5 text-xs font-medium text-[#5d7a64]">
+                    <p className="mt-0.5 text-caption text-muted-foreground">
                       {feature.description}
                     </p>
                   </div>
@@ -76,14 +76,14 @@ export default function KontakHeroSection() {
                   key={feature.title}
                   className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-xl"
                 >
-                  <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#EAF3DE] text-[#2D6A2D]">
+                  <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary-light text-primary">
                     <Icon className="size-6" strokeWidth={2} />
                   </div>
                   <div>
-                    <h3 className="text-sm font-extrabold text-[#17391f]">
+                    <h3 className="text-body-sm font-bold text-foreground">
                       {feature.title}
                     </h3>
-                    <p className="text-[10px] font-medium text-[#5d7a64]">
+                    <p className="text-caption text-muted-foreground">
                       {feature.description}
                     </p>
                   </div>

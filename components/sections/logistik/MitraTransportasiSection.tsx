@@ -6,14 +6,14 @@ import { LOGISTIC_MITRA } from "@/constants/logistic";
 
 const MitraTransportasiSection = () => {
   return (
-    <section className="py-20 bg-white overflow-hidden">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
+    <section className="section-padding bg-white overflow-hidden">
+      <div className="container-smarttani">
         {/* Header */}
         <div className="mb-16 flex flex-col items-center text-center">
-          <h2 className="text-3xl font-bold text-[#17391f] md:text-4xl">
+          <h2 className="section-title text-foreground">
             {LOGISTIC_MITRA.heading}
           </h2>
-          <p className="mt-4 max-w-2xl text-base font-medium text-[#5d7a64] md:text-lg">
+          <p className="mt-4 max-w-2xl text-body-lg text-muted-foreground">
             {LOGISTIC_MITRA.subtext}
           </p>
         </div>
@@ -23,7 +23,7 @@ const MitraTransportasiSection = () => {
           {LOGISTIC_MITRA.items.map((mitra, index) => (
             <div
               key={index}
-              className="group relative flex h-24 w-full items-center justify-center grayscale transition-all duration-300 hover:grayscale-0 hover:scale-105"
+              className="relative flex h-24 w-full items-center justify-center"
             >
               <div className="relative h-12 w-32 sm:h-14 sm:w-36 lg:h-16 lg:w-40 xl:h-14 xl:w-32">
                 <Image

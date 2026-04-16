@@ -2,14 +2,13 @@
 
 import React from "react";
 import { LOGISTIC_STEPS } from "@/constants/logistic";
-import { 
-  ClipboardList, 
-  Package, 
-  Warehouse, 
-  Truck, 
-  MapPin, 
+import {
+  ClipboardList,
+  Package,
+  Warehouse,
+  Truck,
+  MapPin,
   CheckCircle2,
-  ChevronRight
 } from "lucide-react";
 
 const STEP_ICONS = [
@@ -23,15 +22,15 @@ const STEP_ICONS = [
 
 const AlurPengirimanSection = () => {
   return (
-    <section className="py-20 bg-slate-50 overflow-hidden">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
-        <div className="rounded-[40px] bg-white border border-slate-100 p-8 shadow-sm sm:p-12 md:p-16">
+    <section className="overflow-hidden">
+      <div className="container-smarttani">
+        <div className="rounded-3xl bg-slate-50 border border-slate-100 p-8 shadow-sm sm:p-12 md:p-16">
           {/* Header */}
           <div className="mb-16 flex flex-col items-center text-center">
-            <h2 className="text-3xl font-bold text-[#17391f] md:text-4xl">
+            <h2 className="section-title text-foreground">
               {LOGISTIC_STEPS.heading}
             </h2>
-            <p className="mt-4 text-sm font-medium text-[#5d7a64] md:text-base">
+            <p className="mt-4 text-body-sm text-muted-foreground md:text-body">
               6 langkah mudah pengiriman terintegrasi Smarttani
             </p>
           </div>
@@ -47,17 +46,17 @@ const AlurPengirimanSection = () => {
                     <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white shadow-lg shadow-primary/20">
                       {step.step}
                     </div>
-                    <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                    <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary-light text-primary">
                       <Icon className="size-8" strokeWidth={1.5} />
                     </div>
                   </div>
 
                   {/* Content */}
                   <div className="flex flex-col">
-                    <h3 className="mb-2 text-base font-bold text-[#17391f] sm:text-lg lg:text-base xl:text-lg">
+                    <h3 className="mb-2 text-body font-bold text-foreground sm:text-body-lg">
                       {step.title}
                     </h3>
-                    <p className="text-sm leading-relaxed text-[#5d7a64]">
+                    <p className="text-body-sm text-muted-foreground">
                       {step.description}
                     </p>
                   </div>
