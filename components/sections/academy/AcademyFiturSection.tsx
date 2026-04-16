@@ -28,7 +28,7 @@ const AcademyFiturSection = () => {
         
         {/* Header */}
         <div className="mb-16 flex flex-col items-center text-center">
-          <h2 className="text-3xl font-extrabold text-[#17391f] md:text-4xl">
+          <h2 className="text-3xl font-bold text-[#17391f] md:text-4xl">
             Keunggulan Belajar di SiTani Academy
           </h2>
           <div className="mt-4 h-1.5 w-20 rounded-full bg-primary" />
@@ -65,7 +65,7 @@ const AcademyFiturSection = () => {
 
                 <Link
                   href="#"
-                  className="mt-6 group flex items-center gap-1.5 text-xs font-extrabold text-primary transition-colors hover:text-primary/80 uppercase tracking-wider"
+                  className="mt-6 group flex items-center gap-1.5 text-xs font-bold text-primary transition-colors hover:text-primary/80 uppercase tracking-wider"
                 >
                   Pelajari Selengkapnya
                   <ChevronRight className="size-3.5 transition-transform group-hover:translate-x-1" />

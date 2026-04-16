@@ -12,7 +12,7 @@ const AcademyModelSection = () => {
       <div className="container-smarttani mx-auto px-5 sm:px-8 md:px-10 lg:px-12">
         {/* Header */}
         <div className="mb-16 flex flex-col items-center text-center">
-          <h2 className="text-3xl font-extrabold text-[#17391f] md:text-4xl">
+          <h2 className="text-3xl font-bold text-[#17391f] md:text-4xl">
             {ACADEMY_MODEL_PELATIHAN.heading}
           </h2>
           <div className="mt-4 h-1.5 w-20 rounded-full bg-primary" />
@@ -50,7 +50,7 @@ const AcademyModelSection = () => {
                       <Clock className="size-3 text-primary" strokeWidth={2.5} />
                     </div>
                     <div className="flex-1">
-                      <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-slate-400 mb-0.5">Waktu</p>
+                      <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-slate-400 mb-0.5">Waktu</p>
                       <p className="text-xs font-bold text-[#17391f] leading-tight">{item.waktu}</p>
                     </div>
                   </div>
@@ -59,7 +59,7 @@ const AcademyModelSection = () => {
                       <Target className="size-3 text-primary" strokeWidth={2.5} />
                     </div>
                     <div className="flex-1">
-                      <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-slate-400 mb-0.5">Cocok Untuk</p>
+                      <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-slate-400 mb-0.5">Cocok Untuk</p>
                       <p className="text-xs font-bold text-[#17391f] leading-tight">{item.cococokUntuk || item.cocokUntuk}</p>
                     </div>
                   </div>

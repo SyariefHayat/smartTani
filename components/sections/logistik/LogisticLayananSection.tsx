@@ -12,7 +12,7 @@ const LogisticLayananSection = () => {
       <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
         {/* Header */}
         <div className="mb-16 flex flex-col items-center text-center">
-          <h2 className="text-3xl font-extrabold text-[#17391f] md:text-4xl">
+          <h2 className="text-3xl font-bold text-[#17391f] md:text-4xl">
             {LOGISTIC_LAYANAN.heading}
           </h2>
           <p className="mt-4 max-w-2xl text-base font-medium text-[#5d7a64] md:text-lg">

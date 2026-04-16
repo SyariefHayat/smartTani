@@ -50,7 +50,7 @@ const JangkauanKeunggulanOngkirSection = () => {
             <div className="mt-auto w-full grid grid-cols-3 pt-6 border-t border-slate-200">
               {LOGISTIC_KEUNGGULAN.jangkauan.stats.map((stat, index) => (
                 <div key={index} className={`flex flex-col items-center ${index < 2 ? 'border-r border-slate-200' : ''}`}>
-                  <span className="text-xl font-extrabold text-[#2e5e3a]">{stat.value}</span>
+                  <span className="text-xl font-bold text-[#2e5e3a]">{stat.value}</span>
                   <span className="text-[10px] font-bold text-[#5d7a64]">{stat.label}</span>
                 </div>
               ))}

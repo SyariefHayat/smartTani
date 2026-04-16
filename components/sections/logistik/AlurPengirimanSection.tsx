@@ -28,7 +28,7 @@ const AlurPengirimanSection = () => {
         <div className="rounded-[40px] bg-white border border-slate-100 p-8 shadow-sm sm:p-12 md:p-16">
           {/* Header */}
           <div className="mb-16 flex flex-col items-center text-center">
-            <h2 className="text-3xl font-extrabold text-[#17391f] md:text-4xl">
+            <h2 className="text-3xl font-bold text-[#17391f] md:text-4xl">
               {LOGISTIC_STEPS.heading}
             </h2>
             <p className="mt-4 text-sm font-medium text-[#5d7a64] md:text-base">

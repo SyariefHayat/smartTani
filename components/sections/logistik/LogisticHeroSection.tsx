@@ -5,41 +5,34 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LOGISTIC_HERO } from "@/constants/logistic";
-import { ShieldCheck, Truck, Globe, Search, ArrowRight } from "lucide-react";
+import { ShieldCheck, Truck, Globe, Search } from "lucide-react";
 
 const ICON_MAP = [ShieldCheck, Truck, Globe];
 
 const LogisticHeroSection = () => {
   return (
-    <section className="relative min-h-[600px] flex items-center overflow-hidden bg-[#1a4d2e]">
+    <section className="relative min-h-[480px] flex items-center overflow-hidden bg-[#1a4d2e]">
       {/* Background Image */}
       <Image
         src={LOGISTIC_HERO.image}
         alt="Logistic Smarttani"
-        fill
+        width={1920}
+        height={1080}
         priority
         quality={90}
-        className="object-cover object-center"
+        className="absolute inset-0 w-full h-full object-cover object-center"
         sizes="100vw"
       />
 
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent lg:from-black/70 lg:via-black/30" />
+      {/* Gradient Overlay - Mengikuti Marketplace */}
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,35,17,0.92)_0%,rgba(9,35,17,0.80)_40%,rgba(9,35,17,0.30)_70%,rgba(9,35,17,0.10)_100%)]" />
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 px-4 py-16 sm:px-6 lg:px-8">
+      <div className="container-smarttani relative z-10 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center">
-          
+
           {/* Left Column: Text & Badges */}
           <div className="lg:col-span-7 xl:col-span-8">
-            {/* Top Badge/Logo */}
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/20 px-4 py-2 text-white backdrop-blur-sm">
-              <Truck className="h-5 w-5 text-yellow-400" />
-              <span className="text-sm font-bold tracking-tight">
-                {LOGISTIC_HERO.badge}
-              </span>
-            </div>
-
             <h1 className="text-display mb-6 text-white max-w-2xl">
               {LOGISTIC_HERO.heading}
             </h1>
@@ -92,7 +85,7 @@ const LogisticHeroSection = () => {
                     className="h-12 border-slate-200 bg-slate-50 px-4 focus:ring-primary rounded-xl"
                   />
                 </div>
-                
+
                 <Button className="h-12 w-full bg-primary text-base font-bold text-white hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
                   <Search className="mr-2 h-5 w-5" />
                   {LOGISTIC_HERO.tracking.ctaPrimary}

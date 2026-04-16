@@ -10,16 +10,16 @@ import { Button } from "@/components/ui/button";
 
 const DistributorSuccessAndCTASection = () => {
   return (
-    <section className="my-8 bg-white">
+    <section className="bg-white my-12">
       <div className="container-smarttani">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_420px]">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_450px]">
           {/* Left Side: Kisah Sukses Mitra */}
           <div className="flex flex-col">
-            <div className="mb-8">
-              <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
+            <div className="mb-10">
+              <h2 className="text-heading-1 text-[#17391f]">
                 {DISTRIBUTOR_TESTIMONI.heading}
               </h2>
-              <p className="mt-2 text-sm font-medium text-[#5d7a64] md:text-base">
+              <p className="text-body-lg mt-4 text-[#5d7a64]">
                 {DISTRIBUTOR_TESTIMONI.subtext}
               </p>
             </div>
@@ -28,10 +28,10 @@ const DistributorSuccessAndCTASection = () => {
               {DISTRIBUTOR_TESTIMONI.items.map((item, index) => (
                 <div
                   key={index}
-                  className="flex flex-col gap-4 rounded-2xl bg-[#F9FAF9] p-6 shadow-sm border border-neutral-100"
+                  className="flex flex-col gap-6 rounded-3xl bg-[#f4f7f4] p-8 shadow-sm transition-all hover:shadow-md"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="relative size-14 shrink-0 overflow-hidden rounded-full border-2 border-white shadow-sm">
+                    <div className="relative size-16 shrink-0 overflow-hidden rounded-full border-2 border-white shadow-sm">
                       <Image
                         src={item.avatar}
                         alt={item.name}
@@ -40,22 +40,22 @@ const DistributorSuccessAndCTASection = () => {
                       />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-[#17391f]">
+                      <h3 className="text-base font-bold text-[#17391f]">
                         {item.name}
                       </h3>
-                      <p className="text-[10px] font-medium text-[#5d7a64]">
+                      <p className="text-xs font-semibold text-[#5d7a64] uppercase tracking-wider">
                         {item.role}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex-1">
-                    <p className="text-xs font-medium leading-relaxed text-[#17391f]">
+                    <p className="text-sm font-medium leading-relaxed text-[#17391f]">
                       "{item.quote}"
                     </p>
                   </div>
 
-                  <div className="mt-1">
+                  <div className="pt-2">
                     <StarRating rating={item.rating} />
                   </div>
                 </div>
@@ -64,30 +64,30 @@ const DistributorSuccessAndCTASection = () => {
           </div>
 
           {/* Right Side: CTA Banner Box */}
-          <div className="relative overflow-hidden rounded-2xl bg-[#17391f] p-8 text-white shadow-xl lg:mt-4">
+          <div className="relative overflow-hidden rounded-3xl bg-[#17391f] p-10 text-white shadow-2xl lg:p-12">
             {/* Background Image overlay */}
             <div className="absolute inset-0 z-0">
               <Image
                 src={DISTRIBUTOR_CTA_BANNER.image}
                 alt="Smarttani Background"
                 fill
-                className="object-cover opacity-30 mix-blend-overlay"
+                className="object-cover"
               />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,57,31,0.8)_0%,#17391f_100%)]" />
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,#17391f_40%,rgba(23,57,31,0.7)_100%)]" />
             </div>
 
             <div className="relative z-10 flex h-full flex-col">
-              <h2 className="mb-4 text-2xl font-extrabold leading-tight md:text-3xl">
+              <h2 className="mb-4 text-3xl font-bold leading-tight lg:text-3xl">
                 {DISTRIBUTOR_CTA_BANNER.heading}
               </h2>
-              <p className="mb-8 text-sm font-medium opacity-90">
+              <p className="mb-10 text-base font-medium opacity-90 leading-relaxed">
                 {DISTRIBUTOR_CTA_BANNER.subtext}
               </p>
 
-              <div className="mt-auto space-y-3">
+              <div className="mt-auto space-y-4">
                 <Button
                   size="lg"
-                  className="h-12 w-full bg-[#FFA500] text-sm font-extrabold text-[#17391f] hover:bg-[#FFB833] transition-all active:scale-95 cursor-pointer rounded-xl"
+                  className="h-14 w-full bg-[#F5A623] text-base font-bold text-[#17391f] hover:bg-[#F5A623]/90 transition-all active:scale-95 cursor-pointer rounded-2xl shadow-lg shadow-black/20 border-none"
                 >
                   {DISTRIBUTOR_CTA_BANNER.cta[0].label}
                 </Button>
@@ -95,9 +95,9 @@ const DistributorSuccessAndCTASection = () => {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="h-12 w-full border-2 border-white/40 bg-white/10 text-sm font-extrabold text-white backdrop-blur-sm hover:bg-white/20 transition-all active:scale-95 cursor-pointer rounded-xl"
+                  className="h-14 w-full border-2 border-white bg-transparent text-base font-bold text-white hover:bg-white/10 transition-all active:scale-95 cursor-pointer rounded-2xl"
                 >
-                  <MessageCircle className="mr-2 size-4" />
+                  <MessageCircle className="mr-3 size-5" />
                   {DISTRIBUTOR_CTA_BANNER.cta[1].label}
                 </Button>
               </div>
