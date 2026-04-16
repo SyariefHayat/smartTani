@@ -182,7 +182,7 @@ export const DISTRIBUTOR_TESTIMONI = {
     {
       name: "Budi Hartono",
       role: "Distributor Jawa Tengah",
-      avatar: "/images/distributor/avatar-budi.webp",
+      avatar: "https://randomuser.me/api/portraits/men/32.jpg",
       rating: 5,
       quote:
         "Sejak menjadi distributor Smarttani, omzet bisnis saya meningkat 500%. Produk berkualitas, dukungan tim luar biasa!",
@@ -190,7 +190,7 @@ export const DISTRIBUTOR_TESTIMONI = {
     {
       name: "Siti Aisyah",
       role: "Distributor Sulawesi Selatan",
-      avatar: "/images/distributor/avatar-siti.webp",
+      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
       rating: 5,
       quote:
         "Sistem mudah, produk lengkap, dan margin keuntungan sangat menguntungkan. Terima kasih Smarttani!",
