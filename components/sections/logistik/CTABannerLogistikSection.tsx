@@ -20,7 +20,7 @@ const CTABannerLogistikSection = () => {
             
             {/* Left Column: Text & Buttons */}
             <div className="lg:col-span-7 xl:col-span-8 relative z-10 text-center lg:text-left">
-              <h2 className="mb-6 text-3xl font-extrabold text-white md:text-4xl lg:text-5xl leading-tight">
+              <h2 className="mb-6 text-3xl font-bold text-white md:text-4xl lg:text-5xl leading-tight">
                 {LOGISTIC_CTA_BANNER.heading}
               </h2>
               <p className="mb-10 text-base font-medium text-white/80 md:text-lg max-w-2xl mx-auto lg:mx-0">

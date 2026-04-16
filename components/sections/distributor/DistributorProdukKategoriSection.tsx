@@ -6,24 +6,24 @@ import { DISTRIBUTOR_PRODUK_KATEGORI } from "@/constants/distributor";
 
 const DistributorProdukKategoriSection = () => {
   return (
-    <section className="bg-white py-8">
+    <section className="py-8">
       <div className="container-smarttani">
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row items-center justify-between mb-10 gap-4">
-          <div className="max-w-2xl space-y-2">
-            <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl lg:text-4xl">
+        <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6">
+          <div className="max-w-2xl">
+            <h2 className="text-heading-1 text-[#17391f]">
               {DISTRIBUTOR_PRODUK_KATEGORI.heading}
             </h2>
-            <p className="text-sm font-medium text-[#5d7a64] md:text-base">
+            <p className="text-body-lg mt-4 text-[#5d7a64]">
               {DISTRIBUTOR_PRODUK_KATEGORI.subtext}
             </p>
           </div>
           <Link
             href="/marketplace"
-            className="inline-flex items-center gap-2 text-primary hover:text-primary-dark font-semibold text-sm transition-colors group"
+            className="inline-flex items-center gap-2 text-primary hover:text-primary-dark font-bold text-base transition-colors group shrink-0"
           >
             Lihat Semua Produk
-            <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 
@@ -37,7 +37,7 @@ const DistributorProdukKategoriSection = () => {
               >
                 <div className="bg-white rounded-lg border border-neutral-200 overflow-hidden transition-all duration-300 hover:border-primary/30 hover:shadow-card group-hover:-translate-y-1 h-full flex flex-col">
                   {/* Image Container */}
-                  <div className="relative aspect-square w-full bg-neutral-50 p-4">
+                  <div className="relative aspect-square w-full bg-[#F4F7F4] p-4">
                     <Image
                       src={item.image}
                       alt={item.label}

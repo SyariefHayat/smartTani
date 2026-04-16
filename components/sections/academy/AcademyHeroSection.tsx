@@ -10,25 +10,26 @@ const ICON_MAP = [Monitor, Users, Award];
 
 const AcademyHeroSection = () => {
   return (
-    <section className="relative min-h-[600px] flex items-center overflow-hidden bg-[#163e1f]">
+    <section className="relative min-h-[480px] flex items-center overflow-hidden bg-[#163e1f]">
       {/* Background Image */}
       <Image
         src={ACADEMY_HERO.image}
         alt="Academy Smarttani"
-        fill
+        width={1920}
+        height={1080}
         priority
         quality={90}
-        className="object-cover object-center"
+        className="absolute inset-0 w-full h-full object-cover object-center"
         sizes="100vw"
       />
 
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent lg:from-black/70 lg:via-black/30" />
+      {/* Gradient Overlay - Mengikuti Marketplace */}
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,35,17,0.92)_0%,rgba(9,35,17,0.80)_40%,rgba(9,35,17,0.30)_70%,rgba(9,35,17,0.10)_100%)]" />
 
       {/* Content */}
       <div className="container-smarttani relative z-10 px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center">
-          
+
           {/* Left Column: Text & Badges */}
           <div className="lg:col-span-7 xl:col-span-8">
             {/* Top Badge/Logo */}

@@ -80,7 +80,10 @@ export default function TestimoniSection() {
           {/* Column 2: Testimoni */}
           <div className="lg:col-span-4">
             <div className="mb-6 flex items-center gap-2">
-              <Quote className="size-5 fill-[#3B6D11] text-[#3B6D11] shrink-0" aria-hidden="true" />
+              <Quote
+                className="size-5 fill-[#3B6D11] text-[#3B6D11] shrink-0"
+                aria-hidden="true"
+              />
               <h2 className="text-base font-extrabold text-[#17391f] md:text-lg">
                 Testimoni Pengguna
               </h2>

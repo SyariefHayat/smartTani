@@ -10,11 +10,11 @@ export const ABOUT_HERO = {
   subtext:
     "PT. Smarttani Indonesia berkomitmen menjadi mitra terpercaya dalam transformasi pertanian Indonesia menuju masa depan yang lebih cerdas, dan berkelanjutan.",
   cta: [{ label: "Pelajari Lebih Lanjut" }, { label: "Hubungi Kami" }],
-  backgroundImage: "/images/about/Hero-background-foto.png",
+  backgroundImage: "/images/about/hero-2.png",
 };
 
 export const ABOUT_DESKRIPSI = {
-  heading: "Tentang PT. Smarttani Indonesia",
+  heading: "Tentang PT. SmartTani Indonesia",
   content:
     "Kami adalah perusahaan teknologi pertanian yang menyediakan platform terintegrasi untuk menghubungkan petani, distributor, investor, penyedia logistik, dan ahli melalui ekosistem digital. Sejak berdiri, kami terus berinovasi untuk mendukung pertanian Indonesia yang lebih efisien, menguntungkan, dan berkelanjutan.",
   cta: "Selengkapnya →",
@@ -26,6 +26,7 @@ export const ABOUT_STATS_BAR = [
   { value: "500+", label: "Mitra & Distributor" },
   { value: "34", label: "Provinsi Terjangkau" },
   { value: "100+", label: "Ahli & Instruktur" },
+  { value: "50+", label: "Produk Tersedia" },
 ];
 
 export const ABOUT_MISI = {
@@ -194,7 +195,7 @@ export const ABOUT_MITRA_STRATEGIS = {
 };
 
 export const ABOUT_CTA_BANNER = {
-  heading: "Mari Bertumbuh Bersama Smarttani",
+  heading: "Mari Bertumbuh Bersama SmartTani",
   subtext:
     "Bergabunglah dengan ekosistem pertanian terintegrasi kami dan rasakan manfaatnya untuk bisnis pertanian Anda.",
   cta: [{ label: "Hubungi Kami" }, { label: "Daftar Sekarang" }],

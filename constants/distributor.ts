@@ -185,7 +185,7 @@ export const DISTRIBUTOR_TESTIMONI = {
       avatar: "/images/distributor/avatar-budi.webp",
       rating: 5,
       quote:
-        "Sejak menjadi distributor Smarttani, omzet bisnis saya meningkat 300%. Produk berkualitas, dukungan tim luar biasa!",
+        "Sejak menjadi distributor Smarttani, omzet bisnis saya meningkat 500%. Produk berkualitas, dukungan tim luar biasa!",
     },
     {
       name: "Siti Aisyah",

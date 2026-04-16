@@ -232,7 +232,7 @@
 
 @layer components {
   .text-display {
-    @apply text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight;
+    @apply text-4xl md:text-5xl font-bold leading-tight tracking-tight;
   }
   .text-heading-1 {
     @apply text-3xl md:text-4xl font-bold leading-tight;
@@ -244,7 +244,7 @@
     @apply text-xl md:text-2xl font-semibold leading-snug;
   }
   .text-body-lg {
-    @apply text-lg md:text-xl leading-relaxed;
+    @apply text-base md:text-lg leading-relaxed;
   }
   .text-body {
     @apply text-base leading-relaxed;
