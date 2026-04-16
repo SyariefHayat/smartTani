@@ -128,18 +128,24 @@ export default function Navbar() {
               size="sm"
               id="navbar-login"
               className="gap-1.5 cursor-pointer rounded-md"
+              asChild
             >
-              <LogIn className="size-4" />
-              Masuk
+              <Link href="/login">
+                <LogIn className="size-4" />
+                Masuk
+              </Link>
             </Button>
             <Button
               variant="accent"
               size="sm"
               id="navbar-register"
               className="gap-1.5 cursor-pointer rounded-md"
+              asChild
             >
-              <UserPlus className="size-4" />
-              Daftar
+              <Link href="/signup">
+                <UserPlus className="size-4" />
+                Daftar
+              </Link>
             </Button>
           </div>
 
