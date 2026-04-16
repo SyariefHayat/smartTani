@@ -66,19 +66,19 @@ export default function KontakMiddleSection() {
               {KONTAK_FORM.subtext}
             </p>
 
-            <form className="mt-8 grid gap-6 sm:grid-cols-2">
-              <div className="space-y-2">
+            <form className="mt-8 grid gap-x-6 gap-y-5 lg:grid-cols-2">
+              <div className="space-y-1.5">
                 <Label htmlFor="name" className="text-sm font-bold text-[#17391f]">
                   {KONTAK_FORM.fields.name.label}
                 </Label>
                 <Input
                   id="name"
                   placeholder={KONTAK_FORM.fields.name.placeholder}
-                  className="rounded-xl border-neutral-200"
+                  className="h-12 rounded-xl border-neutral-200 bg-neutral-50/30 focus:bg-white transition-colors"
                 />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-sm font-bold text-[#17391f]">
                   {KONTAK_FORM.fields.email.label}
                 </Label>
@@ -86,50 +86,54 @@ export default function KontakMiddleSection() {
                   id="email"
                   type="email"
                   placeholder={KONTAK_FORM.fields.email.placeholder}
-                  className="rounded-xl border-neutral-200"
+                  className="h-12 rounded-xl border-neutral-200 bg-neutral-50/30 focus:bg-white transition-colors"
                 />
               </div>
 
-              <div className="sm:col-span-2 space-y-2">
+              <div className="lg:col-span-1 space-y-1.5">
                 <Label htmlFor="phone" className="text-sm font-bold text-[#17391f]">
                   {KONTAK_FORM.fields.phone.label}
                 </Label>
                 <Input
                   id="phone"
                   placeholder={KONTAK_FORM.fields.phone.placeholder}
-                  className="rounded-xl border-neutral-200"
+                  className="h-12 rounded-xl border-neutral-200 bg-neutral-50/30 focus:bg-white transition-colors"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="subject" className="text-sm font-bold text-[#17391f]">
-                  {KONTAK_FORM.fields.subject.label}
-                </Label>
-                <Select>
-                  <SelectTrigger className="rounded-xl border-neutral-200">
-                    <SelectValue placeholder={KONTAK_FORM.fields.subject.placeholder} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="umum">Pertanyaan Umum</SelectItem>
-                    <SelectItem value="kerjasama">Kerjasama</SelectItem>
-                    <SelectItem value="masukan">Kritik & Saran</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="hidden lg:block" />
+
+              <div className="space-y-5 lg:col-span-1">
+                <div className="space-y-1.5">
+                  <Label htmlFor="subject" className="text-sm font-bold text-[#17391f]">
+                    {KONTAK_FORM.fields.subject.label}
+                  </Label>
+                  <Select>
+                    <SelectTrigger className="h-12 rounded-xl border-neutral-200 bg-neutral-50/30 focus:bg-white transition-colors">
+                      <SelectValue placeholder={KONTAK_FORM.fields.subject.placeholder} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="umum">Pertanyaan Umum</SelectItem>
+                      <SelectItem value="kerjasama">Kerjasama</SelectItem>
+                      <SelectItem value="masukan">Kritik & Saran</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
-              <div className="sm:col-span-2 space-y-2">
+              <div className="lg:row-span-2 space-y-1.5">
                 <Label htmlFor="message" className="text-sm font-bold text-[#17391f]">
                   {KONTAK_FORM.fields.message.label}
                 </Label>
                 <Textarea
                   id="message"
                   placeholder={KONTAK_FORM.fields.message.placeholder}
-                  className="min-h-[150px] rounded-xl border-neutral-200"
+                  className="min-h-[140px] lg:min-h-[140px] rounded-xl border-neutral-200 bg-neutral-50/30 focus:bg-white transition-colors resize-none"
                 />
               </div>
 
-              <div className="sm:col-span-2 mt-2">
-                <Button className="w-full bg-[#2D6A2D] py-6 text-base font-bold text-white hover:bg-[#235323] rounded-xl shadow-lg shadow-green-100 transition-all active:scale-[0.98]">
+              <div className="lg:col-span-2 mt-4">
+                <Button className="w-full bg-[#2D6A2D] py-7 text-base font-bold text-white hover:bg-[#235323] rounded-xl shadow-lg shadow-green-100 transition-all active:scale-[0.98]">
                   <SendHorizontal className="mr-2 size-5" />
                   {KONTAK_FORM.button}
                 </Button>
