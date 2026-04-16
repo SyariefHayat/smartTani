@@ -51,6 +51,21 @@ export default function SignupFormSection() {
   const [selectedRole, setSelectedRole] = React.useState("petani");
 
   const getRoleSpecificFields = () => {
+    type FieldConfig = {
+      label: string;
+      placeholder: string;
+      type?: string;
+      options?: string[];
+      icon?: any;
+    };
+
+    type RoleFields = {
+      title: string;
+      icon: any;
+      field1: FieldConfig;
+      field2: FieldConfig;
+    };
+
     switch (selectedRole) {
       case "petani":
         return {
@@ -58,35 +73,35 @@ export default function SignupFormSection() {
           icon: Sprout,
           field1: { label: "Nama Kelompok Tani", placeholder: "Contoh: Tani Makmur Jaya", icon: Building2 },
           field2: { label: "Komoditas Utama", placeholder: "Pilih komoditas", type: "select", options: ["Padi", "Jagung", "Sayuran", "Buah-buahan", "Lainnya"] },
-        };
+        } as RoleFields;
       case "distributor":
         return {
           title: "Informasi Bisnis & Distribusi",
           icon: Store,
           field1: { label: "Nama Toko / Gudang", placeholder: "Contoh: UD Sumber Rejeki", icon: Building2 },
           field2: { label: "Cakupan Wilayah", placeholder: "Pilih wilayah", type: "select", options: ["Lokal (Kecamatan)", "Regional (Kabupaten)", "Nasional"] },
-        };
+        } as RoleFields;
       case "investor":
         return {
           title: "Profil Investasi",
           icon: TrendingUp,
           field1: { label: "Tipe Investor", placeholder: "Pilih tipe", type: "select", options: ["Individu / Perorangan", "Institusi / Perusahaan"] },
           field2: { label: "Rencana Budget Investasi", placeholder: "Pilih range", type: "select", options: ["Rp 1jt - 10jt", "Rp 10jt - 50jt", "Rp 50jt - 100jt", "> Rp 100jt"] },
-        };
+        } as RoleFields;
       case "mitra_bisnis":
         return {
           title: "Informasi Kemitraan",
           icon: Handshake,
           field1: { label: "Nama Perusahaan / Institusi", placeholder: "Contoh: PT Agro Sejahtera", icon: Building2 },
           field2: { label: "Model Kerjasama", placeholder: "Pilih model", type: "select", options: ["Penyedia Teknologi", "Logistik & Rantai Pasok", "Offtaker / Pembeli Siaga", "Lainnya"] },
-        };
+        } as RoleFields;
       case "admin_perusahaan":
         return {
           title: "Data Operasional Perusahaan",
           icon: ShieldCheck,
           field1: { label: "Nama Perusahaan Resmi", placeholder: "Contoh: PT Smarttani Tech", icon: Building2 },
           field2: { label: "Jabatan / Posisi", placeholder: "Pilih jabatan", type: "select", options: ["Direktur / CEO", "Manajer Operasional", "Admin Sistem", "Staf IT"] },
-        };
+        } as RoleFields;
       default:
         return null;
     }
