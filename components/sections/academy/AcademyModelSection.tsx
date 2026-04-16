@@ -60,7 +60,7 @@ const AcademyModelSection = () => {
                     </div>
                     <div className="flex-1">
                       <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-slate-400 mb-0.5">Cocok Untuk</p>
-                      <p className="text-xs font-bold text-[#17391f] leading-tight">{item.cococokUntuk || item.cocokUntuk}</p>
+                      <p className="text-sm font-bold text-[#17391f] leading-tight">{item.cocokUntuk}</p>
                     </div>
                   </div>
                 </div>
