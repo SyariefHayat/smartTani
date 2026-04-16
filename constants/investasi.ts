@@ -170,15 +170,15 @@ export const INVESTASI_TESTIMONI = {
     {
       name: "Ahmad Surya",
       role: "Investor Aktif",
-      avatar: "/images/investasi/avatar-ahmad.webp",
+      avatar: "/images/about/pimpinan-budi-santoso.jpeg",
       rating: 5,
       quote:
-        "Platform Smarttani sangat terpercaya. Proyeknya jelas, return-nya menarik, dan paling penting bisa membantu petani Indonesia.",
+        "Platform Smarttani sangat terpercaya. Proyeknya jelas, return-nya menarik, and paling penting bisa membantu petani Indonesia.",
     },
     {
       name: "Dewi Lestari",
       role: "Investor Aktif",
-      avatar: "/images/investasi/avatar-dewi.webp",
+      avatar: "/images/about/pimpinan-siti-aminah.jpeg",
       rating: 5,
       quote:
         "Sudah 1 tahun investasi di Smarttani, imbal hasilnya selalu sesuai harapan. Transparan dan laporannya juga sangat baik.",

@@ -35,22 +35,6 @@ export default function HowSection() {
           </div>
         </div>
       </div>
-
-      {/* Green mini CTA banner */}
-      <div className="rounded-2xl bg-[#17391f] p-6 text-white flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="flex size-10 items-center justify-center rounded-full bg-white/20">
-            <ShieldCheck className="size-5 text-white" />
-          </div>
-          <div>
-            <h3 className="font-bold text-sm">{INVESTASI_KEUNGGULAN.tagline}</h3>
-            <p className="text-[11px] text-white/80">{INVESTASI_KEUNGGULAN.taglineSubtext}</p>
-          </div>
-        </div>
-        <Button className="bg-white text-[#17391f] hover:bg-gray-100 text-xs h-9 px-6 font-bold rounded-full">
-          {INVESTASI_KEUNGGULAN.ctaTagline}
-        </Button>
-      </div>
     </div>
   );
 }
