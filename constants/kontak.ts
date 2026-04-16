@@ -11,6 +11,7 @@ export const KONTAK_HERO = {
   subtext:
     "Punya pertanyaan, masukan, atau ingin bekerja sama? Tim kami siap merespons dengan cepat dan profesional.",
   image: "/kontak.webp",
+  bgImage: "/images/kontak/hero-bg.webp",
   features: [
     {
       title: "Respon Cepat",
@@ -76,5 +77,5 @@ export const KONTAK_LOKASI = {
     "Dekat dengan pusat bisnis Lamongan",
   ],
   button: "Lihat di Google Maps",
-  mapImage: "/images/kontak/map-placeholder.webp",
+  mapImage: "/images/kontak/maps.webp",
 };
