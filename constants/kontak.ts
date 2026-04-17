@@ -11,7 +11,9 @@ export const KONTAK_HERO = {
   subtext:
     "Punya pertanyaan, masukan, atau ingin bekerja sama? Tim kami siap merespons dengan cepat dan profesional.",
   image: "/kontak.webp",
-  bgImage: "/images/kontak/hero-bg.webp",
+  bgImageDesktop: "/images/kontak/desktop.png",
+  bgImageTablet: "/images/kontak/tablet.png",
+  bgImageMobile: "/images/kontak/mobile.png",
   features: [
     {
       title: "Respon Cepat",

@@ -7,21 +7,34 @@ import { ArrowRight, Phone } from "lucide-react";
 const HeroTentangSection = () => {
   return (
     <section className="relative min-h-[500px] lg:min-h-[650px] w-full overflow-hidden flex items-center">
-      {/* Background Image */}
-      <Image
-        src={ABOUT_HERO.backgroundImage}
-        alt={ABOUT_HERO.heading}
-        width={1920}
-        height={1080}
-        priority
-        quality={90}
-        className="absolute inset-0 w-full h-full object-cover object-center"
-        sizes="100vw"
-      />
+      <div className="absolute inset-0 z-0">
+        <picture className="block w-full h-full">
+          {/* Desktop: ≥1024px */}
+          <source
+            media="(min-width: 1024px)"
+            srcSet={ABOUT_HERO.bgImageDesktop}
+          />
+          {/* Tablet: 768px – 1023px */}
+          <source
+            media="(min-width: 768px) and (max-width: 1023px)"
+            srcSet={ABOUT_HERO.bgImageTablet}
+          />
+          {/* Mobile: <768px */}
+          <source
+            media="(max-width: 767px)"
+            srcSet={ABOUT_HERO.bgImageMobile}
+          />
+          {/* Fallback */}
+          <img
+            src={ABOUT_HERO.bgImageDesktop}
+            alt="Hero Background"
+            className="w-full h-full object-cover object-center"
+          />
+        </picture>
 
-      {/* Dark overlay for text readability */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary-dark via-primary-dark/90 to-primary-dark/20 lg:via-primary-dark/60 lg:to-transparent" />
-
+        {/* Overlay: hanya tampil di tablet & mobile (tersembunyi di desktop) */}
+        <div className="absolute inset-0 bg-black/50 lg:hidden" />
+      </div>
       {/* Content */}
       <div className="container-smarttani relative z-10 py-16 lg:py-24">
         <div className="max-w-xl">
@@ -46,7 +59,7 @@ const HeroTentangSection = () => {
           <div className="mt-10 flex flex-wrap gap-4">
             <Button
               size="lg"
-              className="rounded-full px-8 h-12 md:h-14 text-base font-semibold transition-all hover:scale-105"
+              className="rounded-full px-8 h-12 md:h-14 text-base font-semibold transition-all cursor-pointer"
             >
               {ABOUT_HERO.cta[0].label}
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -54,7 +67,7 @@ const HeroTentangSection = () => {
             <Button
               size="lg"
               variant="outline"
-              className="rounded-full px-8 h-12 md:h-14 text-base font-semibold border-2 border-white bg-transparent text-white hover:bg-white hover:text-primary transition-all hover:scale-105"
+              className="rounded-full px-8 h-12 md:h-14 text-base font-semibold border-2 border-white bg-transparent text-white hover:bg-white hover:text-primary transition-all cursor-pointer"
             >
               <Phone className="mr-2 h-5 w-5" />
               {ABOUT_HERO.cta[1].label}
