@@ -10,16 +10,16 @@ import { Button } from "@/components/ui/button";
 
 const DistributorSuccessAndCTASection = () => {
   return (
-    <section className="bg-white my-12">
+    <section className="pb-12 md:pb-20 bg-white">
       <div className="container-smarttani">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_450px]">
           {/* Left Side: Kisah Sukses Mitra */}
           <div className="flex flex-col">
             <div className="mb-10">
-              <h2 className="text-heading-1 text-[#17391f]">
+              <h2 className="section-title text-foreground">
                 {DISTRIBUTOR_TESTIMONI.heading}
               </h2>
-              <p className="text-body-lg mt-4 text-[#5d7a64]">
+              <p className="text-body-lg mt-4 text-muted-foreground">
                 {DISTRIBUTOR_TESTIMONI.subtext}
               </p>
             </div>
@@ -28,7 +28,7 @@ const DistributorSuccessAndCTASection = () => {
               {DISTRIBUTOR_TESTIMONI.items.map((item, index) => (
                 <div
                   key={index}
-                  className="flex flex-col gap-6 rounded-3xl bg-[#f4f7f4] p-8 shadow-sm transition-all hover:shadow-md"
+                  className="flex flex-col gap-6 rounded-2xl bg-slate-50 p-8 border border-slate-100 transition-all hover:shadow-md"
                 >
                   <div className="flex items-center gap-4">
                     <div className="relative size-16 shrink-0 overflow-hidden rounded-full border-2 border-white shadow-sm">
@@ -40,18 +40,18 @@ const DistributorSuccessAndCTASection = () => {
                       />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-[#17391f]">
+                      <h3 className="text-body font-bold text-foreground">
                         {item.name}
                       </h3>
-                      <p className="text-xs font-semibold text-[#5d7a64] uppercase tracking-wider">
+                      <p className="text-caption font-semibold text-muted-foreground uppercase tracking-wider">
                         {item.role}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex-1">
-                    <p className="text-sm font-medium leading-relaxed text-[#17391f]">
-                      "{item.quote}"
+                    <p className="text-body-sm font-medium text-foreground">
+                      &ldquo;{item.quote}&rdquo;
                     </p>
                   </div>
 
@@ -64,7 +64,7 @@ const DistributorSuccessAndCTASection = () => {
           </div>
 
           {/* Right Side: CTA Banner Box */}
-          <div className="relative overflow-hidden rounded-3xl bg-[#17391f] p-10 text-white shadow-2xl lg:p-12">
+          <div className="relative overflow-hidden rounded-2xl bg-primary-dark p-10 text-white shadow-2xl lg:p-12">
             {/* Background Image overlay */}
             <div className="absolute inset-0 z-0">
               <Image
@@ -73,21 +73,21 @@ const DistributorSuccessAndCTASection = () => {
                 fill
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-[linear-gradient(90deg,#17391f_40%,rgba(23,57,31,0.7)_100%)]" />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-dark via-primary-dark/90 to-primary-dark/70" />
             </div>
 
             <div className="relative z-10 flex h-full flex-col">
-              <h2 className="mb-4 text-3xl font-bold leading-tight lg:text-3xl">
+              <h2 className="text-heading-1 text-white mb-4">
                 {DISTRIBUTOR_CTA_BANNER.heading}
               </h2>
-              <p className="mb-10 text-base font-medium opacity-90 leading-relaxed">
+              <p className="text-body text-white/85 mb-10">
                 {DISTRIBUTOR_CTA_BANNER.subtext}
               </p>
 
               <div className="mt-auto space-y-4">
                 <Button
                   size="lg"
-                  className="h-14 w-full bg-[#F5A623] text-base font-bold text-[#17391f] hover:bg-[#F5A623]/90 transition-all active:scale-95 cursor-pointer rounded-2xl shadow-lg shadow-black/20 border-none"
+                  className="h-14 w-full bg-accent text-base font-bold !text-white hover:bg-accent/90 transition-all active:scale-95 cursor-pointer rounded-2xl shadow-lg shadow-black/20 border-none"
                 >
                   {DISTRIBUTOR_CTA_BANNER.cta[0].label}
                 </Button>

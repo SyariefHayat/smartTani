@@ -6,7 +6,6 @@ import {
   ClipboardCheck,
   GraduationCap,
   Truck,
-  ArrowRight,
 } from "lucide-react";
 import {
   DISTRIBUTOR_SYARAT,
@@ -20,15 +19,15 @@ const STEP_ICONS = [TrendingUp, ClipboardCheck, GraduationCap, Truck];
 
 const DistributorInfoCardsSection = () => {
   return (
-    <section className="bg-white">
+    <section className="section-padding bg-white">
       <div className="container-smarttani">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Card 1: Syarat Menjadi Distributor */}
-          <div className="flex flex-col rounded-3xl bg-[#f4f7f4] p-8 shadow-sm transition-all hover:shadow-md">
-            <h3 className="mb-3 text-2xl font-bold text-[#17391f]">
+          <div className="flex flex-col rounded-2xl bg-slate-50 p-8 border border-slate-100 transition-all hover:shadow-md">
+            <h3 className="mb-3 text-heading-2 text-foreground">
               {DISTRIBUTOR_SYARAT.heading}
             </h3>
-            <p className="mb-8 text-base font-medium text-[#5d7a64]">
+            <p className="mb-8 text-body text-muted-foreground">
               {DISTRIBUTOR_SYARAT.subtext}
             </p>
 
@@ -38,26 +37,26 @@ const DistributorInfoCardsSection = () => {
                   <div className="mt-1 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-white">
                     <Check className="size-3.5" strokeWidth={4} />
                   </div>
-                  <p className="text-base font-bold text-[#17391f] leading-tight">
+                  <p className="text-body font-bold text-foreground leading-tight">
                     {item}
                   </p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-10 rounded-2xl bg-primary/5 p-5 text-center border border-primary/10">
-              <p className="text-sm font-bold text-[#245a2f] leading-relaxed italic">
+            <div className="mt-10 rounded-2xl bg-primary-light p-5 text-center border border-primary/10">
+              <p className="text-body-sm font-bold text-primary leading-relaxed italic">
                 {DISTRIBUTOR_SYARAT.note}
               </p>
             </div>
           </div>
 
           {/* Card 2: Bagaimana Cara Bergabung? */}
-          <div className="flex flex-col rounded-3xl bg-[#f4f7f4] p-8 shadow-sm transition-all hover:shadow-md">
-            <h3 className="mb-3 text-2xl font-bold text-[#17391f]">
+          <div className="flex flex-col rounded-2xl bg-slate-50 p-8 border border-slate-100 transition-all hover:shadow-md">
+            <h3 className="mb-3 text-heading-2 text-foreground">
               {DISTRIBUTOR_STEPS.heading}
             </h3>
-            <p className="mb-10 text-base font-medium text-[#5d7a64]">
+            <p className="mb-10 text-body text-muted-foreground">
               {DISTRIBUTOR_STEPS.subtext}
             </p>
 
@@ -78,10 +77,10 @@ const DistributorInfoCardsSection = () => {
                       </div>
                     </div>
 
-                    <h4 className="mb-2 text-sm font-bold text-[#17391f] leading-tight">
+                    <h4 className="mb-2 text-body-sm font-bold text-foreground leading-tight">
                       {item.title}
                     </h4>
-                    <p className="text-xs font-medium text-[#5d7a64] leading-relaxed">
+                    <p className="text-caption text-muted-foreground">
                       {item.description}
                     </p>
                   </div>
@@ -91,11 +90,11 @@ const DistributorInfoCardsSection = () => {
           </div>
 
           {/* Card 3: Lokasi Distributor */}
-          <div className="flex flex-col rounded-3xl bg-[#f4f7f4] p-8 shadow-sm transition-all hover:shadow-md">
-            <h3 className="mb-3 text-2xl font-bold text-[#17391f]">
+          <div className="flex flex-col rounded-2xl bg-slate-50 p-8 border border-slate-100 transition-all hover:shadow-md">
+            <h3 className="mb-3 text-heading-2 text-foreground">
               Lokasi Distributor
             </h3>
-            <p className="mb-6 text-base font-medium text-[#5d7a64]">
+            <p className="mb-6 text-body text-muted-foreground">
               Jaringan kami tersebar di seluruh Indonesia.
             </p>
 
@@ -109,17 +108,17 @@ const DistributorInfoCardsSection = () => {
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-base font-bold text-[#17391f]">
+              <h4 className="text-body font-bold text-foreground">
                 Cari Distributor Terdekat
               </h4>
               <div className="flex gap-2">
                 <div className="relative flex-1">
                   <Input
                     placeholder="Masukkan kota..."
-                    className="h-12 bg-white border-slate-200 text-sm pl-4 rounded-xl focus:ring-primary/20"
+                    className="h-12 bg-white border-slate-200 text-body-sm pl-4 rounded-xl focus:ring-primary/20"
                   />
                 </div>
-                <Button className="h-12 px-6 bg-primary hover:bg-primary-dark font-bold rounded-xl cursor-pointer shadow-lg shadow-primary/20 transition-all active:scale-95">
+                <Button className="h-12 px-6 bg-primary hover:bg-primary-dark font-bold !text-white rounded-xl cursor-pointer shadow-lg shadow-primary/20 transition-all active:scale-95">
                   Cari
                 </Button>
               </div>
