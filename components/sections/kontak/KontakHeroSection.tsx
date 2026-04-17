@@ -7,17 +7,34 @@ export default function KontakHeroSection() {
 
   return (
     <section className="relative w-full min-h-[500px] lg:min-h-[650px] flex items-center overflow-hidden">
-      {/* Background Image */}
+      {/* Background Image with <picture> for responsive sources */}
       <div className="absolute inset-0 z-0">
-        <Image
-          src={KONTAK_HERO.bgImage}
-          alt="Hero Background"
-          fill
-          className="object-cover object-center lg:object-right"
-          priority
-        />
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-dark via-primary-dark/90 to-primary-dark/20 lg:via-primary-dark/60 lg:to-transparent" />
+        <picture className="block w-full h-full">
+          {/* Desktop: ≥1024px */}
+          <source
+            media="(min-width: 1024px)"
+            srcSet={KONTAK_HERO.bgImageDesktop}
+          />
+          {/* Tablet: 768px – 1023px */}
+          <source
+            media="(min-width: 768px) and (max-width: 1023px)"
+            srcSet={KONTAK_HERO.bgImageTablet}
+          />
+          {/* Mobile: <768px */}
+          <source
+            media="(max-width: 767px)"
+            srcSet={KONTAK_HERO.bgImageMobile}
+          />
+          {/* Fallback */}
+          <img
+            src={KONTAK_HERO.bgImageDesktop}
+            alt="Hero Background"
+            className="w-full h-full object-cover object-center"
+          />
+        </picture>
+
+        {/* Overlay: hanya tampil di tablet & mobile (tersembunyi di desktop) */}
+        <div className="absolute inset-0 bg-black/50 lg:hidden" />
       </div>
 
       <div className="container-smarttani relative z-10 py-16 lg:py-24">
@@ -43,14 +60,11 @@ export default function KontakHeroSection() {
           </p>
 
           {/* Info Bar (Desktop/Tablet) */}
-          <div className="mt-12 hidden rounded-2xl bg-white p-6 shadow-2xl md:grid md:grid-cols-3 md:gap-8">
+          <div className="mt-12 hidden rounded-2xl bg-white p-6 shadow-2xl md:grid md:grid-cols-3 md:gap-4 md:max-w-3xl">
             {KONTAK_HERO.features.map((feature, index) => {
               const Icon = icons[index];
               return (
-                <div
-                  key={feature.title}
-                  className="flex items-center gap-4"
-                >
+                <div key={feature.title} className="flex items-center gap-4">
                   <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary-light text-primary">
                     <Icon className="size-7" strokeWidth={2.5} />
                   </div>

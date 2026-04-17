@@ -10,7 +10,7 @@ export const ABOUT_HERO = {
   subtext:
     "PT. Smarttani Indonesia berkomitmen menjadi mitra terpercaya dalam transformasi pertanian Indonesia menuju masa depan yang lebih cerdas, dan berkelanjutan.",
   cta: [{ label: "Pelajari Lebih Lanjut" }, { label: "Hubungi Kami" }],
-  backgroundImage: "/images/about/hero-2.png",
+  backgroundImage: "/images/about/desktop.png",
 };
 
 export const ABOUT_DESKRIPSI = {

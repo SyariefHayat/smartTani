@@ -15,12 +15,12 @@ const HeroTentangSection = () => {
         height={1080}
         priority
         quality={90}
-        className="absolute inset-0 w-full h-full object-cover object-center"
+        className="absolute inset-0 w-full h-full object-cover object-[50%_100%]"
         sizes="100vw"
       />
 
       {/* Dark overlay for text readability */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary-dark via-primary-dark/90 to-primary-dark/20 lg:via-primary-dark/60 lg:to-transparent" />
+      {/* <div className="absolute inset-0 bg-gradient-to-r from-primary-dark via-primary-dark/90 to-primary-dark/20 lg:via-primary-dark/60 lg:to-transparent" /> */}
 
       {/* Content */}
       <div className="container-smarttani relative z-10 py-16 lg:py-24">

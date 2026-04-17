@@ -134,7 +134,7 @@ export default function KontakMiddleSection() {
 
               {/* Tombol kirim */}
               <div className="col-span-full mt-2">
-                <Button className="w-full h-12 bg-primary hover:bg-primary-dark !text-white text-sm font-semibold rounded-xl transition-all hover:shadow-lg active:scale-[0.99]">
+                <Button className="w-full h-12 bg-primary hover:bg-primary-dark !text-white text-sm font-semibold rounded-xl transition-all hover:shadow-lg active:scale-[0.99] cursor-pointer">
                   <SendHorizontal className="mr-2 size-5" />
                   {KONTAK_FORM.button}
                 </Button>

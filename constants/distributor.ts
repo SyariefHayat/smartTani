@@ -25,7 +25,7 @@ export const DISTRIBUTOR_HERO = {
   heading: "Bersama Tumbuh, Bersama Membangun Pertanian Indonesia",
   subtext:
     "Jadilah bagian dari jaringan distributor resmi Smarttani dan dapatkan produk berkualitas, dukungan penuh, serta peluang keuntungan maksimal.",
-  image: "/images/distributor/hero-bg.webp",
+  image: "/images/distributor/desktop.png",
   cta: [{ label: "Daftar Menjadi Distributor" }, { label: "Unduh Brosur" }],
   advantages: [
     { label: "Produk Terjamin", sublabel: "Kualitas asli dari Smarttani" },

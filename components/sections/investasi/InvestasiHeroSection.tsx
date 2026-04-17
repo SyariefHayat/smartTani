@@ -7,7 +7,7 @@ export default function InvestasiHeroSection() {
   const icons = [ShieldCheck, TrendingUp, Sprout];
 
   return (
-    <section className="relative w-full overflow-hidden min-h-[500px] lg:min-h-[650px] flex items-center">
+    <section className="relative w-full overflow-hidden min-h-[500px] lg:h-[650px] flex items-center">
       {/* Background Image */}
       <Image
         src={INVESTASI_HERO.image}
@@ -16,12 +16,12 @@ export default function InvestasiHeroSection() {
         height={1080}
         priority
         quality={90}
-        className="absolute inset-0 w-full h-full object-cover object-center"
+        className="absolute inset-0 w-full h-full object-cover object-[80%_50%]"
         sizes="100vw"
       />
 
       {/* Overlay Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary-dark via-primary-dark/90 to-primary-dark/20 lg:via-primary-dark/60 lg:to-transparent" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,56,27,0.92)_0%,rgba(18,56,27,0.8)_28%,rgba(18,56,27,0.18)_45%,rgba(18,56,27,0.15)_50%)]" />
 
       {/* Content Wrapper */}
       <div className="container-smarttani relative z-10 py-16 pb-24 lg:py-24 lg:pb-32">

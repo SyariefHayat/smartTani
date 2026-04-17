@@ -43,7 +43,7 @@ export default function KontakLokasiSection() {
               </div>
 
               <div className="mt-8">
-                <Button className="w-full rounded-xl bg-primary px-8 py-6 text-body-sm font-bold text-white hover:bg-primary-dark shadow-lg shadow-primary/10 transition-all hover:scale-[1.02] active:scale-[0.98]">
+                <Button className="w-full rounded-xl bg-primary px-8 py-6 text-body-sm font-bold text-white hover:bg-primary-dark shadow-lg shadow-primary/10 transition-all cursor-pointer">
                   {KONTAK_LOKASI.button}
                   <ExternalLink className="ml-2 size-5" />
                 </Button>

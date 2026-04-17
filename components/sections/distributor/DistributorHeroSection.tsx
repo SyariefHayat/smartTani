@@ -14,10 +14,11 @@ const DistributorHeroSection = () => {
       <Image
         src={DISTRIBUTOR_HERO.image}
         alt="Distributor Smarttani"
-        fill
+        width={1920}
+        height={1080}
         priority
         quality={90}
-        className="object-cover object-left"
+        className="absolute inset-0 w-full h-full object-cover object-[80%_50%]"
         sizes="100vw"
       />
 
@@ -45,8 +46,8 @@ const DistributorHeroSection = () => {
                   key={index}
                   size="lg"
                   className={`h-12 w-full rounded-md px-8 text-body-sm font-bold transition-transform active:scale-95 sm:h-14 sm:w-auto sm:text-base cursor-pointer ${index === 1
-                      ? "bg-white text-primary-dark hover:bg-white/90"
-                      : "bg-primary hover:bg-primary/90 !text-white"
+                    ? "bg-white text-primary-dark hover:bg-white/90"
+                    : "bg-primary hover:bg-primary/90 !text-white"
                     }`}
                 >
                   {index === 1 && <Download className="mr-2 size-5" />}
