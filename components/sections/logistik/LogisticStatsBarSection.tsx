@@ -2,13 +2,13 @@ import React from "react";
 import { LOGISTIC_STATS_BAR } from "@/constants/logistic";
 import { StatItem } from "../beranda/StatItem";
 import { Separator } from "@/components/ui/separator";
-import { 
-  Truck, 
-  Package, 
-  Warehouse, 
-  Timer, 
-  Users, 
-  Map 
+import {
+  Truck,
+  Package,
+  Warehouse,
+  Timer,
+  Users,
+  Map
 } from "lucide-react";
 
 const ICONS = [Truck, Package, Warehouse, Timer, Users, Map];
@@ -34,7 +34,7 @@ const LogisticStatsBarSection = () => {
                 {index < LOGISTIC_STATS_BAR.length - 1 && (
                   <Separator
                     orientation="vertical"
-                    className="absolute -right-px hidden h-12 self-center lg:block bg-slate-200"
+                    className="absolute -right-px hidden h-full self-center lg:block bg-slate-200"
                   />
                 )}
               </div>

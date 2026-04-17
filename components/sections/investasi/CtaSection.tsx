@@ -1,34 +1,46 @@
 import { INVESTASI_CTA_BANNER } from "@/constants/investasi";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function CtaSection() {
   return (
-    <section className="py-12 bg-white overflow-hidden">
-      <div className="container mx-auto px-4">
-        <div className="relative rounded-[40px] bg-gradient-to-r from-[#17391f] to-[#2D6A2D] p-10 md:p-16 text-white overflow-hidden">
-          {/* Background decorations */}
-          <div className="absolute top-0 right-0 w-1/3 h-full opacity-20 pointer-events-none">
-             {/* You could add a decorative image here */}
+    <section className="pb-10 md:pb-14">
+      <div className="container-smarttani">
+        <div className="relative overflow-hidden rounded-2xl bg-primary-dark px-8 py-8 md:px-16">
+          {/* Background Image */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/images/home/cta-background-2.webp"
+              alt="CTA Background"
+              fill
+              className="object-cover object-center"
+            />
           </div>
-          
-          <div className="relative z-10 text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-6 leading-tight">
-              {INVESTASI_CTA_BANNER.heading}
-            </h2>
-            <p className="text-sm md:text-base text-white/80 mb-10 max-w-2xl mx-auto">
-              {INVESTASI_CTA_BANNER.subtext}
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button className="w-full sm:w-auto bg-[#3B6D11] hover:bg-[#2D520D] text-white px-10 h-14 rounded-full font-bold text-base border-none shadow-lg">
-                {INVESTASI_CTA_BANNER.cta[0].label}
+
+          <div className="relative z-10 flex flex-col items-center justify-between gap-10 lg:flex-row lg:gap-16">
+            {/* Text Content */}
+            <div className="max-w-2xl text-center lg:text-left">
+              <h2 className="text-heading-2 text-white">
+                {INVESTASI_CTA_BANNER.heading}
+              </h2>
+              <p className="mt-3 text-body-sm text-white/80 md:text-body">
+                {INVESTASI_CTA_BANNER.subtext}
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row lg:shrink-0">
+              <Button
+                variant="outline"
+                className="h-12 rounded-lg border-white/40 bg-transparent px-8 text-body-sm font-semibold text-white hover:bg-white/10 hover:text-white cursor-pointer"
+              >
+                {INVESTASI_CTA_BANNER.cta[0]?.label}
               </Button>
-              <Button className="w-full sm:w-auto bg-[#F5C35B] hover:bg-[#E5B24A] text-[#17391f] px-10 h-14 rounded-full font-bold text-base border-none shadow-lg">
-                {INVESTASI_CTA_BANNER.cta[1].label}
+              <Button className="h-12 rounded-lg border-none bg-accent px-8 text-body-sm font-bold !text-white hover:bg-accent/90 cursor-pointer">
+                {INVESTASI_CTA_BANNER.cta[1]?.label}
               </Button>
             </div>
           </div>
-
-          {/* Decorative icons/images could be placed here with absolute positioning */}
         </div>
       </div>
     </section>
