@@ -36,7 +36,7 @@ const AcademyStatsSection = () => {
                 {index < ACADEMY_STATS_BAR.length - 1 && (
                   <Separator
                     orientation="vertical"
-                    className="absolute -right-px hidden h-12 self-center lg:block bg-slate-200"
+                    className="absolute -right-px hidden h-full self-center lg:block bg-slate-200"
                   />
                 )}
               </div>

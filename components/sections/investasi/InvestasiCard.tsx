@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { TrendingUp, Calendar, Database } from "lucide-react";
+import { TrendingUp, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
@@ -20,7 +20,7 @@ interface InvestasiCardProps {
 
 export default function InvestasiCard({ item }: InvestasiCardProps) {
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition-all hover:shadow-md">
+    <div className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all hover:shadow-md">
       {/* Image Header */}
       <div className="relative aspect-[16/10] w-full overflow-hidden">
         <Image
@@ -32,8 +32,8 @@ export default function InvestasiCard({ item }: InvestasiCardProps) {
         />
         {item.badge && (
           <div className={cn(
-            "absolute left-3 top-3 rounded-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider shadow-sm",
-            item.badge === "POPULER" ? "bg-[#b5d296] text-[#17391f]" : "bg-orange-100 text-orange-700"
+            "absolute left-3 top-3 rounded px-2 py-0.5 text-caption font-bold uppercase tracking-wider shadow-sm !text-white",
+            item.badge === "POPULER" ? "bg-primary" : "bg-accent"
           )}>
             {item.badge}
           </div>
@@ -43,28 +43,28 @@ export default function InvestasiCard({ item }: InvestasiCardProps) {
       {/* Content */}
       <div className="flex flex-1 flex-col p-5">
         <div className="mb-2">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[#2D6A2D]">
+          <span className="text-caption font-bold uppercase tracking-wider text-primary">
             {item.kategori}
           </span>
-          <h3 className="mt-1 text-lg font-bold leading-tight text-[#17391f] line-clamp-2 min-h-[3.5rem]">
+          <h3 className="mt-1 text-body font-bold leading-tight text-foreground line-clamp-2 min-h-[3.5rem]">
             {item.title}
           </h3>
         </div>
 
         {/* Stats Grid */}
-        <div className="mt-4 grid grid-cols-2 gap-4 border-y border-neutral-100 py-4">
+        <div className="mt-4 grid grid-cols-2 gap-4 border-y border-slate-100 py-4">
           <div className="space-y-1">
-            <p className="text-[10px] font-medium text-neutral-500 uppercase tracking-wide">Imbal Hasil</p>
+            <p className="text-caption font-medium text-muted-foreground uppercase tracking-wide">Imbal Hasil</p>
             <div className="flex items-center gap-1.5">
               <TrendingUp className="size-3.5 text-green-600" />
-              <p className="text-sm font-bold text-[#17391f]">{item.imbalHasil}</p>
+              <p className="text-body-sm font-bold text-foreground">{item.imbalHasil}</p>
             </div>
           </div>
           <div className="space-y-1">
-            <p className="text-[10px] font-medium text-neutral-500 uppercase tracking-wide">Durasi</p>
+            <p className="text-caption font-medium text-muted-foreground uppercase tracking-wide">Durasi</p>
             <div className="flex items-center gap-1.5">
               <Calendar className="size-3.5 text-blue-600" />
-              <p className="text-sm font-bold text-[#17391f]">{item.durasi}</p>
+              <p className="text-body-sm font-bold text-foreground">{item.durasi}</p>
             </div>
           </div>
         </div>
@@ -73,26 +73,26 @@ export default function InvestasiCard({ item }: InvestasiCardProps) {
         <div className="mt-4 space-y-3">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <p className="text-[10px] font-medium text-neutral-500 uppercase tracking-wide">Terkumpul</p>
-              <p className="text-sm font-bold text-[#17391f]">{item.terkumpul}</p>
+              <p className="text-caption font-medium text-muted-foreground uppercase tracking-wide">Terkumpul</p>
+              <p className="text-body-sm font-bold text-foreground">{item.terkumpul}</p>
             </div>
             <div className="text-right">
-              <span className="text-sm font-bold text-[#2D6A2D]">{item.progress}%</span>
+              <span className="text-body-sm font-bold text-primary">{item.progress}%</span>
             </div>
           </div>
-          <Progress 
-            value={item.progress} 
-            className="h-1.5 bg-neutral-100" 
+          <Progress
+            value={item.progress}
+            className="h-1.5 bg-slate-100"
           />
         </div>
 
         {/* Footer */}
         <div className="mt-6 flex items-center justify-between pt-2">
           <div className="space-y-0.5">
-            <p className="text-[10px] font-medium text-neutral-500 uppercase tracking-wide">Min. Investasi</p>
-            <p className="text-sm font-bold text-[#17391f]">{item.minimalInvestasi}</p>
+            <p className="text-caption font-medium text-muted-foreground uppercase tracking-wide">Min. Investasi</p>
+            <p className="text-body-sm font-bold text-foreground">{item.minimalInvestasi}</p>
           </div>
-          <Button size="sm" className="rounded-lg bg-[#2D6A2D] px-5 font-bold hover:bg-[#235323] cursor-pointer">
+          <Button size="sm" className="rounded-lg bg-primary px-5 font-bold !text-white hover:bg-primary-dark cursor-pointer">
             Lihat Detail
           </Button>
         </div>

@@ -1,19 +1,18 @@
-import { UserPlus, Search, Wallet, TrendingUp, ShieldCheck } from "lucide-react";
-import { INVESTASI_STEPS, INVESTASI_KEUNGGULAN } from "@/constants/investasi";
+import { UserPlus, Search, Wallet, TrendingUp } from "lucide-react";
+import { INVESTASI_STEPS } from "@/constants/investasi";
 import { StepItem } from "@/components/ui/StepItem";
-import { Button } from "@/components/ui/button";
 
 export default function HowSection() {
   const icons = [UserPlus, Search, Wallet, TrendingUp];
 
   return (
     <div className="flex flex-col gap-6 h-full">
-      <div className="rounded-3xl bg-white p-6 shadow-sm border border-neutral-100 h-full">
+      <div className="rounded-2xl bg-slate-50 p-6 border border-slate-100 h-full">
         <div className="mb-8">
-          <h2 className="text-xl font-bold text-[#17391f] md:text-2xl">
+          <h2 className="text-heading-2 text-foreground">
             {INVESTASI_STEPS.heading}
           </h2>
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-body-sm text-muted-foreground">
             {INVESTASI_STEPS.subtext}
           </p>
         </div>
