@@ -43,6 +43,7 @@ const PencapaianTimSection = () => {
                       src={pimpinan.foto}
                       alt={pimpinan.nama}
                       fill
+                      sizes="100%"
                       className="object-cover"
                     />
                   </div>
@@ -77,9 +78,9 @@ const PencapaianTimSection = () => {
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                   <Phone className="w-5 h-5 text-primary" />
                 </div>
-                <p className="text-body-sm text-muted-foreground font-semibold">
+                <a href="tel:082326952833" className="text-body-sm text-primary font-semibold hover:text-primary-dark transition-colors">
                   {ABOUT_ALAMAT.telepon}
-                </p>
+                </a>
               </div>
             </div>
           </div>

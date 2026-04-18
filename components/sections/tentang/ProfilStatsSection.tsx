@@ -24,9 +24,9 @@ const ProfilStatsSection = () => {
   const total = ABOUT_STATS_BAR.length;
 
   return (
-    <section className="relative -mt-12 z-20 px-4 sm:px-6 md:px-10 lg:px-12 pb-8">
-      <div className="mx-auto max-w-7xl rounded-2xl bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.08)] md:p-8">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-y-8 lg:gap-y-0">
+    <section className="relative -mt-5 lg:-mt-12 z-20 px-4 sm:px-6 md:px-10 lg:px-12 pb-8">
+      <div className="mx-auto max-w-7xl rounded-2xl bg-white p-6 shadow-[0_12px_40px_rgba(0,0,0,0.08)] sm:p-8 md:p-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-10 sm:gap-x-6 sm:gap-y-10 lg:gap-y-0">
           {ABOUT_STATS_BAR.map((item, index) => {
             const Icon = STAT_ICONS[index] || Users;
 

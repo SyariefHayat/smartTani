@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const VisiMisiNilaiSection = () => {
   return (
-    <section className="section-padding bg-white">
+    <section id="profil" className="section-padding bg-white scroll-mt-24">
       <div className="container-smarttani">
         {/* Description Content */}
         <div className="max-w-4xl mb-16">
@@ -18,12 +18,13 @@ const VisiMisiNilaiSection = () => {
           <Button
             variant="default"
             className="bg-primary hover:bg-primary-dark rounded-lg font-semibold px-6"
+            asChild
           >
-            {ABOUT_DESKRIPSI.cta}
+            <a href="#visi-misi">{ABOUT_DESKRIPSI.cta}</a>
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div id="visi-misi" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 scroll-mt-24">
           {/* Visi Kami */}
           <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 flex flex-col items-start h-full hover:shadow-md transition-shadow duration-300">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6">

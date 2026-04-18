@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { ABOUT_LAYANAN } from "@/constants/about";
 import {
   ShoppingCart,
@@ -18,6 +19,15 @@ const LAYANAN_ICONS = [
   { icon: FileText, color: "text-orange-600", bg: "bg-orange-50" },
 ];
 
+const LAYANAN_HREFS = [
+  "/marketplace",
+  "/investasi",
+  "/distributor",
+  "/logistik",
+  "/sitani-academy",
+  "/artikel",
+];
+
 const LayananSection = () => {
   return (
     <section className="section-padding bg-white">
@@ -35,21 +45,23 @@ const LayananSection = () => {
           {ABOUT_LAYANAN.items.map((item, index) => {
             const IconConfig = LAYANAN_ICONS[index] || { icon: ShoppingCart, color: "text-primary", bg: "bg-primary/5" };
             const Icon = IconConfig.icon;
+            const href = LAYANAN_HREFS[index] || "/";
             return (
-              <div
+              <Link
                 key={item.title}
+                href={href}
                 className="bg-slate-50 p-6 rounded-2xl flex flex-col items-center text-center group hover:bg-white hover:shadow-md border border-transparent hover:border-slate-100 transition-all duration-300 h-full"
               >
                 <div className={`w-14 h-14 rounded-xl ${IconConfig.bg} flex items-center justify-center mb-5`}>
                   <Icon className={`w-7 h-7 ${IconConfig.color}`} />
                 </div>
-                <h3 className="text-body-sm font-bold text-foreground mb-2">
+                <h3 className="text-body-sm font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
                   {item.title}
                 </h3>
                 <p className="text-caption text-muted-foreground">
                   {item.description}
                 </p>
-              </div>
+              </Link>
             );
           })}
         </div>
@@ -59,3 +71,4 @@ const LayananSection = () => {
 };
 
 export default LayananSection;
+
