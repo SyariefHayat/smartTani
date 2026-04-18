@@ -113,16 +113,18 @@ const SAMPLE_PRODUCTS: Product[] = [
   },
 ];
 
+export const ALL_PRODUCTS = SAMPLE_PRODUCTS;
+
 export const MARKETPLACE_PRODUK: Record<string, Product[]> = {
-  Terlaris: SAMPLE_PRODUCTS,
-  Terbaru: SAMPLE_PRODUCTS.slice().reverse(),
-  Promo: SAMPLE_PRODUCTS.filter((p) => p.isPromo),
-  "Rating Tertinggi": SAMPLE_PRODUCTS.sort((a, b) => b.rating - a.rating),
+  Terlaris: ALL_PRODUCTS,
+  Terbaru: ALL_PRODUCTS.slice().reverse(),
+  Promo: ALL_PRODUCTS.filter((p) => p.isPromo),
+  "Rating Tertinggi": ALL_PRODUCTS.sort((a, b) => b.rating - a.rating),
 };
 
 export const MARKETPLACE_TERLARIS_DATA = {
   heading: "Produk Terlaris",
-  items: SAMPLE_PRODUCTS,
+  items: ALL_PRODUCTS,
   cta: "Lihat Semua",
 };
 

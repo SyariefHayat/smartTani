@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 interface InvestasiCardProps {
   item: {
+    id: string;
     badge: string | null;
     title: string;
     kategori: string;
@@ -20,11 +21,9 @@ interface InvestasiCardProps {
 }
 
 export default function InvestasiCard({ item }: InvestasiCardProps) {
-  const slug = item.title.toLowerCase().replace(/ /g, "-");
-
   return (
     <Link 
-      href={`/investasi/${slug}`}
+      href={`/investasi/${item.id}`}
       className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all hover:shadow-md"
     >
       {/* Image Header */}

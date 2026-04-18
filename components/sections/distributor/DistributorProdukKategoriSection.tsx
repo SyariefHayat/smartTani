@@ -31,8 +31,9 @@ const DistributorProdukKategoriSection = () => {
         <div className="relative">
           <div className="flex overflow-x-auto pb-6 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide snap-x gap-4 md:grid md:grid-cols-4 lg:grid-cols-7 lg:gap-5">
             {DISTRIBUTOR_PRODUK_KATEGORI.items.map((item, index) => (
-              <div
+              <Link
                 key={index}
+                href={`/marketplace?kategori=${encodeURIComponent(item.label)}`}
                 className="shrink-0 w-48 md:w-full snap-start group cursor-pointer"
               >
                 <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden transition-all duration-300 hover:border-primary/30 hover:shadow-lg group-hover:-translate-y-1 h-full flex flex-col">
@@ -57,7 +58,7 @@ const DistributorProdukKategoriSection = () => {
                     </p>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

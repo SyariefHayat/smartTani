@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Star, CheckCircle2, ShoppingCart } from "lucide-react";
+import { showToast } from "@/lib/toast";
 import { Product } from "@/constants/types";
 
 interface ProductCardProps {
@@ -49,7 +50,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }
     
     localStorage.setItem('smarttani-cart', JSON.stringify(cart));
-    alert(`${product.name} ditambahkan ke keranjang!`);
+    showToast(`${product.name} ditambahkan ke keranjang!`, "success");
+    window.dispatchEvent(new Event("smarttani-cart-update"));
   };
 
   return (

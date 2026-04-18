@@ -14,10 +14,10 @@ export default function RelatedInvestasi() {
     <div className="mt-20">
       <h2 className="text-2xl font-bold text-gray-900">Proyek Serupa</h2>
       <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {relatedItems.map((project, i) => (
+        {relatedItems.map((project) => (
           <Link
-            key={i}
-            href={`/investasi/${i + 1}`}
+            key={project.id}
+            href={`/investasi/${project.id}`}
             className="group block overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all hover:shadow-xl"
           >
             <div className="relative aspect-[16/9] overflow-hidden">

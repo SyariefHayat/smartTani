@@ -39,12 +39,10 @@ const AcademyKursusSection = () => {
               kursus.badge === "BARU" ||
               kursus.badge === "HOT";
             
-            const slug = kursus.title.toLowerCase().replace(/ /g, "-");
-
             return (
               <Link
                 key={kursus.title}
-                href={`/sitani-academy/${slug}`}
+                href={`/sitani-academy/${kursus.id}`}
                 className="group flex flex-col rounded-2xl bg-white border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md overflow-hidden"
               >
                 {/* Image & Badge Wrapper */}

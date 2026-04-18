@@ -99,6 +99,7 @@ export const ACADEMY_KURSUS = {
   subtext: "Kursus pilihan dengan materi terbaik dan rating tertinggi.",
   items: [
     {
+      id: "1",
       badge: "POPULER",
       title: "Budidaya Padi Berkualitas Tinggi",
       description:
@@ -112,6 +113,7 @@ export const ACADEMY_KURSUS = {
       cta: "Mulai Belajar",
     },
     {
+      id: "2",
       badge: "TERBARU",
       title: "Hidroponik untuk Pemula",
       description:
@@ -125,6 +127,7 @@ export const ACADEMY_KURSUS = {
       cta: "Mulai Belajar",
     },
     {
+      id: "3",
       badge: "BEST SELLER",
       title: "Manajemen Ternak Sapi Modern",
       description:
@@ -138,6 +141,7 @@ export const ACADEMY_KURSUS = {
       cta: "Mulai Belajar",
     },
     {
+      id: "4",
       badge: "BARU",
       title: "Penggunaan Drone untuk Pertanian",
       description: "Cara menggunakan drone untuk pemantauan dan penyemprotan.",
@@ -153,6 +157,7 @@ export const ACADEMY_KURSUS = {
       cta: "Mulai Belajar",
     },
     {
+      id: "5",
       badge: null,
       title: "Kesuburan Tanah & Pemupukan Tepat",
       description: "Memahami tanah dan strategi pemupukan yang efektif.",
@@ -165,6 +170,7 @@ export const ACADEMY_KURSUS = {
       cta: "Mulai Belajar",
     },
     {
+      id: "6",
       badge: null,
       title: "Teknik Pasca Panen Hasil Pertanian",
       description:
