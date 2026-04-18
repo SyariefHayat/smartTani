@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { LOGISTIC_STATS_BAR } from "@/constants/logistic";
 import { StatItem } from "../beranda/StatItem";

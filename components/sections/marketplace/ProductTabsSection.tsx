@@ -1,24 +1,60 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ChevronRight, SearchX } from "lucide-react";
 import { MARKETPLACE_TABS, MARKETPLACE_PRODUK } from "@/constants/marketplace";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ProductCard from "./ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
-const ProductTabsSection = () => {
-  const [activeTab, setActiveTab] = useState(MARKETPLACE_TABS[0]);
+function ProductTabsContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const q = searchParams.get("q") || "";
+  const kategori = searchParams.get("kategori") || "";
+  const tabParam = searchParams.get("tab");
+
+  const initialTab = tabParam && MARKETPLACE_TABS.includes(tabParam) ? tabParam : MARKETPLACE_TABS[0];
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (tabParam && MARKETPLACE_TABS.includes(tabParam) && tabParam !== activeTab) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam, activeTab]);
 
   const handleTabChange = (value: string) => {
     setIsLoading(true);
     setActiveTab(value);
+    
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", value);
+    router.push(`/marketplace?${params.toString()}`, { scroll: false });
+    
     setTimeout(() => setIsLoading(false), 400);
   };
 
-  const currentProducts = MARKETPLACE_PRODUK[activeTab] || [];
+  const resetFilter = () => {
+    router.push('/marketplace');
+  };
+
+  let currentProducts = MARKETPLACE_PRODUK[activeTab] || [];
+
+  if (q) {
+    currentProducts = currentProducts.filter(p => p.name.toLowerCase().includes(q.toLowerCase()));
+  }
+  
+  if (kategori) {
+    // Mock category filter by checking description or name since `category` field doesn't exist
+    currentProducts = currentProducts.filter(p => 
+      p.name.toLowerCase().includes(kategori.toLowerCase()) || 
+      p.description.toLowerCase().includes(kategori.toLowerCase())
+    );
+  }
 
   return (
     <div>
@@ -27,7 +63,7 @@ const ProductTabsSection = () => {
       </h2>
 
       <Tabs
-        defaultValue={activeTab}
+        value={activeTab}
         onValueChange={handleTabChange}
         className="w-full"
       >
@@ -71,21 +107,39 @@ const ProductTabsSection = () => {
             value={tab}
             className="mt-0 focus-visible:outline-none"
           >
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 md:gap-3 lg:gap-4">
-              {isLoading
-                ? Array.from({ length: 6 }).map((_, idx) => (
-                    <ProductCardSkeleton key={idx} />
-                  ))
-                : currentProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-            </div>
+            {isLoading ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 md:gap-3 lg:gap-4">
+                {Array.from({ length: 6 }).map((_, idx) => (
+                  <ProductCardSkeleton key={idx} />
+                ))}
+              </div>
+            ) : currentProducts.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 md:gap-3 lg:gap-4">
+                {currentProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-20 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                <SearchX className="h-16 w-16 text-gray-300 mb-4" />
+                <h3 className="text-lg font-bold text-gray-900">Tidak ada produk ditemukan</h3>
+                <p className="text-sm text-gray-500 mt-1 mb-6 text-center max-w-md">
+                  Coba ubah filter atau kata kunci pencarian Anda untuk menemukan produk yang sesuai.
+                </p>
+                <Button 
+                  onClick={resetFilter}
+                  className="bg-primary hover:bg-primary-dark text-white rounded-full px-6"
+                >
+                  Reset Filter
+                </Button>
+              </div>
+            )}
           </TabsContent>
         ))}
       </Tabs>
     </div>
   );
-};
+}
 
 const ProductCardSkeleton = () => (
   <div className="flex flex-col h-full bg-white rounded-lg border border-neutral-200 overflow-hidden">
@@ -101,4 +155,14 @@ const ProductCardSkeleton = () => (
   </div>
 );
 
-export default ProductTabsSection;
+export default function ProductTabsSection() {
+  return (
+    <Suspense fallback={<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 md:gap-3 lg:gap-4">
+      {Array.from({ length: 6 }).map((_, idx) => (
+        <ProductCardSkeleton key={idx} />
+      ))}
+    </div>}>
+      <ProductTabsContent />
+    </Suspense>
+  );
+}

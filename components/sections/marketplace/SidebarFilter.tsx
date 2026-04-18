@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { 
   Sprout, 
   FlaskConical, 
@@ -23,7 +24,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
 import { StarRating } from '@/components/ui/StarRating';
 import {
   Select,
@@ -51,13 +51,29 @@ interface SidebarFilterProps {
   onClose?: () => void;
 }
 
-const SidebarFilter: React.FC<SidebarFilterProps> = ({ className, onClose }) => {
+function SidebarFilterContent({ className, onClose }: SidebarFilterProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeCategory = searchParams.get('kategori');
+  const query = searchParams.get('q');
+  const tab = searchParams.get('tab');
+
   const [priceRange, setPriceRange] = useState([0, 10000000]);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+  const handleCategoryClick = (category: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (activeCategory === category) {
+      params.delete('kategori');
+    } else {
+      params.set('kategori', category);
+    }
+    router.push(`/marketplace?${params.toString()}`);
+  };
 
   const handleReset = () => {
     setPriceRange([0, 10000000]);
-    setActiveCategory(null);
+    router.push('/marketplace');
+    if (onClose) onClose();
   };
 
   const formatPrice = (value: number) => {
@@ -102,7 +118,7 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({ className, onClose }) => 
             return (
               <li key={cat.label}>
                 <button
-                  onClick={() => setActiveCategory(cat.label)}
+                  onClick={() => handleCategoryClick(cat.label)}
                   className={cn(
                     "w-full flex items-center justify-between px-2 py-2 rounded-md transition-all group",
                     isActive 
@@ -238,6 +254,12 @@ const SidebarFilter: React.FC<SidebarFilterProps> = ({ className, onClose }) => 
       </div>
     </aside>
   );
-};
+}
+
+const SidebarFilter: React.FC<SidebarFilterProps> = (props) => (
+  <Suspense fallback={<div className="p-4 text-sm text-gray-500">Loading filters...</div>}>
+    <SidebarFilterContent {...props} />
+  </Suspense>
+);
 
 export default SidebarFilter;

@@ -31,6 +31,13 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { HEADER_NAV } from "@/constants";
 
 export default function Navbar() {
@@ -39,6 +46,8 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [user, setUser] = useState<any>(null);
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -47,12 +56,67 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const handleStorage = () => {
+      // Auth
+      const auth = localStorage.getItem("smarttani-auth");
+      if (auth) {
+        try {
+          setUser(JSON.parse(auth));
+        } catch (e) {
+          console.error("Error parsing auth", e);
+        }
+      } else {
+        setUser(null);
+      }
+
+      // Cart
+      const cart = localStorage.getItem("smarttani-cart");
+      if (cart) {
+        try {
+          const parsedCart = JSON.parse(cart);
+          if (Array.isArray(parsedCart)) {
+            const count = parsedCart.reduce((sum, item) => sum + (item.qty || 1), 0);
+            setCartCount(count);
+          }
+        } catch (e) {
+          console.error("Error parsing cart", e);
+        }
+      } else {
+        setCartCount(0);
+      }
+    };
+
+    handleStorage();
+    window.addEventListener("storage", handleStorage);
+    window.addEventListener("smarttani-cart-update", handleStorage); // Custom event for local updates
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("smarttani-cart-update", handleStorage);
+    };
+  }, []);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      router.push(`/marketplace?q=${encodeURIComponent(query)}`);
+      router.push(`/marketplace?q=${encodeURIComponent(query.trim())}`);
       setMobileOpen(false);
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("smarttani-auth");
+    localStorage.removeItem("smarttani-cart");
+    setUser(null);
+    setCartCount(0);
+    window.dispatchEvent(new Event("storage"));
+    router.push("/");
+  };
+
+  const getDashboardLink = () => {
+    if (!user) return "/";
+    if (user.role === "investor") return "/dashboard/investor";
+    return "/dashboard/petani";
   };
 
   return (
@@ -131,41 +195,88 @@ export default function Navbar() {
               size="icon"
               id="navbar-cart"
               aria-label="Keranjang"
-              className="cursor-pointer"
+              className="cursor-pointer relative"
+              onClick={() => window.dispatchEvent(new CustomEvent('toggle-cart'))}
             >
               <ShoppingCart className="size-5" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
+                  {cartCount > 99 ? '99+' : cartCount}
+                </span>
+              )}
             </Button>
             <div className="w-px h-6 bg-border mx-1" />
-            <Button
-              variant="ghost"
-              size="sm"
-              id="navbar-login"
-              className="gap-1.5 cursor-pointer rounded-md"
-              asChild
-            >
-              <Link href="/login">
-                <LogIn className="size-4" />
-                Masuk
-              </Link>
-            </Button>
-            <Button
-              variant="accent"
-              size="sm"
-              id="navbar-register"
-              className="gap-1.5 cursor-pointer rounded-md"
-              asChild
-            >
-              <Link href="/signup">
-                <UserPlus className="size-4" />
-                Daftar
-              </Link>
-            </Button>
+            
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="gap-2 px-2 cursor-pointer focus-visible:ring-0">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-white shrink-0">
+                      {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                    </div>
+                    <span className="text-sm font-medium hidden xl:inline-block">
+                      {user.name ? (user.name.length > 10 ? user.name.substring(0, 10) + "..." : user.name) : "User"}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link href={getDashboardLink()} className="cursor-pointer w-full">Dashboard</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/profile" className="cursor-pointer w-full">Profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600">
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  id="navbar-login"
+                  className="gap-1.5 cursor-pointer rounded-md"
+                  asChild
+                >
+                  <Link href="/login">
+                    <LogIn className="size-4" />
+                    Masuk
+                  </Link>
+                </Button>
+                <Button
+                  variant="accent"
+                  size="sm"
+                  id="navbar-register"
+                  className="gap-1.5 cursor-pointer rounded-md"
+                  asChild
+                >
+                  <Link href="/signup">
+                    <UserPlus className="size-4" />
+                    Daftar
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile: Cart + Hamburger */}
           <div className="flex lg:hidden items-center gap-1">
-            <Button variant="ghost" size="icon" aria-label="Keranjang">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              aria-label="Keranjang" 
+              className="relative cursor-pointer"
+              onClick={() => window.dispatchEvent(new CustomEvent('toggle-cart'))}
+            >
               <ShoppingCart className="size-5" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
+                  {cartCount > 99 ? '99+' : cartCount}
+                </span>
+              )}
             </Button>
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
@@ -247,27 +358,57 @@ export default function Navbar() {
 
                 {/* Mobile Auth Buttons */}
                 <div className="p-4 border-t border-border space-y-2">
-                  <SheetClose asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full gap-2"
-                      size="lg"
-                      asChild
-                    >
-                      <Link href="/login">
-                        <LogIn className="size-4" />
-                        Masuk
-                      </Link>
-                    </Button>
-                  </SheetClose>
-                  <SheetClose asChild>
-                    <Button variant="accent" className="w-full gap-2" size="lg" asChild>
-                      <Link href="/signup">
-                        <UserPlus className="size-4" />
-                        Daftar
-                      </Link>
-                    </Button>
-                  </SheetClose>
+                  {user ? (
+                    <>
+                      <div className="flex items-center gap-3 px-4 py-3 bg-muted/50 rounded-xl mb-4">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-white shrink-0">
+                          {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                        </div>
+                        <div className="flex-1 truncate font-medium">
+                          {user.name || "User"}
+                        </div>
+                      </div>
+                      <SheetClose asChild>
+                        <Button variant="outline" className="w-full justify-start" size="lg" asChild>
+                          <Link href={getDashboardLink()}>Dashboard</Link>
+                        </Button>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Button variant="outline" className="w-full justify-start" size="lg" asChild>
+                          <Link href="/dashboard/profile">Profile</Link>
+                        </Button>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Button variant="destructive" className="w-full justify-start" size="lg" onClick={handleLogout}>
+                          Logout
+                        </Button>
+                      </SheetClose>
+                    </>
+                  ) : (
+                    <>
+                      <SheetClose asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full gap-2"
+                          size="lg"
+                          asChild
+                        >
+                          <Link href="/login">
+                            <LogIn className="size-4" />
+                            Masuk
+                          </Link>
+                        </Button>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Button variant="accent" className="w-full gap-2" size="lg" asChild>
+                          <Link href="/signup">
+                            <UserPlus className="size-4" />
+                            Daftar
+                          </Link>
+                        </Button>
+                      </SheetClose>
+                    </>
+                  )}
                 </div>
               </SheetContent>
             </Sheet>
