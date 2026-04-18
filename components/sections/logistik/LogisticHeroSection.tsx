@@ -1,15 +1,25 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LOGISTIC_HERO } from "@/constants/logistic";
-import { ShieldCheck, Truck, Globe, Search } from "lucide-react";
+import { ShieldCheck, Truck, Globe, Search, CheckCircle2, Clock } from "lucide-react";
 
 const ICON_MAP = [ShieldCheck, Truck, Globe];
 
 const LogisticHeroSection = () => {
+  const [trackingNo, setTrackingNo] = useState("");
+  const [showTracking, setShowTracking] = useState(false);
+
+  const handleTracking = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (trackingNo.trim()) {
+      setShowTracking(true);
+    }
+  };
+
   return (
     <section className="relative min-h-[500px] lg:min-h-[650px] flex items-center overflow-hidden">
       {/* Background Image */}
@@ -82,22 +92,65 @@ const LogisticHeroSection = () => {
                 {LOGISTIC_HERO.tracking.placeholder}
               </p>
 
-              <div className="space-y-4">
+              <form onSubmit={handleTracking} className="space-y-4">
                 <Input
                   type="text"
                   placeholder={LOGISTIC_HERO.tracking.inputHint}
                   className="h-12 border-slate-200 bg-slate-50 px-4 focus:ring-primary rounded-xl"
+                  value={trackingNo}
+                  onChange={(e) => setTrackingNo(e.target.value)}
                 />
 
-                <Button className="h-12 w-full bg-primary text-base font-bold !text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
+                <Button 
+                  type="submit"
+                  className="h-12 w-full bg-primary text-base font-bold !text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20"
+                >
                   <Search className="mr-2 h-5 w-5" />
                   {LOGISTIC_HERO.tracking.ctaPrimary}
                 </Button>
 
-                <button className="flex w-full items-center justify-center gap-2 text-body-sm font-bold text-primary hover:text-primary/80 transition-colors py-2 group">
+                <button 
+                  type="button"
+                  className="flex w-full items-center justify-center gap-2 text-body-sm font-bold text-primary hover:text-primary/80 transition-colors py-2 group"
+                >
                   {LOGISTIC_HERO.tracking.ctaSecondary}
                 </button>
-              </div>
+              </form>
+
+              {showTracking && (
+                <div className="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-100 animate-in fade-in slide-in-from-top-2">
+                  <div className="flex items-center justify-between mb-4 border-b pb-2">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">No. Resi: {trackingNo}</span>
+                    <span className="text-[10px] font-bold text-primary bg-primary-light px-2 py-0.5 rounded-full">DIKIRIM</span>
+                  </div>
+                  <div className="space-y-3">
+                    {[
+                      { label: "Pesanan Diterima", date: "12 Mei, 08:30", done: true },
+                      { label: "Diproses", date: "12 Mei, 10:45", done: true },
+                      { label: "Dalam Perjalanan", date: "13 Mei, 14:20", done: true },
+                    ].map((step, i) => (
+                      <div key={i} className="flex gap-3 items-start">
+                        <div className="mt-1">
+                          <CheckCircle2 className="size-3.5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-[11px] font-bold text-slate-800 leading-none">{step.label}</p>
+                          <p className="text-[9px] text-slate-400 mt-0.5">{step.date}</p>
+                        </div>
+                      </div>
+                    ))}
+                    <div className="flex gap-3 items-start opacity-50">
+                      <div className="mt-1">
+                        <Clock className="size-3.5 text-slate-400" />
+                      </div>
+                      <div>
+                        <p className="text-[11px] font-bold text-slate-800 leading-none">Estimasi Tiba</p>
+                        <p className="text-[9px] text-slate-400 mt-0.5">15 Mei 2024</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

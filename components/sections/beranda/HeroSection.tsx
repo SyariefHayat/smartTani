@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import {
   HERO_ACTION,
@@ -11,6 +12,21 @@ import { Button } from "@/components/ui/button";
 import { ShieldCheck, Sprout } from "lucide-react";
 
 export default function HeroSection() {
+  const getHref = (role: string) => {
+    switch (role) {
+      case "Petani":
+        return "/signup?role=petani";
+      case "Investor":
+        return "/signup?role=investor";
+      case "Hasil Tani":
+        return "/marketplace";
+      case "Pelatihan":
+        return "/sitani-academy";
+      default:
+        return "/";
+    }
+  };
+
   return (
     <section className="pb-8 md:pb-10">
       <div className="w-full">
@@ -44,14 +60,17 @@ export default function HeroSection() {
                     size="lg"
                     aria-label={`${prefix} sebagai ${role}`}
                     className={`h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer ${className}`}
+                    asChild
                   >
-                    <Icon className="size-7 shrink-0 mr-3" />
-                    <div className="flex flex-col items-start leading-tight">
-                      <span className="prefix text-[0.65rem] font-normal opacity-80">
-                        {prefix}
-                      </span>
-                      <span className="text-sm font-bold">{role}</span>
-                    </div>
+                    <Link href={getHref(role)}>
+                      <Icon className="size-7 shrink-0 mr-3" />
+                      <div className="flex flex-col items-start leading-tight">
+                        <span className="prefix text-[0.65rem] font-normal opacity-80">
+                          {prefix}
+                        </span>
+                        <span className="text-sm font-bold">{role}</span>
+                      </div>
+                    </Link>
                   </Button>
                 ))}
               </div>

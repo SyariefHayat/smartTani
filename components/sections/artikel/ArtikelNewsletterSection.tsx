@@ -1,12 +1,24 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { ARTIKEL_NEWSLETTER } from "@/constants/article";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 
 const ArtikelNewsletterSection = () => {
+  const [email, setEmail] = useState("");
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email.trim() && email.includes('@')) {
+      alert("Terima kasih! Email Anda telah terdaftar untuk menerima newsletter kami.");
+      setEmail("");
+    } else {
+      alert("Silakan masukkan email yang valid.");
+    }
+  };
+
   return (
     <section className="pb-10 md:pb-14">
       <div className="container-smarttani">
@@ -34,16 +46,22 @@ const ArtikelNewsletterSection = () => {
             </div>
 
             {/* Kanan: Input & Button */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:justify-end">
+            <form 
+              onSubmit={handleSubscribe}
+              className="flex flex-col gap-3 sm:flex-row sm:items-center lg:justify-end w-full"
+            >
               <Input
                 type="email"
+                required
                 placeholder={ARTIKEL_NEWSLETTER.inputPlaceholder}
                 className="h-12 flex-1 border-white/20 bg-white/10 px-4 text-white placeholder:text-white/60 focus-visible:ring-[#FFB21C]"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
-              <Button className="h-12 bg-[#FFB21C] px-8 font-bold text-white hover:bg-[#FFB21C]/90 transition-all border-none whitespace-nowrap">
+              <Button type="submit" className="h-12 bg-[#FFB21C] px-8 font-bold text-white hover:bg-[#FFB21C]/90 transition-all border-none whitespace-nowrap cursor-pointer">
                 {ARTIKEL_NEWSLETTER.cta}
               </Button>
-            </div>
+            </form>
 
           </div>
         </div>

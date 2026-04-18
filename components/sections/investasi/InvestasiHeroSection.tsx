@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { INVESTASI_HERO } from "@/constants/investasi";
 import { Button } from "@/components/ui/button";
@@ -5,6 +7,13 @@ import { ShieldCheck, TrendingUp, Sprout, PlayCircle, Search } from "lucide-reac
 
 export default function InvestasiHeroSection() {
   const icons = [ShieldCheck, TrendingUp, Sprout];
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <section className="relative w-full overflow-hidden min-h-[500px] lg:h-[650px] flex items-center">
@@ -44,6 +53,7 @@ export default function InvestasiHeroSection() {
             <div className="mt-8 flex flex-wrap gap-4">
               <Button
                 size="lg"
+                onClick={() => scrollToSection('proyek-investasi')}
                 className="h-12 rounded-xl bg-primary px-6 text-body-sm font-bold !text-white shadow-lg hover:bg-primary-dark sm:h-14 sm:px-8 sm:text-base cursor-pointer"
               >
                 <Search className="mr-2 size-5" strokeWidth={2.5} />
@@ -52,6 +62,7 @@ export default function InvestasiHeroSection() {
               <Button
                 size="lg"
                 variant="outline"
+                onClick={() => scrollToSection('cara-investasi')}
                 className="h-12 rounded-xl border-none bg-white px-6 text-body-sm font-bold text-primary-dark shadow-lg hover:bg-slate-100 sm:h-14 sm:px-8 sm:text-base cursor-pointer"
               >
                 <PlayCircle className="mr-2 size-5 text-primary" strokeWidth={2.5} />

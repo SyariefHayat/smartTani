@@ -50,7 +50,7 @@ const LayananSection = () => {
               <Link
                 key={item.title}
                 href={href}
-                className="bg-slate-50 p-6 rounded-2xl flex flex-col items-center text-center group hover:bg-white hover:shadow-md border border-transparent hover:border-slate-100 transition-all duration-300 h-full"
+                className="bg-slate-50 p-6 rounded-2xl flex flex-col items-center text-center group hover:bg-white hover:shadow-md border border-transparent hover:border-slate-100 transition-all duration-300 h-full cursor-pointer"
               >
                 <div className={`w-14 h-14 rounded-xl ${IconConfig.bg} flex items-center justify-center mb-5`}>
                   <Icon className={`w-7 h-7 ${IconConfig.color}`} />
@@ -71,4 +71,3 @@ const LayananSection = () => {
 };
 
 export default LayananSection;
-

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Search,
   Bell,
@@ -35,8 +35,10 @@ import { HEADER_NAV } from "@/constants";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -44,6 +46,14 @@ export default function Navbar() {
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/marketplace?q=${encodeURIComponent(query)}`);
+      setMobileOpen(false);
+    }
+  };
 
   return (
     <header
@@ -85,21 +95,24 @@ export default function Navbar() {
 
           {/* Search Bar — desktop only */}
           <div className="hidden lg:flex items-center flex-1 max-w-lg mx-4">
-            <div className="relative w-full">
+            <form onSubmit={handleSearch} className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
               <Input
                 id="navbar-search"
                 type="search"
                 placeholder="Cari produk, layanan, atau informasi..."
                 className="pl-10 pr-20 h-10 bg-neutral-100 border-neutral-200 rounded-full text-sm"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
               />
               <Button
+                type="submit"
                 size="sm"
                 className="absolute right-1 top-1/2 -translate-y-1/2 h-8 rounded-full px-4 text-xs cursor-pointer"
               >
                 Cari
               </Button>
-            </div>
+            </form>
           </div>
 
           {/* Actions — desktop */}
@@ -176,7 +189,7 @@ export default function Navbar() {
                     <SheetTitle>
                       <div className="relative w-24 h-12 md:w-28 md:h-14">
                         <Image
-                          src="/images/home/logo.webp"
+                          src="/images/home/logo.png"
                           alt="Logo"
                           className="object-contain"
                           sizes="100%"
@@ -195,14 +208,16 @@ export default function Navbar() {
 
                 {/* Mobile Search */}
                 <div className="p-4 border-b border-border">
-                  <div className="relative">
+                  <form onSubmit={handleSearch} className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input
                       type="search"
                       placeholder="Cari..."
                       className="pl-10 h-10 bg-neutral-100 border-neutral-200 rounded-full text-sm"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
                     />
-                  </div>
+                  </form>
                 </div>
 
                 {/* Mobile Nav Links */}
@@ -237,15 +252,20 @@ export default function Navbar() {
                       variant="outline"
                       className="w-full gap-2"
                       size="lg"
+                      asChild
                     >
-                      <LogIn className="size-4" />
-                      Masuk
+                      <Link href="/login">
+                        <LogIn className="size-4" />
+                        Masuk
+                      </Link>
                     </Button>
                   </SheetClose>
                   <SheetClose asChild>
-                    <Button variant="accent" className="w-full gap-2" size="lg">
-                      <UserPlus className="size-4" />
-                      Daftar
+                    <Button variant="accent" className="w-full gap-2" size="lg" asChild>
+                      <Link href="/signup">
+                        <UserPlus className="size-4" />
+                        Daftar
+                      </Link>
                     </Button>
                   </SheetClose>
                 </div>

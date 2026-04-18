@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { ABOUT_HERO } from "@/constants/about";
@@ -5,6 +7,13 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Phone } from "lucide-react";
 
 const HeroTentangSection = () => {
+  const scrollToDetail = () => {
+    const element = document.getElementById('profil');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="relative min-h-[500px] lg:min-h-[650px] w-full overflow-hidden flex items-center">
       <div className="absolute inset-0 z-0">
@@ -61,18 +70,16 @@ const HeroTentangSection = () => {
               size="lg"
               variant="accent"
               className="rounded-full px-8 h-12 md:h-14 text-base font-semibold transition-all cursor-pointer"
-              asChild
+              onClick={scrollToDetail}
             >
-              <a href="#profil">
-                {ABOUT_HERO.cta[0].label}
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </a>
+              {ABOUT_HERO.cta[0].label}
+              <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="rounded-full px-8 h-12 md:h-14 text-base font-semibold border-2 border-white bg-transparent text-white hover:bg-white hover:text-primary transition-all cursor-pointer"
               asChild
+              className="rounded-full px-8 h-12 md:h-14 text-base font-semibold border-2 border-white bg-transparent text-white hover:bg-white hover:text-primary transition-all cursor-pointer"
             >
               <Link href="/kontak">
                 <Phone className="mr-2 h-5 w-5" />
