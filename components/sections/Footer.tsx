@@ -15,6 +15,7 @@ import {
   FaTiktok,
   FaYoutube,
 } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 /* ── Social icon mapping ── */
 function SocialIcon({ icon }: { icon: string }) {
@@ -30,6 +31,8 @@ function SocialIcon({ icon }: { icon: string }) {
       return <FaLinkedin className={cls} />;
     case "tiktok":
       return <FaTiktok className={cls} />;
+    case "twitter":
+      return <FaXTwitter className={cls} />;
     default:
       return null;
   }
@@ -128,7 +131,7 @@ export default function Footer() {
               </p>
               <div className="flex items-center gap-3">
                 <div className="flex flex-col gap-2">
-                  <a href="#" aria-label="Download dari Google Play">
+                  <a href="#" aria-label="Download dari Google Play" target="_blank">
                     <Image
                       src="/images/home/playstore.webp"
                       alt="Tersedia di Google Play"
@@ -137,7 +140,7 @@ export default function Footer() {
                       className="h-11 w-auto"
                     />
                   </a>
-                  <a href="#" aria-label="Download dari App Store">
+                  <a href="#" aria-label="Download dari App Store" target="_blank">
                     <Image
                       src="/images/home/app-store.webp"
                       alt="Tersedia di App Store"
@@ -158,14 +161,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* ─── Link Columns ───
-              Mobile : col-span-1 (2 per row)
-              Tablet : col-span-1 (4 per row → Row 2 penuh)
-              Desktop: col-span-2
-              Asumsi FOOTER_SECTIONS berisi tepat 4 section.
-              Jika lebih/kurang, sesuaikan md:col-span di bawah
-              atau bungkus dengan wrapper grid khusus.
-          */}
+          {/* ─── Link Columns ─── */}
           {FOOTER_SECTIONS.map((section) => (
             <div
               key={section.title}

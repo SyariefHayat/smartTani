@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { StarRating } from "@/components/ui/StarRating";
 import {
@@ -87,18 +88,24 @@ const DistributorSuccessAndCTASection = () => {
               <div className="mt-auto space-y-4">
                 <Button
                   size="lg"
+                  asChild
                   className="h-14 w-full bg-accent text-base font-bold !text-white hover:bg-accent/90 transition-all active:scale-95 cursor-pointer rounded-2xl shadow-lg shadow-black/20 border-none"
                 >
-                  {DISTRIBUTOR_CTA_BANNER.cta[0].label}
+                  <Link href="/signup?role=distributor">
+                    {DISTRIBUTOR_CTA_BANNER.cta[0].label}
+                  </Link>
                 </Button>
 
                 <Button
                   variant="outline"
                   size="lg"
+                  asChild
                   className="h-14 w-full border-2 border-white bg-transparent text-base font-bold text-white hover:bg-white/10 transition-all active:scale-95 cursor-pointer rounded-2xl"
                 >
-                  <MessageCircle className="mr-3 size-5" />
-                  {DISTRIBUTOR_CTA_BANNER.cta[1].label}
+                  <Link href="/kontak" className="flex items-center justify-center">
+                    <MessageCircle className="mr-3 size-5" />
+                    {DISTRIBUTOR_CTA_BANNER.cta[1].label}
+                  </Link>
                 </Button>
               </div>
             </div>

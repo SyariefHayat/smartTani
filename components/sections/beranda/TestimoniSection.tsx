@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ARTICLE_IMAGES,
   CATEGORY_IMAGES,
@@ -9,8 +11,11 @@ import {
 import { Quote, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function TestimoniSection() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
   return (
     <section className="py-8">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
@@ -27,7 +32,7 @@ export default function TestimoniSection() {
                 </p>
               </div>
               <Link
-                href="#"
+                href="/marketplace"
                 className="text-xs font-bold text-primary hover:underline"
               >
                 Lihat Semua →
@@ -36,8 +41,9 @@ export default function TestimoniSection() {
 
             <div className="grid grid-cols-3 gap-2.5">
               {HOME_CATEGORY.slice(0, 6).map((item, index) => (
-                <div
+                <Link
                   key={item}
+                  href={`/marketplace?kategori=${item}`}
                   className="flex flex-col items-center gap-2 p-3 rounded-xl bg-[#EAF3DE] border border-gray-100 hover:border-gray-300 hover:bg-[#f6f8f2] transition-all cursor-pointer text-center"
                 >
                   <div className="relative w-11 h-11 rounded-lg bg-[#EAF3DE] overflow-hidden flex items-center justify-center">
@@ -54,12 +60,15 @@ export default function TestimoniSection() {
                   <p className="text-[11px] font-medium text-[#5d7a64] leading-tight">
                     {item}
                   </p>
-                </div>
+                </Link>
               ))}
 
               {/* Item ke-7: full width */}
               {HOME_CATEGORY[6] && (
-                <div className="col-span-3 flex items-center justify-center gap-3 px-4 py-2.5 rounded-xl bg-[#EAF3DE] border border-gray-100 hover:border-gray-300 hover:bg-[#f6f8f2] transition-all cursor-pointer">
+                <Link
+                  href={`/marketplace?kategori=${HOME_CATEGORY[6]}`}
+                  className="col-span-3 flex items-center justify-center gap-3 px-4 py-2.5 rounded-xl bg-[#EAF3DE] border border-gray-100 hover:border-gray-300 hover:bg-[#f6f8f2] transition-all cursor-pointer"
+                >
                   <div className="relative w-9 h-9 rounded-lg bg-[#EAF3DE] overflow-hidden shrink-0">
                     <Image
                       src={CATEGORY_IMAGES[6] ?? "/images/home/padi-gabah.webp"}
@@ -72,7 +81,7 @@ export default function TestimoniSection() {
                   <p className="text-xs font-medium text-[#5d7a64]">
                     {HOME_CATEGORY[6]}
                   </p>
-                </div>
+                </Link>
               )}
             </div>
           </div>
@@ -89,53 +98,57 @@ export default function TestimoniSection() {
               </h2>
             </div>
             <div className="space-y-4">
-              {HOME_TESTIMONI.map((item, index) => (
-                <div
-                  key={item.name}
-                  className="relative rounded-2xl bg-[#EAF3DE] p-6 shadow-sm"
-                >
-                  <div className="mb-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="relative size-12 overflow-hidden rounded-full border border-gray-100">
-                        <Image
-                          src={
-                            TESTIMONI_AVATARS[index] ??
-                            "/images/about/Placeholder-profesional.jpeg"
-                          }
-                          alt={`Foto profil ${item.name}`}
-                          fill
-                          className="object-cover"
-                          sizes="100%"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold text-[#17391f]">
-                          {item.name}
-                        </p>
-                        <p className="text-[0.65rem] font-medium text-[#5d7a64] md:text-xs">
-                          {item.role}
-                        </p>
-                      </div>
+              <div
+                className="relative rounded-2xl bg-[#EAF3DE] p-6 shadow-sm min-h-[160px] flex flex-col justify-center"
+              >
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="relative size-12 overflow-hidden rounded-full border border-gray-100">
+                      <Image
+                        src={
+                          TESTIMONI_AVATARS[activeIndex] ??
+                          "/images/about/Placeholder-profesional.jpeg"
+                        }
+                        alt={`Foto profil ${HOME_TESTIMONI[activeIndex].name}`}
+                        fill
+                        className="object-cover"
+                        sizes="100%"
+                      />
                     </div>
-                    <div className="flex gap-0.5" aria-label="Rating 5 bintang">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="size-3 fill-[#f5c35b] text-[#f5c35b]"
-                          aria-hidden="true"
-                        />
-                      ))}
+                    <div>
+                      <p className="text-sm font-bold text-[#17391f]">
+                        {HOME_TESTIMONI[activeIndex].name}
+                      </p>
+                      <p className="text-[0.65rem] font-medium text-[#5d7a64] md:text-xs">
+                        {HOME_TESTIMONI[activeIndex].role}
+                      </p>
                     </div>
                   </div>
-                  <p className="text-xs leading-relaxed italic text-[#5d7a64] md:text-sm">
-                    &quot;{item.quote}&quot;
-                  </p>
+                  <div className="flex gap-0.5" aria-label="Rating 5 bintang">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className="size-3 fill-[#f5c35b] text-[#f5c35b]"
+                        aria-hidden="true"
+                      />
+                    ))}
+                  </div>
                 </div>
-              ))}
+                <p className="text-xs leading-relaxed italic text-[#5d7a64] md:text-sm">
+                  &quot;{HOME_TESTIMONI[activeIndex].quote}&quot;
+                </p>
+              </div>
               <div className="flex justify-center gap-2">
-                <div className="size-2 rounded-full bg-primary" />
-                <div className="size-2 rounded-full bg-primary/30" />
-                <div className="size-2 rounded-full bg-primary/30" />
+                {HOME_TESTIMONI.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveIndex(index)}
+                    className={`size-2 rounded-full transition-all ${
+                      activeIndex === index ? "bg-primary w-4" : "bg-primary/30"
+                    }`}
+                    aria-label={`Lihat testimoni ${index + 1}`}
+                  />
+                ))}
               </div>
             </div>
           </div>
@@ -147,7 +160,7 @@ export default function TestimoniSection() {
                 Artikel Terbaru
               </h2>
               <Link
-                href="#"
+                href="/artikel"
                 className="text-xs font-bold text-primary hover:underline"
               >
                 Lihat Semua →
@@ -157,7 +170,7 @@ export default function TestimoniSection() {
               {HOME_ARTICLE.map((item, index) => (
                 <Link
                   key={item.title}
-                  href="#"
+                  href={`/artikel/${index + 1}`}
                   aria-label={`Baca artikel: ${item.title}`}
                   className="group flex items-start gap-4 transition-transform hover:translate-x-1"
                 >

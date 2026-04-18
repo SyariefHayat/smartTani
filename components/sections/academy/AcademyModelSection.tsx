@@ -8,7 +8,7 @@ const ICON_MAP = [Laptop, Users, Layers, Building];
 
 const AcademyModelSection = () => {
   return (
-    <section className="section-padding bg-slate-50">
+    <section className="section-padding bg-slate-50" id="academy-model">
       <div className="container-smarttani">
         {/* Header */}
         <div className="mb-8 md:mb-16 flex flex-col items-center text-center">

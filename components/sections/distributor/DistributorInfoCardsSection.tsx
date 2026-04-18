@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Image from "next/image";
 import {
   Check,
@@ -18,6 +20,14 @@ import { Button } from "@/components/ui/button";
 const STEP_ICONS = [TrendingUp, ClipboardCheck, GraduationCap, Truck];
 
 const DistributorInfoCardsSection = () => {
+  const [search, setSearch] = useState("");
+
+  const handleSearch = () => {
+    if (search.trim()) {
+      alert(`Mencari distributor di ${search}...`);
+    }
+  };
+
   return (
     <section className="section-padding bg-white">
       <div className="container-smarttani">
@@ -111,17 +121,25 @@ const DistributorInfoCardsSection = () => {
               <h4 className="text-body font-bold text-foreground">
                 Cari Distributor Terdekat
               </h4>
-              <div className="flex gap-2">
+              <form 
+                onSubmit={(e) => { e.preventDefault(); handleSearch(); }}
+                className="flex gap-2"
+              >
                 <div className="relative flex-1">
                   <Input
                     placeholder="Masukkan kota..."
                     className="h-12 bg-white border-slate-200 text-body-sm pl-4 rounded-xl focus:ring-primary/20"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                   />
                 </div>
-                <Button className="h-12 px-6 bg-primary hover:bg-primary-dark font-bold !text-white rounded-xl cursor-pointer shadow-lg shadow-primary/20 transition-all active:scale-95">
+                <Button 
+                  type="submit"
+                  className="h-12 px-6 bg-primary hover:bg-primary-dark font-bold !text-white rounded-xl cursor-pointer shadow-lg shadow-primary/20 transition-all active:scale-95"
+                >
                   Cari
                 </Button>
-              </div>
+              </form>
             </div>
           </div>
         </div>

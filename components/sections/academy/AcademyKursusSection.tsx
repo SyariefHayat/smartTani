@@ -23,7 +23,7 @@ const AcademyKursusSection = () => {
             </p>
           </div>
           <Link
-            href="#"
+            href="/sitani-academy"
             className="group flex items-center gap-2 text-body-sm font-bold text-primary transition-all hover:text-primary/80"
           >
             Lihat Semua Kursus
@@ -38,10 +38,13 @@ const AcademyKursusSection = () => {
               kursus.badge === "BEST SELLER" ||
               kursus.badge === "BARU" ||
               kursus.badge === "HOT";
+            
+            const slug = kursus.title.toLowerCase().replace(/ /g, "-");
 
             return (
-              <div
+              <Link
                 key={kursus.title}
+                href={`/sitani-academy/${slug}`}
                 className="group flex flex-col rounded-2xl bg-white border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md overflow-hidden"
               >
                 {/* Image & Badge Wrapper */}
@@ -118,11 +121,11 @@ const AcademyKursusSection = () => {
                   </div>
 
                   {/* Button */}
-                  <Button className="h-9 w-full bg-primary text-caption font-bold !text-white hover:bg-primary-dark rounded-lg">
-                    {kursus.cta}
+                  <Button asChild className="h-9 w-full bg-primary text-caption font-bold !text-white hover:bg-primary-dark rounded-lg cursor-pointer">
+                    <span>{kursus.cta}</span>
                   </Button>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

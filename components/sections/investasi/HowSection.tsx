@@ -6,7 +6,7 @@ export default function HowSection() {
   const icons = [UserPlus, Search, Wallet, TrendingUp];
 
   return (
-    <div className="flex flex-col gap-6 h-full">
+    <div className="flex flex-col gap-6 h-full" id="cara-investasi">
       <div className="rounded-2xl bg-slate-50 p-6 border border-slate-100 h-full">
         <div className="mb-8">
           <h2 className="text-heading-2 text-foreground">
