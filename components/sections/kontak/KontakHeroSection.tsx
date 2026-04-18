@@ -1,110 +1,75 @@
-import Image from "next/image";
+"use client";
+
 import { KONTAK_HERO } from "@/constants/kontak";
 import { Headphones, ShieldCheck, Users } from "lucide-react";
 
-export default function KontakHeroSection() {
-  const icons = [Headphones, ShieldCheck, Users];
+const ICON_MAP = [Headphones, ShieldCheck, Users];
 
+export default function KontakHeroSection() {
   return (
-    <section className="relative w-full min-h-[500px] lg:min-h-[650px] flex items-center overflow-hidden">
-      {/* Background Image with <picture> for responsive sources */}
+    <section className="relative flex items-center overflow-hidden min-h-[520px] md:min-h-[460px] lg:min-h-[420px]">
+      {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
-          {/* Desktop: ≥1024px */}
-          <source
-            media="(min-width: 1024px)"
-            srcSet={KONTAK_HERO.bgImageDesktop}
-          />
-          {/* Tablet: 768px – 1023px */}
-          <source
-            media="(min-width: 768px) and (max-width: 1023px)"
-            srcSet={KONTAK_HERO.bgImageTablet}
-          />
-          {/* Mobile: <768px */}
-          <source
-            media="(max-width: 767px)"
-            srcSet={KONTAK_HERO.bgImageMobile}
-          />
-          {/* Fallback */}
+          <source media="(min-width: 1024px)" srcSet={KONTAK_HERO.bgImageDesktop} />
+          <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={KONTAK_HERO.bgImageTablet} />
+          <source media="(max-width: 767px)" srcSet={KONTAK_HERO.bgImageMobile} />
           <img
             src={KONTAK_HERO.bgImageDesktop}
-            alt="Hero Background"
+            alt="Kontak Smarttani"
             className="w-full h-full object-cover object-center"
           />
         </picture>
 
-        {/* Overlay: hanya tampil di tablet & mobile (tersembunyi di desktop) */}
-        <div className="absolute inset-0 bg-black/50 lg:hidden" />
+        {/* Overlay mobile */}
+        <div className="absolute inset-0 bg-black/55 md:hidden" />
       </div>
 
-      <div className="container-smarttani relative z-10 py-16 lg:py-24">
-        <div className="max-w-4xl">
-          {/* Badge */}
-          <div className="inline-block rounded-lg bg-primary-medium/80 backdrop-blur-sm px-4 py-2 text-caption font-bold text-white md:text-body-sm">
-            {KONTAK_HERO.badge}
-          </div>
+      {/* Content */}
+      <div className="container-smarttani relative z-10 py-10 lg:py-0">
+        <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-8">
 
-          {/* Headings */}
-          <div className="mt-8 space-y-2">
-            <h1 className="text-display text-white">
+          {/* Left Column */}
+          <div className="lg:col-span-9">
+            {/* Badge */}
+            <div className="mb-3 inline-block rounded-lg bg-primary-medium/80 backdrop-blur-sm px-3 py-1.5 text-caption font-bold text-white">
+              {KONTAK_HERO.badge}
+            </div>
+
+            <h1 className="text-heading-1 md:text-display text-white mb-3 max-w-sm lg:max-w-lg">
               {KONTAK_HERO.heading}
             </h1>
-            <h2 className="text-heading-1 text-white/90 font-semibold">
-              {KONTAK_HERO.subheading}
-            </h2>
+
+            <p className="text-body-sm mb-5 max-w-sm md:max-w-md text-white/85">
+              {KONTAK_HERO.subtext}
+            </p>
+
+            {/* Feature Badges */}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-3 max-w-md lg:max-w-xl">
+              {KONTAK_HERO.features.map((feature, index) => {
+                const Icon = ICON_MAP[index] || ShieldCheck;
+                return (
+                  <div
+                    key={index}
+                    className="flex flex-row md:flex-col lg:flex-row items-center md:items-start gap-3 rounded-xl bg-white p-3 shadow-lg transition-all hover:translate-y-[-2px]"
+                  >
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-light text-primary">
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="text-caption font-bold text-foreground leading-tight">
+                        {feature.title}
+                      </p>
+                      <p className="mt-0.5 text-[11px] text-muted-foreground leading-tight">
+                        {feature.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Subtext */}
-          <p className="mt-8 max-w-2xl text-body-lg text-white/85">
-            {KONTAK_HERO.subtext}
-          </p>
-
-          {/* Info Bar (Desktop/Tablet) */}
-          <div className="mt-12 hidden rounded-2xl bg-white p-6 shadow-2xl md:grid md:grid-cols-3 md:gap-4 md:max-w-3xl">
-            {KONTAK_HERO.features.map((feature, index) => {
-              const Icon = icons[index];
-              return (
-                <div key={feature.title} className="flex items-center gap-4">
-                  <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary-light text-primary">
-                    <Icon className="size-7" strokeWidth={2.5} />
-                  </div>
-                  <div>
-                    <h3 className="text-body-sm font-bold text-foreground">
-                      {feature.title}
-                    </h3>
-                    <p className="mt-0.5 text-caption text-muted-foreground">
-                      {feature.description}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Info Cards (Mobile) */}
-          <div className="mt-10 grid gap-4 md:hidden">
-            {KONTAK_HERO.features.map((feature, index) => {
-              const Icon = icons[index];
-              return (
-                <div
-                  key={feature.title}
-                  className="flex items-center gap-4 rounded-xl bg-white p-4 shadow-xl"
-                >
-                  <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary-light text-primary">
-                    <Icon className="size-6" strokeWidth={2} />
-                  </div>
-                  <div>
-                    <h3 className="text-body-sm font-bold text-foreground">
-                      {feature.title}
-                    </h3>
-                    <p className="text-caption text-muted-foreground">
-                      {feature.description}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         </div>
       </div>
     </section>
