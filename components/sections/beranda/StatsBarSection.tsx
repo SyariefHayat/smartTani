@@ -1,3 +1,5 @@
+"use client";
+
 import { UsersRound } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { HOME_STATS_BAR, STAT_BAR_ICONS } from "@/constants";

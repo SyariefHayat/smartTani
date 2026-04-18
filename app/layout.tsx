@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Navbar from "@/components/sections/Navbar";
 import Footer from "@/components/sections/Footer";
+import CartSidebar from "@/components/ui/CartSidebar";
+import ToastContainer from "@/components/ui/ToastContainer";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -33,8 +35,10 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-sans antialiased">
         <TooltipProvider>
           <Navbar />
+          <CartSidebar />
           <main className="flex-1">{children}</main>
           <Footer />
+          <ToastContainer />
         </TooltipProvider>
       </body>
     </html>
