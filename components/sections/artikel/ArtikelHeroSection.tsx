@@ -68,7 +68,7 @@ const ArtikelHeroSection = () => {
             </p>
 
             {/* Search Bar */}
-            <form 
+            <form
               onSubmit={handleSearch}
               className="flex w-full max-w-sm md:max-w-md items-center gap-2 rounded-xl bg-white p-1 shadow-2xl"
             >

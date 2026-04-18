@@ -26,7 +26,7 @@ const AcademyMoreInfoGridSection = () => {
           <div className="lg:col-span-4 flex flex-col">
             <div className="flex justify-between items-end mb-4">
               <div>
-                <h3 className="text-heading-3 text-foreground">
+                <h3 className="text-body font-bold text-foreground">
                   Webinar &amp; Event
                 </h3>
                 <p className="text-caption text-muted-foreground mt-1">
@@ -64,7 +64,7 @@ const AcademyMoreInfoGridSection = () => {
           <div className="lg:col-span-4 flex flex-col">
             <div className="flex justify-between items-end mb-4">
               <div>
-                <h3 className="text-heading-3 text-foreground">
+                <h3 className="text-body font-bold text-foreground">
                   Artikel Terbaru
                 </h3>
                 <p className="text-caption text-muted-foreground mt-1">
@@ -97,7 +97,7 @@ const AcademyMoreInfoGridSection = () => {
 
           {/* CTA Banner Section */}
           <div className="lg:col-span-4 relative overflow-hidden bg-cta-gradient rounded-2xl p-6 sm:p-8 flex flex-col text-white h-full">
-            <h3 className="text-heading-3 text-white mb-3 leading-tight relative z-10">
+            <h3 className="text-body font-bold text-white mb-3 leading-tight relative z-10">
               {ACADEMY_CTA_BANNER.heading}
             </h3>
             <p className="text-caption text-white/80 mb-8 leading-relaxed relative z-10">

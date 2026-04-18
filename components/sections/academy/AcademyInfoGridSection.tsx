@@ -42,7 +42,7 @@ const AcademyInfoGridSection = () => {
           <div className="bg-slate-50 rounded-2xl p-6 flex flex-col">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h3 className="text-heading-3 text-foreground">
+                <h3 className="text-body font-bold text-foreground">
                   {ACADEMY_JALUR.heading}
                 </h3>
                 <p className="text-caption text-muted-foreground mt-1">
@@ -89,7 +89,7 @@ const AcademyInfoGridSection = () => {
           <div className="bg-slate-50 rounded-2xl p-6 flex flex-col">
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h3 className="text-heading-3 text-foreground">
+                <h3 className="text-body font-bold text-foreground">
                   {ACADEMY_INSTRUKTUR.heading}
                 </h3>
                 <p className="text-caption text-muted-foreground mt-1">
@@ -129,7 +129,7 @@ const AcademyInfoGridSection = () => {
           {/* Testimoni Peserta Section */}
           <div className="bg-slate-50 rounded-2xl p-6 flex flex-col">
             <div className="flex justify-between items-start mb-6">
-              <h3 className="text-heading-3 text-foreground">
+              <h3 className="text-body font-bold text-foreground">
                 Testimoni Peserta
               </h3>
               <Link href="/academy/testimoni" className="text-caption font-bold text-primary flex items-center gap-1 hover:underline whitespace-nowrap">

@@ -27,12 +27,12 @@ const AcademyFiturSection = () => {
       <div className="container-smarttani">
 
         {/* Header */}
-        <div className="mb-16 flex flex-col items-center text-center">
-          <h2 className="section-title text-foreground">
+        <div className="mb-10 md:mb-12 flex flex-col items-center text-center">
+          <h2 className="text-heading-2 font-bold text-foreground">
             Keunggulan Belajar di SiTani Academy
           </h2>
-          <div className="mt-4 h-1.5 w-20 rounded-full bg-primary" />
-          <p className="mt-6 max-w-2xl text-body-lg text-muted-foreground">
+          <div className="mt-3 h-1 w-16 rounded-full bg-primary" />
+          <p className="mt-4 max-w-2xl text-body-sm text-muted-foreground">
             Kami menyediakan ekosistem pembelajaran yang dirancang khusus untuk
             meningkatkan kompetensi dan hasil panen petani Indonesia.
           </p>
@@ -47,18 +47,18 @@ const AcademyFiturSection = () => {
             return (
               <div
                 key={feature.title}
-                className={`flex flex-col h-full p-8 items-center text-center transition-all duration-300 hover:-translate-y-2 hover:shadow-xl rounded-2xl ${bgColor}`}
+                className={`flex flex-col h-full p-5 md:p-6 items-center text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-xl rounded-2xl ${bgColor}`}
               >
                 {/* Icon Wrapper */}
-                <div className="mb-6 flex size-20 items-center justify-center rounded-2xl bg-white shadow-sm">
-                  <Icon className="size-10 text-primary" strokeWidth={1.5} />
+                <div className="mb-4 flex size-14 items-center justify-center rounded-xl bg-white shadow-sm">
+                  <Icon className="size-7 text-primary" strokeWidth={1.5} />
                 </div>
 
                 <div className="flex flex-col flex-1 items-center">
-                  <h3 className="mb-4 text-heading-3 text-foreground">
+                  <h3 className="mb-2 text-body font-bold text-foreground">
                     {feature.title}
                   </h3>
-                  <p className="text-body-sm text-muted-foreground">
+                  <p className="text-caption text-muted-foreground">
                     {feature.description}
                   </p>
                 </div>

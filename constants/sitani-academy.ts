@@ -9,7 +9,9 @@ export const ACADEMY_HERO = {
   heading: "Belajar Hari Ini, Panen Sukses Esok Hari",
   subtext:
     "Tingkatkan pengetahuan dan keterampilan bertani bersama para ahli. Kursus praktis, mudah dipahami, dan bisa diakses kapan saja.",
-  image: "/images/academy/hero-bg.webp",
+  bgImageDesktop: "/images/academy/desktop.png",
+  bgImageTablet: "/images/academy/tablet.png",
+  bgImageMobile: "/images/academy/mobile.png",
   badges: [
     {
       label: "Kelas Online & Offline",

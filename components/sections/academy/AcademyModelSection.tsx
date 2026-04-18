@@ -11,12 +11,12 @@ const AcademyModelSection = () => {
     <section className="section-padding bg-slate-50" id="academy-model">
       <div className="container-smarttani">
         {/* Header */}
-        <div className="mb-8 md:mb-16 flex flex-col items-center text-center">
-          <h2 className="section-title text-foreground">
+        <div className="mb-8 md:mb-12 flex flex-col items-center text-center">
+          <h2 className="text-heading-2 font-bold text-foreground">
             {ACADEMY_MODEL_PELATIHAN.heading}
           </h2>
-          <div className="mt-3 md:mt-4 h-1.5 w-16 md:w-20 rounded-full bg-primary" />
-          <p className="mt-4 md:mt-6 max-w-2xl text-sm md:text-body-lg text-muted-foreground">
+          <div className="mt-3 h-1 w-16 rounded-full bg-primary" />
+          <p className="mt-4 max-w-2xl text-caption md:text-body-sm text-muted-foreground">
             {ACADEMY_MODEL_PELATIHAN.subtext}
           </p>
         </div>

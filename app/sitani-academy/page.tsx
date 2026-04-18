@@ -17,7 +17,7 @@ export default function AcademyPage() {
   return (
     <main>
       <AcademyHeroSection />
-      <AcademyStatsSection />
+      {/* <AcademyStatsSection /> */}
       <AcademyFiturSection />
       <AcademyModelSection />
       <AcademyKursusSection />
