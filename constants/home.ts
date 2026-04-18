@@ -35,6 +35,9 @@ export const HOME_HERO = {
   subtext:
     "PT. Smarttani Indonesia menghadirkan teknologi dan ekosistem terintegrasi untuk membantu petani, pelaku usaha, dan mitra mencapai hasil terbaik.",
   trustBar: "Aman, Transparan, Terpercaya • Mendukung Petani, Membangun Negeri",
+  bgImageDesktop: "/images/home/desktop.png",
+  bgImageTablet: "/images/home/tablet.png",
+  bgImageMobile: "/images/home/mobile.png",
   cta: [
     { label: "Daftar sebagai Petani" },
     { label: "Gabung sebagai Investor" },
