@@ -38,7 +38,7 @@ const LogisticHeroSection = () => {
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 lg:py-0">
+      <div className="container-smarttani relative z-10 py-10 md:py-5 lg:py-">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-6 lg:gap-8 lg:items-center">
 
           {/* Left Column */}
