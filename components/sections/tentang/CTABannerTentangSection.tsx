@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ABOUT_CTA_BANNER } from "@/constants/about";
 import Image from "next/image";
@@ -33,11 +34,19 @@ export default function CTABannerTentangSection() {
               <Button
                 variant="outline"
                 className="h-12 rounded-lg border-white/40 bg-transparent px-8 text-sm font-semibold text-white hover:bg-white/10 hover:text-white cursor-pointer"
+                asChild
               >
-                {ABOUT_CTA_BANNER.cta[0]?.label}
+                <Link href="/kontak">
+                  {ABOUT_CTA_BANNER.cta[0]?.label}
+                </Link>
               </Button>
-              <Button className="h-12 rounded-lg border-none bg-[#FFB21C] px-8 text-sm font-bold text-white hover:bg-[#FFB21C]/90 cursor-pointer">
-                {ABOUT_CTA_BANNER.cta[1]?.label}
+              <Button
+                className="h-12 rounded-lg border-none bg-[#FFB21C] px-8 text-sm font-bold text-white hover:bg-[#FFB21C]/90 cursor-pointer"
+                asChild
+              >
+                <Link href="/daftar">
+                  {ABOUT_CTA_BANNER.cta[1]?.label}
+                </Link>
               </Button>
             </div>
           </div>
@@ -46,3 +55,4 @@ export default function CTABannerTentangSection() {
     </section>
   );
 }
+
