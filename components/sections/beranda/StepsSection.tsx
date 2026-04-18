@@ -3,7 +3,7 @@ import { ChevronRight, UserPlus } from "lucide-react";
 
 export default function StepsSection() {
   return (
-    <section>
+    <section className="section-padding">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
         <div className="rounded-[32px] bg-[#EAF3DE]/60 px-6 py-12 md:px-12">
           {/* Header */}

@@ -252,16 +252,16 @@ export const ARTICLE_IMAGES = [
 
 export const HOME_ARTICLE = [
   {
-    title: "5 Tips Meningkatkan Hasil Panen Padi",
-    date: "15 Mei 2024",
+    title: "5 Tips Meningkatkan Hasil Panen Padi hingga 30%",
+    date: "24 Mei 2024",
   },
   {
-    title: "Cara Investasi Pertanian yang Menguntungkan",
-    date: "10 Mei 2024",
+    title: "Teknologi Drone dalam Pertanian: Manfaat dan Cara Penggunaan",
+    date: "20 Mei 2024",
   },
   {
-    title: "Teknologi Smart Farming untuk Masa Depan",
-    date: "5 Mei 2024",
+    title: "Manajemen Pakan Sapi Modern untuk Hasil Maksimal",
+    date: "18 Mei 2024",
   },
 ];
 

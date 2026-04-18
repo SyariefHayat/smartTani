@@ -12,12 +12,13 @@ import { Quote, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { slugify } from "@/lib/utils";
 
 export default function TestimoniSection() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <section className="py-8">
+    <section>
       <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
           {/* Column 1: Kategori */}
@@ -143,9 +144,8 @@ export default function TestimoniSection() {
                   <button
                     key={index}
                     onClick={() => setActiveIndex(index)}
-                    className={`size-2 rounded-full transition-all ${
-                      activeIndex === index ? "bg-primary w-4" : "bg-primary/30"
-                    }`}
+                    className={`size-2 rounded-full transition-all ${activeIndex === index ? "bg-primary w-4" : "bg-primary/30"
+                      }`}
                     aria-label={`Lihat testimoni ${index + 1}`}
                   />
                 ))}
@@ -170,9 +170,9 @@ export default function TestimoniSection() {
               {HOME_ARTICLE.map((item, index) => (
                 <Link
                   key={item.title}
-                  href={`/artikel/${index + 1}`}
+                  href={`/artikel/${slugify(item.title)}`}
                   aria-label={`Baca artikel: ${item.title}`}
-                  className="group flex items-start gap-4 transition-transform hover:translate-x-1"
+                  className="group flex items-start gap-4"
                 >
                   <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-xl border border-gray-100 shadow-sm">
                     <Image
@@ -181,7 +181,7 @@ export default function TestimoniSection() {
                       }
                       alt={`Thumbnail artikel ${item.title}`}
                       fill
-                      className="object-cover transition-transform group-hover:scale-110"
+                      className="object-cover"
                       sizes="100%"
                     />
                   </div>

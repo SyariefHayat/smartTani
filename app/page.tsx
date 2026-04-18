@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     siteName: "Smarttani Indonesia",
     images: [
       {
-        url: "/images/home/hero.webp",
+        url: "/images/home/desktop.png",
         width: 1200,
         height: 630,
         alt: "Smarttani Indonesia — Solusi Pertanian Modern",

@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronRight } from "lucide-react";
+import { slugify } from "@/lib/utils";
 
 const ArtikelLayoutSection = () => {
   return (
@@ -34,7 +35,7 @@ const ArtikelLayoutSection = () => {
               {ARTICLE_DUMMY.map((artikel, index) => (
                 <Link
                   key={index}
-                  href={`/artikel/${index + 1}`}
+                  href={`/artikel/${slugify(artikel.title)}`}
                   className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white transition-all hover:shadow-lg"
                 >
                   <article className="flex flex-col h-full">
@@ -135,7 +136,7 @@ const ArtikelLayoutSection = () => {
                   {ARTIKEL_TERPOPULER.map((trending, idx) => (
                     <Link
                       key={idx}
-                      href={`/artikel/${trending.rank}`}
+                      href={`/artikel/${slugify(trending.title)}`}
                       className="group flex items-start gap-4"
                     >
                       <span className="flex h-6 w-6 shrink-0 items-center justify-center text-body-sm font-bold text-foreground">

@@ -17,7 +17,7 @@ export default function FeatureSection() {
   };
 
   return (
-    <section className="py-8">
+    <section>
       <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
         {/* Header */}
         <div className="mb-12 flex flex-col items-center text-center">
@@ -43,7 +43,7 @@ export default function FeatureSection() {
                   src={FEATURES_IMAGES[index]}
                   alt={`Ikon fitur ${features.title}`}
                   fill
-                  className="object-contain"
+                  className="object cover lg:object-contain"
                   sizes="100%"
                 />
               </div>
