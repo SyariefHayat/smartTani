@@ -9,7 +9,9 @@ export const INVESTASI_HERO = {
   heading: "Investasi Cerdas untuk Pertanian Berkelanjutan",
   subtext:
     "Dukung proyek-proyek pertanian potensial di Indonesia dan raih keuntungan menarik sambil memberi dampak nyata bagi petani dan ketahanan pangan negeri.",
-  image: "/images/investasi/desktop.png",
+  bgImageDesktop: "/images/investasi/desktop.png",
+  bgImageTablet: "/images/investasi/tablet.png",
+  bgImageMobile: "/images/investasi/mobile.png",
   cta: [{ label: "Jelajahi Proyek" }, { label: "Cara Investasi" }],
   badges: [
     { label: "Aman & Terpercaya", sublabel: "Proyek diversifikasi ketat" },

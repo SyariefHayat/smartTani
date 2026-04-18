@@ -21,7 +21,7 @@ export default function InvestasiPage() {
   return (
     <main>
       <InvestasiHeroSection />
-      <InvestasiStatsBarSection />
+      {/* <InvestasiStatsBarSection /> */}
       <ProjectSection />
 
       {/* Advantages & Steps Section */}
