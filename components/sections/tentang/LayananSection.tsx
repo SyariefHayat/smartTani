@@ -19,17 +19,16 @@ const LAYANAN_ICONS = [
   { icon: FileText, color: "text-orange-600", bg: "bg-orange-50" },
 ];
 
-const LayananSection = () => {
-  const getHref = (title: string) => {
-    if (title.includes("Marketplace")) return "/marketplace";
-    if (title.includes("Investasi")) return "/investasi";
-    if (title.includes("Distributor")) return "/distributor";
-    if (title.includes("Logistik")) return "/logistik";
-    if (title.includes("SiTani Academy")) return "/sitani-academy";
-    if (title.includes("Artikel")) return "/artikel";
-    return "/";
-  };
+const LAYANAN_HREFS = [
+  "/marketplace",
+  "/investasi",
+  "/distributor",
+  "/logistik",
+  "/sitani-academy",
+  "/artikel",
+];
 
+const LayananSection = () => {
   return (
     <section className="section-padding bg-white">
       <div className="container-smarttani">
@@ -46,16 +45,17 @@ const LayananSection = () => {
           {ABOUT_LAYANAN.items.map((item, index) => {
             const IconConfig = LAYANAN_ICONS[index] || { icon: ShoppingCart, color: "text-primary", bg: "bg-primary/5" };
             const Icon = IconConfig.icon;
+            const href = LAYANAN_HREFS[index] || "/";
             return (
               <Link
                 key={item.title}
-                href={getHref(item.title)}
+                href={href}
                 className="bg-slate-50 p-6 rounded-2xl flex flex-col items-center text-center group hover:bg-white hover:shadow-md border border-transparent hover:border-slate-100 transition-all duration-300 h-full cursor-pointer"
               >
                 <div className={`w-14 h-14 rounded-xl ${IconConfig.bg} flex items-center justify-center mb-5`}>
                   <Icon className={`w-7 h-7 ${IconConfig.color}`} />
                 </div>
-                <h3 className="text-body-sm font-bold text-foreground mb-2">
+                <h3 className="text-body-sm font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
                   {item.title}
                 </h3>
                 <p className="text-caption text-muted-foreground">

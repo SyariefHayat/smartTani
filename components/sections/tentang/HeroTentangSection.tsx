@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ABOUT_HERO } from "@/constants/about";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,7 @@ import { ArrowRight, Phone } from "lucide-react";
 
 const HeroTentangSection = () => {
   const scrollToDetail = () => {
-    const element = document.getElementById('tentang-detail');
+    const element = document.getElementById('profil');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
@@ -69,8 +68,9 @@ const HeroTentangSection = () => {
           <div className="mt-10 flex flex-wrap gap-4">
             <Button
               size="lg"
-              onClick={scrollToDetail}
+              variant="accent"
               className="rounded-full px-8 h-12 md:h-14 text-base font-semibold transition-all cursor-pointer"
+              onClick={scrollToDetail}
             >
               {ABOUT_HERO.cta[0].label}
               <ArrowRight className="ml-2 h-5 w-5" />
