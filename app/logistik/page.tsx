@@ -15,9 +15,9 @@ export const metadata: Metadata = {
 
 export default function LogisticPage() {
   return (
-    <main className="min-h-screen bg-white">
+    <main>
       <LogisticHeroSection />
-      <LogisticStatsBarSection />
+      {/* <LogisticStatsBarSection /> */}
       <LogisticLayananSection />
       <JangkauanKeunggulanOngkirSection />
       <AlurPengirimanSection />

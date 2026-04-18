@@ -9,7 +9,9 @@ export const LOGISTIC_HERO = {
   heading: "Logistik Terintegrasi untuk Pertanian Indonesia yang Lebih Maju",
   subtext:
     "Layanan pengiriman cepat, aman, dan efisien untuk semua kebutuhan pertanian Anda. Dari hasil panen hingga sarana produksi, kami pastikan sampai tujuan dengan tepat waktu.",
-  image: "/images/logistic/hero-bg.webp",
+  bgImageDesktop: "/images/logistic/desktop.png",
+  bgImageTablet: "/images/logistic/tablet.png",
+  bgImageMobile: "/images/logistic/mobile.png",
   badges: [
     { label: "Aman & Terpercaya", sublabel: "Asuransi Pengiriman" },
     { label: "Cepat & Tepat Waktu", sublabel: "Jangkauan Seluruh Indonesia" },
@@ -20,7 +22,7 @@ export const LOGISTIC_HERO = {
     placeholder: "Masukkan nomor resi pengiriman",
     inputHint: "Contoh: STN123456789",
     ctaPrimary: "Lacak Sekarang",
-    ctaSecondary: "Lihat Riwayat Pengiriman →",
+    ctaSecondary: "Lihat Riwayat Pengiriman",
   },
 };
 
