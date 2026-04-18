@@ -1,10 +1,20 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ABOUT_HERO } from "@/constants/about";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Phone } from "lucide-react";
 
 const HeroTentangSection = () => {
+  const scrollToDetail = () => {
+    const element = document.getElementById('tentang-detail');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="relative min-h-[500px] lg:min-h-[650px] w-full overflow-hidden flex items-center">
       <div className="absolute inset-0 z-0">
@@ -59,6 +69,7 @@ const HeroTentangSection = () => {
           <div className="mt-10 flex flex-wrap gap-4">
             <Button
               size="lg"
+              onClick={scrollToDetail}
               className="rounded-full px-8 h-12 md:h-14 text-base font-semibold transition-all cursor-pointer"
             >
               {ABOUT_HERO.cta[0].label}
@@ -67,10 +78,13 @@ const HeroTentangSection = () => {
             <Button
               size="lg"
               variant="outline"
+              asChild
               className="rounded-full px-8 h-12 md:h-14 text-base font-semibold border-2 border-white bg-transparent text-white hover:bg-white hover:text-primary transition-all cursor-pointer"
             >
-              <Phone className="mr-2 h-5 w-5" />
-              {ABOUT_HERO.cta[1].label}
+              <Link href="/kontak">
+                <Phone className="mr-2 h-5 w-5" />
+                {ABOUT_HERO.cta[1].label}
+              </Link>
             </Button>
           </div>
         </div>

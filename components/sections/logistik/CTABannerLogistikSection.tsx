@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { LOGISTIC_CTA_BANNER } from "@/constants/logistic";
 import { MessageSquare, PhoneCall } from "lucide-react";
@@ -36,14 +37,22 @@ const CTABannerLogistikSection = () => {
             <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row lg:shrink-0">
               <Button
                 variant="outline"
+                asChild
                 className="h-12 rounded-lg border-white/40 bg-transparent px-8 text-body-sm font-semibold text-white hover:bg-white/10 hover:text-white cursor-pointer"
               >
-                <MessageSquare className="mr-2 size-4" />
-                {LOGISTIC_CTA_BANNER.cta[0]?.label}
+                <Link href="/kontak">
+                  <MessageSquare className="mr-2 size-4" />
+                  {LOGISTIC_CTA_BANNER.cta[0]?.label}
+                </Link>
               </Button>
-              <Button className="h-12 rounded-lg border-none bg-accent px-8 text-body-sm font-bold !text-white hover:bg-accent/90 cursor-pointer">
-                <PhoneCall className="mr-2 size-4" />
-                {LOGISTIC_CTA_BANNER.cta[1]?.label}
+              <Button 
+                asChild
+                className="h-12 rounded-lg border-none bg-accent px-8 text-body-sm font-bold !text-white hover:bg-accent/90 cursor-pointer"
+              >
+                <Link href="/kontak">
+                  <PhoneCall className="mr-2 size-4" />
+                  {LOGISTIC_CTA_BANNER.cta[1]?.label}
+                </Link>
               </Button>
             </div>
           </div>

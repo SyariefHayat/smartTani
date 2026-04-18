@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ACADEMY_HERO } from "@/constants/sitani-academy";
 import { GraduationCap, Monitor, Users, Award, ArrowRight } from "lucide-react";
@@ -9,6 +10,13 @@ import { GraduationCap, Monitor, Users, Award, ArrowRight } from "lucide-react";
 const ICON_MAP = [Monitor, Users, Award];
 
 const AcademyHeroSection = () => {
+  const scrollToModel = () => {
+    const element = document.getElementById('academy-model');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="relative min-h-[500px] lg:min-h-[650px] flex items-center overflow-hidden">
       {/* Background Image */}
@@ -82,11 +90,14 @@ const AcademyHeroSection = () => {
               </p>
 
               <div className="space-y-4">
-                <Button className="h-12 w-full bg-primary text-base font-bold !text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
-                  {ACADEMY_HERO.sidebar.ctaPrimary}
+                <Button asChild className="h-12 w-full bg-primary text-base font-bold !text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20 cursor-pointer">
+                  <Link href="/signup">{ACADEMY_HERO.sidebar.ctaPrimary}</Link>
                 </Button>
 
-                <button className="flex w-full items-center justify-center gap-2 text-body-sm font-bold text-primary hover:text-primary/80 transition-all py-2 group">
+                <button 
+                  onClick={scrollToModel}
+                  className="flex w-full items-center justify-center gap-2 text-body-sm font-bold text-primary hover:text-primary/80 transition-all py-2 group cursor-pointer"
+                >
                   {ACADEMY_HERO.sidebar.ctaSecondary}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </button>

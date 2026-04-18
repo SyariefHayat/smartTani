@@ -1,6 +1,7 @@
 import { INVESTASI_CTA_BANNER } from "@/constants/investasi";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function CtaSection() {
   return (
@@ -33,11 +34,19 @@ export default function CtaSection() {
               <Button
                 variant="outline"
                 className="h-12 rounded-lg border-white/40 bg-transparent px-8 text-body-sm font-semibold text-white hover:bg-white/10 hover:text-white cursor-pointer"
+                asChild
               >
-                {INVESTASI_CTA_BANNER.cta[0]?.label}
+                <Link href="/tentang">
+                  {INVESTASI_CTA_BANNER.cta[0]?.label}
+                </Link>
               </Button>
-              <Button className="h-12 rounded-lg border-none bg-accent px-8 text-body-sm font-bold !text-white hover:bg-accent/90 cursor-pointer">
-                {INVESTASI_CTA_BANNER.cta[1]?.label}
+              <Button 
+                className="h-12 rounded-lg border-none bg-accent px-8 text-body-sm font-bold !text-white hover:bg-accent/90 cursor-pointer"
+                asChild
+              >
+                <Link href="/signup?role=investor">
+                  {INVESTASI_CTA_BANNER.cta[1]?.label}
+                </Link>
               </Button>
             </div>
           </div>

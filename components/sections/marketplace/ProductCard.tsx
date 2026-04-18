@@ -1,7 +1,9 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Star, CheckCircle2 } from "lucide-react";
+import { Star, CheckCircle2, ShoppingCart } from "lucide-react";
 import { Product } from "@/constants/types";
 
 interface ProductCardProps {
@@ -26,9 +28,33 @@ const formatPrice = (price: number) => {
 };
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const addToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const cartData = localStorage.getItem('smarttani-cart');
+    let cart = cartData ? JSON.parse(cartData) : [];
+    
+    const existingItemIndex = cart.findIndex((item: any) => item.id === product.id);
+    if (existingItemIndex > -1) {
+      cart[existingItemIndex].quantity += 1;
+    } else {
+      cart.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        quantity: 1
+      });
+    }
+    
+    localStorage.setItem('smarttani-cart', JSON.stringify(cart));
+    alert(`${product.name} ditambahkan ke keranjang!`);
+  };
+
   return (
     <Link
-      href={`/marketplace/product/${product.id}`}
+      href={`/marketplace/${product.id}`}
       className="group flex flex-col h-full bg-white rounded-xl border border-neutral-200/80 overflow-hidden transition-all duration-300 hover:shadow-md hover:border-neutral-300"
     >
       {/* Image */}
@@ -45,6 +71,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             Promo
           </span>
         )}
+        
+        {/* Add to Cart Floating Button */}
+        <button
+          onClick={addToCart}
+          className="absolute bottom-2 right-2 size-8 bg-primary text-white rounded-full flex items-center justify-center shadow-lg opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-primary-dark cursor-pointer z-10"
+          aria-label="Tambah ke keranjang"
+        >
+          <ShoppingCart className="size-4" />
+        </button>
       </div>
 
       {/* Info */}

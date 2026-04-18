@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const VisiMisiNilaiSection = () => {
   return (
-    <section className="section-padding bg-white">
+    <section className="section-padding bg-white" id="tentang-detail">
       <div className="container-smarttani">
         {/* Description Content */}
         <div className="max-w-4xl mb-16">

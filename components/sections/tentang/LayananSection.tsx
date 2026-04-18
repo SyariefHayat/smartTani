@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { ABOUT_LAYANAN } from "@/constants/about";
 import {
   ShoppingCart,
@@ -19,6 +20,16 @@ const LAYANAN_ICONS = [
 ];
 
 const LayananSection = () => {
+  const getHref = (title: string) => {
+    if (title.includes("Marketplace")) return "/marketplace";
+    if (title.includes("Investasi")) return "/investasi";
+    if (title.includes("Distributor")) return "/distributor";
+    if (title.includes("Logistik")) return "/logistik";
+    if (title.includes("SiTani Academy")) return "/sitani-academy";
+    if (title.includes("Artikel")) return "/artikel";
+    return "/";
+  };
+
   return (
     <section className="section-padding bg-white">
       <div className="container-smarttani">
@@ -36,9 +47,10 @@ const LayananSection = () => {
             const IconConfig = LAYANAN_ICONS[index] || { icon: ShoppingCart, color: "text-primary", bg: "bg-primary/5" };
             const Icon = IconConfig.icon;
             return (
-              <div
+              <Link
                 key={item.title}
-                className="bg-slate-50 p-6 rounded-2xl flex flex-col items-center text-center group hover:bg-white hover:shadow-md border border-transparent hover:border-slate-100 transition-all duration-300 h-full"
+                href={getHref(item.title)}
+                className="bg-slate-50 p-6 rounded-2xl flex flex-col items-center text-center group hover:bg-white hover:shadow-md border border-transparent hover:border-slate-100 transition-all duration-300 h-full cursor-pointer"
               >
                 <div className={`w-14 h-14 rounded-xl ${IconConfig.bg} flex items-center justify-center mb-5`}>
                   <Icon className={`w-7 h-7 ${IconConfig.color}`} />
@@ -49,7 +61,7 @@ const LayananSection = () => {
                 <p className="text-caption text-muted-foreground">
                   {item.description}
                 </p>
-              </div>
+              </Link>
             );
           })}
         </div>

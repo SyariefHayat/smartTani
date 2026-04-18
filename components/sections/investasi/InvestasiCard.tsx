@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { TrendingUp, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -19,8 +20,13 @@ interface InvestasiCardProps {
 }
 
 export default function InvestasiCard({ item }: InvestasiCardProps) {
+  const slug = item.title.toLowerCase().replace(/ /g, "-");
+
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all hover:shadow-md">
+    <Link 
+      href={`/investasi/${slug}`}
+      className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all hover:shadow-md"
+    >
       {/* Image Header */}
       <div className="relative aspect-[16/10] w-full overflow-hidden">
         <Image
@@ -92,11 +98,11 @@ export default function InvestasiCard({ item }: InvestasiCardProps) {
             <p className="text-caption font-medium text-muted-foreground uppercase tracking-wide">Min. Investasi</p>
             <p className="text-body-sm font-bold text-foreground">{item.minimalInvestasi}</p>
           </div>
-          <Button size="sm" className="rounded-lg bg-primary px-5 font-bold !text-white hover:bg-primary-dark cursor-pointer">
-            Lihat Detail
+          <Button size="sm" asChild className="rounded-lg bg-primary px-5 font-bold !text-white hover:bg-primary-dark cursor-pointer">
+            <span>Lihat Detail</span>
           </Button>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

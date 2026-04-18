@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DISTRIBUTOR_HERO } from "@/constants/distributor";
 import { ShieldCheck, Tag, Headphones, UsersRound, Download } from "lucide-react";
@@ -8,6 +9,12 @@ import { ShieldCheck, Tag, Headphones, UsersRound, Download } from "lucide-react
 const ICON_MAP = [ShieldCheck, Tag, Headphones, UsersRound];
 
 const DistributorHeroSection = () => {
+  const handleAction = (index: number) => {
+    if (index === 1) {
+      alert('Brosur sedang diunduh...');
+    }
+  };
+
   return (
     <section className="relative flex min-h-[500px] lg:min-h-[650px] items-center overflow-hidden">
       {/* Background Image */}
@@ -45,13 +52,23 @@ const DistributorHeroSection = () => {
                 <Button
                   key={index}
                   size="lg"
+                  asChild={index === 0}
+                  onClick={() => handleAction(index)}
                   className={`h-12 w-full rounded-md px-8 text-body-sm font-bold transition-transform active:scale-95 sm:h-14 sm:w-auto sm:text-base cursor-pointer ${index === 1
                     ? "bg-white text-primary-dark hover:bg-white/90"
                     : "bg-primary hover:bg-primary/90 !text-white"
                     }`}
                 >
-                  {index === 1 && <Download className="mr-2 size-5" />}
-                  {cta.label}
+                  {index === 0 ? (
+                    <Link href="/signup?role=distributor">
+                      {cta.label}
+                    </Link>
+                  ) : (
+                    <>
+                      <Download className="mr-2 size-5" />
+                      {cta.label}
+                    </>
+                  )}
                 </Button>
               ))}
             </div>

@@ -5,7 +5,7 @@ import InvestasiCard from "./InvestasiCard";
 
 export default function ProjectSection() {
   return (
-    <section className="section-padding">
+    <section className="section-padding" id="proyek-investasi">
       <div className="container-smarttani">
         {/* Header */}
         <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end mb-10 md:mb-12">
@@ -18,7 +18,7 @@ export default function ProjectSection() {
             </p>
           </div>
           <Link
-            href="/investasi/proyek"
+            href="/investasi"
             className="group flex items-center gap-2 text-body-sm font-bold text-primary hover:text-primary-dark transition-colors md:text-body"
           >
             Lihat Semua Proyek

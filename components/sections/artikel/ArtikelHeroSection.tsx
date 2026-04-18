@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ARTICLE_HERO } from "@/constants/article";
@@ -10,6 +11,16 @@ import { Search, ShieldCheck, Zap, RotateCcw } from "lucide-react";
 const ICON_MAP = [ShieldCheck, Zap, RotateCcw];
 
 const ArtikelHeroSection = () => {
+  const [query, setQuery] = useState("");
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/artikel?q=${encodeURIComponent(query)}`);
+    }
+  };
+
   return (
     <section className="relative min-h-[500px] lg:min-h-[650px] flex items-center overflow-hidden">
       {/* Background Image */}
@@ -46,19 +57,24 @@ const ArtikelHeroSection = () => {
             </p>
 
             {/* Search Bar */}
-            <div className="flex max-w-xl items-center gap-2 rounded-xl bg-white p-1.5 shadow-2xl">
+            <form 
+              onSubmit={handleSearch}
+              className="flex max-w-xl items-center gap-2 rounded-xl bg-white p-1.5 shadow-2xl"
+            >
               <div className="relative flex-1">
                 <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   type="text"
                   placeholder={ARTICLE_HERO.searchPlaceholder}
                   className="h-12 border-none bg-transparent pl-12 text-body-sm font-semibold text-foreground placeholder:text-muted-foreground focus-visible:ring-0"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
                 />
               </div>
-              <Button className="h-12 bg-primary px-8 font-bold !text-white transition-all hover:bg-primary-dark">
+              <Button type="submit" className="h-12 bg-primary px-8 font-bold !text-white transition-all hover:bg-primary-dark cursor-pointer">
                 {ARTICLE_HERO.searchCta}
               </Button>
-            </div>
+            </form>
           </div>
 
           {/* Right Column: Highlights Card */}

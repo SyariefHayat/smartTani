@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { HOME_CTA_BANNER } from "@/constants";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function CTABannerSection() {
   return (
@@ -33,11 +34,19 @@ export default function CTABannerSection() {
               <Button
                 variant="outline"
                 className="h-12 rounded-lg border-white/40 bg-transparent px-8 text-sm font-semibold text-white hover:bg-white/10 hover:text-white cursor-pointer"
+                asChild
               >
-                {HOME_CTA_BANNER.cta[0]?.label}
+                <Link href="/tentang">
+                  {HOME_CTA_BANNER.cta[0]?.label}
+                </Link>
               </Button>
-              <Button className="h-12 rounded-lg border-none bg-[#FFB21C] px-8 text-sm font-bold text-white hover:bg-[#FFB21C]/90 cursor-pointer">
-                {HOME_CTA_BANNER.cta[1]?.label}
+              <Button 
+                className="h-12 rounded-lg border-none bg-[#FFB21C] px-8 text-sm font-bold text-white hover:bg-[#FFB21C]/90 cursor-pointer"
+                asChild
+              >
+                <Link href="/signup">
+                  {HOME_CTA_BANNER.cta[1]?.label}
+                </Link>
               </Button>
             </div>
           </div>
