@@ -25,7 +25,19 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   };
 
   const addToCart = () => {
-    const currentCart = JSON.parse(localStorage.getItem("smarttani-cart") || "[]");
+    let currentCart: any[] = [];
+    try {
+      const storedCart = localStorage.getItem("smarttani-cart");
+      if (storedCart) {
+        const parsedCart = JSON.parse(storedCart);
+        if (Array.isArray(parsedCart)) {
+          currentCart = parsedCart;
+        }
+      }
+    } catch (error) {
+      console.error("Error parsing cart from localStorage", error);
+    }
+
     const cartItem = {
       id: product.id,
       name: product.name,
