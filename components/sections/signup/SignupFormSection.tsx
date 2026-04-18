@@ -1,7 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import NextImage from "next/image";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { 
   SIGNUP_JENIS_KEANGGOTAAN, 
   SIGNUP_KEUNTUNGAN, 
@@ -24,7 +26,9 @@ import {
   Store, 
   TrendingUp, 
   Handshake, 
-  ShieldCheck 
+  ShieldCheck,
+  Eye,
+  Loader2
 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -47,8 +51,55 @@ const roleImages: Record<string, string> = {
   admin_perusahaan: "/images/signup/Admin-perusahaan.webp",
 };
 
-export default function SignupFormSection() {
-  const [selectedRole, setSelectedRole] = React.useState("petani");
+const regionData: Record<string, string[]> = {
+  jatim: ["Surabaya", "Malang", "Lamongan", "Sidoarjo", "Gresik"],
+  jateng: ["Semarang", "Solo", "Magelang", "Tegal", "Pekalongan"],
+  jabar: ["Bandung", "Bogor", "Depok", "Bekasi", "Cimahi"],
+};
+
+function SignupFormContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [selectedRole, setSelectedRole] = useState("petani");
+  const [selectedProvinsi, setSelectedProvinsi] = useState<string>("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const roleParam = searchParams.get("role");
+    if (roleParam && roleImages[roleParam]) {
+      setSelectedRole(roleParam);
+    }
+  }, [searchParams]);
+
+  const getPasswordStrength = () => {
+    if (!password) return { label: "", color: "" };
+    if (password.length < 6) return { label: "Lemah", color: "text-red-500 bg-red-100" };
+    
+    const hasNumber = /\d/.test(password);
+    const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    if (password.length >= 10 && hasNumber && hasSymbol) {
+      return { label: "Kuat", color: "text-green-600 bg-green-100" };
+    }
+    if (password.length >= 6 && hasNumber) {
+      return { label: "Sedang", color: "text-yellow-600 bg-yellow-100" };
+    }
+    
+    return { label: "Lemah", color: "text-red-500 bg-red-100" };
+  };
+
+  const strength = getPasswordStrength();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    router.push("/login?registered=true");
+  };
 
   const getRoleSpecificFields = () => {
     type FieldConfig = {
@@ -125,7 +176,7 @@ export default function SignupFormSection() {
               </p>
 
               <RadioGroup
-                defaultValue="petani"
+                value={selectedRole}
                 onValueChange={setSelectedRole}
                 className="mt-8 space-y-4"
               >
@@ -208,7 +259,7 @@ export default function SignupFormSection() {
                 {SIGNUP_FORM_LABELS.subtext}
               </p>
 
-              <form className="mt-10 grid gap-6 md:grid-cols-2">
+              <form onSubmit={handleSubmit} className="mt-10 grid gap-6 md:grid-cols-2">
                 {/* Nama Lengkap */}
                 <div className="space-y-2">
                   <Label className="text-sm font-bold text-[#17391f]">
@@ -217,6 +268,7 @@ export default function SignupFormSection() {
                   <div className="relative">
                     <User className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
                     <Input
+                      required
                       placeholder={SIGNUP_FORM_PLACEHOLDERS.namaLengkap}
                       className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white"
                     />
@@ -232,6 +284,7 @@ export default function SignupFormSection() {
                     <Mail className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
                     <Input
                       type="email"
+                      required
                       placeholder={SIGNUP_FORM_PLACEHOLDERS.email}
                       className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white"
                     />
@@ -246,6 +299,7 @@ export default function SignupFormSection() {
                   <div className="relative">
                     <Phone className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
                     <Input
+                      required
                       placeholder={SIGNUP_FORM_PLACEHOLDERS.nomorHp}
                       className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white"
                     />
@@ -254,16 +308,32 @@ export default function SignupFormSection() {
 
                 {/* Kata Sandi */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold text-[#17391f]">
-                    {SIGNUP_FORM_LABELS.kataSandi}
-                  </Label>
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-bold text-[#17391f]">
+                      {SIGNUP_FORM_LABELS.kataSandi}
+                    </Label>
+                    {password && (
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${strength.color}`}>
+                        {strength.label}
+                      </span>
+                    )}
+                  </div>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
-                    <EyeOff className="absolute right-4 top-1/2 size-5 -translate-y-1/2 text-gray-400 cursor-pointer" />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
+                    </button>
                     <Input
-                      type="password"
+                      required
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       placeholder={SIGNUP_FORM_PLACEHOLDERS.kataSandi}
-                      className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white"
+                      className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 pr-12 focus:bg-white"
                     />
                   </div>
                   <p className="text-[10px] font-medium text-gray-500">
@@ -278,8 +348,8 @@ export default function SignupFormSection() {
                   </Label>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
-                    <EyeOff className="absolute right-4 top-1/2 size-5 -translate-y-1/2 text-gray-400 cursor-pointer" />
                     <Input
+                      required
                       type="password"
                       placeholder={SIGNUP_FORM_PLACEHOLDERS.konfirmasiKataSandi}
                       className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white"
@@ -294,7 +364,7 @@ export default function SignupFormSection() {
                   <Label className="text-sm font-bold text-[#17391f]">
                     {SIGNUP_FORM_LABELS.jenisKelamin}
                   </Label>
-                  <Select>
+                  <Select required>
                     <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white">
                       <SelectValue placeholder={SIGNUP_FORM_PLACEHOLDERS.jenisKelamin} />
                     </SelectTrigger>
@@ -313,6 +383,7 @@ export default function SignupFormSection() {
                   <div className="relative">
                     <CalendarIcon className="absolute right-4 top-1/2 size-5 -translate-y-1/2 text-gray-400 pointer-events-none" />
                     <Input
+                      required
                       type="date"
                       className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pr-12 focus:bg-white appearance-none block w-full"
                     />
@@ -324,7 +395,7 @@ export default function SignupFormSection() {
                   <Label className="text-sm font-bold text-[#17391f]">
                     {SIGNUP_FORM_LABELS.lokasi}
                   </Label>
-                  <Select>
+                  <Select required value={selectedProvinsi} onValueChange={setSelectedProvinsi}>
                     <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white">
                       <SelectValue placeholder={SIGNUP_FORM_PLACEHOLDERS.lokasi} />
                     </SelectTrigger>
@@ -341,14 +412,14 @@ export default function SignupFormSection() {
                   <Label className="text-sm font-bold text-[#17391f]">
                     {SIGNUP_FORM_LABELS.kotaKabupaten}
                   </Label>
-                  <Select>
-                    <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white">
+                  <Select required disabled={!selectedProvinsi}>
+                    <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white disabled:opacity-50">
                       <SelectValue placeholder={SIGNUP_FORM_PLACEHOLDERS.kotaKabupaten} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="lamongan">Lamongan</SelectItem>
-                      <SelectItem value="surabaya">Surabaya</SelectItem>
-                      <SelectItem value="malang">Malang</SelectItem>
+                      {selectedProvinsi && regionData[selectedProvinsi]?.map((kota) => (
+                        <SelectItem key={kota} value={kota.toLowerCase()}>{kota}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -426,7 +497,7 @@ export default function SignupFormSection() {
 
                 {/* Syarat & Ketentuan */}
                 <div className="md:col-span-2 flex items-start gap-3 pt-4">
-                  <Checkbox id="syarat" className="mt-1 border-slate-300 data-[state=checked]:bg-[#2D6A2D] data-[state=checked]:border-[#2D6A2D]" />
+                  <Checkbox required id="syarat" className="mt-1 border-slate-300 data-[state=checked]:bg-[#2D6A2D] data-[state=checked]:border-[#2D6A2D]" />
                   <Label htmlFor="syarat" className="text-xs font-bold leading-relaxed text-[#17391f]">
                     {SIGNUP_SYARAT.prefix}{" "}
                     <span className="text-[#2D6A2D] cursor-pointer hover:underline">{SIGNUP_SYARAT.syaratKetentuan}</span>{" "}
@@ -438,18 +509,26 @@ export default function SignupFormSection() {
 
                 {/* Button */}
                 <div className="md:col-span-2 mt-4 space-y-6">
-                  <Button className="w-full bg-[#2D6A2D] py-7 text-base font-bold text-white hover:bg-[#235323] rounded-xl shadow-lg shadow-green-100 transition-all active:scale-[0.98]">
-                    <div className="flex items-center gap-2">
-                      <Lock className="size-4" />
-                      {SIGNUP_BUTTONS.daftarSekarang}
-                    </div>
+                  <Button 
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-[#2D6A2D] py-7 text-base font-bold text-white hover:bg-[#235323] rounded-xl shadow-lg shadow-green-100 transition-all active:scale-[0.98]"
+                  >
+                    {loading ? (
+                      <Loader2 className="mr-2 size-5 animate-spin" />
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <Lock className="size-4" />
+                        {SIGNUP_BUTTONS.daftarSekarang}
+                      </div>
+                    )}
                   </Button>
                   
                   <p className="text-center text-sm font-bold text-[#17391f]">
                     {SIGNUP_FORM_HINTS.sudahPunyaAkun}{" "}
-                    <span className="text-[#2D6A2D] cursor-pointer hover:underline">
+                    <Link href="/login" className="text-[#2D6A2D] cursor-pointer hover:underline">
                       {SIGNUP_FORM_HINTS.masukLink}
-                    </span>
+                    </Link>
                   </p>
                 </div>
               </form>
@@ -459,5 +538,13 @@ export default function SignupFormSection() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function SignupFormSection() {
+  return (
+    <Suspense fallback={<div className="flex justify-center py-20"><Loader2 className="animate-spin text-green-600 size-10" /></div>}>
+      <SignupFormContent />
+    </Suspense>
   );
 }

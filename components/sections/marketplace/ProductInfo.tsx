@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Star, Minus, Plus, Truck, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { showToast } from "@/lib/toast";
 import { Product } from "@/constants/types";
 
 interface ProductInfoProps {
@@ -56,7 +57,8 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     }
 
     localStorage.setItem("smarttani-cart", JSON.stringify(currentCart));
-    alert("Produk berhasil ditambahkan ke keranjang!");
+    showToast("Produk berhasil ditambahkan ke keranjang!", "success");
+    window.dispatchEvent(new Event("smarttani-cart-update"));
   };
 
   const buyNow = () => {

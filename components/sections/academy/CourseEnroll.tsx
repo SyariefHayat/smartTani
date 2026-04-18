@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { CheckCircle2, Play, BookOpen, Infinity, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+import { showToast } from "@/lib/toast";
+
 export default function CourseEnroll() {
   const router = useRouter();
   const [enrolled, setEnrolled] = useState(false);
@@ -17,6 +19,7 @@ export default function CourseEnroll() {
       return;
     }
     setEnrolled(true);
+    showToast("✓ Selamat! Anda berhasil mendaftar kursus ini.", "success");
   };
 
   return (

@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { showToast } from "@/lib/toast";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -54,7 +55,7 @@ export default function ProfilePage() {
 
   const handleSaveProfile = () => {
     localStorage.setItem("smarttani-auth", JSON.stringify(user));
-    alert("Profil berhasil diperbarui!");
+    showToast("Profil berhasil diperbarui!", "success");
   };
 
   if (loading) return null;

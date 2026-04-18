@@ -6,6 +6,8 @@ import { ShieldCheck, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import { showToast } from "@/lib/toast";
+
 interface InvestasiFormProps {
   projectTitle: string;
   minInvestasi: string;
@@ -27,7 +29,7 @@ export default function InvestasiForm({ projectTitle, minInvestasi }: InvestasiF
     }
 
     if (parseInt(nominal) < minVal) {
-      alert(`Minimal investasi adalah ${minInvestasi}`);
+      showToast(`Minimal investasi adalah ${minInvestasi}`, "error");
       return;
     }
 
@@ -35,7 +37,7 @@ export default function InvestasiForm({ projectTitle, minInvestasi }: InvestasiF
   };
 
   const confirmInvest = () => {
-    alert(`Sukses! Anda telah berinvestasi sebesar Rp ${parseInt(nominal).toLocaleString("id-ID")} di ${projectTitle}`);
+    showToast(`Sukses! Anda telah berinvestasi sebesar Rp ${parseInt(nominal).toLocaleString("id-ID")} di ${projectTitle}`, "success");
     setNominal("");
     setShowConfirm(false);
   };
