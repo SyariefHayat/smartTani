@@ -1,76 +1,68 @@
 "use client";
 
-import Image from "next/image";
-import { MARKETPLACE_HERO } from "@/constants/marketplace";
-import { Search } from "lucide-react";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { MARKETPLACE_HERO, ICON_MAP } from "@/constants/marketplace";
+import { ShieldCheck } from "lucide-react";
 
 const MarketplaceHeroSection = () => {
-  const [query, setQuery] = useState("");
-  const router = useRouter();
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (query.trim()) {
-      router.push(`/marketplace?q=${encodeURIComponent(query)}`);
-    }
-  };
-
   return (
-    <section className="relative min-h-[50vh] md:min-h-[40vh] lg:min-h-[65vh] flex items-center overflow-hidden bg-[#245a2f]">
+    <section className="relative flex items-center overflow-hidden min-h-[520px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
-      <Image
-        src="/images/marketplace/hero-bg.png"
-        alt="Marketplace Smarttani"
-        width={1920}
-        height={1080}
-        priority
-        quality={90}
-        className="absolute inset-0 w-full h-full object-cover object-right"
-        sizes="100vw"
-      />
+      <div className="absolute inset-0 z-0">
+        <picture className="block w-full h-full">
+          <source media="(min-width: 1024px)" srcSet={MARKETPLACE_HERO.bgImageDesktop} />
+          <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={MARKETPLACE_HERO.bgImageTablet} />
+          <source media="(max-width: 767px)" srcSet={MARKETPLACE_HERO.bgImageMobile} />
+          <img
+            src={MARKETPLACE_HERO.bgImageDesktop}
+            alt="Marketplace Smarttani"
+            className="w-full h-full object-cover object-center"
+          />
+        </picture>
+
+        {/* Overlay mobile */}
+        <div className="absolute inset-0 bg-black/55 md:hidden" />
+      </div>
 
       {/* Content */}
-      <div className="relative z-10 container-smarttani">
-        <div className="max-w-3xl">
-          {/* Badge Label */}
-          <p className="text-white/70 text-[11px] sm:text-xs font-medium uppercase tracking-widest mb-3">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0">
+        <div>
+          {/* Badge */}
+          <div className="mb-3 inline-block rounded-lg bg-primary-medium/80 backdrop-blur-sm px-3 py-1.5 text-caption font-bold text-white">
             {MARKETPLACE_HERO.badge}
-          </p>
+          </div>
 
-          {/* Heading */}
-          <h1 className="text-display mb-4 text-white max-w-2xl">
+          <h1 className="text-heading-1 text-white mb-3 max-w-xl">
             {MARKETPLACE_HERO.heading}
           </h1>
 
-          {/* Subtext */}
-          <p className="text-body-lg text-white/80 max-w-lg mb-8">
+          <p className="text-body-sm mb-5 max-w-sm text-white/85">
             {MARKETPLACE_HERO.subtext}
           </p>
 
-          {/* Search Bar */}
-          <form 
-            onSubmit={handleSearch}
-            className="flex items-center w-full max-w-xl bg-white rounded-xl shadow-lg overflow-hidden p-1.5"
-          >
-            <div className="pl-4 pr-2 text-neutral-400">
-              <Search className="size-5" />
-            </div>
-            <input
-              type="text"
-              placeholder="Cari pupuk, benih, atau alat tani..."
-              className="flex-1 bg-transparent border-none outline-none text-sm md:text-base text-neutral-800 placeholder:text-neutral-400 h-10 md:h-12"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-            <button
-              type="submit"
-              className="bg-primary hover:bg-primary-dark text-white px-6 md:px-8 py-2 md:py-3 rounded-lg font-bold transition-colors cursor-pointer"
-            >
-              Cari
-            </button>
-          </form>
+          {/* Badges */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-3 max-w-md lg:max-w-xl">
+            {MARKETPLACE_HERO.badges.map((badge, index) => {
+              const Icon = ICON_MAP[index] || ShieldCheck;
+              return (
+                <div
+                  key={index}
+                  className="flex flex-row md:flex-col lg:flex-row items-center md:items-start gap-3 rounded-xl bg-white p-3 shadow-lg transition-all hover:translate-y-[-2px]"
+                >
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-light text-primary">
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <p className="text-caption font-bold text-foreground leading-tight">
+                      {badge.label}
+                    </p>
+                    <p className="mt-0.5 text-[11px] text-muted-foreground leading-tight">
+                      {badge.sublabel}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
