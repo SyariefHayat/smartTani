@@ -20,7 +20,7 @@ export default function TestimoniSection() {
   return (
     <section>
       <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-5 md:gap-10 gap-12 lg:grid-cols-12">
           {/* Column 1: Kategori */}
           <div className="lg:col-span-4">
             <div className="mb-6 flex items-center justify-between">

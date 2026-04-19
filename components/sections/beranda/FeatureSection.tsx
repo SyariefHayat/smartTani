@@ -20,17 +20,17 @@ export default function FeatureSection() {
     <section>
       <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
         {/* Header */}
-        <div className="mb-12 flex flex-col items-center text-center">
+        <div className="mb-6 md:mb-10 flex flex-col items-center text-center">
           <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
             Fitur Utama SmartTani
           </h2>
-          <p className="mt-4 text-sm font-medium text-[#5d7a64] md:text-base">
+          <p className="mt-1 text-sm font-medium text-[#5d7a64] md:text-base">
             Semua yang Anda butuhkan untuk sukses di dunia pertanian, dalam satu
             platform.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5 items-stretch">
+        <div className="grid grid-cols-1 gap-6 md:gap-10 lg:gap-6 sm:grid-cols-2 lg:grid-cols-5 items-stretch">
           {HOME_FEATURES.map((features, index) => (
             <Link
               key={features.title}
@@ -38,18 +38,18 @@ export default function FeatureSection() {
               className={`flex flex-col h-full p-4 items-center text-center transition-transform hover:-translate-y-1 rounded-xl ${FEATURES_BG_COLORS[index]}`}
             >
               {/* Gambar */}
-              <div className="relative size-40 shrink-0">
+              <div className="relative w-full size-40 shrink-0 -mt-2 lg:-mt-5">
                 <Image
                   src={FEATURES_IMAGES[index]}
                   alt={`Ikon fitur ${features.title}`}
                   fill
-                  className="object cover lg:object-contain"
+                  className="object-contain lg:object-contain"
                   sizes="100%"
                 />
               </div>
 
-              <div className="flex flex-col flex-1 items-center">
-                <h3 className="mb-3 text-lg font-extrabold text-[#17391f]">
+              <div className="flex flex-col flex-1 items-center md:mt-1 lg:-mt-3">
+                <h3 className="mb-2 md:mb-4 text-lg font-extrabold text-[#17391f]">
                   {features.title}
                 </h3>
                 <p className="text-xs leading-relaxed text-[#5d7a64] md:text-sm line-clamp-3">

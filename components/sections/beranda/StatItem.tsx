@@ -69,7 +69,7 @@ export function StatItem({ icon: Icon, value, label }: StatItemProps) {
     displayCount = count.toFixed(1).replace(".", ",");
     // Ensure we don't show .0 if the original was just an integer
     if (displayCount.endsWith(",0") && !numericStr.endsWith(",0")) {
-        displayCount = displayCount.slice(0, -2);
+      displayCount = displayCount.slice(0, -2);
     }
   } else {
     displayCount = Math.floor(count).toLocaleString("id-ID");
@@ -80,8 +80,8 @@ export function StatItem({ icon: Icon, value, label }: StatItemProps) {
 
   return (
     <div ref={ref} className="flex flex-col items-center text-center px-2 sm:px-4">
-      <div className="mb-3 flex size-10 items-center justify-center rounded-xl bg-[#E1F5EE] text-[#0F6E56] md:size-12">
-        <Icon className="size-5 md:size-6" />
+      <div className="mb-3 flex size-16 items-center justify-center rounded-xl bg-[#E1F5EE] text-[#0F6E56] md:size-20">
+        <Icon className="size-9 md:size-11" />
       </div>
       <div className="space-y-1">
         <p className="text-lg font-extrabold text-[#17391f] md:text-xl lg:text-2xl whitespace-nowrap">
