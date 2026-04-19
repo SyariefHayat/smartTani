@@ -29,7 +29,7 @@ const MitraBannerSection = () => {
           variant="outline"
           className="border-white rounded-sm text-primary hover:bg-white"
         >
-          <Link href="/daftar?role=penjual">
+          <Link href="/signup?role=distributor">
             {MARKETPLACE_BANNER_MITRA.cta.label}
           </Link>
         </Button>

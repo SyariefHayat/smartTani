@@ -109,13 +109,13 @@ const AcademyMoreInfoGridSection = () => {
                 asChild
                 className="w-full sm:flex-1 bg-primary hover:bg-primary/80 !text-white text-caption font-bold h-11 rounded-lg border-none shadow-sm shadow-black/5"
               >
-                <Link href="#">{ACADEMY_CTA_BANNER.cta[0].label}</Link>
+                <Link href="/sitani-academy">{ACADEMY_CTA_BANNER.cta[0].label}</Link>
               </Button>
               <Button
                 asChild
                 className="w-full sm:flex-1 bg-accent hover:bg-accent/90 !text-white text-caption font-bold h-11 rounded-lg border-none shadow-sm shadow-black/5"
               >
-                <Link href="#">{ACADEMY_CTA_BANNER.cta[1].label}</Link>
+                <Link href="/signup">{ACADEMY_CTA_BANNER.cta[1].label}</Link>
               </Button>
             </div>
           </div>

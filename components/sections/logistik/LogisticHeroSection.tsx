@@ -4,18 +4,22 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LOGISTIC_HERO } from "@/constants/logistic";
-import { ShieldCheck, Truck, Globe, Search, ArrowRight } from "lucide-react";
+import { ShieldCheck, Truck, Globe, Search, ArrowRight, CheckCircle2, Circle } from "lucide-react";
+import { showToast } from "@/lib/toast";
 
 const ICON_MAP = [ShieldCheck, Truck, Globe];
 
 const LogisticHeroSection = () => {
   const [trackingNo, setTrackingNo] = useState("");
+  const [showResult, setShowResult] = useState(false);
 
   const handleTracking = (e: React.FormEvent) => {
     e.preventDefault();
-    if (trackingNo.trim()) {
-      // handle tracking
+    if (!trackingNo.trim()) {
+      showToast('Masukkan nomor resi dulu', 'warning');
+      return;
     }
+    setShowResult(true);
   };
 
   return (
@@ -82,42 +86,87 @@ const LogisticHeroSection = () => {
             </div>
           </div>
 
-          {/* Right Column: Tracking Form */}
+          {/* Right Column: Tracking Form & Result */}
           <div className="md:col-span-4 lg:col-span-3 flex md:justify-end lg:justify-end md:self-end">
-            <div className="w-full md:max-w-[220px] lg:max-w-xs rounded-2xl bg-white p-4 md:p-5 shadow-2xl">
-              <h3 className="text-body-sm font-bold text-foreground mb-1.5">
-                {LOGISTIC_HERO.tracking.label}
-              </h3>
-              <p className="text-caption text-muted-foreground mb-5">
-                {LOGISTIC_HERO.tracking.placeholder}
-              </p>
+            <div className="w-full md:max-w-[220px] lg:max-w-xs rounded-2xl bg-white p-4 md:p-5 shadow-2xl overflow-hidden">
+              {!showResult ? (
+                <>
+                  <h3 className="text-body-sm font-bold text-foreground mb-1.5">
+                    {LOGISTIC_HERO.tracking.label}
+                  </h3>
+                  <p className="text-caption text-muted-foreground mb-5">
+                    {LOGISTIC_HERO.tracking.placeholder}
+                  </p>
 
-              <div className="space-y-3">
-                <form onSubmit={handleTracking} className="space-y-3">
-                  <Input
-                    type="text"
-                    placeholder={LOGISTIC_HERO.tracking.inputHint}
-                    className="h-10 border-slate-200 bg-slate-50 px-4 focus:ring-primary rounded-xl"
-                    value={trackingNo}
-                    onChange={(e) => setTrackingNo(e.target.value)}
-                  />
-                  <Button
-                    type="submit"
-                    className="h-10 w-full bg-primary text-sm font-bold !text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20"
-                  >
-                    <Search className="mr-2 h-4 w-4" />
-                    {LOGISTIC_HERO.tracking.ctaPrimary}
-                  </Button>
-                </form>
+                  <div className="space-y-3">
+                    <form onSubmit={handleTracking} className="space-y-3">
+                      <Input
+                        type="text"
+                        placeholder={LOGISTIC_HERO.tracking.inputHint}
+                        className="h-10 border-slate-200 bg-slate-50 px-4 focus:ring-primary rounded-xl"
+                        value={trackingNo}
+                        onChange={(e) => setTrackingNo(e.target.value)}
+                      />
+                      <Button
+                        type="submit"
+                        className="h-10 w-full bg-primary text-sm font-bold !text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20"
+                      >
+                        <Search className="mr-2 h-4 w-4" />
+                        {LOGISTIC_HERO.tracking.ctaPrimary}
+                      </Button>
+                    </form>
 
-                <button
-                  type="button"
-                  className="flex w-full items-center justify-center gap-2 text-caption font-bold text-primary hover:text-primary/80 transition-all py-1.5 group cursor-pointer"
-                >
-                  {LOGISTIC_HERO.tracking.ctaSecondary}
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                </button>
-              </div>
+                    <button
+                      type="button"
+                      className="flex w-full items-center justify-center gap-2 text-caption font-bold text-primary hover:text-primary/80 transition-all py-1.5 group cursor-pointer"
+                    >
+                      {LOGISTIC_HERO.tracking.ctaSecondary}
+                      <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-body-sm font-bold text-foreground">Hasil Pelacakan</h3>
+                    <button 
+                      onClick={() => setShowResult(false)}
+                      className="text-[10px] font-bold text-primary hover:underline"
+                    >
+                      Ubah No. Resi
+                    </button>
+                  </div>
+                  <div className="bg-slate-50 rounded-xl p-3 mb-4 border border-slate-100">
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">No. Resi</p>
+                    <p className="text-xs font-bold text-foreground">{trackingNo}</p>
+                  </div>
+                  <div className="space-y-4">
+                    {[
+                      { title: "Pesanan Diterima", date: "Kemarin, 14:20", done: true },
+                      { title: "Diproses di Gudang", date: "Kemarin, 18:45", done: true },
+                      { title: "Dalam Perjalanan", date: "Hari ini, 09:10", done: true },
+                      { title: "Estimasi Tiba", date: "Besok, 12:00", done: false },
+                    ].map((step, i) => (
+                      <div key={i} className="flex gap-3">
+                        <div className="flex flex-col items-center">
+                          {step.done ? (
+                            <CheckCircle2 className="size-4 text-primary" />
+                          ) : (
+                            <Circle className="size-4 text-slate-300" />
+                          )}
+                          {i < 3 && <div className={`w-0.5 h-6 ${step.done ? 'bg-primary' : 'bg-slate-200'}`} />}
+                        </div>
+                        <div>
+                          <p className={`text-[11px] font-bold ${step.done ? 'text-foreground' : 'text-slate-400'}`}>
+                            {step.title}
+                          </p>
+                          <p className="text-[9px] text-muted-foreground">{step.date}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

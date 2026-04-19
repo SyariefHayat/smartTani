@@ -34,6 +34,7 @@ export const INVESTASI_PROYEK = {
   subtext: "Proyek berkualitas dengan potensi keuntungan optimal",
   items: [
     {
+      id: "1",
       badge: "POPULER",
       title: "Budidaya Padi Premium Jawa Tengah",
       kategori: "Pertanian Pangan",
@@ -45,6 +46,7 @@ export const INVESTASI_PROYEK = {
       image: "/images/investasi/budidaya-padi-premium.webp",
     },
     {
+      id: "2",
       badge: "BARU",
       title: "Greenhouse Hortikultura Lembang, Jawa Barat",
       kategori: "Hortikultura",
@@ -56,6 +58,7 @@ export const INVESTASI_PROYEK = {
       image: "/images/investasi/greenhouse.webp",
     },
     {
+      id: "3",
       badge: "POPULER",
       title: "Perkebunan Tebu Modern Lampung",
       kategori: "Perkebunan",
@@ -67,6 +70,7 @@ export const INVESTASI_PROYEK = {
       image: "/images/investasi/perkebunan-tebu-modern.webp",
     },
     {
+      id: "4",
       badge: null,
       title: "Cold Storage & Distribusi Pertanian",
       kategori: "Infrastruktur",
@@ -78,6 +82,7 @@ export const INVESTASI_PROYEK = {
       image: "/images/investasi/cold-storage.webp",
     },
     {
+      id: "5",
       badge: null,
       title: "Pembibitan Kelapa Sawit Berkelanjutan",
       kategori: "Perkebunan",
@@ -89,6 +94,7 @@ export const INVESTASI_PROYEK = {
       image: "/images/investasi/pembibitan-kelapa-sawit.webp",
     },
     {
+      id: "6",
       badge: null,
       title: "Smart Farming IoT Jawa Timur",
       kategori: "Teknologi Pertanian",

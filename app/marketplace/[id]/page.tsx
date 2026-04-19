@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight, Home } from "lucide-react";
-import { MARKETPLACE_TERLARIS_DATA } from "@/constants/marketplace";
+import { ALL_PRODUCTS } from "@/constants/marketplace";
 import ProductGallery from "@/components/sections/marketplace/ProductGallery";
 import ProductInfo from "@/components/sections/marketplace/ProductInfo";
 import ProductTabs from "@/components/sections/marketplace/ProductTabs";
@@ -13,13 +13,17 @@ interface MarketplaceDetailPageProps {
   };
 }
 
+export function generateStaticParams() {
+  return ALL_PRODUCTS.map((p) => ({ id: p.id }));
+}
+
 export default async function MarketplaceDetailPage({
   params,
 }: MarketplaceDetailPageProps) {
   const { id } = await params;
 
-  // Find product by id in SAMPLE_PRODUCTS (via MARKETPLACE_TERLARIS_DATA)
-  const product = MARKETPLACE_TERLARIS_DATA.items.find((p) => p.id === id);
+  // Find product by id in ALL_PRODUCTS
+  const product = ALL_PRODUCTS.find((p) => p.id === id);
 
   if (!product) {
     notFound();

@@ -4,13 +4,14 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DISTRIBUTOR_HERO } from "@/constants/distributor";
 import { ShieldCheck, Tag, Headphones, UsersRound, Download } from "lucide-react";
+import { showToast } from "@/lib/toast";
 
 const ICON_MAP = [ShieldCheck, Tag, Headphones, UsersRound];
 
 const DistributorHeroSection = () => {
   const handleAction = (index: number) => {
     if (index === 1) {
-      alert('Brosur sedang diunduh...');
+      showToast('Brosur sedang diunduh...', 'info');
     }
   };
 

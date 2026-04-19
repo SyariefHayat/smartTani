@@ -12,14 +12,17 @@ interface CourseDetailPageProps {
   };
 }
 
+export function generateStaticParams() {
+  return ACADEMY_KURSUS.items.map((c) => ({ id: c.id }));
+}
+
 export default async function CourseDetailPage({
   params,
 }: CourseDetailPageProps) {
   const { id } = await params;
   
-  // Find course by index (id-1)
-  const index = parseInt(id) - 1;
-  const course = ACADEMY_KURSUS.items[index];
+  // Find course by id
+  const course = ACADEMY_KURSUS.items.find((c) => c.id === id);
 
   if (!course) {
     notFound();

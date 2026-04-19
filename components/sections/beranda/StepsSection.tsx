@@ -1,5 +1,6 @@
 import { HOME_STEPS, STEP_ICONS } from "@/constants";
 import { ChevronRight, UserPlus } from "lucide-react";
+import Link from "next/link";
 
 export default function StepsSection() {
   return (
@@ -20,7 +21,7 @@ export default function StepsSection() {
           <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-4">
             {HOME_STEPS.map((step, index) => {
               const Icon = STEP_ICONS[index] ?? UserPlus;
-              return (
+              const content = (
                 <div key={step.step} className="flex flex-1 items-center gap-4">
                   <div className="flex flex-1 items-center gap-3">
                     {/* Step Number */}
@@ -60,6 +61,16 @@ export default function StepsSection() {
                   )}
                 </div>
               );
+
+              if (step.step === 1) {
+                return (
+                  <Link key={step.step} href="/signup" className="flex-1 hover:opacity-80 transition-opacity">
+                    {content}
+                  </Link>
+                );
+              }
+
+              return content;
             })}
           </div>
         </div>

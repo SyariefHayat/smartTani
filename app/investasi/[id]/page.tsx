@@ -11,14 +11,17 @@ interface InvestasiDetailPageProps {
   };
 }
 
+export function generateStaticParams() {
+  return INVESTASI_PROYEK.items.map((p) => ({ id: p.id }));
+}
+
 export default async function InvestasiDetailPage({
   params,
 }: InvestasiDetailPageProps) {
   const { id } = await params;
   
-  // Find project by index (id-1)
-  const index = parseInt(id) - 1;
-  const project = INVESTASI_PROYEK.items[index];
+  // Find project by id
+  const project = INVESTASI_PROYEK.items.find((p) => p.id === id);
 
   if (!project) {
     notFound();
