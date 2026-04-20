@@ -12,6 +12,7 @@ import {
   LogIn,
   UserPlus,
   X,
+  ChevronRight,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -136,7 +137,7 @@ export default function Navbar() {
             id="navbar-logo"
             className="flex items-center gap-3 shrink-0"
           >
-            <div className="relative w-20 h-12 md:w-32 md:h-20 lg:w-28 lg:h-16">
+            <div className="relative w-28 h-14 sm:w-32 md:w-36 md:h-20 lg:w-28 lg:h-16">
               <Image
                 src="/images/home/logo.png"
                 alt="Logo Smarttani Indonesia"
@@ -206,7 +207,7 @@ export default function Navbar() {
               )}
             </Button>
             <div className="w-px h-6 bg-border mx-1" />
-            
+
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -262,22 +263,38 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile: Cart + Hamburger */}
-          <div className="flex lg:hidden items-center gap-1">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              aria-label="Keranjang" 
-              className="relative cursor-pointer"
+          {/* Mobile: Notification + Cart + Hamburger */}
+          <div className="flex lg:hidden items-center gap-0.5">
+            {/* Mobile Notification */}
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Notifikasi"
+              className="hidden cursor-pointer h-10 w-10"
+            >
+              <Bell className="size-[22px] text-foreground/80" />
+            </Button>
+
+            {/* Mobile Cart */}
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Keranjang"
+              className="hidden relative cursor-pointer h-10 w-10"
               onClick={() => window.dispatchEvent(new CustomEvent('toggle-cart'))}
             >
-              <ShoppingCart className="size-5" />
+              <ShoppingCart className="size-[22px] text-foreground/80" />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
+                <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] rounded-full min-w-[18px] h-[18px] flex items-center justify-center font-bold px-1 ring-2 ring-white">
                   {cartCount > 99 ? '99+' : cartCount}
                 </span>
               )}
             </Button>
+
+            {/* Divider */}
+            <div className="hidden w-px h-6 bg-border/60 mx-0.5" />
+
+            {/* Mobile Hamburger */}
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
                 <Button
@@ -285,32 +302,35 @@ export default function Navbar() {
                   size="icon"
                   id="navbar-mobile-toggle"
                   aria-label="Menu navigasi"
+                  className="cursor-pointer h-10 w-10"
                 >
-                  <Menu className="size-5" />
+                  <Menu className="size-6 text-foreground/80" />
                 </Button>
               </SheetTrigger>
               <SheetContent
                 side="left"
-                className="w-75 p-0"
+                className="w-80 p-0"
                 showCloseButton={false}
               >
                 {/* Mobile Sheet Header */}
-                <SheetHeader className="p-4 border-b border-border">
+                <SheetHeader className="p-5 border-b border-border/60 bg-gradient-to-r from-primary/5 to-transparent">
                   <div className="flex items-center justify-between">
                     <SheetTitle>
-                      <div className="relative w-24 h-12 md:w-28 md:h-14">
-                        <Image
-                          src="/images/home/logo.png"
-                          alt="Logo"
-                          className="object-contain"
-                          sizes="100%"
-                          loading="eager"
-                          fill
-                        />
+                      <div className="flex items-center gap-3">
+                        <div className="relative w-28 h-14 md:w-32 md:h-16">
+                          <Image
+                            src="/images/home/logo.png"
+                            alt="Logo"
+                            className="object-contain"
+                            sizes="100%"
+                            loading="eager"
+                            fill
+                          />
+                        </div>
                       </div>
                     </SheetTitle>
                     <SheetClose asChild>
-                      <Button variant="ghost" size="icon-sm">
+                      <Button variant="ghost" size="icon-sm" className="rounded-full hover:bg-primary/10">
                         <X className="size-4" />
                       </Button>
                     </SheetClose>
@@ -318,13 +338,13 @@ export default function Navbar() {
                 </SheetHeader>
 
                 {/* Mobile Search */}
-                <div className="p-4 border-b border-border">
+                <div className="p-4 border-b border-border/60">
                   <form onSubmit={handleSearch} className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                     <Input
                       type="search"
-                      placeholder="Cari..."
-                      className="pl-10 h-10 bg-neutral-100 border-neutral-200 rounded-full text-sm"
+                      placeholder="Cari produk, layanan..."
+                      className="pl-10 h-11 bg-neutral-50 border-neutral-200 rounded-full text-sm"
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                     />
@@ -332,24 +352,40 @@ export default function Navbar() {
                 </div>
 
                 {/* Mobile Nav Links */}
-                <nav className="flex-1 overflow-y-auto p-2">
+                <nav className="flex-1 overflow-y-auto p-3">
+                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2">Menu</p>
                   {HEADER_NAV.map((item) => {
                     const isActive =
                       item.href === "/"
                         ? pathname === "/"
                         : pathname.startsWith(item.href);
+                    const Icon = item.icon;
                     return (
                       <SheetClose asChild key={item.href}>
                         <Link
                           href={item.href}
                           className={cn(
-                            "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
+                            "flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all group",
                             isActive
-                              ? "bg-primary-light text-primary font-semibold"
-                              : "text-foreground hover:bg-muted",
+                              ? "bg-primary/10 text-primary font-semibold"
+                              : "text-foreground hover:bg-muted/80",
                           )}
                         >
-                          {item.label}
+                          {Icon && (
+                            <span className={cn(
+                              "flex items-center justify-center w-9 h-9 rounded-lg shrink-0 transition-colors",
+                              isActive
+                                ? "bg-primary/15 text-primary"
+                                : "bg-muted/60 text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
+                            )}>
+                              <Icon className="size-[18px]" />
+                            </span>
+                          )}
+                          <span className="flex-1">{item.label}</span>
+                          <ChevronRight className={cn(
+                            "size-4 transition-colors",
+                            isActive ? "text-primary/60" : "text-muted-foreground/40 group-hover:text-primary/50"
+                          )} />
                         </Link>
                       </SheetClose>
                     );
@@ -357,24 +393,25 @@ export default function Navbar() {
                 </nav>
 
                 {/* Mobile Auth Buttons */}
-                <div className="p-4 border-t border-border space-y-2">
+                <div className="p-4 border-t border-border/60 space-y-2">
                   {user ? (
                     <>
                       <div className="flex items-center gap-3 px-4 py-3 bg-muted/50 rounded-xl mb-4">
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-white shrink-0">
                           {user.name ? user.name.charAt(0).toUpperCase() : "U"}
                         </div>
-                        <div className="flex-1 truncate font-medium">
-                          {user.name || "User"}
+                        <div className="flex-1 truncate">
+                          <p className="font-semibold text-sm">{user.name || "User"}</p>
+                          <p className="text-xs text-muted-foreground capitalize">{user.role || "Member"}</p>
                         </div>
                       </div>
                       <SheetClose asChild>
-                        <Button variant="outline" className="w-full justify-start" size="lg" asChild>
+                        <Button variant="outline" className="w-full justify-start gap-2" size="lg" asChild>
                           <Link href={getDashboardLink()}>Dashboard</Link>
                         </Button>
                       </SheetClose>
                       <SheetClose asChild>
-                        <Button variant="outline" className="w-full justify-start" size="lg" asChild>
+                        <Button variant="outline" className="w-full justify-start gap-2" size="lg" asChild>
                           <Link href="/dashboard/profile">Profile</Link>
                         </Button>
                       </SheetClose>

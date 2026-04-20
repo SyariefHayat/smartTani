@@ -15,7 +15,7 @@ import { ShieldCheck, Sprout } from "lucide-react";
 export default function HeroSection() {
 
   return (
-    <section className="relative flex items-center overflow-hidden min-h-[520px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-start md:items-center overflow-hidden min-h-[800px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
@@ -29,8 +29,6 @@ export default function HeroSection() {
           />
         </picture>
 
-        {/* Overlay mobile */}
-        <div className="absolute inset-0 bg-black/55 md:hidden" />
       </div>
 
       {/* Content */}
@@ -68,13 +66,13 @@ export default function HeroSection() {
             </div>
 
             <div className="inline-flex items-center gap-2 rounded-full border border-[#b5d296]/30 bg-[#163e1f]/60 px-4 py-2 text-xs font-medium text-[#eef8e5] backdrop-blur-sm sm:text-sm">
-              <ShieldCheck className="size-4 text-[#f5c35b]" />
+              <ShieldCheck className="size-10 md:size-5 text-[#f5c35b]" />
               {HOME_HERO.trustBar}
             </div>
           </div>
 
           {/* Right Column: Stat Cards */}
-          <div className="lg:col-span-3 lg:flex lg:justify-end">
+          <div className="hidden md:block lg:col-span-3 lg:flex lg:justify-end">
             <div className="w-full lg:max-w-xs">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-2">
                 {HOME_HERO_STATS.map((item, index) => {
@@ -117,7 +115,6 @@ export default function HeroSection() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>

@@ -1,15 +1,26 @@
 import { NavItem, SocialLink, FooterSection } from "./types";
+import {
+  Home,
+  Store,
+  TrendingUp,
+  Truck,
+  Package,
+  GraduationCap,
+  Newspaper,
+  Info,
+  Mail,
+} from "lucide-react";
 
 export const HEADER_NAV: NavItem[] = [
-  { label: "Beranda", href: "/" },
-  { label: "Marketplace", href: "/marketplace" },
-  { label: "Investasi", href: "/investasi" },
-  { label: "Distributor", href: "/distributor" },
-  { label: "Logistik", href: "/logistik" },
-  { label: "SiTani Academy", href: "/sitani-academy" },
-  { label: "Artikel", href: "/artikel" },
-  { label: "Tentang", href: "/tentang" },
-  { label: "Kontak", href: "/kontak" },
+  { label: "Beranda", href: "/", icon: Home },
+  { label: "Marketplace", href: "/marketplace", icon: Store },
+  { label: "Investasi", href: "/investasi", icon: TrendingUp },
+  { label: "Distributor", href: "/distributor", icon: Package },
+  { label: "Logistik", href: "/logistik", icon: Truck },
+  { label: "SiTani Academy", href: "/sitani-academy", icon: GraduationCap },
+  { label: "Artikel", href: "/artikel", icon: Newspaper },
+  { label: "Tentang", href: "/tentang", icon: Info },
+  { label: "Kontak", href: "/kontak", icon: Mail },
 ];
 
 export const FOOTER_SECTIONS: FooterSection[] = [
@@ -30,9 +41,9 @@ export const FOOTER_SECTIONS: FooterSection[] = [
   {
     title: "Solusi",
     links: [
-      { label: "Smart Farming", href: "/solusi/smart-farming" },
+      { label: "Smart Farming", href: "/artikel" },
       { label: "Marketplace", href: "/marketplace" },
-      { label: "Supply Chain", href: "/solusi/supply-chain" },
+      { label: "Supply Chain", href: "/investasi" },
       { label: "Logistik", href: "/logistik" },
       { label: "Edukasi", href: "/sitani-academy" },
     ],
@@ -40,10 +51,37 @@ export const FOOTER_SECTIONS: FooterSection[] = [
   {
     title: "Bantuan",
     links: [
-      { label: "Pusat Bantuan", href: "/bantuan" },
+      { label: "Pusat Bantuan", href: "/kontak" },
       { label: "FAQ", href: "/faq" },
       { label: "Kebijakan Privasi", href: "/privasi" },
       { label: "Syarat & Ketentuan", href: "/syarat" },
+    ],
+  },
+  {
+    title: "Kontak Kami",
+    links: [
+      {
+        label: "Jakarta Selatan 12345",
+        href: `https://maps.google.com/?q=${encodeURIComponent("Jakarta Selatan 12345")}`,
+        icon: "map-pin",
+        external: true,
+      },
+      {
+        label: "(021) 1234-5678",
+        href: `tel:(021) 1234-5678`,
+        icon: "phone",
+      },
+      {
+        label: "info@smarttani.id",
+        href: `mailto:info@smarttani.id`,
+        icon: "mail",
+      },
+      {
+        label: "www.smarttani.id",
+        href: `https://www.smarttani.id`,
+        icon: "globe",
+        external: true,
+      },
     ],
   },
 ];
@@ -57,7 +95,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
 ];
 
 export const FOOTER_CONTACT = {
-  address: "Jl. Pertanian No. 123, Jakarta Selatan 12345",
+  address: "Jakarta Selatan 12345",
   phone: "(021) 1234-5678",
   email: "info@smarttani.id",
   website: "www.smarttani.id",

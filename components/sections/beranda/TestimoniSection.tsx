@@ -20,15 +20,15 @@ export default function TestimoniSection() {
   return (
     <section>
       <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
-        <div className="grid grid-cols-1 gap-5 md:gap-10 gap-12 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-6 md:gap-10 lg:grid-cols-12">
           {/* Column 1: Kategori */}
           <div className="lg:col-span-4">
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-extrabold text-[#17391f] md:text-xl">
+                <h2 className="text-lg font-extrabold text-[#17391f] md:text-3xl lg:text-lg">
                   Kategori Produk Populer
                 </h2>
-                <p className="text-xs text-[#5d7a64] mt-0.5">
+                <p className="text-xs md:text-base lg:text-xs text-[#5d7a64] mt-0.5">
                   Temukan berbagai hasil tani berkualitas
                 </p>
               </div>
@@ -94,7 +94,7 @@ export default function TestimoniSection() {
                 className="size-5 fill-[#3B6D11] text-[#3B6D11] shrink-0"
                 aria-hidden="true"
               />
-              <h2 className="text-base font-extrabold text-[#17391f] md:text-lg">
+              <h2 className="text-lg font-extrabold text-[#17391f] md:text-3xl lg:text-lg">
                 Testimoni Pengguna
               </h2>
             </div>
@@ -156,7 +156,7 @@ export default function TestimoniSection() {
           {/* Column 3: Artikel */}
           <div className="lg:col-span-4 bg-white">
             <div className="mb-8 flex items-center justify-between">
-              <h2 className="text-lg font-extrabold text-[#17391f] md:text-xl">
+              <h2 className="text-lg font-extrabold text-[#17391f] md:text-3xl lg:text-lg">
                 Artikel Terbaru
               </h2>
               <Link

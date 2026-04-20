@@ -22,7 +22,7 @@ export default function CTABannerSection() {
               />
               {/* Mobile: default (di bawah 640px) */}
               <img
-                src="/images/home/cta-tablet.png"
+                src="/images/home/cta-mobile.png"
                 alt="CTA Background"
                 className="h-full w-full object-cover object-center"
               />

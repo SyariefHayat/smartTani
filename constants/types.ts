@@ -1,6 +1,9 @@
+import type { LucideIcon } from "lucide-react";
+
 export interface NavItem {
   label: string;
   href: string;
+  icon?: LucideIcon;
 }
 
 export interface SocialLink {
@@ -9,9 +12,16 @@ export interface SocialLink {
   icon: string;
 }
 
+export interface FooterLink {
+  label: string;
+  href: string;
+  icon?: "map-pin" | "phone" | "mail" | "globe";
+  external?: boolean;
+}
+
 export interface FooterSection {
   title: string;
-  links: NavItem[];
+  links: FooterLink[];
 }
 
 export interface StatItem {
