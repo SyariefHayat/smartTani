@@ -36,7 +36,7 @@ export default function HeroSection() {
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-8">
 
           {/* Left Column */}
-          <div className="lg:col-span-9 text-white">
+          <div className="lg:col-span-9 text-white mt-9 md:mt-0">
             <h1 className="text-heading-1 md:text-display text-white mb-3 max-w-sm lg:max-w-lg">
               {HOME_HERO.heading}
             </h1>
@@ -66,13 +66,13 @@ export default function HeroSection() {
             </div>
 
             <div className="inline-flex items-center gap-2 rounded-full border border-[#b5d296]/30 bg-[#163e1f]/60 px-4 py-2 text-xs font-medium text-[#eef8e5] backdrop-blur-sm sm:text-sm">
-              <ShieldCheck className="size-10 md:size-5 text-[#f5c35b]" />
+              <ShieldCheck className="size-7 text-[#f5c35b]" />
               {HOME_HERO.trustBar}
             </div>
           </div>
 
           {/* Right Column: Stat Cards */}
-          <div className="hidden md:block lg:col-span-3 lg:flex lg:justify-end">
+          <div className="hidden lg:col-span-3 lg:flex lg:justify-end">
             <div className="w-full lg:max-w-xs">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-2">
                 {HOME_HERO_STATS.map((item, index) => {
@@ -88,7 +88,7 @@ export default function HeroSection() {
                           style={{ background: item.iconBg }}
                         >
                           <Icon
-                            className="h-4 w-4 md:h-5 md:w-5"
+                            className="size-7"
                             style={{ color: item.iconColor }}
                           />
                         </div>
