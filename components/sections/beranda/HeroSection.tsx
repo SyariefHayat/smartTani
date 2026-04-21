@@ -15,7 +15,7 @@ import { ShieldCheck, Sprout } from "lucide-react";
 export default function HeroSection() {
 
   return (
-    <section className="relative flex items-start md:items-center overflow-hidden min-h-[800px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-start md:items-center overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">

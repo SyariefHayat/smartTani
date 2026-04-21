@@ -111,12 +111,12 @@ export const HOME_HERO_STATS = [
 ];
 
 export const HOME_STATS_BAR = [
-  { value: "125.430+", label: "Petani Aktif" },
-  { value: "1.250.780+", label: "Total Transaksi" },
-  { value: "320+ Miliar", label: "Proyek Terdanai" },
+  { value: "125K+", label: "Petani Aktif" },
+  { value: "1,25 Jt+", label: "Total Transaksi" },
+  { value: "320M+", label: "Proyek Terdanai" },
   { value: "8.750+", label: "Investor Terdaftar" },
-  { value: "45.680+", label: "Peserta Pelatihan" },
-  { value: "1,2 Juta+ Ton", label: "Tonase Distribusi" },
+  { value: "45K+", label: "Peserta Pelatihan" },
+  { value: "1,2 Jt Ton+", label: "Tonase Distribusi" },
 ];
 
 export const STAT_BAR_ICONS = [

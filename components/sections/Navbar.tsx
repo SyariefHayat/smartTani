@@ -437,14 +437,11 @@ export default function Navbar() {
                 isActive ? "text-primary" : "text-muted-foreground"
               )} />
               <span className={cn(
-                "text-[9.5px] leading-none font-semibold tracking-tight truncate max-w-full",
+                "text-[9.5px] leading-none font-semibold tracking-tight max-w-full",
                 isActive ? "text-primary" : "text-muted-foreground"
               )}>
                 {item.label}
               </span>
-              {isActive && (
-                <span className="absolute bottom-[5px] w-1 h-1 bg-white rounded-full" />
-              )}
             </Link>
           );
         })}
