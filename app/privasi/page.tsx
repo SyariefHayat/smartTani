@@ -38,7 +38,7 @@ export default function PrivasiPage() {
               <div className="space-y-4">
                 {section.content.map((block, blockIndex) => (
                   <div key={blockIndex}>
-                    {block.subtitle && (
+                    {"subtitle" in block && block.subtitle && (
                       <h3 className="text-body-sm font-bold text-foreground mb-1.5">
                         {block.subtitle}
                       </h3>
