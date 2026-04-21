@@ -30,7 +30,7 @@ export default function FeatureSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:gap-10 lg:gap-6 sm:grid-cols-2 lg:grid-cols-5 items-stretch">
+        <div className="grid grid-cols-2 gap-6 md:gap-10 lg:gap-6 sm:grid-cols-3 lg:grid-cols-6 items-stretch">
           {HOME_FEATURES.map((features, index) => (
             <Link
               key={features.title}
@@ -38,7 +38,7 @@ export default function FeatureSection() {
               className={`flex flex-col h-full p-4 items-center text-center transition-transform hover:-translate-y-1 rounded-xl ${FEATURES_BG_COLORS[index]}`}
             >
               {/* Gambar */}
-              <div className="relative w-full size-40 shrink-0 -mt-2 lg:-mt-5">
+              <div className="relative w-full size-40 shrink-0 -mt-5 lg:-mt-7">
                 <Image
                   src={FEATURES_IMAGES[index]}
                   alt={`Ikon fitur ${features.title}`}
@@ -48,11 +48,11 @@ export default function FeatureSection() {
                 />
               </div>
 
-              <div className="flex flex-col flex-1 items-center md:mt-1 lg:-mt-3">
+              <div className="flex flex-col flex-1 items-center -mt-5 md:-mt-3 lg:-mt-7">
                 <h3 className="mb-2 md:mb-4 text-lg font-extrabold text-[#17391f]">
                   {features.title}
                 </h3>
-                <p className="text-xs leading-relaxed text-[#5d7a64] md:text-sm line-clamp-3">
+                <p className="text-xs leading-relaxed text-[#5d7a64] md:text-sm line-clamp-3 lg:-mt-2">
                   {features.description}
                 </p>
               </div>

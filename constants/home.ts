@@ -154,10 +154,16 @@ export const HOME_FEATURES = [
     cta: "Cek Tarif →",
   },
   {
-    title: "SiTani Academy",
+    title: "Pelatihan SiTani Academy",
     description:
       "Tingkatkan pengetahuan dan keterampilan dengan pelatihan bersertifikat.",
     cta: "Mulai Belajar →",
+  },
+  {
+    title: "Artikel & Berita Tani",
+    description:
+      "Baca tips, tren, dan informasi terkini seputar dunia pertanian dari para ahli.",
+    cta: "Baca Artikel →",
   },
 ];
 
@@ -167,6 +173,7 @@ export const FEATURES_IMAGES = [
   "/images/home/gudang-truk.webp",
   "/images/home/truk-logistik.webp",
   "/images/home/buku-akademi.webp",
+  "/images/home/artikel-berita.png",
 ];
 
 export const FEATURES_BG_COLORS = [
@@ -175,6 +182,7 @@ export const FEATURES_BG_COLORS = [
   "bg-[#E6F1FB]",
   "bg-[#F3E8FB]",
   "bg-[#F1EFE8]",
+  "bg-[#E8F6F3]",
 ];
 
 export const STEP_ICONS = [UserPlus, ShoppingBasket, ShieldCheck, TrendingUp];
