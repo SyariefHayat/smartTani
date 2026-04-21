@@ -19,7 +19,7 @@ export default function StepsSection() {
           </div>
 
           {/* Steps */}
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-10 lg:flex lg:flex-row lg:items-start lg:gap-4">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 sm:gap-10 lg:flex lg:flex-row lg:items-start lg:gap-4">
             {HOME_STEPS.map((step, index) => {
               const Icon = STEP_ICONS[index] ?? UserPlus;
               const isFirst = step.step === 1;
@@ -28,8 +28,8 @@ export default function StepsSection() {
               const stepCard = (
                 <div className="flex w-full flex-col items-center gap-4 text-center">
                   {/* Icon */}
-                  <div className="flex size-16 shrink-0 items-center justify-center text-[#2D6A2D]">
-                    <Icon className="size-12" strokeWidth={1.5} aria-hidden="true" />
+                  <div className="flex shrink-0 items-center justify-center text-[#2D6A2D]">
+                    <Icon className="size-7" strokeWidth={1.5} aria-hidden="true" />
                   </div>
 
                   {/* Text */}
