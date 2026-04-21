@@ -43,7 +43,7 @@ function LinkIcon({ name }: { name: string }) {
 export default function Footer() {
   return (
     <footer id="main-footer" className="bg-cta-gradient text-white">
-      <div className="container-smarttani py-12 md:pt-8 md:pb-5">
+      <div className="container-smarttani pt-12 pb-9 md:pt-8 md:pb-5">
 
         {/* ===== MOBILE: grid 2 kolom ===== */}
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:hidden">
@@ -69,15 +69,7 @@ export default function Footer() {
         {/* ===== TABLET: baris 1 (Brand + Download), baris 2 (Nav links) ===== */}
         <div className="hidden md:flex lg:hidden flex-col gap-y-10">
 
-          {/* Baris 1 — Tablet */}
-          <div className="flex flex-row gap-x-6 items-center">
-            <div className="flex-[2]">
-              <BrandColumn />
-            </div>
-            <DownloadColumn className="flex-2" /> {/* lebih lebar */}
-          </div>
-
-          {/* Baris 2 */}
+          {/* Baris 1 */}
           <div className="flex flex-row gap-x-6">
             {FOOTER_SECTIONS.map((section) => (
               <div key={section.title} className="flex-1 flex flex-col">
@@ -85,6 +77,15 @@ export default function Footer() {
               </div>
             ))}
           </div>
+
+          {/* Baris 2 */}
+          <div className="flex flex-row gap-x-6 items-center">
+            <div className="flex-[2]">
+              <BrandColumn />
+            </div>
+            <DownloadColumn className="flex-2" /> {/* lebih lebar */}
+          </div>
+
         </div>
 
         {/* ===== DESKTOP: semua sejajar 1 baris ===== */}
@@ -119,7 +120,7 @@ function BrandColumn() {
   return (
     <div className="space-y-4">
       <Link href="/" className="inline-block">
-        <div className="relative h-52 w-[365px] md:h-44 md:w-[300px] lg:h-44 lg:w-[300px] -mt-5">
+        <div className="relative h-52 w-[405px] md:h-44 md:w-[300px] lg:h-44 lg:w-[300px] -mt-5">
           <Image src="/images/home/logo.png" alt="Logo Smarttani Indonesia" fill className="object-cover" sizes="100%" priority />
         </div>
       </Link>
