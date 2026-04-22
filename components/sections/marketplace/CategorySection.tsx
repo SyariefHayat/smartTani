@@ -24,7 +24,7 @@ const CategorySection = () => {
         </Link>
       </div>
 
-      <div className="flex justify-between gap-2 md:gap-3">
+      <div className="flex gap-3 md:gap-4 overflow-x-auto pb-1 scrollbar-hide">
         {MARKETPLACE_KATEGORI_POPULER.map((category) => {
           const slug = generateSlug(category.label);
           const isLast = category.label === "Lainnya";
@@ -37,7 +37,7 @@ const CategorySection = () => {
                   ? "/marketplace/categories"
                   : `/marketplace?kategori=${slug}`
               }
-              className="group flex flex-col items-center text-center gap-2.5 transition-all duration-200 flex-1"
+              className="group flex flex-col items-center text-center gap-2.5 transition-all duration-200 flex-shrink-0 w-16 md:w-20 lg:flex-1"
             >
               {/* Circular Image Container */}
               <div className="relative size-14 md:size-16 lg:size-20 rounded-full border border-neutral-100 p-1 bg-white overflow-hidden transition-all duration-300 group-hover:border-primary group-hover:scale-105 group-hover:shadow-md">

@@ -411,7 +411,7 @@ export default function Navbar() {
       <nav
         id="bottom-navbar"
         aria-label="Navigasi bawah"
-        className="sm:hidden fixed bottom-0 left-0 right-0 z-50 h-[68px] flex items-center px-1.5 bg-lime-400"
+        className="sm:hidden fixed bottom-0 left-0 right-0 z-50 h-[68px] flex items-center px-1.5 bg-[#0B2F13]"
         style={{
           borderTop: "1px solid rgba(255, 255, 255, 0.2)",
           boxShadow: "0 -4px 16px rgba(0,0,0,0.1)",

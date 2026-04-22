@@ -1,11 +1,13 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { MARKETPLACE_HERO, ICON_MAP } from "@/constants/marketplace";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, ShoppingBag, Store } from "lucide-react";
+import Link from "next/link";
 
 const MarketplaceHeroSection = () => {
   return (
-    <section className="relative flex items-center overflow-hidden min-h-[520px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-start overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
@@ -20,11 +22,11 @@ const MarketplaceHeroSection = () => {
         </picture>
 
         {/* Overlay mobile */}
-        <div className="absolute inset-0 bg-black/55 md:hidden" />
+        {/* <div className="absolute inset-0 bg-black/55 md:hidden" /> */}
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 lg:py-0">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10">
         <div>
           {/* Badge */}
           <div className="mb-3 inline-block rounded-lg bg-primary-medium/80 backdrop-blur-sm px-3 py-1.5 text-caption font-bold text-white">
@@ -39,8 +41,24 @@ const MarketplaceHeroSection = () => {
             {MARKETPLACE_HERO.subtext}
           </p>
 
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button asChild className="h-10 w-full rounded-md px-6 text-sm font-bold bg-primary hover:bg-primary-dark !text-white shadow-lg shadow-primary/20 sm:w-auto cursor-pointer">
+              <Link href="/marketplace">
+                <ShoppingBag className="mr-2 h-4 w-4" />
+                Belanja Sekarang
+              </Link>
+            </Button>
+
+            <Button asChild className="h-10 w-full rounded-md px-6 text-sm font-bold bg-white text-primary-dark hover:bg-white/90 sm:w-auto cursor-pointer">
+              <Link href="/marketplace/jual">
+                <Store className="mr-2 h-4 w-4" />
+                Mulai Berjualan
+              </Link>
+            </Button>
+          </div>
+
           {/* Badges */}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-3 max-w-md lg:max-w-xl">
+          {/* <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-3 max-w-md lg:max-w-xl">
             {MARKETPLACE_HERO.badges.map((badge, index) => {
               const Icon = ICON_MAP[index] || ShieldCheck;
               return (
@@ -62,7 +80,7 @@ const MarketplaceHeroSection = () => {
                 </div>
               );
             })}
-          </div>
+          </div> */}
         </div>
       </div>
     </section>
