@@ -411,11 +411,10 @@ export default function Navbar() {
       <nav
         id="bottom-navbar"
         aria-label="Navigasi bawah"
-        className="sm:hidden fixed bottom-3 left-3 right-3 z-50 h-[68px] rounded-[28px] flex items-center px-1.5 bg-white/95 backdrop-blur-xl"
+        className="sm:hidden fixed bottom-0 left-0 right-0 z-50 h-[68px] flex items-center px-1.5 bg-white/95 backdrop-blur-xl"
         style={{
-          border: "1px solid rgba(0, 0, 0, 0.08)",
-          boxShadow:
-            "0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)",
+          borderTop: "1px solid rgba(0, 0, 0, 0.08)",
+          boxShadow: "0 -4px 16px rgba(0,0,0,0.06)",
         }}
       >
         {BOTTOM_NAV.map((item) => {
@@ -427,21 +426,26 @@ export default function Navbar() {
               href={item.href}
               id={`bottom-nav-${item.href.replace("/", "") || "beranda"}`}
               aria-current={isActive ? "page" : undefined}
-              className={cn(
-                "flex flex-col items-center justify-center flex-1 gap-1 py-2 px-1 rounded-[20px] transition-all duration-200 relative",
-                isActive ? "bg-primary/10" : "hover:bg-muted/60"
-              )}
+              className="flex flex-col items-center justify-center flex-1 gap-1 py-2 px-1 transition-all duration-200 relative"
             >
-              <Icon className={cn(
-                "size-[19px] transition-all duration-200",
-                isActive ? "text-primary" : "text-muted-foreground"
-              )} />
+              <div className={cn(
+                "flex items-center justify-center w-10 h-7 rounded-full transition-all duration-200",
+                isActive ? "bg-primary/15" : ""
+              )}>
+                <Icon className={cn(
+                  "size-[19px] transition-all duration-200",
+                  isActive ? "text-primary" : "text-muted-foreground"
+                )} />
+              </div>
               <span className={cn(
                 "text-[9.5px] leading-none font-semibold tracking-tight max-w-full",
                 isActive ? "text-primary" : "text-muted-foreground"
               )}>
                 {item.label}
               </span>
+              {isActive && (
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-[3px] bg-primary rounded-full" />
+              )}
             </Link>
           );
         })}
