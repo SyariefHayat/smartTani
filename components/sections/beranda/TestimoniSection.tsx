@@ -40,7 +40,7 @@ export default function TestimoniSection() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-3 gap-2.5 border">
+            <div className="grid grid-cols-3 gap-2.5">
               {HOME_CATEGORY.slice(0, 6).map((item, index) => (
                 <Link
                   key={item}
