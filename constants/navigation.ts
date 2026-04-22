@@ -72,13 +72,13 @@ export const FOOTER_SECTIONS: FooterSection[] = [
         icon: "phone",
       },
       {
-        label: "info@smarttani.id",
-        href: `mailto:info@smarttani.id`,
+        label: "info@smarttaniindonesia.com",
+        href: `mailto:info@smarttaniindonesia.com`,
         icon: "mail",
       },
       {
-        label: "www.smarttani.id",
-        href: `https://www.smarttani.id`,
+        label: "www.smarttaniindonesia.com",
+        href: `https://www.smarttaniindonesia.com`,
         icon: "globe",
         external: true,
       },
@@ -95,10 +95,10 @@ export const SOCIAL_LINKS: SocialLink[] = [
 ];
 
 export const FOOTER_CONTACT = {
-  address: "Jakarta Selatan 12345",
-  phone: "(021) 1234-5678",
-  email: "info@smarttani.id",
-  website: "www.smarttani.id",
+  address: "Jl. Raya Karangbinangun KM 1 No. 42 Alang- Alang, Karangbinangun Lamongan 62293, Jawa Timur Indonesia",
+  phone: "0822-6952-8338",
+  email: "info@smarttaniindonesia.com",
+  website: "www.smarttaniindonesia.com",
 };
 
 export const FOOTER_BRAND = {
