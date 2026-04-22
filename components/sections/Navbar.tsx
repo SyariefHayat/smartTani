@@ -107,7 +107,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between">
           <SheetTitle>
             <div className="relative w-28 h-14">
-              <Image src="/images/home/logo.png" alt="Logo" className="object-contain" sizes="100%" loading="eager" fill />
+              <Image src="/images/home/logo-2.png" alt="Logo" className="object-contain" sizes="100%" loading="eager" fill />
             </div>
           </SheetTitle>
           <SheetClose asChild>

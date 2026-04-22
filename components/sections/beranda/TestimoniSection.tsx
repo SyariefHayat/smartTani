@@ -40,50 +40,21 @@ export default function TestimoniSection() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-3 gap-2.5 border">
               {HOME_CATEGORY.slice(0, 6).map((item, index) => (
                 <Link
                   key={item}
                   href={`/marketplace?kategori=${item}`}
-                  className="flex flex-col items-center gap-2 p-3 rounded-xl bg-[#EAF3DE] border border-gray-100 hover:border-gray-300 hover:bg-[#f6f8f2] transition-all cursor-pointer text-center"
+                  className="relative flex flex-col items-end justify-end min-h-[80px] p-2.5 rounded-xl bg-cover bg-center overflow-hidden cursor-pointer text-center transition-all hover:scale-[1.02]"
+                  style={{ backgroundImage: `url('${CATEGORY_IMAGES[index] ?? "/images/home/padi-gabah.webp"}')` }}
                 >
-                  <div className="relative w-11 h-11 rounded-lg bg-[#EAF3DE] overflow-hidden flex items-center justify-center">
-                    <Image
-                      src={
-                        CATEGORY_IMAGES[index] ?? "/images/home/padi-gabah.webp"
-                      }
-                      alt={`Kategori ${item}`}
-                      fill
-                      className="object-cover p-1.5"
-                      sizes="100%"
-                    />
-                  </div>
-                  <p className="text-[11px] font-medium text-[#5d7a64] leading-tight">
+                  {/* Overlay gelap di bawah teks */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                  <p className="relative z-10 w-full text-[11px] font-semibold text-white leading-tight">
                     {item}
                   </p>
                 </Link>
               ))}
-
-              {/* Item ke-7: full width */}
-              {HOME_CATEGORY[6] && (
-                <Link
-                  href={`/marketplace?kategori=${HOME_CATEGORY[6]}`}
-                  className="col-span-3 flex items-center justify-center gap-3 px-4 py-2.5 rounded-xl bg-[#EAF3DE] border border-gray-100 hover:border-gray-300 hover:bg-[#f6f8f2] transition-all cursor-pointer"
-                >
-                  <div className="relative w-9 h-9 rounded-lg bg-[#EAF3DE] overflow-hidden shrink-0">
-                    <Image
-                      src={CATEGORY_IMAGES[6] ?? "/images/home/padi-gabah.webp"}
-                      alt={`Kategori ${HOME_CATEGORY[6]}`}
-                      fill
-                      className="object-cover p-1.5"
-                      sizes="100%"
-                    />
-                  </div>
-                  <p className="text-xs font-medium text-[#5d7a64]">
-                    {HOME_CATEGORY[6]}
-                  </p>
-                </Link>
-              )}
             </div>
           </div>
 

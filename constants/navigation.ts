@@ -67,8 +67,8 @@ export const FOOTER_SECTIONS: FooterSection[] = [
         external: true,
       },
       {
-        label: "(082) 2695-2833",
-        href: `tel:(082) 2695-2833`,
+        label: "0822-6952-8338",
+        href: `tel:082269528338`,
         icon: "phone",
       },
       {

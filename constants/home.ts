@@ -217,23 +217,21 @@ export const HOME_STEPS = [
 ];
 
 export const HOME_CATEGORY = [
-  "Padi & Gabah",
+  "Gabah",
   "Beras",
   "Jagung",
   "Sayur",
   "Buah",
   "Kedelai",
-  "Komoditas Lokal",
 ];
 
 export const CATEGORY_IMAGES = [
-  "/images/home/padi-gabah.webp",
-  "/images/home/beras.webp",
-  "/images/home/jagung.webp",
-  "/images/home/sayur.webp",
-  "/images/home/buah.webp",
-  "/images/home/kedelai.webp",
-  "/images/home/komoditas-lokal.webp",
+  "/images/home/gabah.png",
+  "/images/home/beras.png",
+  "/images/home/jagung.png",
+  "/images/home/sayur.png",
+  "/images/home/buah.png",
+  "/images/home/kedelai.png",
 ];
 
 export const HOME_TESTIMONI = [
