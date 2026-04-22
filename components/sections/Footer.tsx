@@ -15,6 +15,7 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import { cn } from "@/lib/utils";
 
 function SocialIcon({ icon, size = "sm" }: { icon: string; size?: "sm" | "md" | "lg" }) {
   const cls = size === "lg" ? "size-6" : size === "md" ? "size-5" : "size-4";
@@ -46,22 +47,25 @@ export default function Footer() {
       <div className="container-smarttani pt-12 pb-9 md:pt-8 md:pb-5">
 
         {/* ===== MOBILE: grid 2 kolom ===== */}
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:hidden">
+        <div className="grid grid-cols-3 gap-x-6 gap-y-10 md:hidden">
 
           {/* Brand — full width */}
-          <div className="col-span-2 space-y-4">
+          <div className="col-span-3 space-y-4">
             <BrandColumn />
           </div>
 
           {/* Nav Sections — 2 per baris */}
-          {FOOTER_SECTIONS.map((section) => (
-            <div key={section.title} className="col-span-1 flex flex-col">
-              <NavSection section={section} />
-            </div>
-          ))}
+          {FOOTER_SECTIONS.map((section, index) => {
+            const isLast = index === FOOTER_SECTIONS.length - 1;
+            return (
+              <div key={section.title} className={cn(isLast ? "col-span-3" : "col-span-1", "flex flex-col")}>
+                <NavSection section={section} />
+              </div>
+            );
+          })}
 
           {/* Unduh Aplikasi — full width */}
-          <div className="col-span-2">
+          <div className="col-span-3">
             <DownloadColumn />
           </div>
         </div>

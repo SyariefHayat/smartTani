@@ -61,14 +61,14 @@ export const FOOTER_SECTIONS: FooterSection[] = [
     title: "Kontak Kami",
     links: [
       {
-        label: "Jakarta Selatan 12345",
+        label: "JI. Raya Karangbinangun KM 1 No. 42 Alang- Alang, Karangbinangun Lamongan 62293, Jawa Timur Indonesia",
         href: `https://maps.google.com/?q=${encodeURIComponent("Jakarta Selatan 12345")}`,
         icon: "map-pin",
         external: true,
       },
       {
-        label: "(021) 1234-5678",
-        href: `tel:(021) 1234-5678`,
+        label: "(082) 2695-2833",
+        href: `tel:(082) 2695-2833`,
         icon: "phone",
       },
       {
