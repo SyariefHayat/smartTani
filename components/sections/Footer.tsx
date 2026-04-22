@@ -120,7 +120,7 @@ function BrandColumn() {
   return (
     <div className="space-y-4">
       <Link href="/" className="inline-block">
-        <div className="relative h-52 w-[405px] md:h-44 md:w-[300px] lg:h-44 lg:w-[300px] -mt-5">
+        <div className="relative h-52 w-[370px] md:h-44 md:w-[300px] lg:h-44 lg:w-[300px] -mt-5">
           <Image src="/images/home/logo.png" alt="Logo Smarttani Indonesia" fill className="object-cover" sizes="100%" priority />
         </div>
       </Link>

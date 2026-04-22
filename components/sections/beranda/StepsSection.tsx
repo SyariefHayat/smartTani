@@ -28,7 +28,7 @@ export default function StepsSection() {
               const stepCard = (
                 <div className="flex w-full flex-col items-center gap-4 text-center">
                   {/* Icon */}
-                  <div className="flex shrink-0 items-center justify-center text-[#2D6A2D]">
+                  <div className="mb-1 flex size-14 shrink-0 items-center justify-center rounded-xl bg-[#d4edda] text-[#2D6A2D]">
                     <Icon className="size-7" strokeWidth={1.5} aria-hidden="true" />
                   </div>
 
