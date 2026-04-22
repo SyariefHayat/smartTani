@@ -411,10 +411,10 @@ export default function Navbar() {
       <nav
         id="bottom-navbar"
         aria-label="Navigasi bawah"
-        className="sm:hidden fixed bottom-0 left-0 right-0 z-50 h-[68px] flex items-center px-1.5 bg-white/95 backdrop-blur-xl"
+        className="sm:hidden fixed bottom-0 left-0 right-0 z-50 h-[68px] flex items-center px-1.5 bg-lime-400"
         style={{
-          borderTop: "1px solid rgba(0, 0, 0, 0.08)",
-          boxShadow: "0 -4px 16px rgba(0,0,0,0.06)",
+          borderTop: "1px solid rgba(255, 255, 255, 0.2)",
+          boxShadow: "0 -4px 16px rgba(0,0,0,0.1)",
         }}
       >
         {BOTTOM_NAV.map((item) => {
@@ -430,21 +430,21 @@ export default function Navbar() {
             >
               <div className={cn(
                 "flex items-center justify-center w-10 h-7 rounded-full transition-all duration-200",
-                isActive ? "bg-primary/15" : ""
+                isActive ? "bg-white/25" : ""
               )}>
                 <Icon className={cn(
                   "size-[19px] transition-all duration-200",
-                  isActive ? "text-primary" : "text-muted-foreground"
+                  "text-white"
                 )} />
               </div>
               <span className={cn(
                 "text-[9.5px] leading-none font-semibold tracking-tight max-w-full",
-                isActive ? "text-primary" : "text-muted-foreground"
+                "text-white"
               )}>
                 {item.label}
               </span>
               {isActive && (
-                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-[3px] bg-primary rounded-full" />
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-[3px] bg-white rounded-full" />
               )}
             </Link>
           );
