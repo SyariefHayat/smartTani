@@ -21,12 +21,10 @@ const MarketplaceHeroSection = () => {
           />
         </picture>
 
-        {/* Overlay mobile */}
-        {/* <div className="absolute inset-0 bg-black/55 md:hidden" /> */}
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 lg:mt-14">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 md:mt-6 lg:mt-11">
         <div>
           {/* Badge */}
           <div className="mb-3 inline-block rounded-lg bg-primary-medium/80 backdrop-blur-sm px-3 py-1.5 text-caption font-bold text-white">
@@ -41,18 +39,30 @@ const MarketplaceHeroSection = () => {
             {MARKETPLACE_HERO.subtext}
           </p>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Button asChild className="h-10 w-full rounded-md px-6 text-sm font-bold bg-primary hover:bg-primary-dark !text-white shadow-lg shadow-primary/20 sm:w-auto cursor-pointer">
+          <div className="grid grid-cols-2 gap-3 max-w-sm mb-4">
+            <Button
+              asChild
+              className="h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer bg-primary hover:bg-primary-dark !text-white shadow-primary/20"
+            >
               <Link href="/marketplace">
-                <ShoppingBag className="mr-2 h-4 w-4" />
-                Belanja Sekarang
+                <ShoppingBag className="size-7 shrink-0 mr-3" />
+                <div className="flex flex-col items-start leading-tight">
+                  <span className="prefix text-[0.65rem] font-normal opacity-80">Temukan produk</span>
+                  <span className="text-sm font-bold">Mulai Belanja</span>
+                </div>
               </Link>
             </Button>
 
-            <Button asChild className="h-10 w-full rounded-md px-6 text-sm font-bold bg-white text-primary-dark hover:bg-white/90 sm:w-auto cursor-pointer">
+            <Button
+              asChild
+              className="h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer bg-white text-primary-dark hover:bg-white/90"
+            >
               <Link href="/marketplace/jual">
-                <Store className="mr-2 h-4 w-4" />
-                Mulai Berjualan
+                <Store className="size-7 shrink-0 mr-3" />
+                <div className="flex flex-col items-start leading-tight">
+                  <span className="prefix text-[0.65rem] font-normal opacity-80">Daftarkan produkmu</span>
+                  <span className="text-sm font-bold">Mulai Berjualan</span>
+                </div>
               </Link>
             </Button>
           </div>
