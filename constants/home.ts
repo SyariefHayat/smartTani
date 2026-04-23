@@ -225,13 +225,22 @@ export const HOME_CATEGORY = [
   "Kedelai",
 ];
 
+export const CATEGORY_BG_COLORS = [
+  "#FEF9C3", // Gabah - kuning muda
+  "#DCFCE7", // Beras - hijau muda
+  "#FEF3C7", // Jagung - amber muda
+  "#DBEAFE", // Sayur - biru muda
+  "#FCE7F3", // Buah - pink muda
+  "#EDE9FE", // Kedelai - ungu muda
+];
+
 export const CATEGORY_IMAGES = [
-  "/images/home/gabah.png",
-  "/images/home/beras.png",
-  "/images/home/jagung.png",
-  "/images/home/sayur.png",
-  "/images/home/buah.png",
-  "/images/home/kedelai.png",
+  "/images/home/gabah-df.png",
+  "/images/home/beras-df.png",
+  "/images/home/jagung-df.png",
+  "/images/home/sayur-df.webp",
+  "/images/home/buah-df.png",
+  "/images/home/kedelai-df.webp",
 ];
 
 export const HOME_TESTIMONI = [

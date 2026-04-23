@@ -67,8 +67,8 @@ export const FOOTER_SECTIONS: FooterSection[] = [
         external: true,
       },
       {
-        label: "0822-6952-8338",
-        href: `tel:082269528338`,
+        label: "0823-2695-2833",
+        href: `tel:082326952833`,
         icon: "phone",
       },
       {
@@ -96,7 +96,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
 
 export const FOOTER_CONTACT = {
   address: "Jl. Raya Karangbinangun KM 1 No. 42 Alang- Alang, Karangbinangun Lamongan 62293, Jawa Timur Indonesia",
-  phone: "0822-6952-8338",
+  phone: "0823-2695-2833",
   email: "info@smarttaniindonesia.com",
   website: "www.smarttaniindonesia.com",
 };

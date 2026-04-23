@@ -15,7 +15,7 @@ import { ShieldCheck, Sprout } from "lucide-react";
 export default function HeroSection() {
 
   return (
-    <section className="relative flex items-start md:items-center overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-start md:items-center overflow-hidden min-h-[760px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
@@ -65,10 +65,10 @@ export default function HeroSection() {
               ))}
             </div>
 
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#b5d296]/30 bg-[#163e1f]/60 px-4 py-2 text-xs font-medium text-[#eef8e5] backdrop-blur-sm sm:text-sm">
+            {/* <div className="inline-flex items-center gap-2 rounded-full border border-[#b5d296]/30 bg-[#163e1f]/60 px-4 py-2 text-xs font-medium text-[#eef8e5] backdrop-blur-sm sm:text-sm">
               <ShieldCheck className="size-7 text-[#f5c35b]" />
               {HOME_HERO.trustBar}
-            </div>
+            </div> */}
           </div>
 
           {/* Right Column: Stat Cards */}

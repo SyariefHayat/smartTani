@@ -2,6 +2,7 @@
 
 import {
   ARTICLE_IMAGES,
+  CATEGORY_BG_COLORS,
   CATEGORY_IMAGES,
   HOME_ARTICLE,
   HOME_CATEGORY,
@@ -45,16 +46,44 @@ export default function TestimoniSection() {
                 <Link
                   key={item}
                   href={`/marketplace?kategori=${item}`}
-                  className="relative flex flex-col items-end justify-end min-h-[80px] p-2.5 rounded-xl bg-cover bg-center overflow-hidden cursor-pointer text-center transition-all hover:scale-[1.02]"
-                  style={{ backgroundImage: `url('${CATEGORY_IMAGES[index] ?? "/images/home/padi-gabah.webp"}')` }}
+                  className="flex flex-col items-center gap-2 p-3 rounded-xl border border-gray-100 hover:border-gray-300 transition-all cursor-pointer text-center hover:-translate-y-1"
+                  style={{ backgroundColor: CATEGORY_BG_COLORS[index] ?? "#EAF3DE" }}
                 >
-                  {/* Overlay gelap di bawah teks */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                  <p className="relative z-10 w-full text-[11px] font-semibold text-white leading-tight">
+                  <div className="relative w-12 h-12">
+                    <Image
+                      src={CATEGORY_IMAGES[index] ?? "/images/home/padi-gabah.webp"}
+                      alt={`Kategori ${item}`}
+                      fill
+                      className="object-contain"
+                      sizes="100%"
+                    />
+                  </div>
+                  <p className="text-[11px] font-medium text-[#5d7a64] leading-tight">
                     {item}
                   </p>
                 </Link>
               ))}
+
+              {HOME_CATEGORY[6] && (
+                <Link
+                  href={`/marketplace?kategori=${HOME_CATEGORY[6]}`}
+                  className="col-span-3 flex items-center justify-center gap-3 px-4 py-2.5 rounded-xl border border-gray-100 hover:border-gray-300 transition-all cursor-pointer hover:-translate-y-1"
+                  style={{ backgroundColor: CATEGORY_BG_COLORS[6] ?? "#EAF3DE" }}
+                >
+                  <div className="relative w-5 h-5">
+                    <Image
+                      src={CATEGORY_IMAGES[6] ?? "/images/home/padi-gabah.webp"}
+                      alt={`Kategori ${HOME_CATEGORY[6]}`}
+                      fill
+                      className="object-contain"
+                      sizes="100%"
+                    />
+                  </div>
+                  <p className="text-xs font-medium text-[#5d7a64]">
+                    {HOME_CATEGORY[6]}
+                  </p>
+                </Link>
+              )}
             </div>
           </div>
 

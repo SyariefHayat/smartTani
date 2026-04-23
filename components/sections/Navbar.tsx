@@ -236,7 +236,7 @@ export default function Navbar() {
 
             {/* Logo */}
             <Link href="/" id="navbar-logo" className="flex items-center gap-3 shrink-0">
-              <div className="relative w-28 h-14 sm:w-32 sm:h-16 md:w-36 md:h-20 lg:w-28 lg:h-16">
+              <div className="relative w-24 h-14 sm:w-32 sm:h-16 md:w-36 md:h-20 lg:w-28 lg:h-16">
                 <Image src="/images/home/logo.png" alt="Logo Smarttani Indonesia"
                   className="object-contain" loading="eager" sizes="100%" fill />
               </div>
