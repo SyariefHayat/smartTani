@@ -19,11 +19,11 @@ export default function MarketplacePage() {
       <MarketplaceHeroSection />
       <MarketplaceLayoutSection>
         <ProductTabsSection />
-        <TrustBarSection />
+        {/* <TrustBarSection /> */}
         <CategorySection />
         <BestSellingProductSection />
       </MarketplaceLayoutSection>
-      <WhyMarketplaceSection />
+      {/* <WhyMarketplaceSection /> */}
     </main>
   );
 }

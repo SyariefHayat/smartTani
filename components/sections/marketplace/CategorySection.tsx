@@ -10,7 +10,7 @@ const CategorySection = () => {
   };
 
   return (
-    <div className="mb-8">
+    <div className="section-padding">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg md:text-xl font-bold text-[#17391f]">

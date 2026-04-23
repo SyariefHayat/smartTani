@@ -30,11 +30,11 @@ function ProductTabsContent() {
   const handleTabChange = (value: string) => {
     setIsLoading(true);
     setActiveTab(value);
-    
+
     const params = new URLSearchParams(searchParams.toString());
     params.set("tab", value);
     router.push(`/marketplace?${params.toString()}`, { scroll: false });
-    
+
     setTimeout(() => setIsLoading(false), 400);
   };
 
@@ -47,11 +47,11 @@ function ProductTabsContent() {
   if (q) {
     currentProducts = currentProducts.filter(p => p.name.toLowerCase().includes(q.toLowerCase()));
   }
-  
+
   if (kategori) {
     // Mock category filter by checking description or name since `category` field doesn't exist
-    currentProducts = currentProducts.filter(p => 
-      p.name.toLowerCase().includes(kategori.toLowerCase()) || 
+    currentProducts = currentProducts.filter(p =>
+      p.name.toLowerCase().includes(kategori.toLowerCase()) ||
       p.description.toLowerCase().includes(kategori.toLowerCase())
     );
   }
@@ -68,9 +68,9 @@ function ProductTabsContent() {
         className="w-full"
       >
         {/* Header: tabs + lihat semua */}
-        <div className="flex items-center justify-between gap-2 mb-4 md:mb-6">
+        <div className="flex items-center gap-2 mb-4 md:mb-6">
           {/* Scrollable tabs wrapper */}
-          <div className="flex-1 min-w-0 overflow-hidden">
+          <div className="flex-1 min-w-0 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <TabsList className="bg-transparent h-auto p-0 flex gap-1.5 md:gap-2 w-max">
               {MARKETPLACE_TABS.map((tab) => (
                 <TabsTrigger
@@ -126,7 +126,7 @@ function ProductTabsContent() {
                 <p className="text-sm text-gray-500 mt-1 mb-6 text-center max-w-md">
                   Coba ubah filter atau kata kunci pencarian Anda untuk menemukan produk yang sesuai.
                 </p>
-                <Button 
+                <Button
                   onClick={resetFilter}
                   className="bg-primary hover:bg-primary-dark text-white rounded-full px-6"
                 >

@@ -26,14 +26,14 @@ const MarketplaceHeroSection = () => {
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 lg:mt-14">
         <div>
           {/* Badge */}
           <div className="mb-3 inline-block rounded-lg bg-primary-medium/80 backdrop-blur-sm px-3 py-1.5 text-caption font-bold text-white">
             {MARKETPLACE_HERO.badge}
           </div>
 
-          <h1 className="text-heading-1 text-white mb-3 max-w-xl">
+          <h1 className="text-heading-1 md:text-display text-white mb-3 max-w-sm lg:max-w-lg">
             {MARKETPLACE_HERO.heading}
           </h1>
 

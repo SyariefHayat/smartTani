@@ -18,16 +18,19 @@ const TrustBarSection = () => {
             >
               <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 text-center md:text-left">
                 {/* Icon Container */}
-                <div className="flex items-center justify-center size-10 md:size-12 rounded-full bg-primary/10 text-primary shrink-0">
-                  <Icon className="size-5 md:size-6" />
-                </div>
+                {/* <div className="flex items-center justify-center size-10 md:size-12 rounded-full bg-primary/10 text-primary shrink-0">
+                  <Icon className="size-7" />
+                </div> */}
 
+                <div className="mb-1 flex size-14 shrink-0 items-center justify-center rounded-xl bg-[#d4edda] text-[#2D6A2D]">
+                  <Icon className="size-7" strokeWidth={1.5} aria-hidden="true" />
+                </div>
                 {/* Text Content */}
                 <div className="flex flex-col">
-                  <h3 className="text-xs md:text-sm font-bold text-[#17391f] leading-tight">
+                  <h3 className="text-base font-extrabold text-[#17391f] md:text-lg">
                     {item.label}
                   </h3>
-                  <p className="text-[10px] md:text-xs text-[#5d7a64] font-medium mt-0.5">
+                  <p className="max-w-[200px] text-xs leading-relaxed text-[#5d7a64] md:text-sm">
                     {item.sublabel}
                   </p>
                 </div>
