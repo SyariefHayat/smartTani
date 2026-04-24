@@ -37,7 +37,7 @@ export const HOME_HERO = {
   trustBar: "Aman, Transparan, Terpercaya • Mendukung Petani, Membangun Negeri",
   bgImageDesktop: "/images/home/desktop.png",
   bgImageTablet: "/images/home/tablet.png",
-  bgImageMobile: "/images/home/mobile.png",
+  bgImageMobile: "/images/home/mobile-2.png",
   cta: [
     { label: "Daftar sebagai Petani" },
     { label: "Gabung sebagai Investor" },
