@@ -28,7 +28,7 @@ export const DISTRIBUTOR_HERO = {
   bgImageDesktop: "/images/distributor/desktop.png",
   bgImageTablet: "/images/distributor/tablet.png",
   bgImageMobile: "/images/distributor/mobile.png",
-  cta: [{ label: "Daftar Menjadi Distributor" }, { label: "Unduh Brosur" }],
+  cta: [{ label: "Daftar Distributor" }, { label: "Unduh Brosur" }],
   advantages: [
     { label: "Produk Terjamin", sublabel: "Kualitas asli dari Smarttani" },
     { label: "Harga Kompetitif", sublabel: "Margin menarik & transparan" },

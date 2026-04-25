@@ -15,7 +15,7 @@ import { ShieldCheck, Sprout } from "lucide-react";
 export default function HeroSection() {
 
   return (
-    <section className="relative flex items-start md:items-center overflow-hidden min-h-[760px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-start md:items-center overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
@@ -44,7 +44,7 @@ export default function HeroSection() {
               {HOME_HERO.subtext}
             </p>
 
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 max-w-2xl mb-4">
+            <div className="grid grid-cols-2 gap-3 max-w-sm mb-4">
               {HERO_ACTION.map(({ prefix, role, icon: Icon, className }) => (
                 <Button
                   key={role}

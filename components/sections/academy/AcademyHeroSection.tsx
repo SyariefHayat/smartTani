@@ -18,7 +18,7 @@ const AcademyHeroSection = () => {
   };
 
   return (
-    <section className="relative flex items-center overflow-hidden min-h-[520px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-start overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
@@ -42,11 +42,11 @@ const AcademyHeroSection = () => {
         </picture>
 
         {/* Overlay: mobile & tablet */}
-        <div className="absolute inset-0 bg-black/55 md:hidden" />
+        {/* <div className="absolute inset-0 bg-black/55 md:hidden" /> */}
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 md:py-12 lg:py-14">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 md:mt-20 lg:mt-25">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-12 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-8">
 
           {/* Left Column: Text & Badges */}
@@ -65,7 +65,7 @@ const AcademyHeroSection = () => {
             </p>
 
             {/* Badges */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 max-w-2xl">
+            {/* <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 max-w-2xl">
               {ACADEMY_HERO.badges.map((badge, index) => {
                 const Icon = ICON_MAP[index] || Monitor;
                 return (
@@ -87,7 +87,7 @@ const AcademyHeroSection = () => {
                   </div>
                 );
               })}
-            </div>
+            </div> */}
           </div>
 
           {/* Right Column: CTA Card */}

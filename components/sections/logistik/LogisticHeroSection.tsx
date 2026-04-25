@@ -23,7 +23,7 @@ const LogisticHeroSection = () => {
   };
 
   return (
-    <section className="relative flex items-center overflow-hidden min-h-[520px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-start overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
@@ -38,12 +38,12 @@ const LogisticHeroSection = () => {
         </picture>
 
         {/* Overlay mobile */}
-        <div className="absolute inset-0 bg-black/55 md:hidden" />
+        {/* <div className="absolute inset-0 bg-black/55 md:hidden" /> */}
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 md:py-5 lg:py-">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-6 lg:gap-8 lg:items-center">
+      <div className="container-smarttani relative z-10 py-10 md:py-5 lg:py-0 mt-10 md:mt-13 lg:mt-22">
+        <div className="grid grid-cols-1 gap-0 md:grid-cols-12 md:gap-6 lg:gap-8 lg:items-center">
 
           {/* Left Column */}
           <div className="md:col-span-8 lg:col-span-9">
@@ -61,7 +61,7 @@ const LogisticHeroSection = () => {
             </p>
 
             {/* Badges */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-3 md:max-w-3xl max-w-xl">
+            {/* <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-3 md:max-w-3xl max-w-xl">
               {LOGISTIC_HERO.badges.map((badge, index) => {
                 const Icon = ICON_MAP[index] || ShieldCheck;
                 return (
@@ -83,7 +83,7 @@ const LogisticHeroSection = () => {
                   </div>
                 );
               })}
-            </div>
+            </div> */}
           </div>
 
           {/* Right Column: Tracking Form & Result */}
@@ -129,7 +129,7 @@ const LogisticHeroSection = () => {
                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-body-sm font-bold text-foreground">Hasil Pelacakan</h3>
-                    <button 
+                    <button
                       onClick={() => setShowResult(false)}
                       className="text-[10px] font-bold text-primary hover:underline"
                     >

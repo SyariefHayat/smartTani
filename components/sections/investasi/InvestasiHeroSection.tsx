@@ -15,7 +15,7 @@ export default function InvestasiHeroSection() {
   };
 
   return (
-    <section className="relative flex items-center overflow-hidden min-h-[520px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-start overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
@@ -30,11 +30,11 @@ export default function InvestasiHeroSection() {
         </picture>
 
         {/* Overlay mobile */}
-        <div className="absolute inset-0 bg-black/55 md:hidden" />
+        {/* <div className="absolute inset-0 bg-black/55 md:hidden" /> */}
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 lg:py-0">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 md:mt-8 lg:mt-20">
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-8">
 
           {/* Left Column */}
@@ -48,7 +48,7 @@ export default function InvestasiHeroSection() {
             <p className="text-body-sm mb-5 max-w-sm md:max-w-md text-white/85">
               {INVESTASI_HERO.subtext}
             </p>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="grid grid-cols-2 gap-3 max-w-sm mb-4">
               <Button
                 onClick={() => scrollToSection('proyek-investasi')}
                 className="h-10 w-full rounded-md px-6 text-sm font-bold transition-colors sm:w-auto cursor-pointer bg-primary hover:bg-primary-dark !text-white shadow-lg shadow-primary/20"
@@ -68,7 +68,7 @@ export default function InvestasiHeroSection() {
           </div>
 
           {/* Right Column */}
-          <div className="lg:col-span-3 lg:flex lg:justify-end">
+          {/* <div className="lg:col-span-3 lg:flex lg:justify-end">
             <div className="w-full lg:max-w-xs rounded-2xl bg-white p-4 md:p-5 shadow-2xl">
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-1 gap-4 md:gap-6 lg:gap-6">
                 {INVESTASI_HERO.badges.map((badge, index) => {
@@ -91,7 +91,7 @@ export default function InvestasiHeroSection() {
                 })}
               </div>
             </div>
-          </div>
+          </div> */}
 
         </div>
       </div>

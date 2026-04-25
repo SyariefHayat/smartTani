@@ -31,9 +31,11 @@ export const HOME_META = {
 };
 
 export const HOME_HERO = {
-  heading: "Wujudkan Pertanian yang Lebih Cerdas, Produktif, dan Berkelanjutan",
+  // heading: "Wujudkan Pertanian yang Lebih Cerdas, Produktif, dan Berkelanjutan",
+  heading: "Smart Farming untuk Ketahanan Pangan",
   subtext:
-    "PT. Smarttani Indonesia menghadirkan teknologi dan ekosistem terintegrasi untuk membantu petani, pelaku usaha, dan mitra mencapai hasil terbaik.",
+    "Gabung gerakan Smart Farming, wujudkan pangan mandiri",
+  // "PT. Smarttani Indonesia menghadirkan teknologi dan ekosistem terintegrasi untuk membantu petani, pelaku usaha, dan mitra mencapai hasil terbaik.",
   trustBar: "Aman, Transparan, Terpercaya • Mendukung Petani, Membangun Negeri",
   bgImageDesktop: "/images/home/desktop.png",
   bgImageTablet: "/images/home/tablet.png",
