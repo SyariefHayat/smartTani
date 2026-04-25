@@ -15,7 +15,7 @@ export const MARKETPLACE_HERO = {
     "Temukan produk berkualitas, harga terbaik, dan pengiriman cepat untuk mendukung setiap langkah usaha pertanian Anda.",
   bgImageDesktop: "/images/marketplace/desktop-2.png",
   bgImageTablet: "/images/marketplace/tablet-2.png",
-  bgImageMobile: "/images/marketplace/mobile-2.png",
+  bgImageMobile: "/images/marketplace/mobile.png",
   badges: [
     { label: "Produk Terverifikasi", sublabel: "Kualitas Terjamin" },
     { label: "Harga Kompetitif", sublabel: "Lebih Hemat" },

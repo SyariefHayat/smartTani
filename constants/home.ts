@@ -65,7 +65,7 @@ export const HERO_ACTION = [
     prefix: "Belanja",
     role: "Hasil Tani",
     icon: ShoppingCart,
-    className: "bg-[#185FA5] text-[#E6F1FB] hover:bg-[#0C447C]",
+    className: "bg-[#6B21A8] text-[#F3E8FF] hover:bg-[#4C1572]", // ✅ diubah ke ungu
   },
   {
     prefix: "Ikuti",
