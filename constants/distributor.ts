@@ -11,6 +11,8 @@ import {
   GraduationCap,
   Monitor,
   Trophy,
+  Download,
+  UserPlus,
 } from "lucide-react";
 
 export const DISTRIBUTOR_META = {
@@ -28,7 +30,6 @@ export const DISTRIBUTOR_HERO = {
   bgImageDesktop: "/images/distributor/desktop.png",
   bgImageTablet: "/images/distributor/tablet.png",
   bgImageMobile: "/images/distributor/mobile.png",
-  cta: [{ label: "Daftar Distributor" }, { label: "Unduh Brosur" }],
   advantages: [
     { label: "Produk Terjamin", sublabel: "Kualitas asli dari Smarttani" },
     { label: "Harga Kompetitif", sublabel: "Margin menarik & transparan" },
@@ -36,6 +37,23 @@ export const DISTRIBUTOR_HERO = {
     { label: "Pasar Luas", sublabel: "Permintaan tinggi di seluruh Indonesia" },
   ],
 };
+
+export const DISTRIBUTOR_HERO_ACTIONS = [
+  {
+    prefix: "Daftar sebagai",
+    label: "Distributor",
+    icon: UserPlus,
+    className: "bg-[#1A6B2F] text-[#EAF3DE] hover:bg-[#14521F]",
+    href: "/signup?role=distributor",
+  },
+  {
+    prefix: "Unduh",
+    label: "Brosur Kami",
+    icon: Download,
+    className: "bg-[#5F5E5A] text-[#F1EFE8] hover:bg-[#444441]",
+    href: null,
+  },
+];
 
 export const DISTRIBUTOR_MAP = {
   image: "/images/distributor/map.webp",

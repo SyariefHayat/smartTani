@@ -1,3 +1,5 @@
+import { PlayCircle, Search } from "lucide-react";
+
 export const INVESTASI_META = {
   title: "Investasi Smarttani — Investasi Cerdas untuk Pertanian Berkelanjutan",
   description:
@@ -19,6 +21,23 @@ export const INVESTASI_HERO = {
     { label: "Dampak Nyata", sublabel: "Membantu petani, membangun negeri" },
   ],
 };
+
+export const INVESTASI_HERO_ACTIONS = [
+  {
+    prefix: "Temukan",
+    label: "Jelajahi Proyek",
+    icon: Search,
+    sectionId: "proyek-investasi",
+    className: "bg-[#BA7517] text-[#FAEEDA] hover:bg-[#854F0B]",
+  },
+  {
+    prefix: "Pelajari",
+    label: "Cara Investasi",
+    icon: PlayCircle,
+    sectionId: "cara-investasi",
+    className: "bg-[#5F5E5A] text-[#F1EFE8] hover:bg-[#444441]",
+  },
+];
 
 export const INVESTASI_STATS_BAR = [
   { value: "320+", label: "Proyek Terdanai" },

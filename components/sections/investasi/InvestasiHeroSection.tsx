@@ -1,6 +1,6 @@
 "use client";
 
-import { INVESTASI_HERO } from "@/constants/investasi";
+import { INVESTASI_HERO, INVESTASI_HERO_ACTIONS } from "@/constants/investasi";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, TrendingUp, Sprout, PlayCircle, Search } from "lucide-react";
 
@@ -49,21 +49,19 @@ export default function InvestasiHeroSection() {
               {INVESTASI_HERO.subtext}
             </p>
             <div className="grid grid-cols-2 gap-3 max-w-sm mb-4">
-              <Button
-                onClick={() => scrollToSection('proyek-investasi')}
-                className="h-10 w-full rounded-md px-6 text-sm font-bold transition-colors sm:w-auto cursor-pointer bg-primary hover:bg-primary-dark !text-white shadow-lg shadow-primary/20"
-              >
-                <Search className="mr-2 h-4 w-4" strokeWidth={2.5} />
-                {INVESTASI_HERO.cta[0].label}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => scrollToSection('cara-investasi')}
-                className="h-10 w-full rounded-md px-6 text-sm font-bold transition-colors sm:w-auto cursor-pointer border-none bg-white text-primary-dark hover:bg-white/90"
-              >
-                <PlayCircle className="mr-2 h-4 w-4 text-primary" strokeWidth={2.5} />
-                {INVESTASI_HERO.cta[1].label}
-              </Button>
+              {INVESTASI_HERO_ACTIONS.map(({ prefix, label, icon: Icon, className, sectionId }) => (
+                <Button
+                  key={label}
+                  onClick={() => scrollToSection(sectionId)}
+                  className={`h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer ${className}`}
+                >
+                  <Icon className="size-7 shrink-0 mr-3" />
+                  <div className="flex flex-col items-start leading-tight">
+                    <span className="text-[0.65rem] font-normal opacity-80">{prefix}</span>
+                    <span className="text-sm font-bold">{label}</span>
+                  </div>
+                </Button>
+              ))}
             </div>
           </div>
 

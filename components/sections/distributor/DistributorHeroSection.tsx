@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { DISTRIBUTOR_HERO } from "@/constants/distributor";
+import { DISTRIBUTOR_HERO, DISTRIBUTOR_HERO_ACTIONS } from "@/constants/distributor";
 import { ShieldCheck, Tag, Headphones, UsersRound, Download } from "lucide-react";
 import { showToast } from "@/lib/toast";
 
@@ -13,6 +13,16 @@ const DistributorHeroSection = () => {
     if (index === 1) {
       showToast('Brosur sedang diunduh...', 'info');
     }
+  };
+
+  // Di dalam komponen, sebelum return
+  const handleDownload = () => {
+    window.open("/files/brosur-distributor.pdf", "_blank");
+    // atau trigger download:
+    // const link = document.createElement("a");
+    // link.href = "/files/brosur-distributor.pdf";
+    // link.download = "Brosur-Smarttani-Distributor.pdf";
+    // link.click();
   };
 
   return (
@@ -50,22 +60,28 @@ const DistributorHeroSection = () => {
               {DISTRIBUTOR_HERO.subtext}
             </p>
             <div className="grid grid-cols-2 gap-3 max-w-sm mb-4">
-              {DISTRIBUTOR_HERO.cta.map((cta, index) => (
+              {DISTRIBUTOR_HERO_ACTIONS.map(({ prefix, label, icon: Icon, className, href }) => (
                 <Button
-                  key={index}
-                  asChild={index === 0}
-                  onClick={() => handleAction(index)}
-                  className={`h-10 w-full rounded-md px-6 text-sm font-bold transition-colors sm:w-auto cursor-pointer ${index === 1
-                    ? "bg-white text-primary-dark hover:bg-white/90"
-                    : "bg-primary hover:bg-primary-dark !text-white shadow-lg shadow-primary/20"
-                    }`}
+                  key={label}
+                  asChild={!!href}
+                  onClick={!href ? handleDownload : undefined}
+                  className={`h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer ${className}`}
                 >
-                  {index === 0 ? (
-                    <Link href="/signup?role=distributor">{cta.label}</Link>
+                  {href ? (
+                    <Link href={href}>
+                      <Icon className="size-7 shrink-0 mr-3" />
+                      <div className="flex flex-col items-start leading-tight">
+                        <span className="text-[0.65rem] font-normal opacity-80">{prefix}</span>
+                        <span className="text-sm font-bold">{label}</span>
+                      </div>
+                    </Link>
                   ) : (
                     <>
-                      <Download className="mr-2 h-4 w-4" />
-                      {cta.label}
+                      <Icon className="size-7 shrink-0 mr-3" />
+                      <div className="flex flex-col items-start leading-tight">
+                        <span className="text-[0.65rem] font-normal opacity-80">{prefix}</span>
+                        <span className="text-sm font-bold">{label}</span>
+                      </div>
                     </>
                   )}
                 </Button>
