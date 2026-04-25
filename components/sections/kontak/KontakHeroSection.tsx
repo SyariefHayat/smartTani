@@ -7,7 +7,7 @@ const ICON_MAP = [Headphones, ShieldCheck, Users];
 
 export default function KontakHeroSection() {
   return (
-    <section className="relative flex items-center overflow-hidden min-h-[520px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-starts overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
@@ -22,11 +22,11 @@ export default function KontakHeroSection() {
         </picture>
 
         {/* Overlay mobile */}
-        <div className="absolute inset-0 bg-black/55 md:hidden" />
+        {/* <div className="absolute inset-0 bg-black/55 md:hidden" /> */}
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 lg:py-0">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 md:mt-24 lg:mt-32">
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-8">
 
           {/* Left Column */}
@@ -45,7 +45,7 @@ export default function KontakHeroSection() {
             </p>
 
             {/* Feature Badges */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-3 max-w-md lg:max-w-xl">
+            {/* <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-3 max-w-md lg:max-w-xl">
               {KONTAK_HERO.features.map((feature, index) => {
                 const Icon = ICON_MAP[index] || ShieldCheck;
                 return (
@@ -67,7 +67,7 @@ export default function KontakHeroSection() {
                   </div>
                 );
               })}
-            </div>
+            </div> */}
           </div>
 
         </div>

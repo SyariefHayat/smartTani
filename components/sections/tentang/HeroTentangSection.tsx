@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { ABOUT_HERO } from "@/constants/about";
+import { ABOUT_HERO, ABOUT_HERO_ACTIONS } from "@/constants/about";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Phone } from "lucide-react";
 
@@ -14,8 +14,18 @@ const HeroTentangSection = () => {
     }
   };
 
+  const ButtonContent = ({ icon: Icon, prefix, label }: { icon: React.ElementType; prefix: string; label: string }) => (
+    <>
+      <Icon className="size-7 shrink-0 mr-3" />
+      <div className="flex flex-col items-start leading-tight">
+        <span className="text-[0.65rem] font-normal opacity-80">{prefix}</span>
+        <span className="text-sm font-bold">{label}</span>
+      </div>
+    </>
+  );
+
   return (
-    <section className="relative flex items-center overflow-hidden min-h-[520px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-starts overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
@@ -30,11 +40,11 @@ const HeroTentangSection = () => {
         </picture>
 
         {/* Overlay mobile */}
-        <div className="absolute inset-0 bg-black/55 md:hidden" />
+        {/* <div className="absolute inset-0 bg-black/55 md:hidden" /> */}
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 lg:py-0">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 md:mt-9 lg:mt-14">
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-8">
 
           {/* Left Column */}
@@ -53,24 +63,23 @@ const HeroTentangSection = () => {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button
-                onClick={scrollToDetail}
-                className="h-10 w-full rounded-md px-6 text-sm font-bold transition-colors sm:w-auto cursor-pointer bg-primary hover:bg-primary-dark !text-white shadow-lg shadow-primary/20"
-              >
-                {ABOUT_HERO.cta[0].label}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                asChild
-                className="h-10 w-full rounded-md px-6 text-sm font-bold transition-colors sm:w-auto cursor-pointer border-none bg-white text-primary-dark hover:bg-white/90"
-              >
-                <Link href="/kontak">
-                  <Phone className="mr-2 h-4 w-4" />
-                  {ABOUT_HERO.cta[1].label}
-                </Link>
-              </Button>
+            <div className="grid grid-cols-2 gap-3 max-w-sm mb-4">
+              {ABOUT_HERO_ACTIONS.map(({ prefix, label, icon, className, href }) => (
+                <Button
+                  key={label}
+                  asChild={!!href}
+                  onClick={!href ? scrollToDetail : undefined}
+                  className={`h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer ${className}`}
+                >
+                  {href ? (
+                    <Link href={href}>
+                      <ButtonContent icon={icon} prefix={prefix} label={label} />
+                    </Link>
+                  ) : (
+                    <ButtonContent icon={icon} prefix={prefix} label={label} />
+                  )}
+                </Button>
+              ))}
             </div>
           </div>
 

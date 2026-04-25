@@ -21,7 +21,7 @@ const ArtikelHeroSection = () => {
   };
 
   return (
-    <section className="relative flex items-center overflow-hidden min-h-[520px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-starts overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
@@ -45,11 +45,11 @@ const ArtikelHeroSection = () => {
         </picture>
 
         {/* Overlay: mobile & tablet */}
-        <div className="absolute inset-0 bg-black/55 md:hidden" />
+        {/* <div className="absolute inset-0 bg-black/55 md:hidden" /> */}
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 md:py-12 lg:py-14">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 md:mt-9 lg:mt-14">
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-8">
 
           {/* Left Column: Text & Search */}
@@ -90,7 +90,7 @@ const ArtikelHeroSection = () => {
 
           {/* Right Column: Highlights Card */}
           {/* Mobile/Tablet: full width card horizontal, Desktop: card vertikal di kanan */}
-          <div className="lg:col-span-3 lg:flex lg:justify-end">
+          {/* <div className="lg:col-span-3 lg:flex lg:justify-end">
             <div className="w-full lg:max-w-xs rounded-2xl bg-white p-4 md:p-5 shadow-2xl">
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-1 gap-4 md:gap-6 lg:gap-6">
                 {ARTICLE_HERO.highlights.map((highlight, index) => {
@@ -113,7 +113,7 @@ const ArtikelHeroSection = () => {
                 })}
               </div>
             </div>
-          </div>
+          </div> */}
 
         </div>
       </div>

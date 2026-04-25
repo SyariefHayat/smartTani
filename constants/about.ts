@@ -1,3 +1,5 @@
+import { ArrowRight, Phone } from "lucide-react";
+
 export const ABOUT_META = {
   title: "Tentang Kami — PT. Smarttani Indonesia",
   description:
@@ -21,6 +23,23 @@ export const ABOUT_DESKRIPSI = {
     "Kami adalah perusahaan teknologi pertanian yang menyediakan platform terintegrasi untuk menghubungkan petani, distributor, investor, penyedia logistik, dan ahli melalui ekosistem digital. Sejak berdiri, kami terus berinovasi untuk mendukung pertanian Indonesia yang lebih efisien, menguntungkan, dan berkelanjutan.",
   cta: "Selengkapnya →",
 };
+
+export const ABOUT_HERO_ACTIONS = [
+  {
+    prefix: "Pelajari",
+    label: "Lebih Lanjut",
+    icon: ArrowRight,
+    className: "bg-[#1A6B2F] text-[#EAF3DE] hover:bg-[#14521F]",
+    href: null,
+  },
+  {
+    prefix: "Hubungi",
+    label: "Kami",
+    icon: Phone,
+    className: "bg-[#5F5E5A] text-[#F1EFE8] hover:bg-[#444441]",
+    href: "/kontak",
+  },
+];
 
 export const ABOUT_STATS_BAR = [
   { value: "2019", label: "Tahun Berdiri" },
