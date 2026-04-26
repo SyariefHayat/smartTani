@@ -1,6 +1,7 @@
 import { Building2, Wallet, Users, TrendingUp, PieChart, Star } from "lucide-react";
 import { INVESTASI_STATS_BAR } from "@/constants/investasi";
 import { Separator } from "@/components/ui/separator";
+import { StatItem } from "../beranda/StatItem";
 
 export default function InvestasiStatsBarSection() {
   const icons = [Building2, Wallet, Users, TrendingUp, PieChart, Star];
@@ -8,43 +9,28 @@ export default function InvestasiStatsBarSection() {
 
   return (
     <section className="relative z-20 px-5 sm:px-8 md:px-10 lg:px-12 -mt-10 sm:-mt-12 md:-mt-14 lg:-mt-16">
-      <div className="mx-auto max-w-7xl rounded-3xl bg-white p-6 shadow-[0_20px_50px_rgba(0,0,0,0.1)] md:p-8 lg:p-10">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-y-8 lg:gap-y-0">
+      <div className="mx-auto max-w-7xl rounded-2xl bg-white shadow-[0_12px_40px_rgba(0,0,0,0.08)]">
+        <div className="grid grid-cols-3 md:grid-cols-6 py-8 md:px-4 lg:px-0 gap-y-8 md:gap-y-0 items-start">
           {INVESTASI_STATS_BAR.map((item, index) => {
             const Icon = icons[index];
-            const isLast = index === total - 1;
-            const isLastInRowTablet = (index + 1) % 3 === 0;
+            const isLastInMobileRow = index === 2;
+            const isLastOverall = index === total - 1;
 
             return (
               <div
                 key={item.label}
-                className="relative flex flex-col items-center text-center px-2 py-2 lg:py-0 w-full"
+                className="relative flex flex-col items-center px-4"
               >
-                <div className="mb-3 flex size-14 shrink-0 items-center justify-center rounded-xl bg-[#E1F5EE] text-[#0F6E56]">
-                  <Icon className="size-7" />
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-sm font-extrabold text-[#17391f] sm:text-base lg:text-lg whitespace-nowrap md:max-w-[100px]">
-                    {item.value}
-                  </h3>
-                  <p className="mt-1 text-[10px] font-medium leading-tight text-[#5d7a64] sm:text-xs">
-                    {item.label}
-                  </p>
-                </div>
+                <StatItem icon={Icon} value={item.value} label={item.label} />
 
-                {/* Separator — desktop (6 kolom) */}
-                {!isLast && (
+                {!isLastOverall && (
                   <Separator
                     orientation="vertical"
-                    className="absolute -right-px hidden lg:block h-full self-center bg-slate-200"
-                  />
-                )}
-
-                {/* Separator — tablet (3 kolom) */}
-                {!isLastInRowTablet && (
-                  <Separator
-                    orientation="vertical"
-                    className="absolute -right-px hidden sm:block lg:hidden h-full self-center bg-slate-200"
+                    className={[
+                      "absolute -right-px h-full top-0 bg-slate-200",
+                      isLastInMobileRow ? "hidden" : "block",
+                      "md:hidden lg:block",
+                    ].join(" ")}
                   />
                 )}
               </div>

@@ -5,42 +5,44 @@ const DistributorKeuntunganSection = () => {
   return (
     <section className="section-padding">
       <div className="container-smarttani">
-        {/* Header */}
-        <div className="mb-12 flex flex-col items-center text-center">
-          <h2 className="section-title text-foreground">
-            {DISTRIBUTOR_KEUNTUNGAN.heading}
-          </h2>
-          <p className="text-body-lg mt-4 max-w-2xl text-muted-foreground">
-            {DISTRIBUTOR_KEUNTUNGAN.subtext}
-          </p>
-        </div>
+        <div className="rounded-[32px] bg-[#FAEEDA]/60 px-6 py-10 md:px-12 md:py-12">
+          {/* Header */}
+          <div className="mb-10 flex flex-col items-center text-center">
+            <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
+              {DISTRIBUTOR_KEUNTUNGAN.heading}
+            </h2>
+            <p className="mt-2 text-sm font-medium text-[#5d7a64] md:text-base max-w-2xl">
+              {DISTRIBUTOR_KEUNTUNGAN.subtext}
+            </p>
+          </div>
 
-        {/* Grid Keuntungan */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {DISTRIBUTOR_KEUNTUNGAN.items.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <div
-                key={index}
-                className="group flex flex-col items-start p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 rounded-2xl border border-slate-100 bg-slate-50"
-              >
-                {/* Icon Container */}
-                <div className="mb-5 flex size-12 items-center justify-center rounded-xl bg-primary-light text-primary transition-colors group-hover:bg-primary group-hover:text-white">
-                  <Icon className="size-6" strokeWidth={2} />
-                </div>
+          {/* Grid Keuntungan */}
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6 items-stretch">
+            {DISTRIBUTOR_KEUNTUNGAN.items.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={index}
+                  className="flex flex-col items-center text-center group"
+                >
+                  {/* Icon Container */}
+                  <div className="mb-4 flex size-14 shrink-0 items-center justify-center rounded-xl bg-[#FAEEDA] text-[#854F0B] transition-colors group-hover:bg-[#854F0B] group-hover:text-white">
+                    <Icon className="size-7" strokeWidth={1.5} />
+                  </div>
 
-                {/* Content */}
-                <div className="flex flex-col flex-1">
-                  <h3 className="mb-3 text-heading-3 text-foreground">
-                    {item.title}
-                  </h3>
-                  <p className="text-body-sm text-muted-foreground">
-                    {item.description}
-                  </p>
+                  {/* Content */}
+                  <div className="flex flex-col items-center gap-1">
+                    <h3 className="text-base font-extrabold text-[#17391f]">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs leading-relaxed text-[#5d7a64] md:text-sm">
+                      {item.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

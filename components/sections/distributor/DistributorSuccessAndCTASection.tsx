@@ -17,10 +17,10 @@ const DistributorSuccessAndCTASection = () => {
           {/* Left Side: Kisah Sukses Mitra */}
           <div className="flex flex-col">
             <div className="mb-10">
-              <h2 className="section-title text-foreground">
+              <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
                 {DISTRIBUTOR_TESTIMONI.heading}
               </h2>
-              <p className="text-body-lg mt-4 text-muted-foreground">
+              <p className="mt-2 text-sm font-medium text-[#5d7a64] md:text-base">
                 {DISTRIBUTOR_TESTIMONI.subtext}
               </p>
             </div>
@@ -29,10 +29,10 @@ const DistributorSuccessAndCTASection = () => {
               {DISTRIBUTOR_TESTIMONI.items.map((item, index) => (
                 <div
                   key={index}
-                  className="flex flex-col gap-6 rounded-2xl bg-slate-50 p-8 border border-slate-100 transition-all hover:shadow-md"
+                  className="flex flex-col gap-6 rounded-2xl bg-[#EAF3DE]/30 p-8 border border-[#EAF3DE] transition-all hover:shadow-md"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="relative size-16 shrink-0 overflow-hidden rounded-full border-2 border-white shadow-sm">
+                    <div className="relative size-14 shrink-0 overflow-hidden rounded-full border-2 border-white shadow-sm">
                       <Image
                         src={item.avatar}
                         alt={item.name}
@@ -41,17 +41,17 @@ const DistributorSuccessAndCTASection = () => {
                       />
                     </div>
                     <div>
-                      <h3 className="text-body font-bold text-foreground">
+                      <h3 className="text-sm font-bold text-[#17391f]">
                         {item.name}
                       </h3>
-                      <p className="text-caption font-semibold text-muted-foreground uppercase tracking-wider">
+                      <p className="text-[0.65rem] font-medium text-[#5d7a64] md:text-xs uppercase tracking-wider">
                         {item.role}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex-1">
-                    <p className="text-body-sm font-medium text-foreground">
+                    <p className="text-xs leading-relaxed italic text-[#5d7a64] md:text-sm">
                       &ldquo;{item.quote}&rdquo;
                     </p>
                   </div>
@@ -78,10 +78,10 @@ const DistributorSuccessAndCTASection = () => {
             </div>
 
             <div className="relative z-10 flex h-full flex-col">
-              <h2 className="text-heading-1 text-white mb-4">
+              <h2 className="text-xl font-bold leading-tight text-white sm:text-2xl lg:text-3xl mb-4">
                 {DISTRIBUTOR_CTA_BANNER.heading}
               </h2>
-              <p className="text-body text-white/85 mb-10">
+              <p className="text-sm font-medium text-[#eef8e5]/80 md:text-base mb-10">
                 {DISTRIBUTOR_CTA_BANNER.subtext}
               </p>
 
@@ -89,7 +89,7 @@ const DistributorSuccessAndCTASection = () => {
                 <Button
                   size="lg"
                   asChild
-                  className="h-14 w-full bg-accent text-base font-bold !text-white hover:bg-accent/90 transition-all active:scale-95 cursor-pointer rounded-2xl shadow-lg shadow-black/20 border-none"
+                  className="h-14 w-full bg-accent text-sm font-bold !text-white hover:bg-accent/90 transition-all active:scale-95 cursor-pointer rounded-2xl shadow-lg shadow-black/20 border-none"
                 >
                   <Link href="/signup?role=distributor">
                     {DISTRIBUTOR_CTA_BANNER.cta[0].label}
@@ -100,7 +100,7 @@ const DistributorSuccessAndCTASection = () => {
                   variant="outline"
                   size="lg"
                   asChild
-                  className="h-14 w-full border-2 border-white bg-transparent text-base font-bold text-white hover:bg-white/10 transition-all active:scale-95 cursor-pointer rounded-2xl"
+                  className="h-14 w-full border-2 border-white bg-transparent text-sm font-bold text-white hover:bg-white/10 transition-all active:scale-95 cursor-pointer rounded-2xl"
                 >
                   <Link href="/kontak" className="flex items-center justify-center">
                     <MessageCircle className="mr-3 size-5" />

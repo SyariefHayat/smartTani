@@ -16,7 +16,7 @@ export default function DistributorPage() {
   return (
     <main className="min-h-screen bg-white">
       <DistributorHeroSection />
-      {/* <StatsBarDistributorSection /> */}
+      <StatsBarDistributorSection />
       <DistributorKeuntunganSection />
       <DistributorProdukKategoriSection />
       <DistributorInfoCardsSection />

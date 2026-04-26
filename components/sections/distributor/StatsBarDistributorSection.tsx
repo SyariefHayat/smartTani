@@ -9,17 +9,17 @@ const StatsBarDistributorSection = () => {
   const total = DISTRIBUTOR_STATS_BAR.length;
 
   return (
-    <section className="relative z-20 px-4 sm:px-6 md:px-10 lg:px-12 -mt-10 sm:-mt-12 md:-mt-14 lg:-mt-16">
-      <div className="mx-auto max-w-7xl rounded-3xl bg-white p-6 shadow-[0_20px_50px_rgba(0,0,0,0.1)] md:p-10">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-y-8 lg:gap-y-0">
+    <section className="relative z-20 px-5 sm:px-8 md:px-10 lg:px-12 -mt-10 sm:-mt-12 md:-mt-14 lg:-mt-16">
+      <div className="mx-auto max-w-7xl rounded-2xl bg-white shadow-[0_12px_40px_rgba(0,0,0,0.08)]">
+        <div className="grid grid-cols-3 md:grid-cols-6 py-8 md:px-4 lg:px-0 gap-y-8 md:gap-y-0 items-start">
           {DISTRIBUTOR_STATS_BAR.map((item, index) => {
-            const isLastInRowTablet = (index + 1) % 3 === 0;
-            const isLast = index === total - 1;
+            const isLastInMobileRow = index === 2;
+            const isLastOverall = index === total - 1;
 
             return (
               <div
                 key={item.label}
-                className="relative flex items-center justify-center py-2 lg:py-0"
+                className="relative flex flex-col items-center px-4"
               >
                 <StatItem
                   icon={item.icon}
@@ -27,19 +27,14 @@ const StatsBarDistributorSection = () => {
                   label={item.label}
                 />
 
-                {/* Separator — desktop */}
-                {!isLast && (
+                {!isLastOverall && (
                   <Separator
                     orientation="vertical"
-                    className="absolute -right-px hidden lg:block h-full self-center bg-slate-200"
-                  />
-                )}
-
-                {/* Separator — tablet */}
-                {!isLastInRowTablet && (
-                  <Separator
-                    orientation="vertical"
-                    className="absolute -right-px hidden sm:block lg:hidden h-full self-center bg-slate-200"
+                    className={[
+                      "absolute -right-px h-full top-0 bg-slate-200",
+                      isLastInMobileRow ? "hidden" : "block",
+                      "md:hidden lg:block",
+                    ].join(" ")}
                   />
                 )}
               </div>

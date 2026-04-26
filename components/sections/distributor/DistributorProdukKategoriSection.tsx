@@ -9,21 +9,20 @@ const DistributorProdukKategoriSection = () => {
     <section className="">
       <div className="container-smarttani">
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6">
+        <div className="flex flex-col md:flex-row items-center justify-between mb-10 gap-6">
           <div className="max-w-2xl">
-            <h2 className="section-title text-foreground">
+            <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
               {DISTRIBUTOR_PRODUK_KATEGORI.heading}
             </h2>
-            <p className="text-body-lg mt-4 text-muted-foreground">
+            <p className="mt-2 text-sm font-medium text-[#5d7a64] md:text-base">
               {DISTRIBUTOR_PRODUK_KATEGORI.subtext}
             </p>
           </div>
           <Link
             href="/marketplace"
-            className="inline-flex items-center gap-2 text-primary hover:text-primary-dark font-bold text-body transition-colors group shrink-0"
+            className="text-xs font-bold text-primary hover:underline group shrink-0"
           >
-            Lihat Semua Produk
-            <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
+            Lihat Semua Produk →
           </Link>
         </div>
 
@@ -50,10 +49,10 @@ const DistributorProdukKategoriSection = () => {
 
                   {/* Content Container */}
                   <div className="p-4 flex-1 flex flex-col items-center justify-center text-center border-t border-slate-100">
-                    <h3 className="font-bold text-foreground text-body-sm md:text-body leading-tight mb-1">
+                    <h3 className="text-sm font-bold text-[#17391f] leading-tight mb-1">
                       {item.label}
                     </h3>
-                    <p className="text-muted-foreground text-caption md:text-body-sm">
+                    <p className="text-[10px] font-medium text-[#5d7a64]">
                       {item.jumlahProduk} Produk
                     </p>
                   </div>
