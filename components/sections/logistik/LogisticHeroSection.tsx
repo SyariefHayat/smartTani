@@ -49,7 +49,7 @@ const LogisticHeroSection = () => {
           <div className="md:col-span-8 lg:col-span-9">
             {/* Badge */}
             <div className="mb-3 inline-block rounded-lg bg-primary-medium/80 backdrop-blur-sm px-3 py-1.5 text-caption font-bold text-white">
-              Logistik Pertanian
+              {LOGISTIC_HERO.badge}
             </div>
 
             <h1 className="text-heading-1 md:text-display text-white mb-3 max-w-sm lg:max-w-lg">

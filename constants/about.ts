@@ -7,7 +7,7 @@ export const ABOUT_META = {
 };
 
 export const ABOUT_HERO = {
-  badge: "Tentang Kami",
+  badge: "Tentang Smarttani",
   heading: "Bersama Membangun Masa Depan Pertanian Indonesia",
   subtext:
     "PT. Smarttani Indonesia berkomitmen menjadi mitra terpercaya dalam transformasi pertanian Indonesia menuju masa depan yang lebih cerdas, dan berkelanjutan.",
@@ -29,7 +29,7 @@ export const ABOUT_HERO_ACTIONS = [
     prefix: "Pelajari",
     label: "Lebih Lanjut",
     icon: ArrowRight,
-    className: "bg-[#1A6B2F] text-[#EAF3DE] hover:bg-[#14521F]",
+    className: "bg-[#BA7517] text-[#FAEEDA] hover:bg-[#854F0B]",
     href: null,
   },
   {

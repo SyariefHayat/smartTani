@@ -285,6 +285,7 @@ export const HOME_ARTICLE = [
   {
     title: "Manajemen Pakan Sapi Modern untuk Hasil Maksimal",
     date: "18 Mei 2024",
+    youtubeId: "d1rgseTZYwA", // ← tambahkan ini
   },
 ];
 

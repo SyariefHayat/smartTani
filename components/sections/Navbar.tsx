@@ -7,6 +7,9 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   Search, Bell, ShoppingCart, Menu, LogIn, UserPlus,
   X, ChevronRight, Home, Store, TrendingUp, Truck, Package, GraduationCap,
+  Newspaper,
+  Phone,
+  Info,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -33,6 +36,9 @@ const BOTTOM_NAV = [
   { label: "Distributor", href: "/distributor", icon: Package },
   { label: "Logistik", href: "/logistik", icon: Truck },
   { label: "Academy", href: "/sitani-academy", icon: GraduationCap },
+  { label: "Artikel", href: "/artikel", icon: Newspaper },
+  { label: "Tentang", href: "/tentang", icon: Info },
+  { label: "Kontak", href: "/kontak", icon: Phone },
 ];
 
 export default function Navbar() {
@@ -405,50 +411,80 @@ export default function Navbar() {
       </header>
 
       {/* ══════════════════════════════════════════
-          BOTTOM NAV — mobile only (< sm)
-          Glassmorphism Apple style
-      ══════════════════════════════════════════ */}
+    BOTTOM NAV — mobile only (< sm)
+    Scrollable slider — support 8+ items
+══════════════════════════════════════════ */}
       <nav
         id="bottom-navbar"
         aria-label="Navigasi bawah"
-        className="sm:hidden fixed bottom-0 left-0 right-0 z-50 h-[68px] flex items-center px-1.5 bg-[#0B2F13]"
+        className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0B2F13]"
         style={{
-          borderTop: "1px solid rgba(255, 255, 255, 0.2)",
-          boxShadow: "0 -4px 16px rgba(0,0,0,0.1)",
+          borderTop: "1px solid rgba(255, 255, 255, 0.15)",
+          boxShadow: "0 -4px 20px rgba(0,0,0,0.25)",
         }}
       >
-        {BOTTOM_NAV.map((item) => {
-          const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              id={`bottom-nav-${item.href.replace("/", "") || "beranda"}`}
-              aria-current={isActive ? "page" : undefined}
-              className="flex flex-col items-center justify-center flex-1 gap-1 py-2 px-1 transition-all duration-200 relative"
-            >
-              <div className={cn(
-                "flex items-center justify-center w-10 h-7 rounded-full transition-all duration-200",
-                isActive ? "bg-white/25" : ""
-              )}>
-                <Icon className={cn(
-                  "size-[19px] transition-all duration-200",
-                  "text-white"
-                )} />
-              </div>
-              <span className={cn(
-                "text-[9.5px] leading-none font-semibold tracking-tight max-w-full",
-                "text-white"
-              )}>
-                {item.label}
-              </span>
-              {isActive && (
-                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-[3px] bg-white rounded-full" />
-              )}
-            </Link>
-          );
-        })}
+        {/* Scrollable track */}
+        <div
+          className="flex overflow-x-auto scrollbar-none items-center px-1 h-[64px]"
+          style={{
+            scrollSnapType: "x mandatory",
+            WebkitOverflowScrolling: "touch",
+            /* Sembunyikan scrollbar di semua browser */
+            msOverflowStyle: "none",
+            scrollbarWidth: "none",
+          }}
+        >
+          {BOTTOM_NAV.map((item) => {
+            const isActive = item.href === "/"
+              ? pathname === "/"
+              : pathname.startsWith(item.href);
+            const Icon = item.icon;
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                id={`bottom-nav-${item.href.replace("/", "") || "beranda"}`}
+                aria-current={isActive ? "page" : undefined}
+                className="flex flex-col items-center justify-center gap-1 py-2 relative transition-all duration-200"
+                style={{
+                  /* Setiap item lebar tetap agar 5–6 tampil sekaligus, sisanya di-scroll */
+                  flex: "0 0 72px",
+                  scrollSnapAlign: "start",
+                }}
+              >
+                {/* Active indicator — garis atas */}
+                {isActive && (
+                  <span className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-[3px] bg-white rounded-full" />
+                )}
+
+                {/* Icon bubble */}
+                <div className={cn(
+                  "flex items-center justify-center w-9 h-6 rounded-full transition-all duration-200",
+                  isActive ? "bg-white/25" : ""
+                )}>
+                  <Icon className="size-[18px] text-white" />
+                </div>
+
+                {/* Label */}
+                <span className={cn(
+                  "text-[9px] leading-none font-semibold tracking-tight text-white text-center w-full px-0.5 truncate",
+                  isActive ? "opacity-100" : "opacity-70"
+                )}>
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Scroll hint — fade kanan agar user tahu bisa di-scroll */}
+        <div
+          className="pointer-events-none absolute right-0 top-0 h-full w-8"
+          style={{
+            background: "linear-gradient(to right, transparent, rgba(11,47,19,0.85))",
+          }}
+        />
       </nav>
     </>
   );

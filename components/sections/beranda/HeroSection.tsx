@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { ShieldCheck, Sprout } from "lucide-react";
 
 export default function HeroSection() {
-
   return (
     <section className="relative flex items-start md:items-center overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}

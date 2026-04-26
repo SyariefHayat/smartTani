@@ -23,7 +23,7 @@ export const DISTRIBUTOR_META = {
 };
 
 export const DISTRIBUTOR_HERO = {
-  badge: "Program Distributor Smarttani",
+  badge: "Distributor Smarttani",
   heading: "Bersama Tumbuh, Bersama Membangun Pertanian Indonesia",
   subtext:
     "Jadilah bagian dari jaringan distributor resmi Smarttani dan dapatkan produk berkualitas, dukungan penuh, serta peluang keuntungan maksimal.",
@@ -43,7 +43,7 @@ export const DISTRIBUTOR_HERO_ACTIONS = [
     prefix: "Daftar sebagai",
     label: "Distributor",
     icon: UserPlus,
-    className: "bg-[#1A6B2F] text-[#EAF3DE] hover:bg-[#14521F]",
+    className: "bg-[#BA7517] text-[#FAEEDA] hover:bg-[#854F0B]",
     href: "/signup?role=distributor",
   },
   {

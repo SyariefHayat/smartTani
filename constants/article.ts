@@ -6,7 +6,7 @@ export const ARTICLE_META = {
 };
 
 export const ARTICLE_HERO = {
-  badge: "Artikel",
+  badge: "Artikel Smarttani",
   heading:
     "Wawasan, Inspirasi, dan Informasi Terpercaya untuk Petani Indonesia",
   subtext:
@@ -95,6 +95,7 @@ export const ARTICLE_DUMMY = [
     description:
       "Strategi pemberian pakan yang efisien untuk pertumbuhan optimal dan hemat biaya.",
     image: "/images/article/pakan-sapi.webp",
+    youtubeId: "d1rgseTZYwA",
     penulis: {
       nama: "Drh. Andi Wijaya",
       gelar: "Dokter Hewan",

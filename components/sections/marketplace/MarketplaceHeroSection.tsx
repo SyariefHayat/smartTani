@@ -42,7 +42,7 @@ const MarketplaceHeroSection = () => {
           <div className="grid grid-cols-2 gap-3 max-w-sm mb-4">
             <Button
               asChild
-              className="h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer bg-primary hover:bg-primary-dark !text-white shadow-primary/20"
+              className="h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer bg-[#BA7517] text-[#FAEEDA] hover:bg-[#854F0B]"
             >
               <Link href="/marketplace">
                 <ShoppingBag className="size-7 shrink-0 mr-3" />
@@ -55,7 +55,7 @@ const MarketplaceHeroSection = () => {
 
             <Button
               asChild
-              className="h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer bg-white text-primary-dark hover:bg-white/90"
+              className="h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer bg-[#5F5E5A] text-[#F1EFE8] hover:bg-[#444441]"
             >
               <Link href="/marketplace/jual">
                 <Store className="size-7 shrink-0 mr-3" />

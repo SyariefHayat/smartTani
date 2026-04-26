@@ -5,7 +5,7 @@ export const KONTAK_META = {
 };
 
 export const KONTAK_HERO = {
-  badge: "Kontak Kami",
+  badge: "Kontak Smarttani",
   heading: "Hubungi PT. Smarttani Indonesia",
   subheading: "Kami siap membantu Anda",
   subtext:

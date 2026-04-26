@@ -5,7 +5,7 @@ export const ACADEMY_META = {
 };
 
 export const ACADEMY_HERO = {
-  badge: "SiTani Academy",
+  badge: "Academy Smarttani",
   heading: "Belajar Hari Ini, Panen Sukses Esok Hari",
   subtext:
     "Tingkatkan pengetahuan dan keterampilan bertani bersama para ahli. Kursus praktis, mudah dipahami, dan bisa diakses kapan saja.",
