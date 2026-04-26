@@ -44,7 +44,7 @@ export const DISTRIBUTOR_HERO_ACTIONS = [
     label: "Distributor",
     icon: UserPlus,
     className: "bg-[#BA7517] text-[#FAEEDA] hover:bg-[#854F0B]",
-    href: "/signup?role=distributor",
+    href: "/register?role=distributor",
   },
   {
     prefix: "Unduh",
@@ -119,12 +119,12 @@ export const DISTRIBUTOR_PRODUK_KATEGORI = {
     {
       label: "Pupuk & Nutrisi",
       jumlahProduk: "320+",
-      image: "/images/distributor/pupuk-nutrisi.png",
+      image: "/images/distributor/fertilizer-nutrition.webp",
     },
     {
       label: "Benih & Bibit",
       jumlahProduk: "180+",
-      image: "/images/distributor/benih-bibit.png",
+      image: "/images/distributor/seeds-seedlings.webp",
     },
     {
       label: "Pestisida",
@@ -134,7 +134,7 @@ export const DISTRIBUTOR_PRODUK_KATEGORI = {
     {
       label: "Alat & Mesin",
       jumlahProduk: "120+",
-      image: "/images/distributor/alat-mesin.png",
+      image: "/images/distributor/tools-machines.webp",
     },
     {
       label: "Irigasi",
@@ -213,7 +213,7 @@ export const DISTRIBUTOR_TESTIMONI = {
       avatar: "https://randomuser.me/api/portraits/women/44.jpg",
       rating: 5,
       quote:
-        "Sistem mudah, produk lengkap, dan margin keuntungan sangat menguntungkan. Terima kasih Smarttani!",
+        "Sistem mudah, produk lengkap, dan margin keuntungan sangat menguntungkan. Terima kasih Smarttani!",    
     },
   ],
 };

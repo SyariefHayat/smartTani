@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Star, Clock } from "lucide-react";
-import { ACADEMY_KURSUS } from "@/constants/sitani-academy";
+import { ACADEMY_KURSUS } from "@/constants/academy";
 import { Badge } from "@/components/ui/badge";
 
 export default function RelatedCourses() {
@@ -16,7 +16,7 @@ export default function RelatedCourses() {
         {relatedCourses.map((course, i) => (
           <Link
             key={i}
-            href={`/sitani-academy/${i + 1}`}
+            href={`/academy/${i + 1}`}
             className="group block overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all hover:shadow-xl"
           >
             <div className="relative aspect-video overflow-hidden">
@@ -57,3 +57,4 @@ export default function RelatedCourses() {
     </div>
   );
 }
+

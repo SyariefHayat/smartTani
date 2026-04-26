@@ -110,7 +110,7 @@ export default function InvestorDashboard() {
             </div>
             <Button 
               className="bg-[#1A6B2F] hover:bg-[#145224]"
-              onClick={() => router.push('/investasi')}
+              onClick={() => router.push('/investments')}
             >
               <Plus className="mr-2 h-4 w-4" />
               Investasi Baru

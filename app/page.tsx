@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { HOME_META } from "@/constants";
-import HeroSection from "@/components/sections/beranda/HeroSection";
-import StatsBarSection from "@/components/sections/beranda/StatsBarSection";
-import StepsSection from "@/components/sections/beranda/StepsSection";
-import CTABannerSection from "@/components/sections/beranda/CTABannerSection";
-import FeatureSection from "@/components/sections/beranda/FeatureSection";
-import TestimoniSection from "@/components/sections/beranda/TestimoniSection";
+import HeroSection from "@/components/sections/home/HeroSection";
+import StatsBarSection from "@/components/sections/home/StatsBarSection";
+import StepsSection from "@/components/sections/home/StepsSection";
+import CTABannerSection from "@/components/sections/home/CTABannerSection";
+import FeatureSection from "@/components/sections/home/FeatureSection";
+import TestimonialSection from "@/components/sections/home/TestimonialSection";
 
 export const metadata: Metadata = {
   title: {
@@ -58,7 +58,7 @@ export default function BerandaPage() {
       <StatsBarSection />
       <FeatureSection />
       <StepsSection />
-      <TestimoniSection />
+      <TestimonialSection />
       <CTABannerSection />
     </main>
   );

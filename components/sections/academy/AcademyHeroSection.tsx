@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ACADEMY_HERO } from "@/constants/sitani-academy";
+import { ACADEMY_HERO } from "@/constants/academy";
 import { GraduationCap, Monitor, Users, Award, ArrowRight } from "lucide-react";
 
 const ICON_MAP = [Monitor, Users, Award];
@@ -102,7 +102,7 @@ const AcademyHeroSection = () => {
 
               <div className="space-y-3">
                 <Button asChild className="h-10 w-full bg-primary text-sm font-bold !text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20 cursor-pointer">
-                  <Link href="/signup">{ACADEMY_HERO.sidebar.ctaPrimary}</Link>
+                  <Link href="/register">{ACADEMY_HERO.sidebar.ctaPrimary}</Link>
                 </Button>
 
                 <button

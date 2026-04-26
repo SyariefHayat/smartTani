@@ -87,7 +87,7 @@ export default function CategoriesPage() {
               </Link>
             </Button>
             <Button asChild variant="outline" className="h-12 px-8 rounded-xl font-bold border-primary text-primary hover:bg-primary/5">
-              <Link href="/kontak">
+              <Link href="/contact">
                 <MessageCircle className="mr-2 size-4" />
                 Hubungi Kami
               </Link>

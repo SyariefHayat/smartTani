@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { ACADEMY_STATS_BAR } from "@/constants/sitani-academy";
-import { StatItem } from "../beranda/StatItem";
+import { ACADEMY_STATS_BAR } from "@/constants/academy";
+import { StatItem } from "../home/StatItem";
 import { Separator } from "@/components/ui/separator";
 import {
   Users,

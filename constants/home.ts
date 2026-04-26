@@ -219,7 +219,7 @@ export const HOME_STEPS = [
   },
 ];
 
-export const HOME_CATEGORY = [
+export const HOME_CATEGORIES = [
   "Gabah",
   "Beras",
   "Jagung",
@@ -246,7 +246,7 @@ export const CATEGORY_IMAGES = [
   "/images/home/kedelai-df.webp",
 ];
 
-export const HOME_TESTIMONI = [
+export const HOME_TESTIMONIALS = [
   {
     name: "Siti Aminah",
     role: "Petani Padi, Jawa Barat",
@@ -264,8 +264,8 @@ export const HOME_TESTIMONI = [
 ];
 
 export const TESTIMONI_AVATARS = [
-  "/images/about/pimpinan-siti-aminah.jpeg",
-  "/images/about/pimpinan-budi-santoso.jpeg",
+  "/images/about/director-siti-aminah.jpeg",
+  "/images/about/director-budi-santoso.jpeg",
 ];
 
 export const ARTICLE_IMAGES = [

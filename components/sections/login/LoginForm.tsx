@@ -28,7 +28,7 @@ function LoginFormContent() {
         if (user.role === "investor") {
           router.push("/dashboard/investor");
         } else {
-          router.push("/dashboard/petani");
+          router.push("/dashboard/farmer");
         }
       } catch (e) {}
     }
@@ -69,7 +69,7 @@ function LoginFormContent() {
     } else if (role === "investor") {
       router.push("/dashboard/investor");
     } else {
-      router.push("/dashboard/petani");
+      router.push("/dashboard/farmer");
     }
   };
 
@@ -171,7 +171,7 @@ function LoginFormContent() {
         <p className="text-center text-gray-600">
           {LOGIN_FORM.registerPrompt}{" "}
           <Link
-            href="/signup"
+            href="/register"
             className="text-green-600 font-bold hover:underline"
           >
             {LOGIN_FORM.registerLink}

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ACADEMY_MODEL_PELATIHAN } from "@/constants/sitani-academy";
+import { ACADEMY_MODEL_PELATIHAN } from "@/constants/academy";
 import { Laptop, Users, Layers, Building, Clock, Target } from "lucide-react";
 
 const ICON_MAP = [Laptop, Users, Layers, Building];

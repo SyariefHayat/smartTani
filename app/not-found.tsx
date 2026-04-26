@@ -30,7 +30,7 @@ export default function NotFound() {
           </Link>
         </Button>
         <Button asChild variant="outline" className="border-[#1A6B2F] text-[#1A6B2F] hover:bg-[#1A6B2F]/5 px-8 py-6 rounded-full text-lg">
-          <Link href="/kontak">
+          <Link href="/contact">
             <MessageCircle className="mr-2 h-5 w-5" />
             Hubungi Kami
           </Link>

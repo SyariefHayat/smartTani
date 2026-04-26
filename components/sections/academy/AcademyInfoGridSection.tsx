@@ -4,10 +4,10 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ACADEMY_JALUR,
-  ACADEMY_INSTRUKTUR,
-  ACADEMY_TESTIMONI
-} from "@/constants/sitani-academy";
+  ACADEMY_LEARNING_PATHS,
+  ACADEMY_INSTRUCTORS,
+  ACADEMY_TESTIMONIALS
+} from "@/constants/academy";
 import {
   ArrowRight,
   MoveRight,
@@ -31,7 +31,7 @@ const AcademyInfoGridSection = () => {
     "bg-primary-light",
   ];
 
-  const testimonial = ACADEMY_TESTIMONI.items[0];
+  const testimonial = ACADEMY_TESTIMONIALS.items[0];
 
   return (
     <section className="bg-white">
@@ -43,20 +43,20 @@ const AcademyInfoGridSection = () => {
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="text-body font-bold text-foreground">
-                  {ACADEMY_JALUR.heading}
+                  {ACADEMY_LEARNING_PATHS.heading}
                 </h3>
                 <p className="text-caption text-muted-foreground mt-1">
-                  {ACADEMY_JALUR.subtext}
+                  {ACADEMY_LEARNING_PATHS.subtext}
                 </p>
               </div>
-              <Link href="/academy/jalur" className="text-caption font-bold text-primary flex items-center gap-1 hover:underline whitespace-nowrap">
+              <Link href="/academy/learning-paths" className="text-caption font-bold text-primary flex items-center gap-1 hover:underline whitespace-nowrap">
                 Lihat Semua Jalur <MoveRight className="size-3" />
               </Link>
             </div>
 
             {/* Selalu vertikal — cukup untuk kolom 1/3 di desktop */}
             <div className="flex flex-col gap-2 mt-4">
-              {ACADEMY_JALUR.items.map((jalur, index) => (
+              {ACADEMY_LEARNING_PATHS.items.map((jalur, index) => (
                 <React.Fragment key={jalur.level}>
                   <div className={`${jalurBgs[index]} rounded-xl p-3 flex items-center gap-3`}>
                     <div className="shrink-0 flex size-8 items-center justify-center rounded-lg bg-white/60">
@@ -75,7 +75,7 @@ const AcademyInfoGridSection = () => {
                       <p className="text-[10px] text-muted-foreground whitespace-nowrap">{jalur.jumlahJam} Jam</p>
                     </div>
                   </div>
-                  {index < ACADEMY_JALUR.items.length - 1 && (
+                  {index < ACADEMY_LEARNING_PATHS.items.length - 1 && (
                     <div className="flex justify-center">
                       <ArrowRight className="size-3.5 text-foreground/20 rotate-90" />
                     </div>
@@ -90,19 +90,19 @@ const AcademyInfoGridSection = () => {
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h3 className="text-body font-bold text-foreground">
-                  {ACADEMY_INSTRUKTUR.heading}
+                  {ACADEMY_INSTRUCTORS.heading}
                 </h3>
                 <p className="text-caption text-muted-foreground mt-1">
-                  {ACADEMY_INSTRUKTUR.subtext}
+                  {ACADEMY_INSTRUCTORS.subtext}
                 </p>
               </div>
-              <Link href="/academy/instruktur" className="text-caption font-bold text-primary flex items-center gap-1 hover:underline whitespace-nowrap">
+              <Link href="/academy/instructors" className="text-caption font-bold text-primary flex items-center gap-1 hover:underline whitespace-nowrap">
                 Lihat Semua <MoveRight className="size-3" />
               </Link>
             </div>
 
             <div className="space-y-6">
-              {ACADEMY_INSTRUKTUR.items.slice(0, 2).map((instruktur) => (
+              {ACADEMY_INSTRUCTORS.items.slice(0, 2).map((instruktur) => (
                 <div key={instruktur.nama} className="flex items-center gap-4">
                   <div className="relative size-14 rounded-full overflow-hidden border border-slate-200">
                     <Image
@@ -132,7 +132,7 @@ const AcademyInfoGridSection = () => {
               <h3 className="text-body font-bold text-foreground">
                 Testimoni Peserta
               </h3>
-              <Link href="/academy/testimoni" className="text-caption font-bold text-primary flex items-center gap-1 hover:underline whitespace-nowrap">
+              <Link href="/academy/testimonials" className="text-caption font-bold text-primary flex items-center gap-1 hover:underline whitespace-nowrap">
                 Lihat Semua <MoveRight className="size-3" />
               </Link>
             </div>
