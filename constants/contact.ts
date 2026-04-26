@@ -11,9 +11,9 @@ export const CONTACT_HERO = {
   subtext:
     "Punya pertanyaan, masukan, atau ingin bekerja sama? Tim kami siap merespons dengan cepat dan profesional.",
   image: "/kontak.webp",
-  bgImageDesktop: "/images/kontak/desktop.png",
-  bgImageTablet: "/images/kontak/tablet.png",
-  bgImageMobile: "/images/kontak/mobile.png",
+  bgImageDesktop: "/images/contact/desktop.png",
+  bgImageTablet: "/images/contact/tablet.png",
+  bgImageMobile: "/images/contact/mobile.png",
   features: [
     {
       title: "Respon Cepat",
@@ -79,5 +79,5 @@ export const CONTACT_LOCATIONS = {
     "Dekat dengan pusat bisnis Lamongan",
   ],
   button: "Lihat di Google Maps",
-  mapImage: "/images/kontak/maps.webp",
+  mapImage: "/images/contact/maps.webp",
 };

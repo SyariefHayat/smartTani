@@ -53,8 +53,8 @@ export const FOOTER_SECTIONS: FooterSection[] = [
     links: [
       { label: "Pusat Bantuan", href: "/contact" },
       { label: "FAQ", href: "/faq" },
-      { label: "Kebijakan Privasi", href: "/privasi" },
-      { label: "Syarat & Ketentuan", href: "/syarat" },
+      { label: "Kebijakan Privasi", href: "/privacy" },
+      { label: "Syarat & Ketentuan", href: "/terms" },
     ],
   },
   {

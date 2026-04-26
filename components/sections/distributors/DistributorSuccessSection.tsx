@@ -91,7 +91,7 @@ const DistributorSuccessSection = () => {
                   asChild
                   className="h-14 w-full bg-accent text-base font-bold !text-white hover:bg-accent/90 transition-all active:scale-95 cursor-pointer rounded-2xl shadow-lg shadow-black/20 border-none"
                 >
-                  <Link href="/signup?role=distributor">
+                  <Link href="/register?role=distributor">
                     {DISTRIBUTOR_CTA_BANNER.cta[0].label}
                   </Link>
                 </Button>

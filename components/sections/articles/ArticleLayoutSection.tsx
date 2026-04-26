@@ -5,9 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  ARTICLE_DUMMY,
-  ARTIKEL_KATEGORI_POPULER,
-  ARTIKEL_TERPOPULER
+  ARTICLE_ITEMS,
+  ARTICLE_POPULAR_CATEGORIES,
+  ARTICLE_MOST_POPULAR
 } from "@/constants/article";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -40,7 +40,7 @@ function ArtikelLayoutContent() {
     router.push("/artikel", { scroll: false });
   };
 
-  let filteredArticles = ARTICLE_DUMMY;
+  let filteredArticles = ARTICLE_ITEMS;
 
   if (q) {
     filteredArticles = filteredArticles.filter((a) =>
@@ -176,7 +176,7 @@ function ArtikelLayoutContent() {
                   </h3>
                 </div>
                 <div className="flex flex-col gap-2.5">
-                  {ARTIKEL_KATEGORI_POPULER.map((cat, idx) => (
+                  {ARTICLE_POPULAR_CATEGORIES.map((cat, idx) => (
                     <button
                       key={idx}
                       onClick={() => router.push(`/artikel?kategori=${cat.label}`)}
@@ -203,7 +203,7 @@ function ArtikelLayoutContent() {
                   Artikel Terpopuler
                 </h3>
                 <div className="flex flex-col gap-5">
-                  {ARTIKEL_TERPOPULER.map((trending, idx) => (
+                  {ARTICLE_MOST_POPULAR.map((trending, idx) => (
                     <Link
                       key={idx}
                       href={`/artikel/${slugify(trending.title)}`}

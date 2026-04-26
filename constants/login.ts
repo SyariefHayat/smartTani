@@ -17,32 +17,32 @@ export const LOGIN_MEMBERSHIP = {
       id: "petani",
       title: "Petani",
       description: "Akses solusi pertanian, edukasi, dan jaringan pasar.",
-      icon: "/images/signup/membership-petani.png", // Assuming these exist or will be mapped
-    },
-    {
+      icon: "/images/register/membership-petani.png", // Assuming these exist or will be mapped
+      },
+      {
       id: "distributor",
       title: "Distributor",
       description: "Kelola distribusi produk secara efisien.",
-      icon: "/images/signup/membership-distributor.png",
-    },
-    {
+      icon: "/images/register/membership-distributor.png",
+      },
+      {
       id: "investor",
       title: "Investor",
       description: "Temukan peluang investasi di sektor pertanian.",
-      icon: "/images/signup/membership-investor.png",
-    },
-    {
+      icon: "/images/register/membership-investor.png",
+      },
+      {
       id: "mitra_bisnis",
       title: "Mitra Bisnis",
       description: "Berkolaborasi dalam ekosistem Smarttani.",
-      icon: "/images/signup/membership-mitra.png",
-    },
-    {
+      icon: "/images/register/membership-mitra.png",
+      },
+      {
       id: "admin_perusahaan",
       title: "Admin Perusahaan",
       description: "Kelola operasional dan data perusahaan.",
-      icon: "/images/signup/membership-admin.png",
-    },
+      icon: "/images/register/membership-admin.png",
+      },
   ],
 };
 

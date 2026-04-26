@@ -61,7 +61,7 @@ export default function ProfilePage() {
   if (loading) return null;
 
   const role = user?.role === "petani" ? "Petani" : "Investor";
-  const dashboardLink = user?.role === "petani" ? "/dashboard/petani" : "/dashboard/investor";
+  const dashboardLink = user?.role === "petani" ? "/dashboard/farmer" : "/dashboard/investor";
 
   const sidebarMenu = [
     { label: "Dashboard", icon: Home, active: false, href: dashboardLink },

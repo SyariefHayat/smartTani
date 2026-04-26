@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { LOGISTIC_HERO } from "@/constants/logistic";
+import { LOGISTICS_HERO } from "@/constants/logistics";
 import { ShieldCheck, Truck, Globe, Search, ArrowRight, CheckCircle2, Circle } from "lucide-react";
 import { showToast } from "@/lib/toast";
 
@@ -27,11 +27,11 @@ const LogisticHeroSection = () => {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
-          <source media="(min-width: 1024px)" srcSet={LOGISTIC_HERO.bgImageDesktop} />
-          <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={LOGISTIC_HERO.bgImageTablet} />
-          <source media="(max-width: 767px)" srcSet={LOGISTIC_HERO.bgImageMobile} />
+          <source media="(min-width: 1024px)" srcSet={LOGISTICS_HERO.bgImageDesktop} />
+          <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={LOGISTICS_HERO.bgImageTablet} />
+          <source media="(max-width: 767px)" srcSet={LOGISTICS_HERO.bgImageMobile} />
           <img
-            src={LOGISTIC_HERO.bgImageDesktop}
+            src={LOGISTICS_HERO.bgImageDesktop}
             alt="Logistic Smarttani"
             className="w-full h-full object-cover object-center"
           />
@@ -49,20 +49,20 @@ const LogisticHeroSection = () => {
           <div className="md:col-span-8 lg:col-span-9">
             {/* Badge */}
             <div className="mb-3 inline-block rounded-lg bg-primary-medium/80 backdrop-blur-sm px-3 py-1.5 text-caption font-bold text-white">
-              {LOGISTIC_HERO.badge}
+              {LOGISTICS_HERO.badge}
             </div>
 
             <h1 className="text-heading-1 md:text-display text-white mb-3 max-w-sm lg:max-w-lg">
-              {LOGISTIC_HERO.heading}
+              {LOGISTICS_HERO.heading}
             </h1>
 
             <p className="text-body-sm mb-5 max-w-sm md:max-w-md text-white/85">
-              {LOGISTIC_HERO.subtext}
+              {LOGISTICS_HERO.subtext}
             </p>
 
             {/* Badges */}
             {/* <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-3 md:max-w-3xl max-w-xl">
-              {LOGISTIC_HERO.badges.map((badge, index) => {
+              {LOGISTICS_HERO.badges.map((badge, index) => {
                 const Icon = ICON_MAP[index] || ShieldCheck;
                 return (
                   <div
@@ -92,17 +92,17 @@ const LogisticHeroSection = () => {
               {!showResult ? (
                 <>
                   <h3 className="text-body-sm font-bold text-foreground mb-1.5">
-                    {LOGISTIC_HERO.tracking.label}
+                    {LOGISTICS_HERO.tracking.label}
                   </h3>
                   <p className="text-caption text-muted-foreground mb-5">
-                    {LOGISTIC_HERO.tracking.placeholder}
+                    {LOGISTICS_HERO.tracking.placeholder}
                   </p>
 
                   <div className="space-y-3">
                     <form onSubmit={handleTracking} className="space-y-3">
                       <Input
                         type="text"
-                        placeholder={LOGISTIC_HERO.tracking.inputHint}
+                        placeholder={LOGISTICS_HERO.tracking.inputHint}
                         className="h-10 border-slate-200 bg-slate-50 px-4 focus:ring-primary rounded-xl"
                         value={trackingNo}
                         onChange={(e) => setTrackingNo(e.target.value)}
@@ -112,7 +112,7 @@ const LogisticHeroSection = () => {
                         className="h-10 w-full bg-primary text-sm font-bold !text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20"
                       >
                         <Search className="mr-2 h-4 w-4" />
-                        {LOGISTIC_HERO.tracking.ctaPrimary}
+                        {LOGISTICS_HERO.tracking.ctaPrimary}
                       </Button>
                     </form>
 
@@ -120,7 +120,7 @@ const LogisticHeroSection = () => {
                       type="button"
                       className="flex w-full items-center justify-center gap-2 text-caption font-bold text-primary hover:text-primary/80 transition-all py-1.5 group cursor-pointer"
                     >
-                      {LOGISTIC_HERO.tracking.ctaSecondary}
+                      {LOGISTICS_HERO.tracking.ctaSecondary}
                       <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                     </button>
                   </div>

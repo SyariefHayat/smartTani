@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ARTIKEL_STATS_BAR } from "@/constants/article";
+import { ARTICLE_STATS_BAR } from "@/constants/article";
 import {
   FileText,
   Users,
@@ -18,7 +18,7 @@ const ArticleStatsBarSection = () => {
       <div className="container-smarttani">
         <div className="rounded-2xl bg-slate-50 p-6 md:p-8">
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
-            {ARTIKEL_STATS_BAR.map((item, index) => {
+            {ARTICLE_STATS_BAR.map((item, index) => {
               const Icon = ICONS[index] || Users;
               return (
                 <div

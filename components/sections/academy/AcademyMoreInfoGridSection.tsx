@@ -7,7 +7,7 @@ import {
   ACADEMY_WEBINARS,
   ACADEMY_CTA_BANNER
 } from "@/constants/academy";
-import { ARTICLE_DUMMY } from "@/constants/article";
+import { ARTICLE_ITEMS } from "@/constants/article";
 import {
   MoveRight,
 } from "lucide-react";
@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 
 const AcademyMoreInfoGridSection = () => {
   const webinars = ACADEMY_WEBINARS.items.slice(0, 2);
-  const articles = ARTICLE_DUMMY.slice(0, 2);
+  const articles = ARTICLE_ITEMS.slice(0, 2);
 
   return (
     <section className="section-padding bg-white">
@@ -115,7 +115,7 @@ const AcademyMoreInfoGridSection = () => {
                 asChild
                 className="w-full sm:flex-1 bg-accent hover:bg-accent/90 !text-white text-caption font-bold h-11 rounded-lg border-none shadow-sm shadow-black/5"
               >
-                <Link href="/signup">{ACADEMY_CTA_BANNER.cta[1].label}</Link>
+                <Link href="/register">{ACADEMY_CTA_BANNER.cta[1].label}</Link>
               </Button>
             </div>
           </div>

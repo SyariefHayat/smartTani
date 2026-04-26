@@ -44,7 +44,7 @@ export const DISTRIBUTOR_HERO_ACTIONS = [
     label: "Distributor",
     icon: UserPlus,
     className: "bg-[#BA7517] text-[#FAEEDA] hover:bg-[#854F0B]",
-    href: "/signup?role=distributor",
+    href: "/register?role=distributor",
   },
   {
     prefix: "Unduh",

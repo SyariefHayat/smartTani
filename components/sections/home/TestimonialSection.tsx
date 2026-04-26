@@ -5,8 +5,8 @@ import {
   CATEGORY_BG_COLORS,
   CATEGORY_IMAGES,
   HOME_ARTICLE,
-  HOME_CATEGORY,
-  HOME_TESTIMONI,
+  HOME_CATEGORIES,
+  HOME_TESTIMONIALS,
   TESTIMONI_AVATARS,
 } from "@/constants";
 import { Play, Quote, Star, X } from "lucide-react";
@@ -73,7 +73,7 @@ export default function TestimonialSection() {
               </div>
 
               <div className="grid grid-cols-3 gap-2.5">
-                {HOME_CATEGORY.slice(0, 6).map((item, index) => (
+                {HOME_CATEGORIES.slice(0, 6).map((item, index) => (
                   <Link
                     key={item}
                     href={`/marketplace?kategori=${item}`}
@@ -95,23 +95,23 @@ export default function TestimonialSection() {
                   </Link>
                 ))}
 
-                {HOME_CATEGORY[6] && (
+                {HOME_CATEGORIES[6] && (
                   <Link
-                    href={`/marketplace?kategori=${HOME_CATEGORY[6]}`}
+                    href={`/marketplace?kategori=${HOME_CATEGORIES[6]}`}
                     className="col-span-3 flex items-center justify-center gap-3 px-4 py-2.5 rounded-xl border border-gray-100 hover:border-gray-300 transition-all cursor-pointer hover:-translate-y-1"
                     style={{ backgroundColor: CATEGORY_BG_COLORS[6] ?? "#EAF3DE" }}
                   >
                     <div className="relative w-5 h-5">
                       <Image
                         src={CATEGORY_IMAGES[6] ?? "/images/home/padi-gabah.webp"}
-                        alt={`Kategori ${HOME_CATEGORY[6]}`}
+                        alt={`Kategori ${HOME_CATEGORIES[6]}`}
                         fill
                         className="object-contain"
                         sizes="100%"
                       />
                     </div>
                     <p className="text-xs font-medium text-[#5d7a64]">
-                      {HOME_CATEGORY[6]}
+                      {HOME_CATEGORIES[6]}
                     </p>
                   </Link>
                 )}
@@ -141,7 +141,7 @@ export default function TestimonialSection() {
                             TESTIMONI_AVATARS[activeIndex] ??
                             "/images/about/placeholder-professional.jpeg"
                           }
-                          alt={`Foto profil ${HOME_TESTIMONI[activeIndex].name}`}
+                          alt={`Foto profil ${HOME_TESTIMONIALS[activeIndex].name}`}
                           fill
                           className="object-cover"
                           sizes="100%"
@@ -149,10 +149,10 @@ export default function TestimonialSection() {
                       </div>
                       <div>
                         <p className="text-sm font-bold text-[#17391f]">
-                          {HOME_TESTIMONI[activeIndex].name}
+                          {HOME_TESTIMONIALS[activeIndex].name}
                         </p>
                         <p className="text-[0.65rem] font-medium text-[#5d7a64] md:text-xs">
-                          {HOME_TESTIMONI[activeIndex].role}
+                          {HOME_TESTIMONIALS[activeIndex].role}
                         </p>
                       </div>
                     </div>
@@ -167,11 +167,11 @@ export default function TestimonialSection() {
                     </div>
                   </div>
                   <p className="text-xs leading-relaxed italic text-[#5d7a64] md:text-sm">
-                    &quot;{HOME_TESTIMONI[activeIndex].quote}&quot;
+                    &quot;{HOME_TESTIMONIALS[activeIndex].quote}&quot;
                   </p>
                 </div>
                 <div className="flex justify-center gap-2">
-                  {HOME_TESTIMONI.map((_, index) => (
+                  {HOME_TESTIMONIALS.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setActiveIndex(index)}
@@ -191,7 +191,7 @@ export default function TestimonialSection() {
                   Artikel Terbaru
                 </h2>
                 <Link
-                  href="/artikel"
+                  href="/articles"
                   className="text-xs font-bold text-primary hover:underline"
                 >
                   Lihat Semua →

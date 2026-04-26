@@ -55,7 +55,7 @@ export default function CTABannerSection() {
                 className="h-12 rounded-lg border-none bg-[#FFB21C] px-8 text-sm font-bold text-white hover:bg-[#FFB21C]/90 cursor-pointer"
                 asChild
               >
-                <Link href="/signup">
+                <Link href="/register">
                   {HOME_CTA_BANNER.cta[1]?.label}
                 </Link>
               </Button>

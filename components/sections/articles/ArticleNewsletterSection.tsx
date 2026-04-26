@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ARTIKEL_NEWSLETTER } from "@/constants/article";
+import { ARTICLE_NEWSLETTER } from "@/constants/article";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
@@ -38,10 +38,10 @@ const ArticleNewsletterSection = () => {
             {/* Kiri: Heading & Subtext */}
             <div className="max-w-xl text-center lg:text-left">
               <h2 className="text-xl font-bold leading-tight text-white sm:text-2xl lg:text-4xl mb-4">
-                {ARTIKEL_NEWSLETTER.heading}
+                {ARTICLE_NEWSLETTER.heading}
               </h2>
               <p className="text-sm font-medium text-[#eef8e5]/80 md:text-base">
-                {ARTIKEL_NEWSLETTER.subtext}
+                {ARTICLE_NEWSLETTER.subtext}
               </p>
             </div>
 
@@ -53,13 +53,13 @@ const ArticleNewsletterSection = () => {
               <Input
                 type="email"
                 required
-                placeholder={ARTIKEL_NEWSLETTER.inputPlaceholder}
+                placeholder={ARTICLE_NEWSLETTER.inputPlaceholder}
                 className="h-12 flex-1 border-white/20 bg-white/10 px-4 text-white placeholder:text-white/60 focus-visible:ring-[#FFB21C]"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <Button type="submit" className="h-12 bg-[#FFB21C] px-8 font-bold text-white hover:bg-[#FFB21C]/90 transition-all border-none whitespace-nowrap cursor-pointer">
-                {ARTIKEL_NEWSLETTER.cta}
+                {ARTICLE_NEWSLETTER.cta}
               </Button>
             </form>
 

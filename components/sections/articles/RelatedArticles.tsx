@@ -3,10 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Clock, ChevronRight } from "lucide-react";
-import { ARTICLE_DUMMY } from "@/constants/article";
+import { ARTICLE_ITEMS } from "@/constants/article";
 
 export default function RelatedArticles() {
-  const relatedArticles = ARTICLE_DUMMY.slice(0, 3);
+  const relatedArticles = ARTICLE_ITEMS.slice(0, 3);
 
   return (
     <div className="mt-20 border-t border-gray-100 pt-20">

@@ -1,13 +1,13 @@
 import Image from "next/image";
 import { REGISTER_HERO } from "@/constants/register";
 
-export default function SignupHeroSection() {
+export default function RegisterHeroSection() {
   return (
     <section className="relative w-full overflow-hidden bg-[#17391f]">
       {/* Background Image Wrapper */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/signup/hero-background.webp"
+          src="/images/register/hero-background.webp"
           alt="Hero Background"
           fill
           className="object-cover object-right-top lg:object-center"

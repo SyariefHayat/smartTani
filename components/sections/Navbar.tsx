@@ -102,7 +102,7 @@ export default function Navbar() {
 
   const getDashboardLink = () => {
     if (!user) return "/";
-    return user.role === "investor" ? "/dashboard/investor" : "/dashboard/petani";
+    return user.role === "investor" ? "/dashboard/investor" : "/dashboard/farmer";
   };
 
   /* ─── Shared Sheet Content (dipakai mobile & tablet) ─── */
@@ -212,7 +212,7 @@ export default function Navbar() {
             </SheetClose>
             <SheetClose asChild>
               <Button variant="accent" className="w-full gap-2" size="lg" asChild>
-                <Link href="/signup"><UserPlus className="size-4" />Daftar</Link>
+                <Link href="/register"><UserPlus className="size-4" />Daftar</Link>
               </Button>
             </SheetClose>
           </>
@@ -317,7 +317,7 @@ export default function Navbar() {
                     <Link href="/login"><LogIn className="size-4" />Masuk</Link>
                   </Button>
                   <Button variant="accent" size="sm" id="navbar-register" className="gap-1.5 cursor-pointer rounded-md" asChild>
-                    <Link href="/signup"><UserPlus className="size-4" />Daftar</Link>
+                    <Link href="/register"><UserPlus className="size-4" />Daftar</Link>
                   </Button>
                 </>
               )}
@@ -354,7 +354,7 @@ export default function Navbar() {
                     <Link href="/login"><LogIn className="size-3.5" />Masuk</Link>
                   </Button>
                   <Button variant="accent" size="sm" className="gap-1 cursor-pointer h-8 px-3 text-xs font-medium" asChild>
-                    <Link href="/signup"><UserPlus className="size-3.5" />Daftar</Link>
+                    <Link href="/register"><UserPlus className="size-3.5" />Daftar</Link>
                   </Button>
                 </div>
               )}

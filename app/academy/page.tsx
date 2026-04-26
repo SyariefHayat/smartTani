@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { ACADEMY_META } from "@/constants/academy";
 import AcademyHeroSection from "@/components/sections/academy/AcademyHeroSection";
 import AcademyStatsSection from "@/components/sections/academy/AcademyStatsSection";
-import AcademyFiturSection from "@/components/sections/academy/AcademyFiturSection";
+import AcademyFeaturesSection from "@/components/sections/academy/AcademyFeaturesSection";
 import AcademyModelSection from "@/components/sections/academy/AcademyModelSection";
-import AcademyKursusSection from "@/components/sections/academy/AcademyKursusSection";
+import AcademyCoursesSection from "@/components/sections/academy/AcademyCoursesSection";
 import AcademyInfoGridSection from "@/components/sections/academy/AcademyInfoGridSection";
 import AcademyMoreInfoGridSection from "@/components/sections/academy/AcademyMoreInfoGridSection";
 
@@ -18,9 +18,9 @@ export default function AcademyPage() {
     <main>
       <AcademyHeroSection />
       {/* <AcademyStatsSection /> */}
-      <AcademyFiturSection />
+      <AcademyFeaturesSection />
       <AcademyModelSection />
-      <AcademyKursusSection />
+      <AcademyCoursesSection />
       <AcademyInfoGridSection />
       <AcademyMoreInfoGridSection />
     </main>

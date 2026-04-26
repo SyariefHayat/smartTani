@@ -51,7 +51,7 @@ export default function HeroSection() {
                   className={`h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer ${className}`}
                   asChild
                 >
-                  <Link href={"/signup"}>
+                  <Link href={"/register"}>
                     <Icon className="size-7 shrink-0 mr-3" />
                     <div className="flex flex-col items-start leading-tight">
                       <span className="prefix text-[0.65rem] font-normal opacity-80">

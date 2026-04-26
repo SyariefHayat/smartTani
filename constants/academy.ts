@@ -186,7 +186,7 @@ export const ACADEMY_KURSUS = {
   ],
 };
 
-export const ACADEMY_JALUR = {
+export const ACADEMY_LEARNING_PATHS = {
   heading: "Jalur Pembelajaran Terarah",
   subtext: "Ikuti program belajar terstruktur sesuai tujuan Anda.",
   items: [
@@ -212,7 +212,7 @@ export const ACADEMY_JALUR = {
   ],
 };
 
-export const ACADEMY_INSTRUKTUR = {
+export const ACADEMY_INSTRUCTORS = {
   heading: "Instruktur Ahli",
   subtext: "Belajar dari praktisi berpengalaman di bidangnya.",
   items: [

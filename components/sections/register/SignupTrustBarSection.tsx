@@ -1,7 +1,7 @@
 import { REGISTER_TRUST_BAR } from "@/constants/register";
 import { ShieldCheck, Zap, LayoutGrid, Headset } from "lucide-react";
 
-export default function SignupTrustBarSection() {
+export default function RegisterTrustBarSection() {
   const icons = [ShieldCheck, Zap, LayoutGrid, Headset];
 
   return (

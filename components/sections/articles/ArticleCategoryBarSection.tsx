@@ -2,7 +2,7 @@
 
 import React, { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ARTICLE_KATEGORI } from "@/constants/article";
+import { ARTICLE_CATEGORIES } from "@/constants/article";
 import {
   Sprout,
   Beef,
@@ -23,10 +23,10 @@ const CATEGORY_ICONS = [
   BarChart3,
   ShoppingBasket,
   ShieldCheck,
-  LayoutGrid,
+  LayoutGrid
 ];
 
-function KategoriBarContent() {
+const KategoriBarContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeCategory = searchParams.get("kategori");
@@ -38,14 +38,14 @@ function KategoriBarContent() {
     } else {
       params.set("kategori", kategori);
     }
-    router.push(`/artikel?${params.toString()}`, { scroll: false });
+    router.push(`/articles?${params.toString()}`, { scroll: false });
   };
 
   return (
     <section className="section-padding">
       <div className="container-smarttani">
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8">
-          {ARTICLE_KATEGORI.map((kategori, index) => {
+          {ARTICLE_CATEGORIES.map((kategori, index) => {
             const Icon = CATEGORY_ICONS[index] || LayoutGrid;
             const isActive = activeCategory === kategori;
             return (

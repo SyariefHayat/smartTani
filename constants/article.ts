@@ -32,7 +32,7 @@ export const ARTICLE_HERO = {
   ],
 };
 
-export const ARTICLE_KATEGORI = [
+export const ARTICLE_CATEGORIES = [
   "Budidaya Tanaman",
   "Peternakan",
   "Pupuk & Nutrisi",
@@ -43,7 +43,7 @@ export const ARTICLE_KATEGORI = [
   "Lainnya",
 ];
 
-export const ARTICLE_DUMMY = [
+export const ARTICLE_ITEMS = [
   {
     kategori: "BUDIDAYA",
     tanggal: "24 Mei 2024",
@@ -215,7 +215,7 @@ export const ARTICLE_DUMMY = [
   },
 ];
 
-export const ARTIKEL_KATEGORI_POPULER = [
+export const ARTICLE_POPULAR_CATEGORIES = [
   { label: "Budidaya Tanaman", jumlahArtikel: 124 },
   { label: "Peternakan", jumlahArtikel: 89 },
   { label: "Pupuk & Nutrisi", jumlahArtikel: 76 },
@@ -225,7 +225,7 @@ export const ARTIKEL_KATEGORI_POPULER = [
   { label: "Kebijakan & Regulasi", jumlahArtikel: 33 },
 ];
 
-export const ARTIKEL_TERPOPULER = [
+export const ARTICLE_MOST_POPULAR = [
   {
     rank: 1,
     title: "5 Tips Meningkatkan Hasil Panen Padi Hingga 30%",
@@ -253,7 +253,7 @@ export const ARTIKEL_TERPOPULER = [
   },
 ];
 
-export const ARTIKEL_STATS_BAR = [
+export const ARTICLE_STATS_BAR = [
   { value: "500+", label: "Artikel Terbit" },
   { value: "50+", label: "Ahli & Kontributor" },
   { value: "100K+", label: "Pembaca Aktif" },
@@ -261,7 +261,7 @@ export const ARTIKEL_STATS_BAR = [
   { value: "100%", label: "Konten Terverifikasi" },
 ];
 
-export const ARTIKEL_NEWSLETTER = {
+export const ARTICLE_NEWSLETTER = {
   heading: "Dapatkan Artikel Terbaru di Email Anda",
   subtext:
     "Langganan newsletter kami untuk mendapatkan artikel terbaru langsung di email Anda.",

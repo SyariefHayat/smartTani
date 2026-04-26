@@ -52,7 +52,7 @@ export default function CourseEnroll() {
               <p className="text-sm font-bold text-[#1A6B2F] text-center">
                 ✓ Selamat! Anda berhasil mendaftar kursus ini.
               </p>
-              <Button className="w-full bg-[#1A6B2F]" onClick={() => router.push('/dashboard/petani')}>
+              <Button className="w-full bg-[#1A6B2F]" onClick={() => router.push('/dashboard/farmer')}>
                 Ke Dashboard Saya
               </Button>
             </div>

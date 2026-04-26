@@ -48,7 +48,7 @@ export default function StepsSection() {
                 <div key={step.step} className="flex flex-col items-center lg:flex-1 lg:flex-row lg:items-start lg:gap-4">
                   {isFirst ? (
                     <Link
-                      href="/signup"
+                      href="/register"
                       className="flex w-full flex-col items-center transition-opacity hover:opacity-80"
                     >
                       {stepCard}

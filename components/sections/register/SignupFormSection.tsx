@@ -44,11 +44,11 @@ import {
 } from "@/components/ui/select";
 
 const roleImages: Record<string, string> = {
-  petani: "/images/signup/farmer.webp",
-  distributor: "/images/signup/distributor.webp",
-  investor: "/images/signup/investor.webp",
-  mitra_bisnis: "/images/signup/business-partner.webp",
-  admin_perusahaan: "/images/signup/admin-company.webp",
+  petani: "/images/register/farmer.webp",
+  distributor: "/images/register/distributor.webp",
+  investor: "/images/register/investor.webp",
+  mitra_bisnis: "/images/register/business-partner.webp",
+  admin_perusahaan: "/images/register/admin-company.webp",
 };
 
 const regionData: Record<string, string[]> = {
@@ -57,7 +57,7 @@ const regionData: Record<string, string[]> = {
   jabar: ["Bandung", "Bogor", "Depok", "Bekasi", "Cimahi"],
 };
 
-function SignupFormContent() {
+function RegisterFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -541,10 +541,10 @@ function SignupFormContent() {
   );
 }
 
-export default function SignupFormSection() {
+export default function RegisterFormSection() {
   return (
     <Suspense fallback={<div className="flex justify-center py-20"><Loader2 className="animate-spin text-green-600 size-10" /></div>}>
-      <SignupFormContent />
+      <RegisterFormContent />
     </Suspense>
   );
 }

@@ -218,7 +218,7 @@ export const HOME_STEPS = [
   },
 ];
 
-export const HOME_CATEGORY = [
+export const HOME_CATEGORIES = [
   "Gabah",
   "Beras",
   "Jagung",
@@ -245,7 +245,7 @@ export const CATEGORY_IMAGES = [
   "/images/home/kedelai-df.webp",
 ];
 
-export const HOME_TESTIMONI = [
+export const HOME_TESTIMONIALS = [
   {
     name: "Siti Aminah",
     role: "Petani Padi, Jawa Barat",

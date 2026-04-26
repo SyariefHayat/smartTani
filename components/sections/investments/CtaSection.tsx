@@ -44,7 +44,7 @@ export default function CtaSection() {
                 className="h-12 rounded-lg border-none bg-accent px-8 text-body-sm font-bold !text-white hover:bg-accent/90 cursor-pointer"
                 asChild
               >
-                <Link href="/signup?role=investor">
+                <Link href="/register?role=investor">
                   {INVESTMENT_CTA_BANNER.cta[1]?.label}
                 </Link>
               </Button>

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ARTICLE_DUMMY, ARTIKEL_TERPOPULER } from "@/constants/article";
+import { ARTICLE_ITEMS, ARTICLE_MOST_POPULAR } from "@/constants/article";
 import { slugify } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,7 +18,7 @@ import ArticleNewsletterSection from "@/components/sections/articles/ArticleNews
 
 // Generate static params for all articles
 export function generateStaticParams() {
-  return ARTICLE_DUMMY.map((artikel) => ({
+  return ARTICLE_ITEMS.map((artikel) => ({
     slug: slugify(artikel.title),
   }));
 }
@@ -30,7 +30,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const artikel = ARTICLE_DUMMY.find((a) => slugify(a.title) === slug);
+  const artikel = ARTICLE_ITEMS.find((a) => slugify(a.title) === slug);
 
   if (!artikel) {
     return { title: "Artikel Tidak Ditemukan" };
@@ -48,14 +48,14 @@ export default async function ArtikelDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const artikel = ARTICLE_DUMMY.find((a) => slugify(a.title) === slug);
+  const artikel = ARTICLE_ITEMS.find((a) => slugify(a.title) === slug);
 
   if (!artikel) {
     notFound();
   }
 
   // Get related articles (same category, excluding current)
-  const relatedArticles = ARTICLE_DUMMY.filter(
+  const relatedArticles = ARTICLE_ITEMS.filter(
     (a) => a.kategori === artikel.kategori && a.title !== artikel.title
   ).slice(0, 3);
 
@@ -63,7 +63,7 @@ export default async function ArtikelDetailPage({
   const sidebarArticles =
     relatedArticles.length > 0
       ? relatedArticles
-      : ARTICLE_DUMMY.filter((a) => a.title !== artikel.title).slice(0, 3);
+      : ARTICLE_ITEMS.filter((a) => a.title !== artikel.title).slice(0, 3);
 
   return (
     <>
@@ -249,9 +249,9 @@ export default async function ArtikelDetailPage({
                     Artikel Terpopuler
                   </h3>
                   <div className="flex flex-col gap-4">
-                    {ARTIKEL_TERPOPULER.slice(0, 4).map((trending) => {
+                    {ARTICLE_MOST_POPULAR.slice(0, 4).map((trending) => {
                       // Find matching full article for slug
-                      const matchedArticle = ARTICLE_DUMMY.find((a) =>
+                      const matchedArticle = ARTICLE_ITEMS.find((a) =>
                         a.title
                           .toLowerCase()
                           .includes(trending.title.toLowerCase().slice(0, 20))

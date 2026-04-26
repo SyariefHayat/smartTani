@@ -17,7 +17,7 @@ export const ABOUT_HERO = {
   bgImageMobile: "/images/about/mobile.png",
 };
 
-export const ABOUT_DESKRIPSI = {
+export const ABOUT_DESCRIPTION = {
   heading: "Tentang PT. SmartTani Indonesia",
   content:
     "Kami adalah perusahaan teknologi pertanian yang menyediakan platform terintegrasi untuk menghubungkan petani, distributor, investor, penyedia logistik, dan ahli melalui ekosistem digital. Sejak berdiri, kami terus berinovasi untuk mendukung pertanian Indonesia yang lebih efisien, menguntungkan, dan berkelanjutan.",
@@ -50,7 +50,7 @@ export const ABOUT_STATS_BAR = [
   { value: "50+", label: "Produk Tersedia" },
 ];
 
-export const ABOUT_MISI = {
+export const ABOUT_MISSION = {
   heading: "Misi Kami",
   items: [
     "Menghubungkan seluruh pelaku ekosistem pertanian melalui teknologi digital.",
@@ -60,13 +60,13 @@ export const ABOUT_MISI = {
   ],
 };
 
-export const ABOUT_VISI = {
+export const ABOUT_VISION = {
   heading: "Visi Kami",
   content:
     "Menjadi ekosistem pertanian terintegrasi terdepan kesejahteraan petani dan ketahanan pangan nasional, pesejahleraan.",
 };
 
-export const ABOUT_NILAI = {
+export const ABOUT_VALUES = {
   heading: "Nilai Inti Kami",
   items: [
     {
@@ -125,7 +125,7 @@ export const ABOUT_TIMELINE = {
   ],
 };
 
-export const ABOUT_LAYANAN = {
+export const ABOUT_SERVICES = {
   heading: "Layanan Kami",
   subtext:
     "Ekosistem terintegrasi untuk memenuhi setiap kebutuhan dalam rantai pasok pertanian.",
@@ -138,7 +138,7 @@ export const ABOUT_LAYANAN = {
     {
       title: "Investasi",
       description:
-        "Peluang investasi pertanian yang aman, transparan, dan menguntungkan.",
+        "Peluang investasi pertanian yang aman, transparan, and menguntungkan.",
     },
     {
       title: "Distributor",
@@ -163,7 +163,7 @@ export const ABOUT_LAYANAN = {
   ],
 };
 
-export const ABOUT_PENCAPAIAN = {
+export const ABOUT_ACHIEVEMENTS = {
   heading: "Pencapaian Kami",
   items: [
     "Terpercaya oleh 10.000+ petani di seluruh Indonesia",
@@ -174,7 +174,7 @@ export const ABOUT_PENCAPAIAN = {
   ],
 };
 
-export const ABOUT_PIMPINAN = {
+export const ABOUT_LEADERSHIP = {
   heading: "Kepemimpinan Kami",
   items: [
     {
@@ -196,14 +196,14 @@ export const ABOUT_PIMPINAN = {
   placeholder: "/images/about/placeholder-professional.jpeg",
 };
 
-export const ABOUT_ALAMAT = {
+export const ABOUT_ADDRESS = {
   heading: "Alamat & Kontak Perusahaan",
   alamat:
     "Jin raya Karangbinangun km 1 no 42, Alang Alang Karangbinangun, Lamongan 62293, Jawa Timur, Indonesia",
   telepon: "0823 2695 2833",
 };
 
-export const ABOUT_MITRA_STRATEGIS = {
+export const ABOUT_STRATEGIC_PARTNERS = {
   heading: "Mitra Strategis Kami",
   items: [
     { nama: "Pupuk Indonesia", logo: "/images/partners/partner-pupuk-indonesia.png" },
