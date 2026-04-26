@@ -31,6 +31,7 @@ export const HOME_META = {
 };
 
 export const HOME_HERO = {
+  badge: "Beranda Smarttani",
   // heading: "Wujudkan Pertanian yang Lebih Cerdas, Produktif, dan Berkelanjutan",
   heading: "Smart Farming untuk Ketahanan Pangan",
   subtext:

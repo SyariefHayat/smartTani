@@ -129,7 +129,7 @@ export const DISTRIBUTOR_PRODUK_KATEGORI = {
     {
       label: "Pestisida",
       jumlahProduk: "150+",
-      image: "/images/distributor/pestisida.webp",
+      image: "/images/distributor/pestisida.png",
     },
     {
       label: "Alat & Mesin",
@@ -139,18 +139,18 @@ export const DISTRIBUTOR_PRODUK_KATEGORI = {
     {
       label: "Irigasi",
       jumlahProduk: "80+",
-      image: "/images/distributor/irigasi.webp",
+      image: "/images/distributor/irigasi.png",
     },
     {
       label: "Pakan Ternak",
       jumlahProduk: "60+",
-      image: "/images/distributor/pakan-ternak.webp",
+      image: "/images/distributor/pakan-ternak.png",
     },
     {
       label: "Hasil Panen",
       jumlahProduk: "100+",
-      image: "/images/distributor/hasil-panen.webp",
-    },
+      image: "/images/distributor/hasil-panen.png",
+    }
   ],
 };
 
@@ -213,7 +213,7 @@ export const DISTRIBUTOR_TESTIMONI = {
       avatar: "https://randomuser.me/api/portraits/women/44.jpg",
       rating: 5,
       quote:
-        "Sistem mudah, produk lengkap, dan margin keuntungan sangat menguntungkan. Terima kasih Smarttani!",
+        "Sistem mudah, produk lengkap, dan margin keuntungan sangat menguntungkan. Terima kasih Smarttani!",    
     },
   ],
 };

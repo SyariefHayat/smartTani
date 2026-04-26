@@ -39,7 +39,7 @@ export default function InvestasiPage() {
                 <ShieldCheck className="size-5 text-white" />
               </div>
               <div>
-                <h3 className="font-bold text-body-sm md:text-body">{INVESTMENT_ADVANTAGES.tagline}</h3>
+                <h3 className="font-bold text-body-sm md:text-body">{INVESTMENT_ADVANTAGES.tagline}</h3>        
                 <p className="text-caption text-white/80">{INVESTMENT_ADVANTAGES.taglineSubtext}</p>
               </div>
             </div>
@@ -58,4 +58,3 @@ export default function InvestasiPage() {
     </main>
   );
 }
-
