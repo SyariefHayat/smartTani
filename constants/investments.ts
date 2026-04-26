@@ -40,12 +40,18 @@ export const INVESTMENT_HERO_ACTIONS = [
 ];
 
 export const INVESTMENT_STATS_BAR = [
-  { value: "320+", label: "Proyek Terdanai" },
-  { value: "Rp320 Miliar", label: "Total Dana Terkumpul" },
-  { value: "18.750+", label: "Investor Terdaftar" },
-  { value: "12,5%", label: "Rata-rata Imbal Hasil" },
-  { value: "98,6%", label: "Tingkat Keberhasilan" },
-  { value: "4,8/5", label: "Kepuasan Investor" },
+  { value: "0", label: "Proyek Terdanai" },
+  // { value: "320+", label: "Proyek Terdanai" },
+  { value: "0", label: "Total Dana Terkumpul" },
+  // { value: "Rp320 Miliar", label: "Total Dana Terkumpul" },
+  { value: "0", label: "Investor Terdaftar" },
+  // { value: "18.750+", label: "Investor Terdaftar" },
+  { value: "0", label: "Rata-rata Imbal Hasil" },
+  // { value: "12,5%", label: "Rata-rata Imbal Hasil" },
+  { value: "0", label: "Tingkat Keberhasilan" },
+  // { value: "98,6%", label: "Tingkat Keberhasilan" },
+  { value: "0", label: "Kepuasan Investor" },
+  // { value: "4,8/5", label: "Kepuasan Investor" },
 ];
 
 export const INVESTMENT_PROJECTS = {

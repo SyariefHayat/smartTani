@@ -14,21 +14,22 @@ export const StepItem = ({
   description,
 }: StepItemProps) => {
   return (
-    <div className="flex items-start gap-3 relative group">
-      {/* Number Badge */}
-      <div className="flex-shrink-0 w-[28px] h-[28px] rounded-full bg-[#1e5c1e] text-white font-bold flex items-center justify-center text-[13px] mt-1">
-        {step}
-      </div>
-
+    <div className="flex items-start gap-4 relative group">
       {/* Icon Area */}
-      <div className="flex-shrink-0 text-[#2d6a2d] w-[48px] h-[48px] flex items-center justify-center">
-        {icon}
+      <div className="flex-shrink-0 relative">
+        <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-[#d4edda] text-[#2D6A2D]">
+          {icon}
+        </div>
+        {/* Number Badge */}
+        <div className="absolute -top-2 -left-2 flex size-6 items-center justify-center rounded-full bg-[#1A6B2F] text-white text-[10px] font-bold shadow-sm">
+          {step}
+        </div>
       </div>
 
       {/* Text Block */}
-      <div className="flex flex-col text-left">
-        <h3 className="text-[15px] font-bold text-[#1a3a1a] mb-1 leading-tight">{title}</h3>
-        <p className="text-[12px] leading-[1.4] text-[#555] max-w-[120px]">
+      <div className="flex flex-col justify-center">
+        <h3 className="text-base font-extrabold text-[#17391f] md:text-lg leading-tight mb-1">{title}</h3>
+        <p className="text-xs leading-relaxed text-[#5d7a64] md:text-sm max-w-[200px]">
           {description}
         </p>
       </div>

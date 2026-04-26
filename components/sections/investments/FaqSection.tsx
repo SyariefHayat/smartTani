@@ -11,10 +11,10 @@ export default function FaqSection() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-heading-3 text-foreground">{INVESTMENT_FAQ.heading}</h2>
-          <p className="text-caption text-muted-foreground">Punya pertanyaan? Cari tahu di sini.</p>
+          <h2 className="text-xl md:text-2xl font-extrabold text-[#17391f]">{INVESTMENT_FAQ.heading}</h2>
+          <p className="text-sm font-medium text-[#5d7a64]">Punya pertanyaan? Cari tahu di sini.</p>
         </div>
-        <button className="text-caption font-semibold text-primary hover:underline">
+        <button className="text-xs font-bold text-primary hover:underline">
           Lihat Semua →
         </button>
       </div>
@@ -24,12 +24,12 @@ export default function FaqSection() {
           <AccordionItem
             key={index}
             value={`item-${index}`}
-            className="rounded-2xl bg-slate-50 border border-slate-100 px-4 shadow-sm overflow-hidden"
+            className="rounded-2xl bg-white border border-slate-100 px-4 shadow-sm overflow-hidden hover:border-primary/20 transition-all"
           >
-            <AccordionTrigger className="text-caption font-bold text-foreground hover:no-underline py-4 text-left">
+            <AccordionTrigger className="text-xs md:text-sm font-extrabold text-[#17391f] hover:no-underline py-4 text-left">
               {item.question}
             </AccordionTrigger>
-            <AccordionContent className="text-caption text-muted-foreground pb-4">
+            <AccordionContent className="text-xs md:text-sm font-medium text-[#5d7a64] pb-4">
               Jawaban untuk pertanyaan ini akan segera diperbarui. Silakan hubungi tim dukungan kami untuk informasi lebih lanjut mengenai investasi di Smarttani.
             </AccordionContent>
           </AccordionItem>

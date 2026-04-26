@@ -6,35 +6,38 @@ export default function HowSection() {
   const icons = [UserPlus, Search, Wallet, TrendingUp];
 
   return (
-    <div className="flex flex-col gap-6 h-full" id="cara-investasi">
-      <div className="rounded-2xl bg-slate-50 p-6 border border-slate-100 h-full">
-        <div className="mb-8">
-          <h2 className="text-heading-2 text-foreground">
-            {INVESTMENT_STEPS.heading}
-          </h2>
-          <p className="mt-2 text-body-sm text-muted-foreground">
-            {INVESTMENT_STEPS.subtext}
-          </p>
-        </div>
+    <section id="cara-investasi">
+      <div className="container-smarttani">
+        <div className="rounded-[32px] bg-[#EAF3DE]/40 p-6 md:p-10">
+          <div className="mb-10">
+            <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
+              {INVESTMENT_STEPS.heading}
+            </h2>
+            <p className="mt-2 text-sm font-medium text-[#5d7a64] md:text-base">
+              {INVESTMENT_STEPS.subtext}
+            </p>
+          </div>
 
-        <div className="relative">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-10 gap-x-4">
-            {INVESTMENT_STEPS.items.map((item, index) => {
-              const Icon = icons[index];
-              return (
-                <StepItem
-                  key={item.step}
-                  step={item.step}
-                  icon={<Icon className="size-8" />}
-                  title={item.title}
-                  description={item.description}
-                />
-              );
-            })}
+          <div className="relative">
+            <div className="grid grid-cols-2 gap-y-12 gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
+              {INVESTMENT_STEPS.items.map((item, index) => {
+                const Icon = icons[index];
+                return (
+                  <StepItem
+                    key={item.step}
+                    step={item.step}
+                    icon={<Icon className="size-7" />}
+                    title={item.title}
+                    description={item.description}
+                  />
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
+
 

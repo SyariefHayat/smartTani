@@ -22,7 +22,7 @@ interface InvestmentCardProps {
 
 export default function InvestmentCard({ item }: InvestmentCardProps) {
   return (
-    <Link 
+    <Link
       href={`/investments/${item.id}`}
       className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all hover:shadow-md"
     >
