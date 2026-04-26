@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
 import { ChevronRight, Home, Star, Users, Award, BookOpen } from "lucide-react";
-import { ACADEMY_INSTRUKTUR } from "@/constants/sitani-academy";
+import { ACADEMY_INSTRUKTUR } from "@/constants/academy";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -30,7 +30,7 @@ export default function InstrukturPage() {
               Beranda
             </Link>
             <ChevronRight className="size-3" />
-            <Link href="/sitani-academy" className="hover:text-white">
+            <Link href="/academy" className="hover:text-white">
               SiTani Academy
             </Link>
             <ChevronRight className="size-3" />
@@ -115,7 +115,7 @@ export default function InstrukturPage() {
               </div>
 
               <Button asChild className="w-full bg-primary hover:bg-primary-dark font-bold rounded-xl h-12 !text-white shadow-lg shadow-primary/10">
-                <Link href="/sitani-academy">Lihat Kursus</Link>
+                <Link href="/academy">Lihat Kursus</Link>
               </Button>
             </div>
           ))}
@@ -133,7 +133,7 @@ export default function InstrukturPage() {
           </p>
           <div className="mt-8 flex justify-center">
             <Button asChild variant="outline" className="h-12 px-8 rounded-xl font-bold border-primary text-primary hover:bg-primary/5">
-              <Link href="/kontak">
+              <Link href="/contact">
                 Daftar sebagai Instruktur
               </Link>
             </Button>
@@ -143,3 +143,4 @@ export default function InstrukturPage() {
     </main>
   );
 }
+

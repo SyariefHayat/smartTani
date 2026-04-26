@@ -44,7 +44,7 @@ export default function PetaniDashboard() {
     { label: "Produk Saya", icon: Package, active: false, href: "/dashboard/petani" },
     { label: "Pesanan", icon: ClipboardList, active: false, href: "/dashboard/petani" },
     { label: "Transaksi", icon: Wallet, active: false, href: "/dashboard/petani" },
-    { label: "Pelatihan Saya", icon: GraduationCap, active: false, href: "/sitani-academy" },
+    { label: "Pelatihan Saya", icon: GraduationCap, active: false, href: "/academy" },
     { label: "Profile", icon: User, active: false, href: "/dashboard/profile" },
   ];
 
@@ -169,8 +169,8 @@ export default function PetaniDashboard() {
               <div className="grid grid-cols-1 gap-4">
                 {[
                   { label: "Jual Produk", icon: ShoppingBag, href: "/marketplace", color: "text-[#1A6B2F] bg-[#1A6B2F]/10" },
-                  { label: "Lacak Pengiriman", icon: Truck, href: "/logistik", color: "text-[#BA7517] bg-[#BA7517]/10" },
-                  { label: "Ikuti Pelatihan", icon: GraduationCap, href: "/sitani-academy", color: "text-blue-600 bg-blue-600/10" },
+                  { label: "Lacak Pengiriman", icon: Truck, href: "/logistics", color: "text-[#BA7517] bg-[#BA7517]/10" },
+                  { label: "Ikuti Pelatihan", icon: GraduationCap, href: "/academy", color: "text-blue-600 bg-blue-600/10" },
                 ].map((action) => (
                   <Link
                     key={action.label}

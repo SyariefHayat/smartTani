@@ -4,9 +4,9 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ACADEMY_WEBINAR,
+  ACADEMY_WEBINARS,
   ACADEMY_CTA_BANNER
-} from "@/constants/sitani-academy";
+} from "@/constants/academy";
 import { ARTICLE_DUMMY } from "@/constants/article";
 import {
   MoveRight,
@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 const AcademyMoreInfoGridSection = () => {
-  const webinars = ACADEMY_WEBINAR.items.slice(0, 2);
+  const webinars = ACADEMY_WEBINARS.items.slice(0, 2);
   const articles = ARTICLE_DUMMY.slice(0, 2);
 
   return (
@@ -71,7 +71,7 @@ const AcademyMoreInfoGridSection = () => {
                   Insights &amp; tips terbaru untuk petani modern.
                 </p>
               </div>
-              <Link href="/artikel" className="text-caption font-bold text-primary flex items-center gap-1 hover:underline whitespace-nowrap mb-1">
+              <Link href="/articles" className="text-caption font-bold text-primary flex items-center gap-1 hover:underline whitespace-nowrap mb-1">
                 Lihat Semua <MoveRight className="size-3" />
               </Link>
             </div>
@@ -109,7 +109,7 @@ const AcademyMoreInfoGridSection = () => {
                 asChild
                 className="w-full sm:flex-1 bg-primary hover:bg-primary/80 !text-white text-caption font-bold h-11 rounded-lg border-none shadow-sm shadow-black/5"
               >
-                <Link href="/sitani-academy">{ACADEMY_CTA_BANNER.cta[0].label}</Link>
+                <Link href="/academy">{ACADEMY_CTA_BANNER.cta[0].label}</Link>
               </Button>
               <Button
                 asChild
@@ -127,3 +127,4 @@ const AcademyMoreInfoGridSection = () => {
 };
 
 export default AcademyMoreInfoGridSection;
+

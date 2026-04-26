@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ACADEMY_KURSUS } from "@/constants/sitani-academy";
+import { ACADEMY_KURSUS } from "@/constants/academy";
 import { Star, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ const AcademyKursusSection = () => {
             </p>
           </div>
           <Link
-            href="/sitani-academy"
+            href="/academy"
             className="group flex items-center gap-2 text-body-sm font-bold text-primary transition-all hover:text-primary/80"
           >
             Lihat Semua Kursus
@@ -42,7 +42,7 @@ const AcademyKursusSection = () => {
             return (
               <Link
                 key={kursus.title}
-                href={`/sitani-academy/${kursus.id}`}
+                href={`/academy/${kursus.id}`}
                 className="group flex flex-col rounded-2xl bg-white border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md overflow-hidden"
               >
                 {/* Image & Badge Wrapper */}
@@ -79,7 +79,7 @@ const AcademyKursusSection = () => {
                         {kursus.instruktur.nama.charAt(0)}
                       </div>
                       <Image
-                        src={`/images/about/pimpinan-${kursus.instruktur.nama.toLowerCase().split(' ').pop()}.jpeg`}
+                        src={`/images/about/director-${kursus.instruktur.nama.toLowerCase().split(' ').pop()}.jpeg`}
                         alt={kursus.instruktur.nama}
                         fill
                         className="object-cover"
@@ -133,3 +133,4 @@ const AcademyKursusSection = () => {
 };
 
 export default AcademyKursusSection;
+

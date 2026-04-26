@@ -1,12 +1,12 @@
 import { Metadata } from "next";
-import { SIGNUP_META } from "@/constants/signup";
-import SignupHeroSection from "@/components/sections/signup/SignupHeroSection";
-import SignupFormSection from "@/components/sections/signup/SignupFormSection";
-import SignupTrustBarSection from "@/components/sections/signup/SignupTrustBarSection";
+import { REGISTER_META } from "@/constants/register";
+import SignupHeroSection from "@/components/sections/register/SignupHeroSection";
+import SignupFormSection from "@/components/sections/register/SignupFormSection";
+import SignupTrustBarSection from "@/components/sections/register/SignupTrustBarSection";
 
 export const metadata: Metadata = {
-  title: SIGNUP_META.title,
-  description: SIGNUP_META.description,
+  title: REGISTER_META.title,
+  description: REGISTER_META.description,
 };
 
 export default function SignupPage() {
@@ -18,3 +18,4 @@ export default function SignupPage() {
     </div>
   );
 }
+

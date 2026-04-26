@@ -4,7 +4,7 @@ import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight, Home, User, Calendar, Clock, Loader2, MessageCircle, X } from "lucide-react";
-import { ACADEMY_WEBINAR } from "@/constants/sitani-academy";
+import { ACADEMY_WEBINARS } from "@/constants/academy";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,8 +27,8 @@ export default function WebinarPage() {
   const filters = ["Semua", "Webinar", "Workshop", "Seminar"];
 
   const filteredEvents = useMemo(() => {
-    if (activeFilter === "Semua") return ACADEMY_WEBINAR.items;
-    return ACADEMY_WEBINAR.items.filter(
+    if (activeFilter === "Semua") return ACADEMY_WEBINARS.items;
+    return ACADEMY_WEBINARS.items.filter(
       (item) => item.kategori.toLowerCase() === activeFilter.toLowerCase()
     );
   }, [activeFilter]);
@@ -54,7 +54,7 @@ export default function WebinarPage() {
               Beranda
             </Link>
             <ChevronRight className="size-3" />
-            <Link href="/sitani-academy" className="hover:text-white">
+            <Link href="/academy" className="hover:text-white">
               SiTani Academy
             </Link>
             <ChevronRight className="size-3" />
@@ -65,10 +65,10 @@ export default function WebinarPage() {
               SiTani Academy
             </Badge>
             <h1 className="text-3xl font-bold md:text-4xl">
-              {ACADEMY_WEBINAR.heading}
+              {ACADEMY_WEBINARS.heading}
             </h1>
             <p className="mt-3 text-white/80 text-lg">
-              {ACADEMY_WEBINAR.subtext}
+              {ACADEMY_WEBINARS.subtext}
             </p>
           </div>
         </div>
@@ -171,7 +171,7 @@ export default function WebinarPage() {
           </p>
           <div className="mt-8 flex justify-center">
             <Button asChild variant="outline" className="h-12 px-8 rounded-xl font-bold border-primary text-primary hover:bg-primary/5">
-              <Link href="/kontak">
+              <Link href="/contact">
                 <MessageCircle className="mr-2 size-4" />
                 Hubungi Kami
               </Link>
@@ -233,3 +233,4 @@ export default function WebinarPage() {
     </main>
   );
 }
+

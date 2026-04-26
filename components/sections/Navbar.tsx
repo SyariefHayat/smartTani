@@ -32,13 +32,13 @@ import { HEADER_NAV } from "@/constants";
 const BOTTOM_NAV = [
   { label: "Beranda", href: "/", icon: Home },
   { label: "Marketplace", href: "/marketplace", icon: Store },
-  { label: "Investasi", href: "/investasi", icon: TrendingUp },
-  { label: "Distributor", href: "/distributor", icon: Package },
-  { label: "Logistik", href: "/logistik", icon: Truck },
-  { label: "Academy", href: "/sitani-academy", icon: GraduationCap },
-  { label: "Artikel", href: "/artikel", icon: Newspaper },
-  { label: "Tentang", href: "/tentang", icon: Info },
-  { label: "Kontak", href: "/kontak", icon: Phone },
+  { label: "Investasi", href: "/investments", icon: TrendingUp },
+  { label: "Distributor", href: "/distributors", icon: Package },
+  { label: "Logistik", href: "/logistics", icon: Truck },
+  { label: "Academy", href: "/academy", icon: GraduationCap },
+  { label: "Artikel", href: "/articles", icon: Newspaper },
+  { label: "Tentang", href: "/about", icon: Info },
+  { label: "Kontak", href: "/contact", icon: Phone },
 ];
 
 export default function Navbar() {

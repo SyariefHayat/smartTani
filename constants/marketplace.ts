@@ -171,12 +171,12 @@ export const MARKETPLACE_KATEGORI_POPULER = [
   {
     label: "Benih & Bibit",
     jumlahProduk: "1.250+",
-    image: "/images/distributor/benih-&-bibit.webp",
+    image: "/images/distributor/seeds-seedlings.webp",
   },
   {
     label: "Pupuk & Nutrisi",
     jumlahProduk: "2.350+",
-    image: "/images/distributor/pupuk-&-nutrisi.webp",
+    image: "/images/distributor/fertilizer-nutrition.webp",
   },
   {
     label: "Pestisida",
@@ -186,7 +186,7 @@ export const MARKETPLACE_KATEGORI_POPULER = [
   {
     label: "Alat & Mesin",
     jumlahProduk: "980+",
-    image: "/images/distributor/alat-&-mesin.webp",
+    image: "/images/distributor/tools-machines.webp",
   },
   {
     label: "Irigasi",

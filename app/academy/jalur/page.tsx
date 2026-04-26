@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
 import { ChevronRight, Home, ArrowDown, BookOpen, Clock, PlayCircle } from "lucide-react";
-import { ACADEMY_JALUR, ACADEMY_KURSUS } from "@/constants/sitani-academy";
+import { ACADEMY_JALUR, ACADEMY_KURSUS } from "@/constants/academy";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -29,7 +29,7 @@ export default function JalurPage() {
               Beranda
             </Link>
             <ChevronRight className="size-3" />
-            <Link href="/sitani-academy" className="hover:text-white">
+            <Link href="/academy" className="hover:text-white">
               SiTani Academy
             </Link>
             <ChevronRight className="size-3" />
@@ -88,7 +88,7 @@ export default function JalurPage() {
                   {levelCourses.map((kursus) => (
                     <Link
                       key={kursus.id}
-                      href={`/sitani-academy/${kursus.id}`}
+                      href={`/academy/${kursus.id}`}
                       className="group bg-white rounded-2xl border border-slate-100 shadow-sm p-4 transition-all hover:shadow-md hover:border-primary/20"
                     >
                       <div className="relative aspect-video rounded-xl overflow-hidden mb-4">
@@ -148,7 +148,7 @@ export default function JalurPage() {
                 <Link href="/signup">Mulai Belajar Gratis</Link>
               </Button>
               <Button asChild variant="outline" className="h-14 px-10 rounded-2xl font-bold border-white/20 bg-white/10 text-white hover:bg-white/20 text-lg transition-all active:scale-95">
-                <Link href="/sitani-academy">Lihat Semua Kursus</Link>
+                <Link href="/academy">Lihat Semua Kursus</Link>
               </Button>
             </div>
           </div>
@@ -157,3 +157,4 @@ export default function JalurPage() {
     </main>
   );
 }
+

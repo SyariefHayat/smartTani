@@ -8,11 +8,11 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 const roleImages: Record<string, string> = {
-  petani: "/images/signup/Petani.webp",
-  distributor: "/images/signup/Distributor.webp",
-  investor: "/images/signup/Investor.webp",
-  mitra_bisnis: "/images/signup/Mitra-bisnis.webp",
-  admin_perusahaan: "/images/signup/Admin-perusahaan.webp",
+  petani: "/images/signup/farmer.webp",
+  distributor: "/images/signup/distributor.webp",
+  investor: "/images/signup/investor.webp",
+  mitra_bisnis: "/images/signup/business-partner.webp",
+  admin_perusahaan: "/images/signup/admin-company.webp",
 };
 
 export default function LoginMembership() {

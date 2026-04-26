@@ -263,8 +263,8 @@ export const HOME_TESTIMONI = [
 ];
 
 export const TESTIMONI_AVATARS = [
-  "/images/about/pimpinan-siti-aminah.jpeg",
-  "/images/about/pimpinan-budi-santoso.jpeg",
+  "/images/about/director-siti-aminah.jpeg",
+  "/images/about/director-budi-santoso.jpeg",
 ];
 
 export const ARTICLE_IMAGES = [

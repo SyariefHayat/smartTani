@@ -119,12 +119,12 @@ export const DISTRIBUTOR_PRODUK_KATEGORI = {
     {
       label: "Pupuk & Nutrisi",
       jumlahProduk: "320+",
-      image: "/images/distributor/pupuk-&-nutrisi.webp",
+      image: "/images/distributor/fertilizer-nutrition.webp",
     },
     {
       label: "Benih & Bibit",
       jumlahProduk: "180+",
-      image: "/images/distributor/benih-&-bibit.webp",
+      image: "/images/distributor/seeds-seedlings.webp",
     },
     {
       label: "Pestisida",
@@ -134,7 +134,7 @@ export const DISTRIBUTOR_PRODUK_KATEGORI = {
     {
       label: "Alat & Mesin",
       jumlahProduk: "120+",
-      image: "/images/distributor/alat-&-mesin.webp",
+      image: "/images/distributor/tools-machines.webp",
     },
     {
       label: "Irigasi",

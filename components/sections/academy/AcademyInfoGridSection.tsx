@@ -6,8 +6,8 @@ import Link from "next/link";
 import {
   ACADEMY_JALUR,
   ACADEMY_INSTRUKTUR,
-  ACADEMY_TESTIMONI
-} from "@/constants/sitani-academy";
+  ACADEMY_TESTIMONIALS
+} from "@/constants/academy";
 import {
   ArrowRight,
   MoveRight,
@@ -31,7 +31,7 @@ const AcademyInfoGridSection = () => {
     "bg-primary-light",
   ];
 
-  const testimonial = ACADEMY_TESTIMONI.items[0];
+  const testimonial = ACADEMY_TESTIMONIALS.items[0];
 
   return (
     <section className="bg-white">

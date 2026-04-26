@@ -4,7 +4,7 @@ import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight, Home, Quote, Star, Award, Users, Smile } from "lucide-react";
-import { ACADEMY_TESTIMONI, ACADEMY_KURSUS } from "@/constants/sitani-academy";
+import { ACADEMY_TESTIMONIALS, ACADEMY_KURSUS } from "@/constants/academy";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -20,8 +20,8 @@ export default function TestimoniPage() {
   ];
 
   const filteredTestimoni = useMemo(() => {
-    if (activeFilter === "Semua") return ACADEMY_TESTIMONI.items;
-    return ACADEMY_TESTIMONI.items.filter((item) =>
+    if (activeFilter === "Semua") return ACADEMY_TESTIMONIALS.items;
+    return ACADEMY_TESTIMONIALS.items.filter((item) =>
       item.role.toLowerCase().includes(activeFilter.toLowerCase())
     );
   }, [activeFilter]);
@@ -37,7 +37,7 @@ export default function TestimoniPage() {
               Beranda
             </Link>
             <ChevronRight className="size-3" />
-            <Link href="/sitani-academy" className="hover:text-white">
+            <Link href="/academy" className="hover:text-white">
               SiTani Academy
             </Link>
             <ChevronRight className="size-3" />
@@ -45,10 +45,10 @@ export default function TestimoniPage() {
           </nav>
           <div className="max-w-2xl">
             <h1 className="text-3xl font-bold md:text-4xl">
-              {ACADEMY_TESTIMONI.heading}
+              {ACADEMY_TESTIMONIALS.heading}
             </h1>
             <p className="mt-3 text-white/80 text-lg">
-              {ACADEMY_TESTIMONI.subtext}
+              {ACADEMY_TESTIMONIALS.subtext}
             </p>
           </div>
         </div>
@@ -173,3 +173,4 @@ export default function TestimoniPage() {
     </main>
   );
 }
+

@@ -40,7 +40,7 @@ export default function ForgotPasswordSection() {
       <div
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: "url('/images/signup/login.webp')",
+          backgroundImage: "url('/images/signup/login-hero.webp')",
           filter: "brightness(0.9)",
         }}
       />

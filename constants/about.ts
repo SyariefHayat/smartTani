@@ -37,7 +37,7 @@ export const ABOUT_HERO_ACTIONS = [
     label: "Kami",
     icon: Phone,
     className: "bg-[#5F5E5A] text-[#F1EFE8] hover:bg-[#444441]",
-    href: "/kontak",
+    href: "/contact",
   },
 ];
 
@@ -180,20 +180,20 @@ export const ABOUT_PIMPINAN = {
     {
       nama: "Arif Wijaya",
       jabatan: "Direktur Utama",
-      foto: "/images/about/pimpinan-arif-wijaya.jpeg",
+      foto: "/images/about/director-arif-wijaya.jpeg",
     },
     {
       nama: "Budi Santoso",
       jabatan: "Direktur Operasional",
-      foto: "/images/about/pimpinan-budi-santoso.jpeg",
+      foto: "/images/about/director-budi-santoso.jpeg",
     },
     {
       nama: "Siti Aminah",
       jabatan: "Direktur Edukasi",
-      foto: "/images/about/pimpinan-siti-aminah.jpeg",
+      foto: "/images/about/director-siti-aminah.jpeg",
     },
   ],
-  placeholder: "/images/about/Placeholder-profesional.jpeg",
+  placeholder: "/images/about/placeholder-professional.jpeg",
 };
 
 export const ABOUT_ALAMAT = {

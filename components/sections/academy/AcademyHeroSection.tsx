@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ACADEMY_HERO } from "@/constants/sitani-academy";
+import { ACADEMY_HERO } from "@/constants/academy";
 import { GraduationCap, Monitor, Users, Award, ArrowRight } from "lucide-react";
 
 const ICON_MAP = [Monitor, Users, Award];

@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { ACADEMY_KEUNGGULAN } from "@/constants/sitani-academy";
+import { ACADEMY_KEUNGGULAN } from "@/constants/academy";
 import {
   BookOpen,
   Clock,
@@ -80,3 +80,4 @@ const AcademyFiturSection = () => {
 };
 
 export default AcademyFiturSection;
+
