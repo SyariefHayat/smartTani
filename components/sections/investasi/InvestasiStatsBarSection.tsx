@@ -18,16 +18,16 @@ export default function InvestasiStatsBarSection() {
             return (
               <div
                 key={item.label}
-                className="relative flex flex-col items-center text-center px-2 py-2 lg:py-0"
+                className="relative flex flex-col items-center text-center px-2 py-2 lg:py-0 w-full"
               >
-                <div className="mb-3 flex size-10 items-center justify-center rounded-xl bg-primary-light text-primary md:size-12">
-                  <Icon className="size-5 md:size-6" strokeWidth={2} />
+                <div className="mb-3 flex size-14 shrink-0 items-center justify-center rounded-xl bg-[#E1F5EE] text-[#0F6E56]">
+                  <Icon className="size-7" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-heading-3 font-extrabold text-foreground whitespace-nowrap">
+                  <h3 className="text-sm font-extrabold text-[#17391f] sm:text-base lg:text-lg whitespace-nowrap md:max-w-[100px]">
                     {item.value}
                   </h3>
-                  <p className="text-caption text-muted-foreground sm:text-body-sm">
+                  <p className="mt-1 text-[10px] font-medium leading-tight text-[#5d7a64] sm:text-xs">
                     {item.label}
                   </p>
                 </div>

@@ -4,7 +4,7 @@ import FaqSection from "./FaqSection";
 
 export default function BottomLayoutSection() {
   return (
-    <section className="my-10">
+    <section className="">
       <div className="container-smarttani space-y-8">
         {/* Portfolio Section - Full Width */}
         <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">

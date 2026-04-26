@@ -22,7 +22,7 @@ interface InvestasiCardProps {
 
 export default function InvestasiCard({ item }: InvestasiCardProps) {
   return (
-    <Link 
+    <Link
       href={`/investasi/${item.id}`}
       className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all hover:shadow-md"
     >
@@ -51,7 +51,7 @@ export default function InvestasiCard({ item }: InvestasiCardProps) {
           <span className="text-caption font-bold uppercase tracking-wider text-primary">
             {item.kategori}
           </span>
-          <h3 className="mt-1 text-body font-bold leading-tight text-foreground line-clamp-2 min-h-[3.5rem]">
+          <h3 className="mt-1 text-body font-bold leading-tight text-foreground line-clamp-2">
             {item.title}
           </h3>
         </div>

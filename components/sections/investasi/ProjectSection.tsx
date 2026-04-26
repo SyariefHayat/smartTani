@@ -10,10 +10,10 @@ export default function ProjectSection() {
         {/* Header */}
         <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end mb-10 md:mb-12">
           <div className="space-y-2">
-            <h2 className="section-title text-foreground">
+            <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
               {INVESTASI_PROYEK.heading}
             </h2>
-            <p className="text-body-sm text-muted-foreground md:text-body">
+            <p className="mt-2 text-sm font-medium text-[#5d7a64] md:text-base">
               {INVESTASI_PROYEK.subtext}
             </p>
           </div>
