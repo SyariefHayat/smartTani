@@ -3,9 +3,9 @@ import { DISTRIBUTOR_KEUNTUNGAN } from "@/constants/distributor";
 
 const DistributorKeuntunganSection = () => {
   return (
-    <section className="section-padding">
+    <section className="">
       <div className="container-smarttani">
-        <div className="rounded-[32px] bg-[#FAEEDA]/60 px-6 py-10 md:px-12 md:py-12">
+        <div className="rounded-[32px] bg-[#EAF3DE]/60 px-6 py-10 md:px-12 md:py-12">
           {/* Header */}
           <div className="mb-10 flex flex-col items-center text-center">
             <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
@@ -26,8 +26,8 @@ const DistributorKeuntunganSection = () => {
                   className="flex flex-col items-center text-center group"
                 >
                   {/* Icon Container */}
-                  <div className="mb-4 flex size-14 shrink-0 items-center justify-center rounded-xl bg-[#FAEEDA] text-[#854F0B] transition-colors group-hover:bg-[#854F0B] group-hover:text-white">
-                    <Icon className="size-7" strokeWidth={1.5} />
+                  <div className="mb-4 flex size-14 shrink-0 items-center justify-center rounded-xl bg-[#d4edda] text-[#2D6A2D]">
+                    <Icon className="size-7" />
                   </div>
 
                   {/* Content */}

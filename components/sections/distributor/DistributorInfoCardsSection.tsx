@@ -29,11 +29,11 @@ const DistributorInfoCardsSection = () => {
   };
 
   return (
-    <section className="section-padding bg-white">
+    <section className="bg-white">
       <div className="container-smarttani">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Card 1: Syarat Menjadi Distributor */}
-          <div className="flex flex-col rounded-2xl bg-[#EAF3DE]/30 p-8 border border-[#EAF3DE] transition-all hover:shadow-md">
+          <div className="flex flex-col rounded-2xl bg-[#EAF3DE]/60 p-8 border border-[#EAF3DE] transition-all hover:shadow-md">
             <h3 className="text-lg font-extrabold text-[#17391f] md:text-xl mb-1">
               {DISTRIBUTOR_SYARAT.heading}
             </h3>
@@ -54,7 +54,7 @@ const DistributorInfoCardsSection = () => {
               ))}
             </div>
 
-            <div className="mt-10 rounded-2xl bg-[#EAF3DE] p-5 text-center border border-primary/10">
+            <div className="mt-8 rounded-2xl bg-[#EAF3DE] p-5 text-center border border-primary/10">
               <p className="text-xs font-bold text-primary leading-relaxed italic">
                 {DISTRIBUTOR_SYARAT.note}
               </p>
@@ -62,7 +62,7 @@ const DistributorInfoCardsSection = () => {
           </div>
 
           {/* Card 2: Bagaimana Cara Bergabung? */}
-          <div className="flex flex-col rounded-2xl bg-[#FAEEDA]/30 p-8 border border-[#FAEEDA] transition-all hover:shadow-md">
+          <div className="flex flex-col rounded-2xl bg-[#EAF3DE]/60 p-8 border border-[#FAEEDA] transition-all hover:shadow-md">
             <h3 className="text-lg font-extrabold text-[#17391f] md:text-xl mb-1">
               {DISTRIBUTOR_STEPS.heading}
             </h3>
@@ -79,11 +79,8 @@ const DistributorInfoCardsSection = () => {
                     className="flex flex-col items-start relative group"
                   >
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="text-2xl font-black text-primary/10 transition-colors group-hover:text-primary/30">
-                        0{item.step}
-                      </span>
-                      <div className="flex size-12 items-center justify-center rounded-xl bg-white shadow-sm text-primary transition-transform group-hover:scale-110">
-                        <Icon className="size-6" />
+                      <div className="flex size-12 items-center justify-center rounded-xl shadow-sm bg-[#d4edda] text-[#2D6A2D]">
+                        <Icon className="size-7" />
                       </div>
                     </div>
 
@@ -100,7 +97,7 @@ const DistributorInfoCardsSection = () => {
           </div>
 
           {/* Card 3: Lokasi Distributor */}
-          <div className="flex flex-col rounded-2xl bg-[#E6F1FB]/30 p-8 border border-[#E6F1FB] transition-all hover:shadow-md">
+          <div className="flex flex-col rounded-2xl bg-[#EAF3DE]/60 p-8 border border-[#E6F1FB] transition-all hover:shadow-md">
             <h3 className="text-lg font-extrabold text-[#17391f] md:text-xl mb-1">
               Lokasi Distributor
             </h3>
@@ -121,7 +118,7 @@ const DistributorInfoCardsSection = () => {
               <h4 className="text-sm font-bold text-[#17391f]">
                 Cari Distributor Terdekat
               </h4>
-              <form 
+              <form
                 onSubmit={(e) => { e.preventDefault(); handleSearch(); }}
                 className="flex gap-2"
               >
@@ -133,7 +130,7 @@ const DistributorInfoCardsSection = () => {
                     onChange={(e) => setSearch(e.target.value)}
                   />
                 </div>
-                <Button 
+                <Button
                   type="submit"
                   className="h-12 px-6 bg-primary hover:bg-primary-dark font-bold !text-white rounded-xl cursor-pointer shadow-lg shadow-primary/20 transition-all active:scale-95"
                 >

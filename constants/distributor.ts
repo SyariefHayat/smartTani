@@ -119,38 +119,38 @@ export const DISTRIBUTOR_PRODUK_KATEGORI = {
     {
       label: "Pupuk & Nutrisi",
       jumlahProduk: "320+",
-      image: "/images/distributor/pupuk-&-nutrisi.webp",
+      image: "/images/distributor/pupuk-nutrisi.png",
     },
     {
       label: "Benih & Bibit",
       jumlahProduk: "180+",
-      image: "/images/distributor/benih-&-bibit.webp",
+      image: "/images/distributor/benih-bibit.png",
     },
     {
       label: "Pestisida",
       jumlahProduk: "150+",
-      image: "/images/distributor/pestisida.webp",
+      image: "/images/distributor/pestisida.png",
     },
     {
       label: "Alat & Mesin",
       jumlahProduk: "120+",
-      image: "/images/distributor/alat-&-mesin.webp",
+      image: "/images/distributor/alat-mesin.png",
     },
     {
       label: "Irigasi",
       jumlahProduk: "80+",
-      image: "/images/distributor/irigasi.webp",
+      image: "/images/distributor/irigasi.png",
     },
     {
       label: "Pakan Ternak",
       jumlahProduk: "60+",
-      image: "/images/distributor/pakan-ternak.webp",
+      image: "/images/distributor/pakan-ternak.png",
     },
     {
       label: "Hasil Panen",
       jumlahProduk: "100+",
-      image: "/images/distributor/hasil-panen.webp",
-    },
+      image: "/images/distributor/hasil-panen.png",
+    }
   ],
 };
 

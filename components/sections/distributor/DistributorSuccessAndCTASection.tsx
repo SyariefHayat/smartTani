@@ -11,9 +11,10 @@ import { Button } from "@/components/ui/button";
 
 const DistributorSuccessAndCTASection = () => {
   return (
-    <section className="pb-12 md:pb-20 bg-white">
+    <section className="section-padding bg-white">
       <div className="container-smarttani">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_450px]">
+        {/* items-stretch memastikan kedua kolom sama tinggi */}
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_450px] lg:items-stretch">
           {/* Left Side: Kisah Sukses Mitra */}
           <div className="flex flex-col">
             <div className="mb-10">
@@ -25,7 +26,7 @@ const DistributorSuccessAndCTASection = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 flex-1">
               {DISTRIBUTOR_TESTIMONI.items.map((item, index) => (
                 <div
                   key={index}
@@ -64,8 +65,8 @@ const DistributorSuccessAndCTASection = () => {
             </div>
           </div>
 
-          {/* Right Side: CTA Banner Box */}
-          <div className="relative overflow-hidden rounded-2xl bg-primary-dark p-10 text-white shadow-2xl lg:p-12">
+          {/* Right Side: CTA Banner Box — h-full agar mengisi tinggi kolom kiri */}
+          <div className="relative overflow-hidden rounded-2xl bg-primary-dark p-10 text-white shadow-2xl lg:p-12 h-full">
             {/* Background Image overlay */}
             <div className="absolute inset-0 z-0">
               <Image
