@@ -15,9 +15,9 @@ export default function ArtikelPage() {
   return (
     <main>
       <ArticleHeroSection />
+      <ArticleStatsBarSection />
       <ArticleCategoryBarSection />
       <ArticleLayoutSection />
-      <ArticleStatsBarSection />
       <ArticleNewsletterSection />
     </main>
   );
