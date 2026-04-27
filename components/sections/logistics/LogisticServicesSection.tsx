@@ -4,58 +4,56 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { LOGISTICS_SERVICES } from "@/constants/logistics";
-import { ArrowRight } from "lucide-react";
+import { FEATURES_BG_COLORS } from "@/constants/home";
 
 const LogisticServicesSection = () => {
   return (
-    <section className="section-padding bg-white">
-      <div className="container-smarttani">
+    <section className="section-padding">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
         {/* Header */}
-        <div className="mb-16 flex flex-col items-center text-center">
-          <h2 className="section-title text-foreground">
+        <div className="mb-6 md:mb-10 flex flex-col items-center text-center">
+          <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
             {LOGISTICS_SERVICES.heading}
           </h2>
-          <p className="mt-4 max-w-2xl text-body-lg text-muted-foreground">
+          <p className="mt-1 text-sm font-medium text-[#5d7a64] md:text-base">
             {LOGISTICS_SERVICES.subtext}
           </p>
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-6 md:gap-10 lg:gap-6 sm:grid-cols-3 lg:grid-cols-6 items-stretch">
           {LOGISTICS_SERVICES.items.map((item, index) => (
-            <div
+            <Link
               key={index}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/5"
+              href="#"
+              className={`flex flex-col h-full p-4 items-center text-center transition-transform hover:-translate-y-1 rounded-xl ${FEATURES_BG_COLORS[index] || "bg-[#EAF3DE]"}`}
             >
-              {/* Image Container */}
-              <div className="relative aspect-16/10 w-full overflow-hidden">
+              {/* Gambar */}
+              <div className="relative w-full size-40 shrink-0 -mt-5 lg:-mt-7">
                 <Image
                   src={item.image}
-                  alt={item.title}
+                  alt={`Ikon layanan ${item.title}`}
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-contain"
+                  sizes="100%"
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
               </div>
 
-              {/* Content */}
-              <div className="flex flex-1 flex-col p-6 sm:p-8">
-                <h3 className="mb-3 text-heading-3 text-foreground group-hover:text-primary transition-colors">
+              <div className="flex flex-col flex-1 items-center -mt-5 md:-mt-3 lg:-mt-7">
+                <h3 className="mb-2 md:mb-4 text-sm font-extrabold text-[#17391f] leading-tight">
                   {item.title}
                 </h3>
-                <p className="mb-6 flex-1 text-body-sm text-muted-foreground sm:text-body">
+                <p className="text-[10px] leading-relaxed text-[#5d7a64] md:text-xs line-clamp-3 lg:-mt-2">
                   {item.description}
                 </p>
-
-                <Link
-                  href="#"
-                  className="inline-flex items-center gap-2 text-body-sm font-bold text-primary transition-colors hover:text-primary/80"
-                >
-                  {item.cta}
-                </Link>
               </div>
-            </div>
+
+              <span
+                className="mt-4 group flex items-center gap-1.5 text-[10px] font-bold text-primary transition-colors hover:text-primary/80"
+              >
+                {item.cta}
+              </span>
+            </Link>
           ))}
         </div>
       </div>

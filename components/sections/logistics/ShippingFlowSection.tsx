@@ -22,51 +22,45 @@ const STEP_ICONS = [
 
 const ShippingFlowSection = () => {
   return (
-    <section className="overflow-hidden">
+    <section className="section-padding overflow-hidden">
       <div className="container-smarttani">
-        <div className="rounded-3xl bg-slate-50 border border-slate-100 p-8 shadow-sm sm:p-12 md:p-16">
+        <div className="rounded-[32px] bg-[#EAF3DE]/40 border border-[#d4edda] p-8 sm:p-12 md:p-16">
           {/* Header */}
-          <div className="mb-16 flex flex-col items-center text-center">
-            <h2 className="section-title text-foreground">
+          <div className="mb-12 flex flex-col items-center text-center">
+            <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
               {SHIPPING_FLOW.heading}
             </h2>
-            <p className="mt-4 text-body-sm text-muted-foreground md:text-body">
+            <p className="mt-2 text-sm font-medium text-[#5d7a64] md:text-base">
               6 langkah mudah pengiriman terintegrasi Smarttani
             </p>
           </div>
 
           {/* Steps Grid */}
-          <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 xl:gap-4">
+          <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 xl:gap-6">
             {SHIPPING_FLOW.items.map((step, index) => {
               const Icon = STEP_ICONS[index] || Package;
               return (
-                <div key={index} className="relative flex flex-col items-center text-center xl:items-start xl:text-left">
-                  {/* Step Number & Icon */}
-                  <div className="mb-6 flex items-center gap-4 xl:mb-4">
-                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white shadow-lg shadow-primary/20">
-                      {step.step}
+                <div key={index} className="relative flex flex-col items-center text-center">
+                  {/* Icon Area */}
+                  <div className="mb-4 relative">
+                    <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-[#d4edda] text-[#2D6A2D]">
+                      <Icon className="size-7" strokeWidth={1.5} />
                     </div>
-                    <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary-light text-primary">
-                      <Icon className="size-8" strokeWidth={1.5} />
+                    {/* Number Badge */}
+                    <div className="absolute -top-1.5 -left-1.5 flex size-5 items-center justify-center rounded-full bg-primary text-white text-[9px] font-bold shadow-sm">
+                      {step.step}
                     </div>
                   </div>
 
                   {/* Content */}
                   <div className="flex flex-col">
-                    <h3 className="mb-2 text-body font-bold text-foreground sm:text-body-lg">
+                    <h3 className="mb-1 text-sm font-extrabold text-[#17391f] leading-tight">
                       {step.title}
                     </h3>
-                    <p className="text-body-sm text-muted-foreground">
+                    <p className="text-[10px] font-medium text-[#5d7a64] leading-relaxed">
                       {step.description}
                     </p>
                   </div>
-
-                  {/* Desktop Connector */}
-                  {index < SHIPPING_FLOW.items.length - 1 && (
-                    <div className="absolute left-[80%] top-10 hidden w-[40%] xl:block">
-                      <div className="h-px w-full border-t border-dashed border-primary/30" />
-                    </div>
-                  )}
                 </div>
               );
             })}

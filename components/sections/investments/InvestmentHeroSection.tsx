@@ -64,47 +64,6 @@ export default function InvestmentHeroSection() {
               ))}
             </div>
           </div>
-
-          {/* Right Column: Stat Cards (Optional, keeping structure consistent with HeroSection) */}
-          <div className="hidden lg:col-span-3 lg:flex lg:justify-end">
-            <div className="w-full lg:max-w-xs">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-2">
-                {INVESTMENT_HERO.badges.map((badge, index) => {
-                  const icons = [ShieldCheck, TrendingUp, Sprout];
-                  const Icon = icons[index] ?? Sprout;
-                  const iconBg = ["#EAF3DE", "#FAEEDA", "#E6F1FB"][index] ?? "#EAF3DE";
-                  const iconColor = ["#3B6D11", "#854F0B", "#185FA5"][index] ?? "#3B6D11";
-                  
-                  return (
-                    <div
-                      key={badge.label}
-                      className="rounded-xl border border-white/60 bg-white p-4 shadow-lg backdrop-blur-md"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div
-                          className="flex h-9 w-9 md:h-10 md:w-10 shrink-0 items-center justify-center rounded-xl"
-                          style={{ background: iconBg }}
-                        >
-                          <Icon
-                            className="size-7"
-                            style={{ color: iconColor }}
-                          />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[11px] font-semibold uppercase text-muted-foreground leading-snug">
-                            {badge.label}
-                          </p>
-                          <p className="mt-0.5 text-caption font-extrabold text-foreground">
-                            {badge.sublabel}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>

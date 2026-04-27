@@ -27,12 +27,18 @@ export const LOGISTICS_HERO = {
 };
 
 export const LOGISTICS_STATS_BAR = [
-  { value: "1.250.780+", label: "Total Pengiriman" },
-  { value: "1,2 Juta+ Ton", label: "Kargo Terkirim" },
-  { value: "34", label: "Gudang & Hub" },
-  { value: "98,7%", label: "Tepat Waktu" },
-  { value: "10.500+", label: "Mitra Transportasi" },
-  { value: "38", label: "Provinsi Terlayani" },
+  { value: "0", label: "Total Pengiriman" },
+  // { value: "1.250.780+", label: "Total Pengiriman" },
+  { value: "0", label: "Kargo Terkirim" },
+  // { value: "1,2 Juta+ Ton", label: "Kargo Terkirim" },
+  { value: "0", label: "Gudang & Hub" },
+  // { value: "34", label: "Gudang & Hub" },
+  { value: "0%", label: "Tepat Waktu" },
+  // { value: "98,7%", label: "Tepat Waktu" },
+  { value: "0", label: "Mitra Transportasi" },
+  // { value: "10.500+", label: "Mitra Transportasi" },
+  { value: "0", label: "Provinsi Terlayani" },
+  // { value: "38", label: "Provinsi Terlayani" },
 ];
 
 export const LOGISTICS_SERVICES = {

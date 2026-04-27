@@ -17,7 +17,7 @@ export default function LogisticPage() {
   return (
     <main>
       <LogisticHeroSection />
-      {/* <LogisticStatsBarSection /> */}
+      <LogisticStatsBarSection />
       <LogisticServicesSection />
       <CoverageAdvantagesSection />
       <ShippingFlowSection />

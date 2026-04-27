@@ -9,11 +9,11 @@ const TransportationPartnersSection = () => {
     <section className="section-padding bg-white overflow-hidden">
       <div className="container-smarttani">
         {/* Header */}
-        <div className="mb-16 flex flex-col items-center text-center">
-          <h2 className="section-title text-foreground">
+        <div className="mb-10 flex flex-col items-center text-center">
+          <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
             {LOGISTICS_PARTNERS.heading}
           </h2>
-          <p className="mt-4 max-w-2xl text-body-lg text-muted-foreground">
+          <p className="mt-2 max-w-2xl text-sm font-medium text-[#5d7a64] md:text-base">
             {LOGISTICS_PARTNERS.subtext}
           </p>
         </div>
@@ -23,7 +23,7 @@ const TransportationPartnersSection = () => {
           {LOGISTICS_PARTNERS.items.map((mitra, index) => (
             <div
               key={index}
-              className="relative flex h-24 w-full items-center justify-center"
+              className="relative flex h-24 w-full items-center justify-center grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
             >
               <div className="relative h-12 w-32 sm:h-14 sm:w-36 lg:h-16 lg:w-40 xl:h-14 xl:w-32">
                 <Image

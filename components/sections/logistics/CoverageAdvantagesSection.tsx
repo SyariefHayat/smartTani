@@ -44,76 +44,76 @@ const CoverageAdvantagesSection = () => {
   };
 
   return (
-    <section className="bg-white">
+    <section className="section-padding bg-white">
       <div className="container-smarttani">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
           {/* Column 1: Jangkauan Luas */}
-          <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 flex flex-col items-center text-center">
-            <h3 className="text-heading-3 text-foreground mb-3">
+          <div className="bg-[#EAF3DE]/40 rounded-[32px] p-8 border border-[#EAF3DE] flex flex-col items-center text-center">
+            <h3 className="text-xl font-extrabold text-[#17391f] md:text-2xl mb-2">
               {LOGISTICS_COVERAGE.heading}
             </h3>
-            <p className="text-body-sm text-muted-foreground mb-6 px-4">
+            <p className="text-sm font-medium text-[#5d7a64] mb-6 px-4">
               {LOGISTICS_COVERAGE.subtext}
             </p>
 
-            <div className="relative w-full aspect-[2/1] mb-8">
+            <div className="relative w-full aspect-[2/1] mb-8 border border-slate-200 rounded-2xl overflow-hidden bg-white/50 shadow-sm">
               <Image
                 src={LOGISTICS_COVERAGE.image}
                 alt="Map"
                 fill
-                className="object-contain"
+                className="object-contain p-2"
               />
             </div>
 
-            <div className="mt-auto w-full grid grid-cols-3 pt-6 border-t border-slate-200">
+            <div className="mt-auto w-full grid grid-cols-3 pt-6 border-t border-[#d4edda]">
               {LOGISTICS_COVERAGE.stats.map((stat, index) => (
-                <div key={index} className={`flex flex-col items-center ${index < 2 ? 'border-r border-slate-200' : ''}`}>
-                  <span className="text-heading-3 font-bold text-primary">{stat.value}</span>
-                  <span className="text-caption font-bold text-muted-foreground">{stat.label}</span>
+                <div key={index} className={`flex flex-col items-center ${index < 2 ? 'border-r border-[#d4edda]' : ''}`}>
+                  <span className="text-lg font-extrabold text-primary md:text-xl">{stat.value}</span>
+                  <span className="text-[10px] font-bold text-[#5d7a64] uppercase tracking-wider">{stat.label}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Column 2: Keunggulan */}
-          <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 flex flex-col">
-            <h3 className="text-heading-3 text-foreground mb-8 text-center">
+          <div className="bg-[#EAF3DE]/40 rounded-[32px] p-8 border border-[#EAF3DE] flex flex-col">
+            <h3 className="text-xl font-extrabold text-[#17391f] md:text-2xl mb-8 text-center">
               {LOGISTICS_ADVANTAGES.heading}
             </h3>
 
-            <div className="space-y-4 mb-8">
+            <div className="space-y-5 mb-8 flex-1">
               {LOGISTICS_ADVANTAGES.items.map((item, index) => (
                 <div key={index} className="flex items-start gap-3">
                   <CheckCircle2 className="size-5 text-primary shrink-0 mt-0.5" />
-                  <span className="text-body-sm font-medium text-foreground">{item}</span>
+                  <span className="text-sm font-bold text-[#17391f] leading-tight">{item}</span>
                 </div>
               ))}
             </div>
 
-            <div className="mt-auto bg-primary-light rounded-xl p-4 text-center">
-              <p className="text-caption font-bold text-foreground leading-relaxed">
+            <div className="mt-auto bg-[#EAF3DE] rounded-2xl p-5 text-center border border-primary/10">
+              <p className="text-xs font-bold text-primary leading-relaxed italic">
                 {LOGISTICS_ADVANTAGES.tagline}
               </p>
             </div>
           </div>
 
           {/* Column 3: Cek Ongkir */}
-          <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 flex flex-col">
-            <h3 className="text-heading-3 text-foreground mb-2">
+          <div className="bg-[#EAF3DE]/40 rounded-[32px] p-8 border border-[#EAF3DE] flex flex-col">
+            <h3 className="text-xl font-extrabold text-[#17391f] md:text-2xl mb-2">
               {LOGISTICS_CHECK_SHIPPING_COST.heading}
             </h3>
-            <p className="text-body-sm text-muted-foreground mb-8">
+            <p className="text-sm font-medium text-[#5d7a64] mb-8">
               {LOGISTICS_CHECK_SHIPPING_COST.subtext}
             </p>
 
             <form className="space-y-4" onSubmit={calculateOngkir}>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label className="text-caption font-bold text-foreground">Dari</Label>
+                  <Label className="text-xs font-bold text-[#17391f]">Dari</Label>
                   <Select>
-                    <SelectTrigger className="h-10 bg-white border-slate-200 text-caption">
-                      <SelectValue placeholder="Pilih Kota Asal" />
+                    <SelectTrigger className="h-11 bg-white border-slate-200 text-xs font-bold rounded-xl focus:ring-primary/20">
+                      <SelectValue placeholder="Asal" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="jakarta">Jakarta</SelectItem>
@@ -123,10 +123,10 @@ const CoverageAdvantagesSection = () => {
                   </Select>
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-caption font-bold text-foreground">Ke</Label>
+                  <Label className="text-xs font-bold text-[#17391f]">Ke</Label>
                   <Select>
-                    <SelectTrigger className="h-10 bg-white border-slate-200 text-caption">
-                      <SelectValue placeholder="Pilih Kota Tujuan" />
+                    <SelectTrigger className="h-11 bg-white border-slate-200 text-xs font-bold rounded-xl focus:ring-primary/20">
+                      <SelectValue placeholder="Tujuan" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="jakarta">Jakarta</SelectItem>
@@ -139,10 +139,10 @@ const CoverageAdvantagesSection = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label className="text-caption font-bold text-foreground">Jenis Barang</Label>
+                  <Label className="text-xs font-bold text-[#17391f]">Jenis Barang</Label>
                   <Select>
-                    <SelectTrigger className="h-10 bg-white border-slate-200 text-caption">
-                      <SelectValue placeholder="Pilih Jenis Barang" />
+                    <SelectTrigger className="h-11 bg-white border-slate-200 text-xs font-bold rounded-xl focus:ring-primary/20">
+                      <SelectValue placeholder="Jenis" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="hasil-panen">Hasil Panen</SelectItem>
@@ -152,10 +152,10 @@ const CoverageAdvantagesSection = () => {
                   </Select>
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-caption font-bold text-foreground">Berat (kg)</Label>
+                  <Label className="text-xs font-bold text-[#17391f]">Berat (kg)</Label>
                   <Input
-                    placeholder="Contoh: 100"
-                    className="h-10 bg-white border-slate-200 text-caption"
+                    placeholder="100"
+                    className="h-11 bg-white border-slate-200 text-xs font-bold rounded-xl focus:ring-primary/20 placeholder:font-medium"
                     type="number"
                     value={weight}
                     onChange={(e) => setWeight(e.target.value)}
@@ -163,20 +163,20 @@ const CoverageAdvantagesSection = () => {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary-dark !text-white font-bold mt-4 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-primary/20">
+              <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary-dark !text-white font-bold mt-4 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-primary/20 rounded-xl transition-all active:scale-95">
                 <Search className="size-4" />
                 {LOGISTICS_CHECK_SHIPPING_COST.cta}
               </Button>
             </form>
 
             {result !== null && (
-              <div className="mt-6 p-4 rounded-xl bg-white border border-primary/20 animate-in fade-in zoom-in-95">
-                <div className="flex items-center gap-2 mb-2">
-                  <Truck className="size-4 text-primary" />
-                  <span className="text-caption font-bold text-slate-500 uppercase tracking-wider">Estimasi Biaya</span>
+              <div className="mt-6 p-4 rounded-2xl bg-white border border-[#d4edda] animate-in fade-in zoom-in-95 shadow-sm">
+                <div className="flex items-center gap-2 mb-1">
+                  <Truck className="size-3.5 text-primary" />
+                  <span className="text-[10px] font-bold text-[#5d7a64] uppercase tracking-wider">Estimasi Biaya</span>
                 </div>
-                <p className="text-heading-2 font-black text-primary">{formatPrice(result)}</p>
-                <p className="text-[10px] text-slate-400 mt-1 italic">*Harga dapat berubah sewaktu-waktu</p>
+                <p className="text-2xl font-black text-primary leading-none">{formatPrice(result)}</p>
+                <p className="text-[9px] text-slate-400 mt-2 italic font-medium">*Harga dapat berubah sewaktu-waktu</p>
               </div>
             )}
           </div>
