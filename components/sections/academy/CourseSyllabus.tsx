@@ -43,52 +43,52 @@ export default function CourseSyllabus() {
 
   return (
     <div className="mt-12">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Silabus Kursus</h2>
+      <h2 className="text-2xl font-extrabold text-[#17391f] mb-8">Silabus Kursus</h2>
       <div className="space-y-4">
         {modules.map((module, mIdx) => (
-          <div key={mIdx} className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+          <div key={mIdx} className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
             <button
               onClick={() => toggleModule(mIdx)}
-              className="flex w-full items-center justify-between bg-gray-50 px-6 py-4 transition-colors hover:bg-gray-100"
+              className="flex w-full items-center justify-between bg-slate-50 px-6 py-5 transition-colors hover:bg-slate-100"
             >
               <div className="flex items-center gap-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1A6B2F] text-xs font-bold text-white">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-sm font-bold text-white shadow-sm">
                   {mIdx + 1}
                 </div>
                 <div className="text-left">
-                  <h3 className="text-sm font-bold text-gray-900">{module.title}</h3>
-                  <p className="text-xs text-gray-500">{module.items.length} Materi</p>
+                  <h3 className="text-base font-extrabold text-[#17391f]">{module.title}</h3>
+                  <p className="text-xs font-medium text-[#5d7a64]">{module.items.length} Materi</p>
                 </div>
               </div>
               {openModules.includes(mIdx) ? (
-                <ChevronUp className="h-5 w-5 text-gray-400" />
+                <ChevronUp className="size-5 text-[#5d7a64]" />
               ) : (
-                <ChevronDown className="h-5 w-5 text-gray-400" />
+                <ChevronDown className="size-5 text-[#5d7a64]" />
               )}
             </button>
 
             {openModules.includes(mIdx) && (
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y divide-slate-100">
                 {module.items.map((item, iIdx) => (
-                  <div key={iIdx} className="flex items-center justify-between px-6 py-4 hover:bg-gray-50">
+                  <div key={iIdx} className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors">
                     <div className="flex items-center gap-3">
                       {item.type === "video" ? (
-                        <PlayCircle className="h-4 w-4 text-[#1A6B2F]" />
+                        <PlayCircle className="size-4 text-primary" />
                       ) : (
-                        <FileText className="h-4 w-4 text-[#BA7517]" />
+                        <FileText className="size-4 text-accent" />
                       )}
-                      <span className={`text-sm ${item.free ? "text-gray-900" : "text-gray-500"}`}>
+                      <span className={`text-sm font-medium ${item.free ? "text-[#17391f]" : "text-[#5d7a64]"}`}>
                         {item.title}
                       </span>
                       {item.free && (
-                        <span className="rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-bold text-green-700">
+                        <span className="rounded-lg bg-primary-light px-2 py-0.5 text-[10px] font-bold text-primary border border-primary/10">
                           GRATIS
                         </span>
                       )}
                     </div>
                     <div className="flex items-center gap-4">
-                      <span className="text-xs text-gray-400">{item.duration}</span>
-                      {!item.free && <Lock className="h-3 w-3 text-gray-300" />}
+                      <span className="text-[11px] font-bold text-[#5d7a64]">{item.duration}</span>
+                      {!item.free && <Lock className="size-3.5 text-slate-300" />}
                     </div>
                   </div>
                 ))}

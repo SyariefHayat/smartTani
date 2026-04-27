@@ -26,39 +26,39 @@ export default function CourseEnroll() {
     <div className="sticky top-24 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl">
       <div className="relative aspect-video">
         <div className="absolute inset-0 flex items-center justify-center bg-black/40 z-10">
-          <button className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-[#1A6B2F] shadow-lg transition-transform hover:scale-110">
-            <Play className="h-6 w-6 fill-current ml-1" />
+          <button className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-primary shadow-lg transition-transform hover:scale-110">
+            <Play className="size-7 fill-current ml-1" />
           </button>
         </div>
-        <div className="absolute inset-0 bg-gray-200" />
-        <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] font-bold text-white uppercase tracking-widest z-10">
+        <div className="absolute inset-0 bg-slate-200" />
+        <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] font-extrabold text-white uppercase tracking-widest z-10">
           Preview Kursus
         </p>
       </div>
 
-      <div className="p-6">
+      <div className="p-8">
         <div className="flex items-center gap-2">
           {isFree ? (
-            <span className="text-3xl font-bold text-[#1A6B2F]">GRATIS</span>
+            <span className="text-3xl font-extrabold text-primary">GRATIS</span>
           ) : (
-            <span className="text-3xl font-bold text-gray-900">Rp 150.000</span>
+            <span className="text-3xl font-extrabold text-[#17391f]">Rp 150.000</span>
           )}
         </div>
 
-        <div className="mt-6">
+        <div className="mt-8">
           {enrolled ? (
-            <div className="flex flex-col items-center gap-3 rounded-xl bg-green-50 p-4 border border-green-100">
-              <CheckCircle2 className="h-8 w-8 text-[#1A6B2F]" />
-              <p className="text-sm font-bold text-[#1A6B2F] text-center">
+            <div className="flex flex-col items-center gap-4 rounded-2xl bg-primary-light p-6 border border-primary/10">
+              <CheckCircle2 className="size-10 text-primary" />
+              <p className="text-sm font-extrabold text-primary text-center leading-relaxed">
                 ✓ Selamat! Anda berhasil mendaftar kursus ini.
               </p>
-              <Button className="w-full bg-[#1A6B2F]" onClick={() => router.push('/dashboard/farmer')}>
+              <Button className="w-full bg-primary h-12 text-sm font-bold !text-white rounded-xl shadow-lg shadow-primary/20" onClick={() => router.push('/dashboard/farmer')}>
                 Ke Dashboard Saya
               </Button>
             </div>
           ) : (
             <Button
-              className="w-full bg-[#1A6B2F] py-6 text-lg font-bold hover:bg-[#145224]"
+              className="w-full bg-primary h-14 text-base font-extrabold !text-white hover:bg-primary-dark rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-95 cursor-pointer"
               onClick={handleEnroll}
             >
               Mulai Belajar Sekarang
@@ -66,17 +66,17 @@ export default function CourseEnroll() {
           )}
         </div>
 
-        <div className="mt-8 space-y-4">
-          <h4 className="text-sm font-bold text-gray-900">Benefit Kursus:</h4>
+        <div className="mt-10 space-y-4">
+          <h4 className="text-sm font-extrabold text-[#17391f]">Benefit Kursus:</h4>
           {[
             { label: "Akses selamanya", icon: Infinity },
             { label: "Sertifikat resmi", icon: Award },
             { label: "12 Modul Video HD", icon: BookOpen },
             { label: "Materi terupdate", icon: CheckCircle2 },
-            { label: "Dukungan instruktur", icon: Users },
+            { label: "Dukungan instruktur", icon: UsersIcon },
           ].map((benefit, i) => (
-            <div key={i} className="flex items-center gap-3 text-sm text-gray-600">
-              <benefit.icon className="h-4 w-4 text-[#1A6B2F]" />
+            <div key={i} className="flex items-center gap-3 text-sm font-medium text-[#5d7a64]">
+              <benefit.icon className="size-4 text-primary shrink-0" />
               <span>{benefit.label}</span>
             </div>
           ))}
@@ -86,7 +86,7 @@ export default function CourseEnroll() {
   );
 }
 
-const Users = ({ className }: { className?: string }) => (
+const UsersIcon = ({ className }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"

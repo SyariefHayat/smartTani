@@ -37,7 +37,7 @@ const LogisticHeroSection = () => {
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-1 md:mt-7 lg:mt-10">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-2">
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-8">
 
           {/* Left Column */}
@@ -51,7 +51,7 @@ const LogisticHeroSection = () => {
               {LOGISTICS_HERO.heading}
             </h1>
 
-            <p className="text-body-sm mb-8 max-w-sm md:max-w-md text-white/85">
+            <p className="text-body-sm max-w-sm md:max-w-md text-white/85">
               {LOGISTICS_HERO.subtext}
             </p>
           </div>

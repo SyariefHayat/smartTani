@@ -31,12 +31,18 @@ export const ACADEMY_HERO = {
 };
 
 export const ACADEMY_STATS_BAR = [
-  { value: "8.750+", label: "Peserta Aktif" },
-  { value: "45.680+", label: "Alumni" },
-  { value: "320+", label: "Kursus Tersedia" },
-  { value: "125+", label: "Instruktur Ahli" },
-  { value: "98,6%", label: "Kepuasan Peserta" },
-  { value: "4,8/5", label: "Rating Rata-rata" },
+  { value: "0", label: "Peserta Aktif" },
+  // { value: "8.750+", label: "Peserta Aktif" },
+  { value: "0", label: "Alumni" },
+  // { value: "45.680+", label: "Alumni" },
+  { value: "0", label: "Kursus Tersedia" },
+  // { value: "320+", label: "Kursus Tersedia" },
+  { value: "0", label: "Instruktur Ahli" },
+  // { value: "125+", label: "Instruktur Ahli" },
+  { value: "0", label: "Kepuasan Peserta" },
+  // { value: "98,6%", label: "Kepuasan Peserta" },
+  { value: "0", label: "Rating Rata-rata" },
+  // { value: "4,8/5", label: "Rating Rata-rata" },
 ];
 
 export const ACADEMY_KEUNGGULAN = [

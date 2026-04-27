@@ -1,11 +1,10 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ACADEMY_HERO } from "@/constants/academy";
-import { GraduationCap, Monitor, Users, Award, ArrowRight } from "lucide-react";
+import { Monitor, Users, Award, ArrowRight } from "lucide-react";
 
 const ICON_MAP = [Monitor, Users, Award];
 
@@ -18,7 +17,7 @@ const AcademyHeroSection = () => {
   };
 
   return (
-    <section className="relative flex items-start overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-start md:items-center overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
@@ -40,77 +39,49 @@ const AcademyHeroSection = () => {
             className="w-full h-full object-cover object-center"
           />
         </picture>
-
-        {/* Overlay: mobile & tablet */}
-        {/* <div className="absolute inset-0 bg-black/55 md:hidden" /> */}
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 md:mt-20 lg:mt-25">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-12 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-8">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 lg:mt-3.5">
+        <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-0">
 
           {/* Left Column: Text & Badges */}
-          <div className="md:col-span-8 lg:col-span-9">
+          <div className="lg:col-span-9 text-white mt-9 md:mt-0">
             {/* Badge */}
             <div className="mb-3 inline-block rounded-lg bg-primary-medium/80 backdrop-blur-sm px-3 py-1.5 text-caption font-bold text-white">
               {ACADEMY_HERO.badge}
             </div>
 
-            <h1 className="text-heading-1 text-white mb-3 max-w-sm">
+            <h1 className="text-heading-1 md:text-display text-white mb-3 max-w-sm lg:max-w-md">
               {ACADEMY_HERO.heading}
             </h1>
 
-            <p className="text-body-sm mb-5 max-w-sm text-white/85">
+            <p className="text-body-sm max-w-sm md:max-w-md text-white/85">
               {ACADEMY_HERO.subtext}
             </p>
-
-            {/* Badges */}
-            {/* <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 max-w-2xl">
-              {ACADEMY_HERO.badges.map((badge, index) => {
-                const Icon = ICON_MAP[index] || Monitor;
-                return (
-                  <div
-                    key={index}
-                    className="flex flex-row md:flex-col lg:flex-row items-center md:items-start gap-3 rounded-xl bg-white p-3 shadow-lg transition-all hover:translate-y-[-2px]"
-                  >
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-light text-primary">
-                      <Icon className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="text-caption font-bold text-foreground leading-tight">
-                        {badge.label}
-                      </p>
-                      <p className="mt-0.5 text-[11px] text-muted-foreground leading-tight">
-                        {badge.sublabel}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div> */}
           </div>
 
           {/* Right Column: CTA Card */}
-          <div className="md:col-span-4 lg:col-span-3 flex md:justify-end lg:justify-end md:self-end lg:self-center">
-            <div className="w-full md:max-w-xs lg:max-w-xs rounded-2xl bg-white p-4 md:p-5 shadow-2xl">
-              <h3 className="text-body-sm font-bold text-foreground mb-1.5">
+          <div className="md:col-span-4 lg:col-span-3 flex md:justify-end lg:justify-end">
+            <div className="w-full lg:max-w-xs rounded-2xl bg-white p-5 md:p-6 shadow-2xl overflow-hidden">
+              <h3 className="text-lg font-extrabold text-[#17391f] mb-1">
                 {ACADEMY_HERO.sidebar.heading}
               </h3>
-              <p className="text-caption text-muted-foreground mb-5">
+              <p className="text-body-sm font-medium text-[#5d7a64] mb-6">
                 {ACADEMY_HERO.sidebar.subtext}
               </p>
 
-              <div className="space-y-3">
-                <Button asChild className="h-10 w-full bg-primary text-sm font-bold !text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20 cursor-pointer">
+              <div className="space-y-4">
+                <Button asChild className="h-12 w-full bg-primary text-sm font-bold !text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20 cursor-pointer">
                   <Link href="/register">{ACADEMY_HERO.sidebar.ctaPrimary}</Link>
                 </Button>
 
                 <button
                   onClick={scrollToModel}
-                  className="flex w-full items-center justify-center gap-2 text-caption font-bold text-primary hover:text-primary/80 transition-all py-1.5 group cursor-pointer"
+                  className="flex w-full items-center justify-center gap-2 text-sm font-bold text-primary hover:text-primary/80 transition-all py-1.5 group cursor-pointer"
                 >
                   {ACADEMY_HERO.sidebar.ctaSecondary}
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </button>
               </div>
             </div>
