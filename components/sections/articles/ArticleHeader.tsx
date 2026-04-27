@@ -13,32 +13,32 @@ export default function ArticleHeader({ article }: ArticleHeaderProps) {
   return (
     <header className="py-8">
       {/* Breadcrumb */}
-      <nav className="mb-8 flex items-center gap-2 text-sm text-gray-500">
-        <Link href="/" className="flex items-center gap-1 hover:text-[#1A6B2F]">
+      <nav className="mb-8 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#5d7a64]">
+        <Link href="/" className="flex items-center gap-1 hover:text-primary transition-colors">
           <Home className="h-3 w-3" />
           Beranda
         </Link>
         <ChevronRight className="h-3 w-3" />
-        <Link href="/artikel" className="hover:text-[#1A6B2F]">
+        <Link href="/articles" className="hover:text-primary transition-colors">
           Artikel
         </Link>
         <ChevronRight className="h-3 w-3" />
-        <span className="line-clamp-1 font-medium text-gray-900">
+        <span className="line-clamp-1 font-extrabold text-[#17391f]">
           {article.title}
         </span>
       </nav>
 
       <div className="max-w-4xl">
-        <Badge className="bg-[#BA7517] hover:bg-[#a06514] mb-4">
+        <Badge className="bg-primary !text-white text-[10px] font-extrabold px-3 py-1 border-none rounded-lg shadow-lg mb-6 uppercase tracking-wider">
           {article.kategori}
         </Badge>
-        <h1 className="text-3xl font-bold md:text-4xl lg:text-5xl text-gray-900 leading-tight">
+        <h1 className="text-3xl font-extrabold md:text-4xl lg:text-5xl text-[#17391f] leading-tight mb-8">
           {article.title}
         </h1>
 
-        <div className="mt-8 flex flex-wrap items-center gap-6 border-y border-gray-100 py-6">
+        <div className="mt-8 flex flex-wrap items-center gap-8 border-y border-slate-100 py-8">
           <div className="flex items-center gap-3">
-            <div className="relative h-10 w-10 overflow-hidden rounded-full border border-gray-200">
+            <div className="relative h-12 w-12 overflow-hidden rounded-full ring-2 ring-slate-50 shadow-md">
               <Image
                 src={article.penulis.avatar}
                 alt={article.penulis.nama}
@@ -47,22 +47,22 @@ export default function ArticleHeader({ article }: ArticleHeaderProps) {
               />
             </div>
             <div>
-              <div className="text-sm font-bold text-gray-900">
+              <div className="text-sm font-extrabold text-[#17391f]">
                 {article.penulis.nama}
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs font-medium text-[#5d7a64]">
                 {article.penulis.gelar}
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Calendar className="h-4 w-4" />
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#5d7a64]">
+            <Calendar className="h-4 w-4 text-accent" />
             <span>{article.tanggal}</span>
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Clock className="h-4 w-4" />
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#5d7a64]">
+            <Clock className="h-4 w-4 text-accent" />
             <span>{article.waktuBaca}</span>
           </div>
         </div>

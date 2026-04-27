@@ -11,7 +11,7 @@ export const ARTICLE_HERO = {
     "Wawasan, Inspirasi, dan Informasi Terpercaya untuk Petani Indonesia",
   subtext:
     "Temukan pengetahuan terbaru, tips praktis, dan kisah sukses dari para ahli dan petani hebat di seluruh Indonesia.",
-  bgImageDesktop: "/images/article/desktop-3.png",
+  bgImageDesktop: "/images/article/desktop.png",
   bgImageTablet: "/images/article/desktop-5.png",
   bgImageMobile: "/images/article/mobile.png",
   searchPlaceholder: "Cari artikel, topik, atau kata kunci...",

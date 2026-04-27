@@ -16,7 +16,7 @@ const ArticleHeroSection = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      router.push(`/artikel?q=${encodeURIComponent(query)}`);
+      router.push(`/articles?q=${encodeURIComponent(query)}`);
     }
   };
 
@@ -49,21 +49,21 @@ const ArticleHeroSection = () => {
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 md:mt-9 lg:mt-14">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 md:mt-9 lg:mt-15">
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-8">
 
           {/* Left Column: Text & Search */}
           <div className="lg:col-span-9">
             {/* Badge */}
-            <div className="mb-3 inline-block rounded-lg bg-primary-medium/80 backdrop-blur-sm px-3 py-1.5 text-caption font-bold text-white">
+            <div className="mb-4 inline-block rounded-lg bg-primary-medium/80 backdrop-blur-sm px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.2em] text-white">
               {ARTICLE_HERO.badge}
             </div>
 
-            <h1 className="text-heading-1 text-white mb-3 max-w-xl">
+            <h1 className="text-3xl font-extrabold md:text-display lg:text-6xl leading-tight text-white mb-4 max-w-2xl">
               {ARTICLE_HERO.heading}
             </h1>
 
-            <p className="text-body-sm mb-5 max-w-sm text-white/85">
+            <p className="text-sm font-medium text-white/90 md:text-base mb-8 max-w-lg">
               {ARTICLE_HERO.subtext}
             </p>
 

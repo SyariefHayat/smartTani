@@ -53,23 +53,23 @@ const KategoriBarContent = () => {
                 key={kategori}
                 onClick={() => handleCategoryClick(kategori)}
                 className={cn(
-                  "group flex flex-col items-center justify-center gap-4 rounded-2xl p-6 border transition-all hover:shadow-md hover:-translate-y-1 cursor-pointer",
+                  "group flex flex-col items-center justify-center gap-4 rounded-3xl p-6 border transition-all hover:shadow-xl hover:-translate-y-1.5 cursor-pointer",
                   isActive 
-                    ? "bg-primary border-primary text-white" 
-                    : "bg-slate-50 border-transparent hover:border-slate-200"
+                    ? "bg-primary border-primary text-white shadow-lg shadow-primary/20" 
+                    : "bg-white border-slate-100 hover:border-slate-300"
                 )}
               >
                 <div className={cn(
-                  "flex h-12 w-12 items-center justify-center rounded-xl transition-colors",
+                  "flex h-14 w-14 items-center justify-center rounded-2xl transition-all duration-300",
                   isActive
-                    ? "bg-white/20 text-white"
+                    ? "bg-white/20 text-white scale-110"
                     : "bg-primary-light text-primary group-hover:bg-primary group-hover:text-white"
                 )}>
-                  <Icon className="h-6 w-6" />
+                  <Icon className="h-7 w-7" />
                 </div>
                 <span className={cn(
-                  "text-center text-caption font-bold",
-                  isActive ? "text-white" : "text-foreground"
+                  "text-center text-[11px] font-extrabold uppercase tracking-wider",
+                  isActive ? "text-white" : "text-[#17391f]"
                 )}>
                   {kategori}
                 </span>

@@ -37,10 +37,10 @@ const ArticleNewsletterSection = () => {
 
             {/* Kiri: Heading & Subtext */}
             <div className="max-w-xl text-center lg:text-left">
-              <h2 className="text-xl font-bold leading-tight text-white sm:text-2xl lg:text-4xl mb-4">
+              <h2 className="text-2xl font-extrabold leading-tight text-white md:text-3xl lg:text-4xl mb-6">
                 {ARTICLE_NEWSLETTER.heading}
               </h2>
-              <p className="text-sm font-medium text-[#eef8e5]/80 md:text-base">
+              <p className="text-sm font-medium text-[#eef8e5]/90 md:text-base leading-relaxed">
                 {ARTICLE_NEWSLETTER.subtext}
               </p>
             </div>
@@ -48,17 +48,17 @@ const ArticleNewsletterSection = () => {
             {/* Kanan: Input & Button */}
             <form 
               onSubmit={handleSubscribe}
-              className="flex flex-col gap-3 sm:flex-row sm:items-center lg:justify-end w-full"
+              className="flex flex-col gap-4 sm:flex-row sm:items-center lg:justify-end w-full"
             >
               <Input
                 type="email"
                 required
                 placeholder={ARTICLE_NEWSLETTER.inputPlaceholder}
-                className="h-12 flex-1 border-white/20 bg-white/10 px-4 text-white placeholder:text-white/60 focus-visible:ring-[#FFB21C]"
+                className="h-14 flex-1 border-white/20 bg-white/10 px-6 text-white placeholder:text-white/60 focus-visible:ring-accent rounded-xl text-sm font-medium"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <Button type="submit" className="h-12 bg-[#FFB21C] px-8 font-bold text-white hover:bg-[#FFB21C]/90 transition-all border-none whitespace-nowrap cursor-pointer">
+              <Button type="submit" className="h-14 bg-accent px-10 font-extrabold text-white hover:bg-accent/90 transition-all border-none whitespace-nowrap cursor-pointer rounded-xl shadow-lg shadow-black/10">
                 {ARTICLE_NEWSLETTER.cta}
               </Button>
             </form>
