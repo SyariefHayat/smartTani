@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: HOME_META.title,
     description: HOME_META.description,
-    url: "https://smarttani.id",
+    url: "https://smarttaniindonesia.com",
     siteName: "Smarttani Indonesia",
     images: [
       {

@@ -16,10 +16,10 @@ const HeroAboutSection = () => {
 
   const ButtonContent = ({ icon: Icon, prefix, label }: { icon: React.ElementType; prefix: string; label: string }) => (
     <>
-      <Icon className="size-7 shrink-0 mr-3" />
+      <Icon className="size-7 shrink-0 mr-3" strokeWidth={1.5} />
       <div className="flex flex-col items-start leading-tight">
-        <span className="text-[10px] font-medium opacity-80 uppercase tracking-wider">{prefix}</span>
-        <span className="text-xs font-extrabold">{label}</span>
+        <span className="text-[0.65rem] font-normal opacity-80">{prefix}</span>
+        <span className="text-sm font-bold">{label}</span>
       </div>
     </>
   );
@@ -41,7 +41,7 @@ const HeroAboutSection = () => {
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 md:mt-7 lg:mt-17">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 md:mt-5 lg:mt-7">
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-8">
 
           {/* Left Column */}
@@ -60,13 +60,13 @@ const HeroAboutSection = () => {
             </p>
 
             {/* CTA Buttons */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-sm mb-4">
+            <div className="grid grid-cols-2 gap-3 max-w-sm mb-4">
               {ABOUT_HERO_ACTIONS.map(({ prefix, label, icon, className, href }) => (
                 <Button
                   key={label}
                   asChild={!!href}
                   onClick={!href ? scrollToDetail : undefined}
-                  className={`h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer w-full sm:w-auto ${className}`}
+                  className={`h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer ${className}`}
                 >
                   {href ? (
                     <Link href={href}>

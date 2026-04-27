@@ -5,8 +5,8 @@ import Link from "next/link";
 
 export default function CTABannerAboutSection() {
   return (
-    <section className="section-padding bg-white">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
+    <section className="mb-10">
+      <div className="container-smarttani">
         <div className="relative overflow-hidden rounded-2xl bg-[#1a4d2e] px-8 py-8 md:px-16">
           {/* Background Picture matching CTABannerSection */}
           <div className="absolute inset-0 z-0">
@@ -49,7 +49,7 @@ export default function CTABannerAboutSection() {
                   {ABOUT_CTA_BANNER.cta[0]?.label}
                 </Link>
               </Button>
-              <Button 
+              <Button
                 asChild
                 className="h-12 rounded-lg border-none bg-[#FFB21C] px-8 text-sm font-bold text-white hover:bg-[#FFB21C]/90 cursor-pointer"
               >

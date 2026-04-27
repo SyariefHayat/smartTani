@@ -9,9 +9,9 @@ const TIMELINE_ICONS = [Sprout, ShoppingCart, Truck, GraduationCap, Users, Globe
 
 const TimelineSection = () => {
   return (
-    <section className="section-padding bg-slate-50">
+    <section className="section-padding">
       <div className="container-smarttani">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10">
           <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl mb-4">
             {ABOUT_TIMELINE.heading}
           </h2>
@@ -20,11 +20,11 @@ const TimelineSection = () => {
           </p>
         </div>
 
-        <div className="relative before:absolute before:left-7 before:top-0 before:bottom-0 before:w-px before:bg-slate-200 md:before:hidden">
-          {/* Garis horizontal (desktop) */}
-          <div className="absolute top-7 left-[8%] w-[84%] h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent hidden lg:block" />
+        <div className="relative">
+          {/* Garis penghubung horizontal (desktop only) */}
+          <div className="absolute top-7 left-[5%] right-[5%] h-px bg-slate-200 hidden lg:block z-0" />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-0 relative z-10">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-y-10 gap-x-4 lg:gap-x-4 relative z-10">
             {ABOUT_TIMELINE.items.map((item, index) => {
               const Icon = TIMELINE_ICONS[index] || Sprout;
               const isLast = index === ABOUT_TIMELINE.items.length - 1;
@@ -32,29 +32,29 @@ const TimelineSection = () => {
               return (
                 <div
                   key={item.tahun}
-                  className="flex items-start gap-4 md:flex-col md:items-center md:text-center px-4 pb-10 md:pb-8 group"
+                  className="flex flex-col items-center text-center group px-2 md:px-4"
                 >
                   {/* Node ikon */}
-                  <div className="relative shrink-0">
-                    <div className="w-14 h-14 rounded-xl bg-white border border-slate-200 flex items-center justify-center group-hover:border-primary/50 group-hover:bg-primary/5 transition-all duration-300 shadow-sm">
-                      <Icon className="w-6 h-6 text-slate-400 group-hover:text-primary transition-colors duration-300" />
+                  <div className="relative mb-6">
+                    <div className="size-14 rounded-xl bg-[#d4edda] text-[#2D6A2D] flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:-translate-y-1 transition-all duration-300">
+                      <Icon className="size-7" strokeWidth={1.5} />
                     </div>
                     {isLast && (
-                      <span className="absolute inset-[-4px] rounded-xl border border-primary/40 animate-ping" />
+                      <span className="absolute inset-[-4px] rounded-xl border border-primary/30 animate-ping" />
                     )}
                   </div>
 
                   {/* Konten */}
-                  <div className="text-left md:text-center">
+                  <div className="flex flex-col items-center">
                     {isLast && (
-                      <span className="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-primary/10 text-primary mb-2">
-                        Terkini
+                      <span className="mb-2 px-2.5 py-0.5 rounded-full bg-primary/10 text-[10px] font-bold text-primary uppercase tracking-wider">
+                        Terbaru
                       </span>
                     )}
-                    <div className="text-xl font-extrabold text-[#17391f] mb-2 tracking-tight">
+                    <div className="text-xl font-extrabold text-[#17391f] mb-2">
                       {item.tahun}
                     </div>
-                    <p className="text-xs font-medium text-[#5d7a64] max-w-full md:max-w-[160px] mx-auto leading-relaxed">
+                    <p className="text-xs md:text-sm font-medium text-[#5d7a64] leading-relaxed max-w-[160px]">
                       {item.keterangan}
                     </p>
                   </div>

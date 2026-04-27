@@ -11,12 +11,12 @@ import {
 } from "lucide-react";
 
 const LAYANAN_ICONS = [
-  { icon: ShoppingCart, color: "text-green-600", bg: "bg-green-50" },
-  { icon: TrendingUp, color: "text-amber-500", bg: "bg-amber-50" },
-  { icon: Store, color: "text-blue-500", bg: "bg-blue-50" },
-  { icon: Truck, color: "text-emerald-500", bg: "bg-emerald-50" },
-  { icon: GraduationCap, color: "text-purple-600", bg: "bg-purple-50" },
-  { icon: FileText, color: "text-orange-600", bg: "bg-orange-50" },
+  ShoppingCart,
+  TrendingUp,
+  Store,
+  Truck,
+  GraduationCap,
+  FileText,
 ];
 
 const LAYANAN_HREFS = [
@@ -30,9 +30,9 @@ const LAYANAN_HREFS = [
 
 const ServicesSection = () => {
   return (
-    <section className="section-padding bg-white">
+    <section className="bg-white">
       <div className="container-smarttani">
-        <div className="text-center mb-8 md:mb-12">
+        <div className="text-center mb-10">
           <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl mb-4">
             {ABOUT_SERVICES.heading}
           </h2>
@@ -41,26 +41,30 @@ const ServicesSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
           {ABOUT_SERVICES.items.map((item, index) => {
-            const IconConfig = LAYANAN_ICONS[index] || { icon: ShoppingCart, color: "text-primary", bg: "bg-primary/5" };
-            const Icon = IconConfig.icon;
+            const Icon = LAYANAN_ICONS[index] || ShoppingCart;
             const href = LAYANAN_HREFS[index] || "/";
             return (
               <Link
                 key={item.title}
                 href={href}
-                className="bg-slate-50 p-4 md:p-6 rounded-2xl flex flex-col items-center text-center group hover:bg-white hover:shadow-xl hover:-translate-y-1 border border-transparent hover:border-slate-100 transition-all duration-300 h-full cursor-pointer"
+                className="group bg-white p-6 rounded-3xl border border-slate-100 flex flex-col items-center text-center shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full cursor-pointer"
               >
-                <div className={`w-10 h-10 md:w-14 md:h-14 rounded-xl ${IconConfig.bg} flex items-center justify-center mb-3 md:mb-5 group-hover:scale-110 transition-transform duration-300`}>
-                  <Icon className={`w-5 h-5 md:w-7 md:h-7 ${IconConfig.color}`} />
+                {/* Icon Container */}
+                <div className="size-14 rounded-xl bg-[#d4edda] text-[#2D6A2D] flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                  <Icon className="size-7" strokeWidth={1.5} />
                 </div>
-                <h3 className="text-xs md:text-sm font-extrabold text-[#17391f] mb-2 group-hover:text-primary transition-colors">
-                  {item.title}
-                </h3>
-                <p className="text-[10px] md:text-xs font-medium text-[#5d7a64] leading-relaxed">
-                  {item.description}
-                </p>
+
+                {/* Content */}
+                <div className="flex flex-col items-center flex-1">
+                  <h3 className="text-sm md:text-base font-extrabold text-[#17391f] mb-2 group-hover:text-primary transition-colors">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs font-medium text-[#5d7a64] leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
               </Link>
             );
           })}

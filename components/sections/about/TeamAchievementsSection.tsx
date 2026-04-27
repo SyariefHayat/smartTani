@@ -10,7 +10,7 @@ import { CheckCircle2, MapPin, Phone } from "lucide-react";
 
 const TeamAchievementsSection = () => {
   return (
-    <section className="section-padding bg-slate-50">
+    <section className="section-padding">
       <div className="container-smarttani">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
           {/* Pencapaian Kami */}
@@ -94,14 +94,14 @@ const TeamAchievementsSection = () => {
               {ABOUT_STRATEGIC_PARTNERS.items.map((mitra) => (
                 <div
                   key={mitra.nama}
-                  className="p-2 md:p-4 rounded-xl bg-white border border-slate-100 flex items-center justify-center hover:shadow-md hover:-translate-y-1 transition-all duration-300"
+                  className="p-3 md:p-4 rounded-xl bg-white border border-slate-100 flex items-center justify-center hover:shadow-md hover:-translate-y-1 transition-all duration-300"
                 >
                   <Image
                     src={mitra.logo}
                     alt={mitra.nama}
                     width={100}
                     height={50}
-                    className="object-contain max-h-6 md:max-h-8"
+                    className="object-contain max-h-10 md:max-h-12 w-auto"
                   />
                 </div>
               ))}

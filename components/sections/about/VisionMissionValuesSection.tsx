@@ -5,32 +5,31 @@ import { Button } from "@/components/ui/button";
 
 const VisionMissionValuesSection = () => {
   return (
-    <section id="profil" className="section-padding bg-white scroll-mt-24">
+    <section id="profil" className="bg-white">
       <div className="container-smarttani">
         {/* Description Content */}
-        <div className="max-w-4xl mb-16">
-          <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl mb-6">
+        <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-10">
+          <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl mb-4">
             {ABOUT_DESCRIPTION.heading}
           </h2>
-          <p className="text-sm md:text-base font-medium text-[#5d7a64] mb-8 text-justify lg:text-left leading-relaxed">
+          <p className="text-sm md:text-base font-medium text-[#5d7a64] mb-8 leading-relaxed">
             {ABOUT_DESCRIPTION.content}
           </p>
           <Button
-            className="bg-primary hover:bg-primary-dark !text-white rounded-xl font-bold px-8 h-12 shadow-lg shadow-primary/20 cursor-pointer"
+            className="bg-primary hover:bg-primary-dark text-white rounded-xl font-bold px-8 h-12 shadow-lg shadow-primary/20 cursor-pointer"
             asChild
           >
             <a href="#visi-misi">{ABOUT_DESCRIPTION.cta}</a>
           </Button>
         </div>
 
-        <div id="visi-misi" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 scroll-mt-24">
+        <div id="visi-misi" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Visi Kami */}
-          <div className="bg-slate-50 p-6 md:p-8 rounded-2xl border border-slate-100 flex flex-col items-start min-h-[280px] h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
-              <Eye className="w-6 h-6 text-primary" />
+          <div className="group bg-white p-8 rounded-3xl border border-slate-100 flex flex-col items-center text-center shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div className="size-16 rounded-2xl bg-[#d4edda] flex items-center justify-center mb-6 text-[#2D6A2D]">
+              <Eye className="size-8" strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-extrabold text-[#17391f] mb-4 flex items-center gap-2">
-              <div className="w-1.5 h-6 bg-primary rounded-full"></div>
+            <h3 className="text-xl font-extrabold text-[#17391f] mb-4">
               {ABOUT_VISION.heading}
             </h3>
             <p className="text-sm font-medium text-[#5d7a64] leading-relaxed">
@@ -39,17 +38,16 @@ const VisionMissionValuesSection = () => {
           </div>
 
           {/* Misi Kami */}
-          <div className="bg-slate-50 p-6 md:p-8 rounded-2xl border border-slate-100 flex flex-col items-start min-h-[280px] h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
-              <Target className="w-6 h-6 text-primary" />
+          <div className="group bg-white p-8 rounded-3xl border border-slate-100 flex flex-col items-center text-center shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div className="size-16 rounded-2xl bg-[#d4edda] flex items-center justify-center mb-6 text-[#2D6A2D]">
+              <Target className="size-8" strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-extrabold text-[#17391f] mb-4 flex items-center gap-2">
-              <div className="w-1.5 h-6 bg-primary rounded-full"></div>
+            <h3 className="text-xl font-extrabold text-[#17391f] mb-4">
               {ABOUT_MISSION.heading}
             </h3>
-            <ul className="space-y-4">
+            <ul className="space-y-4 w-full">
               {ABOUT_MISSION.items.map((misi, index) => (
-                <li key={index} className="flex items-start gap-3">
+                <li key={index} className="flex items-start gap-3 text-left">
                   <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                   <span className="text-sm font-medium text-[#5d7a64] leading-relaxed">
                     {misi}
@@ -60,17 +58,16 @@ const VisionMissionValuesSection = () => {
           </div>
 
           {/* Nilai Inti */}
-          <div className="bg-slate-50 p-6 md:p-8 rounded-2xl border border-slate-100 flex flex-col items-start min-h-[280px] h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
-              <ShieldCheck className="w-6 h-6 text-primary" />
+          <div className="group bg-white p-8 rounded-3xl border border-slate-100 flex flex-col items-center text-center shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div className="size-16 rounded-2xl bg-[#d4edda] flex items-center justify-center mb-6 text-[#2D6A2D]">
+              <ShieldCheck className="size-8" strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-extrabold text-[#17391f] mb-4 flex items-center gap-2">
-              <div className="w-1.5 h-6 bg-primary rounded-full"></div>
+            <h3 className="text-xl font-extrabold text-[#17391f] mb-4">
               {ABOUT_VALUES.heading}
             </h3>
-            <div className="space-y-5">
+            <div className="grid grid-cols-1 gap-5 w-full">
               {ABOUT_VALUES.items.map((nilai, index) => (
-                <div key={index} className="flex items-start gap-3">
+                <div key={index} className="flex items-start gap-3 text-left">
                   <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                   <div>
                     <h4 className="text-sm font-extrabold text-[#17391f] leading-tight">
