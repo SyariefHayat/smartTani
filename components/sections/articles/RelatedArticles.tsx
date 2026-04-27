@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Clock, ChevronRight } from "lucide-react";
 import { ARTICLE_ITEMS } from "@/constants/article";
+import { slugify } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 export default function RelatedArticles() {
   const relatedArticles = ARTICLE_ITEMS.slice(0, 3);

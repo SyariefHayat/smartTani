@@ -32,7 +32,7 @@ export default function LoginMembership() {
       <RadioGroup
         value={selectedRole}
         onValueChange={setSelectedRole}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"
+        className="flex flex-col gap-1 lg:grid lg:grid-cols-5 lg:gap-4"
       >
         {LOGIN_MEMBERSHIP.items.map((item) => (
           <div key={item.id}>
@@ -44,37 +44,50 @@ export default function LoginMembership() {
             <Label
               htmlFor={item.id}
               className={cn(
-                "flex flex-col items-center p-4 rounded-xl border-2 bg-white cursor-pointer transition-all duration-200 h-full hover:border-green-200 hover:shadow-md",
+                "relative flex cursor-pointer items-center gap-3",
+                "rounded-xl border transition-all",
+                "p-2.5 md:p-4",
+                "hover:border-green-200",
                 selectedRole === item.id
-                  ? "border-green-500 ring-1 ring-green-500"
-                  : "border-gray-100"
+                  ? "border-[#2D6A2D] bg-[#EAF3DE]/30"
+                  : "border-slate-100 bg-white",
+                "lg:flex-col lg:items-center lg:p-4 lg:rounded-xl",
+                "lg:border-2 lg:h-full lg:hover:shadow-md"
               )}
             >
-              <div className="relative w-full aspect-square mb-4 rounded-lg overflow-hidden bg-gray-50">
+              {/* Gambar: tampil di SEMUA ukuran layar */}
+              {/* Mobile: size-10, Desktop: size-16 ke atas */}
+              <div className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-slate-50 md:size-16 lg:w-full lg:h-auto lg:aspect-square lg:rounded-xl lg:mb-2">
                 <Image
                   src={roleImages[item.id] || "/images/placeholder.webp"}
                   alt={item.title}
                   fill
-                  className="object-cover"
+                  className="object-contain p-1"
                 />
               </div>
-              <h3 className="font-bold text-gray-900 mb-1 text-center text-sm lg:text-base">
-                {item.title}
-              </h3>
-              <p className="text-xs text-gray-500 text-center line-clamp-2">
-                {item.description}
-              </p>
-              
+
+              {/* Teks nama + deskripsi */}
+              <div className="flex-1 lg:text-center">
+                <h3 className="text-xs font-extrabold text-[#17391f] md:text-sm lg:mb-1 lg:text-base">
+                  {item.title}
+                </h3>
+                {/* Deskripsi: hidden mobile, tampil desktop */}
+                <p className="hidden lg:block text-xs text-gray-500 text-center line-clamp-2">
+                  {item.description}
+                </p>
+              </div>
+
+              {/* Radio indicator */}
               <div className={cn(
-                "mt-4 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200",
-                selectedRole === item.id 
-                  ? "border-green-600 bg-white" 
-                  : "border-gray-200 bg-gray-50/50"
+                "size-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200",
+                "lg:mt-3",
+                selectedRole === item.id
+                  ? "border-[#2D6A2D] bg-[#2D6A2D]"
+                  : "border-slate-200 bg-white"
               )}>
-                <div className={cn(
-                  "w-3 h-3 rounded-full transition-all duration-200 scale-0",
-                  selectedRole === item.id && "bg-green-600 scale-100"
-                )} />
+                {selectedRole === item.id && (
+                  <div className="size-2 rounded-full bg-white" />
+                )}
               </div>
             </Label>
           </div>

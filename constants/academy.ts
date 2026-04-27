@@ -1,3 +1,5 @@
+import { AcademyCourse } from "@/constants/types";
+
 export const ACADEMY_META = {
   title: "SiTani Academy — Belajar Hari Ini, Panen Sukses Esok Hari",
   description:
@@ -100,7 +102,11 @@ export const ACADEMY_MODEL_PELATIHAN = {
   ],
 };
 
-export const ACADEMY_KURSUS = {
+export const ACADEMY_KURSUS: {
+  heading: string;
+  subtext: string;
+  items: AcademyCourse[];
+} = {
   heading: "Kursus Populer",
   subtext: "Kursus pilihan dengan materi terbaik dan rating tertinggi.",
   items: [
