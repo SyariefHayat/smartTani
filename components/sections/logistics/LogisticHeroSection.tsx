@@ -37,7 +37,7 @@ const LogisticHeroSection = () => {
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-1 md:mt-7 lg:mt-6">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-1 md:mt-7 lg:mt-10">
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-8">
 
           {/* Left Column */}
@@ -54,44 +54,6 @@ const LogisticHeroSection = () => {
             <p className="text-body-sm mb-8 max-w-sm md:max-w-md text-white/85">
               {LOGISTICS_HERO.subtext}
             </p>
-
-            {/* Feature Badges */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 max-w-2xl">
-              {LOGISTICS_HERO.badges.map((item, index) => {
-                const icons = [ShieldCheck, Truck, Globe];
-                const Icon = icons[index] || ShieldCheck;
-                const iconBg = ["#EAF3DE", "#FAEEDA", "#E6F1FB"][index] ?? "#EAF3DE";
-                const iconColor = ["#3B6D11", "#854F0B", "#185FA5"][index] ?? "#3B6D11";
-
-                return (
-                  <div
-                    key={index}
-                    className="rounded-xl border border-white/60 bg-white p-3 shadow-lg backdrop-blur-md"
-                  >
-                    <div className="flex items-start gap-3">
-                      <div
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
-                        style={{ background: iconBg }}
-                      >
-                        <Icon
-                          className="size-5"
-                          style={{ color: iconColor }}
-                          strokeWidth={2}
-                        />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[10px] font-semibold uppercase text-muted-foreground leading-snug">
-                          {item.label}
-                        </p>
-                        <p className="mt-0.5 text-xs font-extrabold text-[#17391f] leading-tight">
-                          {item.sublabel}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
           </div>
 
           {/* Right Column: Tracking Form & Result */}
@@ -99,10 +61,10 @@ const LogisticHeroSection = () => {
             <div className="w-full lg:max-w-xs rounded-2xl bg-white p-4 md:p-5 shadow-2xl overflow-hidden">
               {!showResult ? (
                 <>
-                  <h3 className="text-sm font-extrabold text-[#17391f] mb-1">
+                  <h3 className="text-base font-extrabold text-[#17391f] mb-1">
                     {LOGISTICS_HERO.tracking.label}
                   </h3>
-                  <p className="text-xs font-medium text-[#5d7a64] mb-5">
+                  <p className="text-sm font-medium text-[#5d7a64] mb-5">
                     {LOGISTICS_HERO.tracking.placeholder}
                   </p>
 
@@ -111,13 +73,13 @@ const LogisticHeroSection = () => {
                       <Input
                         type="text"
                         placeholder={LOGISTICS_HERO.tracking.inputHint}
-                        className="h-10 border-slate-200 bg-slate-50 px-4 focus:ring-primary rounded-xl text-xs font-bold"
+                        className="h-10 border-slate-200 bg-slate-50 px-4 focus:ring-primary rounded-xl text-sm font-bold"
                         value={trackingNo}
                         onChange={(e) => setTrackingNo(e.target.value)}
                       />
                       <Button
                         type="submit"
-                        className="h-10 w-full bg-primary text-xs font-bold !text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20 cursor-pointer"
+                        className="h-11 w-full bg-primary text-sm font-bold !text-white hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20 cursor-pointer"
                       >
                         <Search className="mr-2 h-4 w-4" />
                         {LOGISTICS_HERO.tracking.ctaPrimary}
@@ -126,27 +88,27 @@ const LogisticHeroSection = () => {
 
                     <button
                       type="button"
-                      className="flex w-full items-center justify-center gap-2 text-[11px] font-bold text-primary hover:text-primary/80 transition-all py-1.5 group cursor-pointer"
+                      className="flex w-full items-center justify-center gap-2 text-sm font-bold text-primary hover:text-primary/80 transition-all py-1.5 group cursor-pointer"
                     >
                       {LOGISTICS_HERO.tracking.ctaSecondary}
-                      <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </button>
                   </div>
                 </>
               ) : (
                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-sm font-extrabold text-[#17391f]">Hasil Pelacakan</h3>
+                    <h3 className="text-base font-extrabold text-[#17391f]">Hasil Pelacakan</h3>
                     <button
                       onClick={() => setShowResult(false)}
-                      className="text-[10px] font-bold text-primary hover:underline cursor-pointer"
+                      className="text-xs font-bold text-primary hover:underline cursor-pointer"
                     >
                       Ubah No. Resi
                     </button>
                   </div>
                   <div className="bg-[#EAF3DE]/40 rounded-xl p-3 mb-4 border border-[#d4edda]">
-                    <p className="text-[9px] text-[#5d7a64] uppercase font-bold tracking-wider">No. Resi</p>
-                    <p className="text-xs font-extrabold text-[#17391f]">{trackingNo}</p>
+                    <p className="text-[10px] text-[#5d7a64] uppercase font-bold tracking-wider">No. Resi</p>
+                    <p className="text-sm font-extrabold text-[#17391f]">{trackingNo}</p>
                   </div>
                   <div className="space-y-4">
                     {[
@@ -165,10 +127,10 @@ const LogisticHeroSection = () => {
                           {i < 3 && <div className={`w-0.5 h-6 ${step.done ? 'bg-primary' : 'bg-slate-200'}`} />}
                         </div>
                         <div>
-                          <p className={`text-[11px] font-extrabold ${step.done ? 'text-[#17391f]' : 'text-slate-400'}`}>
+                          <p className={`text-xs font-extrabold ${step.done ? 'text-[#17391f]' : 'text-slate-400'}`}>
                             {step.title}
                           </p>
-                          <p className="text-[9px] font-medium text-[#5d7a64]">{step.date}</p>
+                          <p className="text-[10px] font-medium text-[#5d7a64]">{step.date}</p>
                         </div>
                       </div>
                     ))}

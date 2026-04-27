@@ -50,42 +50,42 @@ export const LOGISTICS_SERVICES = {
       title: "Pengiriman Hasil Panen",
       description:
         "Distribusi hasil pertanian segar ke pasar, pabrik, atau gudang.",
-      image: "/images/logistics/pengiriman-hasil-panen.webp",
+      image: "/images/logistics/pengiriman-hasil-panen.png",
       cta: "Selengkapnya →",
     },
     {
       title: "Distribusi Sarana Produksi",
       description:
         "Pengiriman pupuk, benih, dan alat pertanian ke seluruh indonesia.",
-      image: "/images/logistics/distribusi-sarana-produksi.webp",
+      image: "/images/logistics/distribusi-sarana-produksi.png",
       cta: "Selengkapnya →",
     },
     {
       title: "Pergudangan & Penyimpanan",
       description:
         "Fasilitas gudang modern dengan sistem manajemen stok terintegrasi.",
-      image: "/images/logistics/pergudangan.webp",
+      image: "/images/logistics/pergudangan.png",
       cta: "Selengkapnya →",
     },
     {
       title: "Pengiriman Antar Pulau",
       description:
         "Layanan kargo laut dan udara untuk jangkauan ke seluruh nusantara.",
-      image: "/images/logistics/pengiriman-antar-pulau.webp",
+      image: "/images/logistics/pengiriman-antar-pulau.png",
       cta: "Selengkapnya →",
     },
     {
       title: "Asuransi Kargo",
       description:
         "Perlindungan penuh for setiap pengiriman, aman dan tenang.",
-      image: "/images/logistics/asuransi-kargo.webp",
+      image: "/images/logistics/asuransi-kargo.png",
       cta: "Selengkapnya →",
     },
     {
       title: "Pelacakan Real-time",
       description:
         "Pantau status pengiriman Anda kapan saja melalui sistem terintegrasi.",
-      image: "/images/logistics/pelacakan-real-time.webp",
+      image: "/images/logistics/pelacakan-real-time.png",
       cta: "Selengkapnya →",
     },
   ],

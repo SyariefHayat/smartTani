@@ -8,8 +8,8 @@ import { FEATURES_BG_COLORS } from "@/constants/home";
 
 const LogisticServicesSection = () => {
   return (
-    <section className="section-padding">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
+    <section className="">
+      <div className="container-smarttani">
         {/* Header */}
         <div className="mb-6 md:mb-10 flex flex-col items-center text-center">
           <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
@@ -39,17 +39,17 @@ const LogisticServicesSection = () => {
                 />
               </div>
 
-              <div className="flex flex-col flex-1 items-center -mt-5 md:-mt-3 lg:-mt-7">
-                <h3 className="mb-2 md:mb-4 text-sm font-extrabold text-[#17391f] leading-tight">
+              <div className="flex flex-col flex-1 items-center -mt-1 lg:-mt-3">
+                <h3 className="mb-2 md:mb-4 text-lg font-extrabold text-[#17391f] leading-tight">
                   {item.title}
                 </h3>
-                <p className="text-[10px] leading-relaxed text-[#5d7a64] md:text-xs line-clamp-3 lg:-mt-2">
+                <p className="text-xs leading-relaxed text-[#5d7a64] md:text-sm line-clamp-3 lg:-mt-2">
                   {item.description}
                 </p>
               </div>
 
               <span
-                className="mt-4 group flex items-center gap-1.5 text-[10px] font-bold text-primary transition-colors hover:text-primary/80"
+                className="mt-4 group flex items-center gap-1.5 text-xs font-bold text-primary transition-colors hover:text-primary/80"
               >
                 {item.cta}
               </span>

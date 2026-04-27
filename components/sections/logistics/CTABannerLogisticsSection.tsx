@@ -4,13 +4,12 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { LOGISTICS_CTA_BANNER } from "@/constants/logistics";
-import { MessageSquare, PhoneCall } from "lucide-react";
 
 const CTABannerLogisticsSection = () => {
   return (
-    <section className="pb-10 md:pb-16">
-      <div className="container-smarttani">
-        <div className="relative overflow-hidden rounded-[32px] bg-primary-dark px-8 py-10 md:px-16 md:py-16">
+    <section className="section-padding">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
+        <div className="relative overflow-hidden rounded-2xl bg-[#1a4d2e] px-8 py-8 md:px-16">
           {/* Background Image */}
           <div className="absolute inset-0 z-0">
             <picture>
@@ -36,10 +35,10 @@ const CTABannerLogisticsSection = () => {
           <div className="relative z-10 flex flex-col items-center justify-between gap-10 lg:flex-row lg:gap-16">
             {/* Text Content */}
             <div className="max-w-2xl text-center lg:text-left">
-              <h2 className="text-2xl font-extrabold text-white md:text-4xl leading-tight">
+              <h2 className="text-xl font-bold leading-tight text-white sm:text-2xl lg:text-3xl">
                 {LOGISTICS_CTA_BANNER.heading}
               </h2>
-              <p className="mt-3 text-sm font-medium text-white/90 md:text-lg leading-relaxed">
+              <p className="mt-3 text-sm font-medium text-[#eef8e5]/80 md:text-base">
                 {LOGISTICS_CTA_BANNER.subtext}
               </p>
             </div>
@@ -49,19 +48,17 @@ const CTABannerLogisticsSection = () => {
               <Button
                 variant="outline"
                 asChild
-                className="h-14 rounded-2xl border-white bg-transparent px-8 text-sm font-bold text-white hover:bg-white/10 hover:text-white cursor-pointer transition-all active:scale-95"
+                className="h-12 rounded-lg border-white/40 bg-transparent px-8 text-sm font-semibold text-white hover:bg-white/10 hover:text-white cursor-pointer"
               >
                 <Link href="/contact">
-                  <MessageSquare className="mr-2 size-5" />
                   {LOGISTICS_CTA_BANNER.cta[0]?.label}
                 </Link>
               </Button>
               <Button 
                 asChild
-                className="h-14 rounded-2xl border-none bg-accent px-8 text-sm font-bold !text-white hover:bg-accent/90 cursor-pointer shadow-lg shadow-black/20 transition-all active:scale-95"
+                className="h-12 rounded-lg border-none bg-[#FFB21C] px-8 text-sm font-bold text-white hover:bg-[#FFB21C]/90 cursor-pointer"
               >
                 <Link href="/contact">
-                  <PhoneCall className="mr-2 size-5" />
                   {LOGISTICS_CTA_BANNER.cta[1]?.label}
                 </Link>
               </Button>

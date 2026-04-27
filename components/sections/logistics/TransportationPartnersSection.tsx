@@ -6,7 +6,7 @@ import { LOGISTICS_PARTNERS } from "@/constants/logistics";
 
 const TransportationPartnersSection = () => {
   return (
-    <section className="section-padding bg-white overflow-hidden">
+    <section className="section-padding bg-white">
       <div className="container-smarttani">
         {/* Header */}
         <div className="mb-10 flex flex-col items-center text-center">
@@ -23,7 +23,7 @@ const TransportationPartnersSection = () => {
           {LOGISTICS_PARTNERS.items.map((mitra, index) => (
             <div
               key={index}
-              className="relative flex h-24 w-full items-center justify-center grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+              className="relative flex h-24 w-full items-center justify-center"
             >
               <div className="relative h-12 w-32 sm:h-14 sm:w-36 lg:h-16 lg:w-40 xl:h-14 xl:w-32">
                 <Image
