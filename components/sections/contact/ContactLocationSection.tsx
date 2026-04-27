@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export default function ContactLocationSection() {
   return (
-    <section className="pb-10 md:pb-14">
+    <section className="mb-10">
       <div className="container-smarttani">
         <div className="group relative overflow-hidden rounded-3xl border border-slate-200 shadow-lg transition-all hover:shadow-xl min-h-[480px] md:min-h-[520px]">
 
@@ -20,32 +20,32 @@ export default function ContactLocationSection() {
 
           {/* Floating Content Card */}
           <div className="absolute inset-0 z-10 flex items-center p-6 md:p-10 lg:p-14">
-            <div className="w-full max-w-sm rounded-2xl border border-slate-200/80 bg-[#F8FAFC] p-8 shadow-xl md:p-10">
+            <div className="w-full max-w-sm rounded-2xl border border-slate-200/80 bg-white/95 backdrop-blur-md p-8 shadow-2xl md:p-10">
 
-              <h2 className="text-heading-1 font-bold text-foreground">
+              <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
                 {CONTACT_LOCATIONS.heading}
               </h2>
-              <p className="mt-3 text-body-sm text-muted-foreground md:text-body">
+              <p className="mt-3 text-sm font-medium text-[#5d7a64] leading-relaxed">
                 {CONTACT_LOCATIONS.subtext}
               </p>
 
-              <div className="mt-6 space-y-3">
+              <div className="mt-8 space-y-4">
                 {CONTACT_LOCATIONS.bullets.map((bullet) => (
-                  <div key={bullet} className="flex items-center gap-3">
-                    <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary-light">
-                      <CheckCircle2 className="size-4 text-primary" />
+                  <div key={bullet} className="flex items-center gap-4">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                      <CheckCircle2 className="size-5 text-primary" />
                     </div>
-                    <span className="text-body-sm font-semibold text-foreground md:text-body">
+                    <span className="text-sm font-extrabold text-[#17391f]">
                       {bullet}
                     </span>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-8">
-                <Button className="w-full rounded-xl bg-primary px-8 py-6 text-body-sm font-bold text-white hover:bg-primary-dark shadow-lg shadow-primary/10 transition-all cursor-pointer">
+              <div className="mt-10">
+                <Button className="w-full h-14 rounded-xl bg-primary px-8 text-base font-extrabold text-white hover:bg-primary-dark shadow-xl shadow-primary/20 transition-all active:scale-[0.98] cursor-pointer">
                   {CONTACT_LOCATIONS.button}
-                  <ExternalLink className="ml-2 size-5" />
+                  <ExternalLink className="ml-3 size-6" />
                 </Button>
               </div>
 

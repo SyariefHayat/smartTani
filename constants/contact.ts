@@ -36,7 +36,7 @@ export const CONTACT_INFO = {
   items: [
     {
       type: "Alamat",
-      value: "Jln Raya Karangbinangun KM 1 No 42\nAlang Alang, Karangbinangun\nLamongan 62293\nJawa Timur, Indonesia",
+      value: "Jln Raya Karangbinangun KM 1 No 42 Alang Alang, Karangbinangun Lamongan 62293 Jawa Timur, Indonesia",
     },
     {
       type: "Nomor HP",
@@ -44,11 +44,11 @@ export const CONTACT_INFO = {
     },
     {
       type: "Email",
-      value: "info@smarttani.id",
+      value: "info@smarttaniindonesia.com",
     },
     {
       type: "Website",
-      value: "www.smarttani.id",
+      value: "www.smarttaniindonesia.com",
     },
     {
       type: "Jam Operasional",
