@@ -20,7 +20,7 @@ const TimelineSection = () => {
           </p>
         </div>
 
-        <div className="relative">
+        <div className="relative before:absolute before:left-7 before:top-0 before:bottom-0 before:w-px before:bg-slate-200 md:before:hidden">
           {/* Garis horizontal (desktop) */}
           <div className="absolute top-7 left-[8%] w-[84%] h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent hidden lg:block" />
 
@@ -32,10 +32,10 @@ const TimelineSection = () => {
               return (
                 <div
                   key={item.tahun}
-                  className="flex flex-col items-center text-center px-4 pb-8 group"
+                  className="flex items-start gap-4 md:flex-col md:items-center md:text-center px-4 pb-10 md:pb-8 group"
                 >
                   {/* Node ikon */}
-                  <div className="relative mb-5">
+                  <div className="relative shrink-0">
                     <div className="w-14 h-14 rounded-xl bg-white border border-slate-200 flex items-center justify-center group-hover:border-primary/50 group-hover:bg-primary/5 transition-all duration-300 shadow-sm">
                       <Icon className="w-6 h-6 text-slate-400 group-hover:text-primary transition-colors duration-300" />
                     </div>
@@ -45,7 +45,7 @@ const TimelineSection = () => {
                   </div>
 
                   {/* Konten */}
-                  <div>
+                  <div className="text-left md:text-center">
                     {isLast && (
                       <span className="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-primary/10 text-primary mb-2">
                         Terkini
@@ -54,7 +54,7 @@ const TimelineSection = () => {
                     <div className="text-xl font-extrabold text-[#17391f] mb-2 tracking-tight">
                       {item.tahun}
                     </div>
-                    <p className="text-xs font-medium text-[#5d7a64] max-w-[160px] mx-auto leading-relaxed">
+                    <p className="text-xs font-medium text-[#5d7a64] max-w-full md:max-w-[160px] mx-auto leading-relaxed">
                       {item.keterangan}
                     </p>
                   </div>

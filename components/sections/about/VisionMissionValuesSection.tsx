@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const VisionMissionValuesSection = () => {
   return (
-    <section id="profil" className="bg-white scroll-mt-24">
+    <section id="profil" className="section-padding bg-white scroll-mt-24">
       <div className="container-smarttani">
         {/* Description Content */}
         <div className="max-w-4xl mb-16">
@@ -25,7 +25,7 @@ const VisionMissionValuesSection = () => {
 
         <div id="visi-misi" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 scroll-mt-24">
           {/* Visi Kami */}
-          <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 flex flex-col items-start h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <div className="bg-slate-50 p-6 md:p-8 rounded-2xl border border-slate-100 flex flex-col items-start min-h-[280px] h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
               <Eye className="w-6 h-6 text-primary" />
             </div>
@@ -39,7 +39,7 @@ const VisionMissionValuesSection = () => {
           </div>
 
           {/* Misi Kami */}
-          <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 flex flex-col items-start h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <div className="bg-slate-50 p-6 md:p-8 rounded-2xl border border-slate-100 flex flex-col items-start min-h-[280px] h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
               <Target className="w-6 h-6 text-primary" />
             </div>
@@ -60,7 +60,7 @@ const VisionMissionValuesSection = () => {
           </div>
 
           {/* Nilai Inti */}
-          <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 flex flex-col items-start h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+          <div className="bg-slate-50 p-6 md:p-8 rounded-2xl border border-slate-100 flex flex-col items-start min-h-[280px] h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
               <ShieldCheck className="w-6 h-6 text-primary" />
             </div>

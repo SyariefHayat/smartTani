@@ -17,7 +17,7 @@ export const ABOUT_HERO = {
   bgImageMobile: "/images/about/mobile.png",
 };
 
-export const ABOUT_DESCRIPTION = {
+export const ABOUT_DESKRIPSI = {
   heading: "Tentang PT. SmartTani Indonesia",
   content:
     "Kami adalah perusahaan teknologi pertanian yang menyediakan platform terintegrasi untuk menghubungkan petani, distributor, investor, penyedia logistik, dan ahli melalui ekosistem digital. Sejak berdiri, kami terus berinovasi untuk mendukung pertanian Indonesia yang lebih efisien, menguntungkan, dan berkelanjutan.",
@@ -56,7 +56,7 @@ export const ABOUT_STATS_BAR = [
   // { value: "50+", label: "Produk Tersedia" },
 ];
 
-export const ABOUT_MISSION = {
+export const ABOUT_MISI = {
   heading: "Misi Kami",
   items: [
     "Menghubungkan seluruh pelaku ekosistem pertanian melalui teknologi digital.",
@@ -66,18 +66,18 @@ export const ABOUT_MISSION = {
   ],
 };
 
-export const ABOUT_VISION = {
+export const ABOUT_VISI = {
   heading: "Visi Kami",
   content:
     "Menjadi ekosistem pertanian terintegrasi terdepan kesejahteraan petani dan ketahanan pangan nasional, pesejahleraan.",
 };
 
-export const ABOUT_VALUES = {
+export const ABOUT_NILAI = {
   heading: "Nilai Inti Kami",
   items: [
     {
       title: "Integritas",
-      description: "Kami menjunjung tinggi kejujuran dan transparansi.",
+      description: "Kami menjunjung tinggi kejujuran and transparansi.",
     },
     {
       title: "Inovasi",
@@ -109,19 +109,19 @@ export const ABOUT_TIMELINE = {
     },
     {
       tahun: "2020",
-      keterangan: "Meluncurkan platform SiTani Marketplace dan edukasi.",
+      keterangan: "Meluncurkan platform SiTani Marketplace and edukasi.",
     },
     {
       tahun: "2021",
-      keterangan: "Memperluas jaringan distributor dan layanan logistik.",
+      keterangan: "Memperluas jaringan distributor and layanan logistik.",
     },
     {
       tahun: "2022",
-      keterangan: "Meluncurkan SiTani Academy dan layanan Investasi pertanian.",
+      keterangan: "Meluncurkan SiTani Academy and layanan Investasi pertanian.",
     },
     {
       tahun: "2023",
-      keterangan: "Menjangkau 20+ provinsi dan bermitra dengan ribuan petani.",
+      keterangan: "Menjangkau 20+ provinsi and bermitra dengan ribuan petani.",
     },
     {
       tahun: "2024",
@@ -131,7 +131,7 @@ export const ABOUT_TIMELINE = {
   ],
 };
 
-export const ABOUT_SERVICES = {
+export const ABOUT_LAYANAN = {
   heading: "Layanan Kami",
   subtext:
     "Ekosistem terintegrasi untuk memenuhi setiap kebutuhan dalam rantai pasok pertanian.",
@@ -154,22 +154,22 @@ export const ABOUT_SERVICES = {
     {
       title: "Logistik",
       description:
-        "Layanan pengiriman cepat, aman, dan terintegrasi ke seluruh Indonesia.",
+        "Layanan pengiriman cepat, aman, and terintegrasi ke seluruh Indonesia.",
     },
     {
       title: "SiTani Academy",
       description:
-        "Edukasi dan pelatihan praktis untuk meningkatkan keterampilan petani.",
+        "Edukasi and pelatihan praktis untuk meningkatkan keterampilan petani.",
     },
     {
       title: "Artikel",
       description:
-        "Informasi terbaru, tips, dan insight seputar dunia pertanian.",
+        "Informasi terbaru, tips, and insight seputar dunia pertanian.",
     },
   ],
 };
 
-export const ABOUT_ACHIEVEMENTS = {
+export const ABOUT_PENCAPAIAN = {
   heading: "Pencapaian Kami",
   items: [
     "Terpercaya oleh 10.000+ petani di seluruh Indonesia",
@@ -180,7 +180,7 @@ export const ABOUT_ACHIEVEMENTS = {
   ],
 };
 
-export const ABOUT_LEADERSHIP = {
+export const ABOUT_PIMPINAN = {
   heading: "Kepemimpinan Kami",
   items: [
     {
@@ -202,14 +202,14 @@ export const ABOUT_LEADERSHIP = {
   placeholder: "/images/about/placeholder-professional.jpeg",
 };
 
-export const ABOUT_ADDRESS = {
+export const ABOUT_ALAMAT = {
   heading: "Alamat & Kontak Perusahaan",
   alamat:
     "Jin raya Karangbinangun km 1 no 42, Alang Alang Karangbinangun, Lamongan 62293, Jawa Timur, Indonesia",
   telepon: "0823 2695 2833",
 };
 
-export const ABOUT_STRATEGIC_PARTNERS = {
+export const ABOUT_MITRA_STRATEGIS = {
   heading: "Mitra Strategis Kami",
   items: [
     { nama: "Pupuk Indonesia", logo: "/images/partners/partner-pupuk-indonesia.png" },
@@ -224,6 +224,17 @@ export const ABOUT_STRATEGIC_PARTNERS = {
 export const ABOUT_CTA_BANNER = {
   heading: "Mari Bertumbuh Bersama SmartTani",
   subtext:
-    "Bergabunglah dengan ekosistem pertanian terintegrasi kami dan rasakan manfaatnya untuk bisnis pertanian Anda.",
+    "Bergabunglah dengan ekosistem pertanian terintegrasi kami and rasakan manfaatnya untuk bisnis pertanian Anda.",
   cta: [{ label: "Hubungi Kami" }, { label: "Daftar Sekarang" }],
 };
+
+// Aliases untuk kompatibilitas komponen
+export const ABOUT_DESCRIPTION = ABOUT_DESKRIPSI;
+export const ABOUT_VISION = ABOUT_VISI;
+export const ABOUT_MISSION = ABOUT_MISI;
+export const ABOUT_VALUES = ABOUT_NILAI;
+export const ABOUT_SERVICES = ABOUT_LAYANAN;
+export const ABOUT_ACHIEVEMENTS = ABOUT_PENCAPAIAN;
+export const ABOUT_LEADERSHIP = ABOUT_PIMPINAN;
+export const ABOUT_ADDRESS = ABOUT_ALAMAT;
+export const ABOUT_STRATEGIC_PARTNERS = ABOUT_MITRA_STRATEGIS;

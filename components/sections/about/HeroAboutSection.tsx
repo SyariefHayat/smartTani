@@ -25,7 +25,7 @@ const HeroAboutSection = () => {
   );
 
   return (
-    <section className="relative flex items-starts overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-start md:items-center overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
@@ -38,9 +38,6 @@ const HeroAboutSection = () => {
             className="w-full h-full object-cover object-center"
           />
         </picture>
-
-        {/* Overlay mobile */}
-        {/* <div className="absolute inset-0 bg-black/55 md:hidden" /> */}
       </div>
 
       {/* Content */}
@@ -63,13 +60,13 @@ const HeroAboutSection = () => {
             </p>
 
             {/* CTA Buttons */}
-            <div className="grid grid-cols-2 gap-3 max-w-sm mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-sm mb-4">
               {ABOUT_HERO_ACTIONS.map(({ prefix, label, icon, className, href }) => (
                 <Button
                   key={label}
                   asChild={!!href}
                   onClick={!href ? scrollToDetail : undefined}
-                  className={`h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer ${className}`}
+                  className={`h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer w-full sm:w-auto ${className}`}
                 >
                   {href ? (
                     <Link href={href}>
