@@ -178,13 +178,13 @@ function RegisterFormContent() {
               <RadioGroup
                 value={selectedRole}
                 onValueChange={setSelectedRole}
-                className="mt-8 space-y-4"
+                className="mt-6 space-y-1"
               >
                 {REGISTER_MEMBERSHIP_TYPES.items.map((role) => (
                   <div key={role.value}>
                     <Label
                       htmlFor={role.value}
-                      className={`relative flex cursor-pointer items-center gap-4 rounded-2xl border-2 p-4 transition-all hover:border-[#2D6A2D]/30 ${
+                      className={`relative flex cursor-pointer items-center gap-3 rounded-xl border transition-all hover:border-[#2D6A2D]/30 p-2.5 md:p-4 ${
                         selectedRole === role.value
                           ? "border-[#2D6A2D] bg-[#EAF3DE]/30"
                           : "border-slate-100 bg-white"
@@ -195,7 +195,7 @@ function RegisterFormContent() {
                         id={role.value}
                         className="sr-only"
                       />
-                      <div className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-slate-50 md:size-24">
+                      <div className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-slate-50 md:size-16">
                         <NextImage
                           src={roleImages[role.value]}
                           alt={role.label}
@@ -205,7 +205,7 @@ function RegisterFormContent() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
-                          <h3 className="text-sm font-extrabold text-[#17391f]">
+                          <h3 className="text-xs font-extrabold text-[#17391f] md:text-sm">
                             {role.label}
                           </h3>
                           <div className={`size-5 rounded-full border-2 flex items-center justify-center ${
@@ -214,11 +214,11 @@ function RegisterFormContent() {
                             {selectedRole === role.value && <div className="size-2 rounded-full bg-white" />}
                           </div>
                         </div>
-                        <p className="mt-1 text-[10px] font-medium leading-tight text-gray-500">
+                        <p className="hidden md:block mt-1 text-[10px] font-medium leading-tight text-gray-500">
                           {role.description}
                         </p>
                         {role.badge && (
-                          <span className="mt-2 inline-block rounded-md bg-[#2D6A2D] px-2 py-0.5 text-[8px] font-bold text-white">
+                          <span className="mt-1 inline-block rounded-md bg-[#2D6A2D] px-1.5 py-0.5 text-[7px] font-bold text-white md:mt-2 md:px-2 md:text-[8px]">
                             {role.badge}
                           </span>
                         )}
