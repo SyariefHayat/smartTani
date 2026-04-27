@@ -42,12 +42,18 @@ export const ABOUT_HERO_ACTIONS = [
 ];
 
 export const ABOUT_STATS_BAR = [
-  { value: "2019", label: "Tahun Berdiri" },
-  { value: "10.000+", label: "Petani Aktif" },
-  { value: "500+", label: "Mitra & Distributor" },
-  { value: "34", label: "Provinsi Terjangkau" },
-  { value: "100+", label: "Ahli & Instruktur" },
-  { value: "50+", label: "Produk Tersedia" },
+  { value: "0", label: "Tahun Berdiri" },
+  // { value: "2019", label: "Tahun Berdiri" },
+  { value: "0", label: "Petani Aktif" },
+  // { value: "10.000+", label: "Petani Aktif" },
+  { value: "0", label: "Mitra & Distributor" },
+  // { value: "500+", label: "Mitra & Distributor" },
+  { value: "0", label: "Provinsi Terjangkau" },
+  // { value: "34", label: "Provinsi Terjangkau" },
+  { value: "0", label: "Ahli & Instruktur" },
+  // { value: "100+", label: "Ahli & Instruktur" },
+  { value: "0", label: "Produk Tersedia" },
+  // { value: "50+", label: "Produk Tersedia" },
 ];
 
 export const ABOUT_MISSION = {

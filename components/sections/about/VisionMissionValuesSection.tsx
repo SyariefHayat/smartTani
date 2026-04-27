@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const VisionMissionValuesSection = () => {
   return (
-    <section id="profil" className="section-padding bg-white scroll-mt-24">
+    <section id="profil" className="bg-white scroll-mt-24">
       <div className="container-smarttani">
         {/* Description Content */}
         <div className="max-w-4xl mb-16">

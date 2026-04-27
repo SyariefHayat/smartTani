@@ -9,7 +9,7 @@ const TIMELINE_ICONS = [Sprout, ShoppingCart, Truck, GraduationCap, Users, Globe
 
 const TimelineSection = () => {
   return (
-    <section className="section-padding bg-slate-50">
+    <section className="section-padding">
       <div className="container-smarttani">
         <div className="text-center mb-16">
           <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl mb-4">

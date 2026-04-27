@@ -30,7 +30,7 @@ const LAYANAN_HREFS = [
 
 const ServicesSection = () => {
   return (
-    <section className="section-padding bg-white">
+    <section className="bg-white">
       <div className="container-smarttani">
         <div className="text-center mb-12">
           <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl mb-4">
