@@ -41,40 +41,41 @@ export default function ContactMiddleSection() {
   };
 
   const getContactHref = (type: string, value: string) => {
-    if (type === "WhatsApp" || type === "Telepon") return `tel:${value.replace(/\s+/g, '')}`;
+    if (type === "WhatsApp" || type === "Telepon" || type === "Nomor HP") return `tel:${value.replace(/\s+/g, '')}`;
     if (type === "Email") return `mailto:${value}`;
+    if (type === "Website") return `https://${value}`;
     return "#";
   };
 
   return (
     <section className="section-padding bg-white">
       <div className="container-smarttani">
-        <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
+        <div className="grid gap-10 lg:grid-cols-12 lg:items-start">
 
           {/* Kiri: Informasi kontak */}
-          <div className="lg:col-span-5 space-y-5">
+          <div className="lg:col-span-5 space-y-8 order-2 lg:order-1">
             <div>
-              <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
+              <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl mb-4">
                 {CONTACT_INFO.heading}
               </h2>
-              <p className="mt-2 text-sm font-medium text-[#5d7a64]">
+              <p className="text-sm md:text-base font-medium text-[#5d7a64] leading-relaxed">
                 {CONTACT_INFO.subtext}
               </p>
             </div>
 
-            {/* ✅ Selalu 1 kolom di semua ukuran — tidak ada grid 2 kolom di tablet */}
-            <div className="bg-slate-50 rounded-2xl border border-slate-100 shadow-sm overflow-hidden divide-y divide-slate-100">
+            {/* Mobile: list vertikal | Tablet: grid 3x2 | Desktop: list vertikal */}
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden grid grid-cols-2 md:grid-cols-3 lg:grid-cols-1 lg:divide-y lg:divide-slate-100">
               {CONTACT_INFO.items.map((item, index) => {
                 const Icon = INFO_ICONS[index];
-                const isLink = item.type === "WhatsApp" || item.type === "Telepon" || item.type === "Email";
+                const isLink = item.type === "WhatsApp" || item.type === "Telepon" || item.type === "Nomor HP" || item.type === "Email" || item.type === "Website";
 
                 const content = (
-                  <div className="flex items-center gap-3 p-4 hover:bg-white transition-all duration-300">
-                    <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-                      <Icon className="size-7 text-primary" />
+                  <div className="flex flex-col items-center text-center gap-3 p-5 hover:bg-slate-50 transition-all duration-300 lg:flex-row lg:text-left">
+                    <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#d4edda] text-[#2D6A2D]">
+                      <Icon className="size-6" strokeWidth={1.5} />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-extrabold text-[#17391f]">{item.type}</p>
+                    <div className="min-w-0">
+                      <p className="text-sm font-extrabold text-[#17391f] mb-0.5">{item.type}</p>
                       <p className="text-xs font-medium text-[#5d7a64] leading-relaxed whitespace-pre-line break-words">
                         {item.value}
                       </p>
@@ -83,7 +84,7 @@ export default function ContactMiddleSection() {
                 );
 
                 return isLink ? (
-                  <a key={item.type} href={getContactHref(item.type, item.value)} className="block">
+                  <a key={item.type} href={getContactHref(item.type, item.value)} className="block group">
                     {content}
                   </a>
                 ) : (
@@ -94,38 +95,38 @@ export default function ContactMiddleSection() {
           </div>
 
           {/* Kanan: Form kirim pesan */}
-          <div className="lg:col-span-7 rounded-2xl border border-slate-100 bg-white p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+          <div className="lg:col-span-7 rounded-3xl border border-slate-100 bg-white p-6 md:p-10 shadow-sm order-1 lg:order-2">
             {isSubmitted ? (
               <div className="flex flex-col items-center justify-center py-10 text-center animate-in fade-in zoom-in-95 duration-500">
-                <div className="size-16 bg-primary-light rounded-full flex items-center justify-center mb-4">
-                  <CheckCircle2 className="size-8 text-primary" />
+                <div className="size-20 bg-[#d4edda] text-[#2D6A2D] rounded-full flex items-center justify-center mb-6">
+                  <CheckCircle2 className="size-10" strokeWidth={1.5} />
                 </div>
-                <h2 className="text-xl font-extrabold text-[#17391f] mb-2">Pesan Terkirim!</h2>
-                <p className="text-sm font-medium text-[#5d7a64] max-w-md">
-                  ✓ Pesan Anda telah dikirim! Tim kami akan menghubungi dalam 1x24 jam.
+                <h2 className="text-2xl font-extrabold text-[#17391f] mb-3">Pesan Terkirim!</h2>
+                <p className="text-base font-medium text-[#5d7a64] max-w-md">
+                  Pesan Anda telah berhasil dikirim! Tim kami akan menghubungi Anda kembali dalam waktu 1x24 jam.
                 </p>
                 <Button
                   onClick={() => setIsSubmitted(false)}
                   variant="outline"
-                  className="mt-6 rounded-xl font-bold border-primary text-primary hover:bg-primary-light cursor-pointer h-11 px-6"
+                  className="mt-8 rounded-xl font-bold border-primary text-primary hover:bg-primary/5 cursor-pointer h-12 px-8"
                 >
                   Kirim Pesan Lain
                 </Button>
               </div>
             ) : (
               <>
-                <div>
-                  <h2 className="text-xl font-extrabold text-[#17391f] md:text-2xl">
+                <div className="mb-8">
+                  <h2 className="text-xl font-extrabold text-[#17391f] md:text-2xl mb-2">
                     {CONTACT_FORM.heading}
                   </h2>
-                  <p className="mt-2 text-sm font-medium text-[#5d7a64]">
+                  <p className="text-sm font-medium text-[#5d7a64]">
                     {CONTACT_FORM.subtext}
                   </p>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   {/* Nama */}
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     <Label htmlFor="name" className="text-xs font-extrabold text-[#17391f]">
                       {CONTACT_FORM.fields.name.label}
                     </Label>
@@ -133,13 +134,13 @@ export default function ContactMiddleSection() {
                       id="name"
                       {...register("name")}
                       placeholder={CONTACT_FORM.fields.name.placeholder}
-                      className={`h-11 rounded-xl border-slate-200 bg-slate-50/50 text-sm font-medium text-[#5d7a64] focus:bg-white focus:ring-1 focus:ring-primary/20 transition-all ${errors.name ? 'border-red-500' : ''}`}
+                      className={`h-12 rounded-xl border-slate-200 bg-slate-50/50 text-sm font-medium text-[#5d7a64] focus:bg-white focus:ring-1 focus:ring-primary/20 transition-all ${errors.name ? 'border-red-500' : ''}`}
                     />
                     {errors.name && <p className="text-[10px] font-bold text-red-500">{errors.name.message}</p>}
                   </div>
 
                   {/* Email */}
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     <Label htmlFor="email" className="text-xs font-extrabold text-[#17391f]">
                       {CONTACT_FORM.fields.email.label}
                     </Label>
@@ -148,13 +149,13 @@ export default function ContactMiddleSection() {
                       type="email"
                       {...register("email")}
                       placeholder={CONTACT_FORM.fields.email.placeholder}
-                      className={`h-11 rounded-xl border-slate-200 bg-slate-50/50 text-sm font-medium text-[#5d7a64] focus:bg-white focus:ring-1 focus:ring-primary/20 transition-all ${errors.email ? 'border-red-500' : ''}`}
+                      className={`h-12 rounded-xl border-slate-200 bg-slate-50/50 text-sm font-medium text-[#5d7a64] focus:bg-white focus:ring-1 focus:ring-primary/20 transition-all ${errors.email ? 'border-red-500' : ''}`}
                     />
                     {errors.email && <p className="text-[10px] font-bold text-red-500">{errors.email.message}</p>}
                   </div>
 
                   {/* Telepon */}
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     <Label htmlFor="phone" className="text-xs font-extrabold text-[#17391f]">
                       {CONTACT_FORM.fields.phone.label}
                     </Label>
@@ -162,20 +163,20 @@ export default function ContactMiddleSection() {
                       id="phone"
                       {...register("phone")}
                       placeholder={CONTACT_FORM.fields.phone.placeholder}
-                      className={`h-11 rounded-xl border-slate-200 bg-slate-50/50 text-sm font-medium text-[#5d7a64] focus:bg-white focus:ring-1 focus:ring-primary/20 transition-all ${errors.phone ? 'border-red-500' : ''}`}
+                      className={`h-12 rounded-xl border-slate-200 bg-slate-50/50 text-sm font-medium text-[#5d7a64] focus:bg-white focus:ring-1 focus:ring-primary/20 transition-all ${errors.phone ? 'border-red-500' : ''}`}
                     />
                     {errors.phone && <p className="text-[10px] font-bold text-red-500">{errors.phone.message}</p>}
                   </div>
 
                   {/* Topik */}
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     <Label htmlFor="subject" className="text-xs font-extrabold text-[#17391f]">
                       {CONTACT_FORM.fields.subject.label}
                     </Label>
                     <Select onValueChange={(v) => setValue("subject", v)}>
                       <SelectTrigger
                         id="subject"
-                        className={`h-11 rounded-xl border-slate-200 bg-slate-50/50 text-sm font-medium text-[#5d7a64] focus:bg-white focus:ring-1 focus:ring-primary/20 transition-all ${errors.subject ? 'border-red-500' : ''}`}
+                        className={`h-12 rounded-xl border-slate-200 bg-slate-50/50 text-sm font-medium text-[#5d7a64] focus:bg-white focus:ring-1 focus:ring-primary/20 transition-all ${errors.subject ? 'border-red-500' : ''}`}
                       >
                         <SelectValue placeholder={CONTACT_FORM.fields.subject.placeholder} />
                       </SelectTrigger>
@@ -189,7 +190,7 @@ export default function ContactMiddleSection() {
                   </div>
 
                   {/* Pesan */}
-                  <div className="col-span-full space-y-1.5">
+                  <div className="col-span-full space-y-2">
                     <Label htmlFor="message" className="text-xs font-extrabold text-[#17391f]">
                       {CONTACT_FORM.fields.message.label}
                     </Label>
@@ -197,13 +198,13 @@ export default function ContactMiddleSection() {
                       id="message"
                       {...register("message")}
                       placeholder={CONTACT_FORM.fields.message.placeholder}
-                      className={`min-h-[110px] rounded-xl border-slate-200 bg-slate-50/50 text-sm font-medium text-[#5d7a64] focus:bg-white focus:ring-1 focus:ring-primary/20 transition-all resize-none ${errors.message ? 'border-red-500' : ''}`}
+                      className={`min-h-[140px] rounded-xl border-slate-200 bg-slate-50/50 text-sm font-medium text-[#5d7a64] focus:bg-white focus:ring-1 focus:ring-primary/20 transition-all resize-none ${errors.message ? 'border-red-500' : ''}`}
                     />
                     {errors.message && <p className="text-[10px] font-bold text-red-500">{errors.message.message}</p>}
                   </div>
 
                   {/* Tombol kirim */}
-                  <div className="col-span-full mt-2">
+                  <div className="col-span-full mt-4">
                     <Button
                       type="submit"
                       disabled={isSubmitting}
