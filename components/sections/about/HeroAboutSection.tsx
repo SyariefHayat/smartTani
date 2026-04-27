@@ -44,7 +44,7 @@ const HeroAboutSection = () => {
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 md:mt-9 lg:mt-14">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 md:mt-7 lg:mt-17">
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-8">
 
           {/* Left Column */}

@@ -17,7 +17,7 @@ export default function TentangPage() {
   return (
     <main>
       <HeroAboutSection />
-      {/* <ProfileStatsSection /> */}
+      <ProfileStatsSection />
       <VisionMissionValuesSection />
       <TimelineSection />
       <ServicesSection />
