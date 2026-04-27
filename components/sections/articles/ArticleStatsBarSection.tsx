@@ -21,7 +21,7 @@ const ArticleStatsBarSection = () => {
     <section className="section-padding">
       <div className="container-smarttani">
         <div className="rounded-2xl bg-white shadow-[0_12px_40px_rgba(0,0,0,0.08)]">
-          <div className="grid grid-cols-2 md:grid-cols-5 py-8 md:px-4 lg:px-0 gap-y-8 md:gap-y-0 items-start">
+          <div className="grid grid-cols-2 md:grid-cols-6 py-8 md:px-4 lg:px-0 gap-y-8 md:gap-y-0 items-start">
             {ARTICLE_STATS_BAR.map((item, index) => {
               const Icon = ICONS[index] || Users;
               const isLastInRowMobile = index % 2 === 1; // Untuk grid-cols-2

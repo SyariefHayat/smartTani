@@ -26,6 +26,17 @@ const CATEGORY_ICONS = [
   LayoutGrid
 ];
 
+const ARTICLE_CATEGORY_BG_COLORS = [
+  "#FEF9C3", // Budidaya Tanaman
+  "#DCFCE7", // Peternakan
+  "#FEF3C7", // Pupuk & Nutrisi
+  "#DBEAFE", // Teknologi Pertanian
+  "#FCE7F3", // Manajemen Usaha
+  "#EDE9FE", // Pasca Panen
+  "#E0F2FE", // Kebijakan & Regulasi
+  "#F1F5F9", // Lainnya
+];
+
 const KategoriBarContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -42,9 +53,9 @@ const KategoriBarContent = () => {
   };
 
   return (
-    <section className="section-padding">
+    <section className="">
       <div className="container-smarttani">
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
           {ARTICLE_CATEGORIES.map((kategori, index) => {
             const Icon = CATEGORY_ICONS[index] || LayoutGrid;
             const isActive = activeCategory === kategori;
@@ -53,23 +64,24 @@ const KategoriBarContent = () => {
                 key={kategori}
                 onClick={() => handleCategoryClick(kategori)}
                 className={cn(
-                  "group flex flex-col items-center justify-center gap-4 rounded-3xl p-6 border transition-all hover:shadow-xl hover:-translate-y-1.5 cursor-pointer",
-                  isActive 
-                    ? "bg-primary border-primary text-white shadow-lg shadow-primary/20" 
-                    : "bg-white border-slate-100 hover:border-slate-300"
+                  "flex flex-col items-center gap-2 p-3 rounded-xl border transition-all cursor-pointer text-center hover:-translate-y-1",
+                  isActive
+                    ? "bg-primary border-primary text-white shadow-md shadow-primary/20"
+                    : "border-gray-100 hover:border-gray-300"
                 )}
+                style={!isActive ? { backgroundColor: ARTICLE_CATEGORY_BG_COLORS[index % ARTICLE_CATEGORY_BG_COLORS.length] } : {}}
               >
                 <div className={cn(
-                  "flex h-14 w-14 items-center justify-center rounded-2xl transition-all duration-300",
+                  "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300",
                   isActive
-                    ? "bg-white/20 text-white scale-110"
-                    : "bg-primary-light text-primary group-hover:bg-primary group-hover:text-white"
+                    ? "bg-white/20 text-white"
+                    : "text-primary"
                 )}>
-                  <Icon className="h-7 w-7" />
+                  <Icon className="size-7" />
                 </div>
                 <span className={cn(
-                  "text-center text-[11px] font-extrabold uppercase tracking-wider",
-                  isActive ? "text-white" : "text-[#17391f]"
+                  "text-[11px] font-medium leading-tight",
+                  isActive ? "text-white" : "text-[#5d7a64]"
                 )}>
                   {kategori}
                 </span>

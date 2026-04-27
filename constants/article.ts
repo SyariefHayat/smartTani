@@ -12,7 +12,7 @@ export const ARTICLE_HERO = {
   subtext:
     "Temukan pengetahuan terbaru, tips praktis, dan kisah sukses dari para ahli dan petani hebat di seluruh Indonesia.",
   bgImageDesktop: "/images/article/desktop.png",
-  bgImageTablet: "/images/article/desktop-5.png",
+  bgImageTablet: "/images/article/tablet.png",
   bgImageMobile: "/images/article/mobile.png",
   searchPlaceholder: "Cari artikel, topik, atau kata kunci...",
   searchCta: "Cari",
@@ -254,11 +254,17 @@ export const ARTICLE_MOST_POPULAR = [
 ];
 
 export const ARTICLE_STATS_BAR = [
-  { value: "500+", label: "Artikel Terbit" },
-  { value: "50+", label: "Ahli & Kontributor" },
-  { value: "100K+", label: "Pembaca Aktif" },
+  { value: "0", label: "Artikel Terbit" },
+  // { value: "500+", label: "Artikel Terbit" },
+  { value: "0", label: "Ahli & Kontributor" },
+  // { value: "50+", label: "Ahli & Kontributor" },
+  { value: "0", label: "Pembaca Aktif" },
+  // { value: "100K+", label: "Pembaca Aktif" },
   { value: "Update", sublabel: "Setiap Minggu" },
-  { value: "100%", label: "Konten Terverifikasi" },
+  { value: "0", label: "Konten Terverifikasi" },
+  // { value: "100%", label: "Konten Terverifikasi" },
+  { value: "0", label: "Kategori Topik" },
+  // { value: "20+", label: "Kategori Topik" },
 ];
 
 export const ARTICLE_NEWSLETTER = {

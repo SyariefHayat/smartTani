@@ -20,49 +20,59 @@ const ArticleNewsletterSection = () => {
   };
 
   return (
-    <section className="pb-10 md:pb-14">
-      <div className="container-smarttani">
-        <div className="relative overflow-hidden rounded-2xl bg-[#1a4d2e] p-8 md:p-12 lg:p-16">
-          {/* Background Image */}
+    <section className="mb-10">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
+        <div className="relative overflow-hidden rounded-2xl bg-[#1a4d2e] px-8 py-8 md:px-16">
+          {/* Background Picture matching CTABannerSection */}
           <div className="absolute inset-0 z-0">
-            <Image
-              src="/images/home/cta-background-2.webp"
-              alt="Background Pattern"
-              fill
-              className="object-cover object-center opacity-40 lg:opacity-100"
-            />
+            <picture>
+              <source
+                media="(min-width: 1024px)"
+                srcSet="/images/home/cta-desktop.webp"
+              />
+              <source
+                media="(min-width: 640px)"
+                srcSet="/images/home/cta-tablet.png"
+              />
+              <img
+                src="/images/home/cta-mobile.png"
+                alt="Newsletter Background"
+                className="h-full w-full object-cover object-center"
+              />
+            </picture>
           </div>
 
-          <div className="relative z-10 grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
-
-            {/* Kiri: Heading & Subtext */}
-            <div className="max-w-xl text-center lg:text-left">
-              <h2 className="text-2xl font-extrabold leading-tight text-white md:text-3xl lg:text-4xl mb-6">
+          <div className="relative z-10 flex flex-col items-center justify-between gap-10 lg:flex-row lg:gap-16">
+            {/* Text Content */}
+            <div className="max-w-2xl text-center lg:text-left">
+              <h2 className="text-xl font-bold leading-tight text-white sm:text-2xl lg:text-3xl">
                 {ARTICLE_NEWSLETTER.heading}
               </h2>
-              <p className="text-sm font-medium text-[#eef8e5]/90 md:text-base leading-relaxed">
+              <p className="mt-3 text-sm font-medium text-[#eef8e5]/80 md:text-base">
                 {ARTICLE_NEWSLETTER.subtext}
               </p>
             </div>
 
-            {/* Kanan: Input & Button */}
-            <form 
+            {/* Newsletter Form */}
+            <form
               onSubmit={handleSubscribe}
-              className="flex flex-col gap-4 sm:flex-row sm:items-center lg:justify-end w-full"
+              className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row lg:shrink-0"
             >
               <Input
                 type="email"
                 required
                 placeholder={ARTICLE_NEWSLETTER.inputPlaceholder}
-                className="h-14 flex-1 border-white/20 bg-white/10 px-6 text-white placeholder:text-white/60 focus-visible:ring-accent rounded-xl text-sm font-medium"
+                className="h-12 w-full sm:w-64 md:w-80 rounded-lg border-white/20 bg-white/10 px-6 text-white placeholder:text-white/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-white/40 text-sm font-medium"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <Button type="submit" className="h-14 bg-accent px-10 font-extrabold text-white hover:bg-accent/90 transition-all border-none whitespace-nowrap cursor-pointer rounded-xl shadow-lg shadow-black/10">
+              <Button
+                type="submit"
+                className="h-12 rounded-lg border-none bg-[#FFB21C] px-8 text-sm font-bold text-white hover:bg-[#FFB21C]/90 cursor-pointer shadow-lg shadow-black/10"
+              >
                 {ARTICLE_NEWSLETTER.cta}
               </Button>
             </form>
-
           </div>
         </div>
       </div>
