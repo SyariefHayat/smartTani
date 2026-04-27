@@ -62,12 +62,18 @@ export const DISTRIBUTOR_MAP = {
 };
 
 export const DISTRIBUTOR_STATS_BAR = [
-  { value: "520+", label: "Distributor Aktif", icon: UsersRound },
-  { value: "34", label: "Provinsi Terjangkau", icon: Map },
-  { value: "1.250+", label: "Produk Tersedia", icon: Package },
-  { value: "98,6%", label: "Kepuasan Mitra", icon: Smile },
-  { value: "Rp320 Miliar", label: "Total Transaksi 2024", icon: Banknote },
-  { value: "Tumbuh", label: "Bersama Membangun Negeri", icon: TrendingUp },
+  { value: "0", label: "Distributor Aktif", icon: UsersRound },
+  // { value: "520+", label: "Distributor Aktif", icon: UsersRound },
+  { value: "0", label: "Provinsi Terjangkau", icon: Map },
+  // { value: "34", label: "Provinsi Terjangkau", icon: Map },
+  { value: "0", label: "Produk Tersedia", icon: Package },
+  // { value: "1.250+", label: "Produk Tersedia", icon: Package },
+  { value: "0", label: "Kepuasan Mitra", icon: Smile },
+  // { value: "98,6%", label: "Kepuasan Mitra", icon: Smile },
+  { value: "0", label: "Total Transaksi 2024", icon: Banknote },
+  // { value: "Rp320 Miliar", label: "Total Transaksi 2024", icon: Banknote },
+  { value: "0", label: "Bersama Membangun Negeri", icon: TrendingUp },
+  // { value: "Tumbuh", label: "Bersama Membangun Negeri", icon: TrendingUp },
 ];
 
 export const DISTRIBUTOR_KEUNTUNGAN = {
@@ -119,12 +125,12 @@ export const DISTRIBUTOR_PRODUK_KATEGORI = {
     {
       label: "Pupuk & Nutrisi",
       jumlahProduk: "320+",
-      image: "/images/distributor/fertilizer-nutrition.webp",
+      image: "/images/distributor/pupuk-nutrisi.png",
     },
     {
       label: "Benih & Bibit",
       jumlahProduk: "180+",
-      image: "/images/distributor/seeds-seedlings.webp",
+      image: "/images/distributor/benih-bibit.png",
     },
     {
       label: "Pestisida",
@@ -134,7 +140,7 @@ export const DISTRIBUTOR_PRODUK_KATEGORI = {
     {
       label: "Alat & Mesin",
       jumlahProduk: "120+",
-      image: "/images/distributor/tools-machines.webp",
+      image: "/images/distributor/alat-mesin.png",
     },
     {
       label: "Irigasi",
@@ -213,7 +219,7 @@ export const DISTRIBUTOR_TESTIMONI = {
       avatar: "https://randomuser.me/api/portraits/women/44.jpg",
       rating: 5,
       quote:
-        "Sistem mudah, produk lengkap, dan margin keuntungan sangat menguntungkan. Terima kasih Smarttani!",    
+        "Sistem mudah, produk lengkap, dan margin keuntungan sangat menguntungkan. Terima kasih Smarttani!",
     },
   ],
 };
