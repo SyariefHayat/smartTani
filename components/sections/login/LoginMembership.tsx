@@ -44,61 +44,50 @@ export default function LoginMembership() {
             <Label
               htmlFor={item.id}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200",
-                "border border-transparent",
-                "lg:flex-col lg:items-center lg:p-4 lg:rounded-xl lg:border-2 lg:h-full lg:hover:border-green-200 lg:hover:shadow-md",
+                "relative flex cursor-pointer items-center gap-3",
+                "rounded-xl border transition-all",
+                "p-2.5 md:p-4",
+                "hover:border-green-200",
                 selectedRole === item.id
-                  ? "bg-green-50 border-green-400 lg:border-green-500 lg:ring-1 lg:ring-green-500"
-                  : "hover:bg-gray-50 lg:border-gray-100 lg:bg-white"
+                  ? "border-[#2D6A2D] bg-[#EAF3DE]/30"
+                  : "border-slate-100 bg-white",
+                "lg:flex-col lg:items-center lg:p-4 lg:rounded-xl",
+                "lg:border-2 lg:h-full lg:hover:shadow-md"
               )}
             >
-              {/* Gambar: HANYA tampil di desktop */}
-              <div className="hidden lg:block relative w-full aspect-square mb-4 rounded-lg overflow-hidden bg-gray-50">
+              {/* Gambar: tampil di SEMUA ukuran layar */}
+              {/* Mobile: size-10, Desktop: size-16 ke atas */}
+              <div className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-slate-50 md:size-16 lg:w-full lg:h-auto lg:aspect-square lg:rounded-xl lg:mb-2">
                 <Image
                   src={roleImages[item.id] || "/images/placeholder.webp"}
                   alt={item.title}
                   fill
-                  className="object-cover"
+                  className="object-contain p-1"
                 />
               </div>
 
-              {/* Ikon kecil: HANYA tampil di mobile */}
-              <div className={cn(
-                "flex lg:hidden size-8 shrink-0 items-center justify-center rounded-lg",
-                selectedRole === item.id 
-                  ? "bg-green-100 text-green-700" 
-                  : "bg-gray-100 text-gray-500"
-              )}>
-                {item.id === "petani" && <span className="text-sm">🌾</span>}
-                {item.id === "distributor" && <span className="text-sm">🚛</span>}
-                {item.id === "investor" && <span className="text-sm">📈</span>}
-                {item.id === "mitra_bisnis" && <span className="text-sm">🤝</span>}
-                {item.id === "admin_perusahaan" && <span className="text-sm">🏢</span>}
-              </div>
-
-              {/* Teks: tampil di semua ukuran */}
+              {/* Teks nama + deskripsi */}
               <div className="flex-1 lg:text-center">
-                <h3 className="font-bold text-gray-900 text-sm lg:mb-1 lg:text-base">
+                <h3 className="text-xs font-extrabold text-[#17391f] md:text-sm lg:mb-1 lg:text-base">
                   {item.title}
                 </h3>
-                {/* Deskripsi: hidden di mobile, tampil di desktop */}
+                {/* Deskripsi: hidden mobile, tampil desktop */}
                 <p className="hidden lg:block text-xs text-gray-500 text-center line-clamp-2">
                   {item.description}
                 </p>
               </div>
 
-              {/* Radio indicator: tampil di semua ukuran */}
+              {/* Radio indicator */}
               <div className={cn(
                 "size-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200",
-                "lg:mt-4",
+                "lg:mt-3",
                 selectedRole === item.id
-                  ? "border-green-600 bg-white"
-                  : "border-gray-200 bg-gray-50/50"
+                  ? "border-[#2D6A2D] bg-[#2D6A2D]"
+                  : "border-slate-200 bg-white"
               )}>
-                <div className={cn(
-                  "w-2.5 h-2.5 rounded-full transition-all duration-200 scale-0",
-                  selectedRole === item.id && "bg-green-600 scale-100"
-                )} />
+                {selectedRole === item.id && (
+                  <div className="size-2 rounded-full bg-white" />
+                )}
               </div>
             </Label>
           </div>
