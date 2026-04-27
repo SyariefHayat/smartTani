@@ -5,17 +5,26 @@ import Link from "next/link";
 
 export default function CTABannerAboutSection() {
   return (
-    <section className="pb-8 pt-8 bg-white">
+    <section className="section-padding bg-white">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-10 lg:px-12">
         <div className="relative overflow-hidden rounded-2xl bg-[#1a4d2e] px-8 py-8 md:px-16">
-          {/* Background Image */}
+          {/* Background Picture matching CTABannerSection */}
           <div className="absolute inset-0 z-0">
-            <Image
-              src="/images/home/cta-background-2.webp"
-              alt="CTA Background"
-              fill
-              className="object-cover object-center"
-            />
+            <picture>
+              <source
+                media="(min-width: 1024px)"
+                srcSet="/images/home/cta-desktop.webp"
+              />
+              <source
+                media="(min-width: 640px)"
+                srcSet="/images/home/cta-tablet.png"
+              />
+              <img
+                src="/images/home/cta-mobile.png"
+                alt="CTA Background"
+                className="h-full w-full object-cover object-center"
+              />
+            </picture>
           </div>
 
           <div className="relative z-10 flex flex-col items-center justify-between gap-10 lg:flex-row lg:gap-16">

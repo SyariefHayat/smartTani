@@ -15,14 +15,14 @@ const TeamAchievementsSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
           {/* Pencapaian Kami */}
           <div>
-            <h3 className="text-heading-3 font-bold text-foreground mb-6">
+            <h3 className="text-lg font-extrabold text-[#17391f] mb-6">
               {ABOUT_ACHIEVEMENTS.heading}
             </h3>
             <div className="space-y-4">
               {ABOUT_ACHIEVEMENTS.items.map((item, index) => (
                 <div key={index} className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                  <span className="text-body-sm text-muted-foreground">
+                  <span className="text-sm font-medium text-[#5d7a64] leading-relaxed">
                     {item}
                   </span>
                 </div>
@@ -32,7 +32,7 @@ const TeamAchievementsSection = () => {
 
           {/* Kepemimpinan Kami */}
           <div>
-            <h3 className="text-heading-3 font-bold text-foreground mb-6">
+            <h3 className="text-lg font-extrabold text-[#17391f] mb-6">
               {ABOUT_LEADERSHIP.heading}
             </h3>
             <div className="space-y-5">
@@ -48,10 +48,10 @@ const TeamAchievementsSection = () => {
                     />
                   </div>
                   <div>
-                    <h4 className="text-body-sm font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                    <h4 className="text-sm font-extrabold text-[#17391f] group-hover:text-primary transition-colors duration-300">
                       {pimpinan.nama}
                     </h4>
-                    <p className="text-caption text-muted-foreground">
+                    <p className="text-xs font-medium text-[#5d7a64]">
                       {pimpinan.jabatan}
                     </p>
                   </div>
@@ -62,23 +62,23 @@ const TeamAchievementsSection = () => {
 
           {/* Alamat & Kontak */}
           <div>
-            <h3 className="text-heading-3 font-bold text-foreground mb-6">
+            <h3 className="text-lg font-extrabold text-[#17391f] mb-6">
               {ABOUT_ADDRESS.heading}
             </h3>
             <div className="space-y-5">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                   <MapPin className="w-5 h-5 text-primary" />
                 </div>
-                <p className="text-body-sm text-muted-foreground">
+                <p className="text-sm font-medium text-[#5d7a64] leading-relaxed">
                   {ABOUT_ADDRESS.alamat}
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                   <Phone className="w-5 h-5 text-primary" />
                 </div>
-                <a href="tel:082326952833" className="text-body-sm text-primary font-semibold hover:text-primary-dark transition-colors">
+                <a href="tel:082326952833" className="text-sm font-extrabold text-primary hover:text-primary-dark transition-colors">
                   {ABOUT_ADDRESS.telepon}
                 </a>
               </div>
@@ -87,14 +87,14 @@ const TeamAchievementsSection = () => {
 
           {/* Mitra Strategis */}
           <div>
-            <h3 className="text-heading-3 font-bold text-foreground mb-6">
+            <h3 className="text-lg font-extrabold text-[#17391f] mb-6">
               {ABOUT_STRATEGIC_PARTNERS.heading}
             </h3>
             <div className="grid grid-cols-2 gap-3">
               {ABOUT_STRATEGIC_PARTNERS.items.map((mitra) => (
                 <div
                   key={mitra.nama}
-                  className="p-4 rounded-xl bg-white border border-slate-100 flex items-center justify-center hover:shadow-sm transition-shadow duration-300"
+                  className="p-4 rounded-xl bg-white border border-slate-100 flex items-center justify-center hover:shadow-md hover:-translate-y-1 transition-all duration-300"
                 >
                   <Image
                     src={mitra.logo}

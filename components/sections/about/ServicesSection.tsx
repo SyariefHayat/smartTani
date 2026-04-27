@@ -33,10 +33,10 @@ const ServicesSection = () => {
     <section className="section-padding bg-white">
       <div className="container-smarttani">
         <div className="text-center mb-12">
-          <h2 className="section-title text-foreground">
+          <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl mb-4">
             {ABOUT_SERVICES.heading}
           </h2>
-          <p className="section-subtitle max-w-2xl mx-auto">
+          <p className="text-sm md:text-base font-medium text-[#5d7a64] max-w-2xl mx-auto">
             {ABOUT_SERVICES.subtext}
           </p>
         </div>
@@ -50,15 +50,15 @@ const ServicesSection = () => {
               <Link
                 key={item.title}
                 href={href}
-                className="bg-slate-50 p-6 rounded-2xl flex flex-col items-center text-center group hover:bg-white hover:shadow-md border border-transparent hover:border-slate-100 transition-all duration-300 h-full cursor-pointer"
+                className="bg-slate-50 p-6 rounded-2xl flex flex-col items-center text-center group hover:bg-white hover:shadow-xl hover:-translate-y-1 border border-transparent hover:border-slate-100 transition-all duration-300 h-full cursor-pointer"
               >
-                <div className={`w-14 h-14 rounded-xl ${IconConfig.bg} flex items-center justify-center mb-5`}>
+                <div className={`w-14 h-14 rounded-xl ${IconConfig.bg} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
                   <Icon className={`w-7 h-7 ${IconConfig.color}`} />
                 </div>
-                <h3 className="text-body-sm font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                <h3 className="text-sm font-extrabold text-[#17391f] mb-2 group-hover:text-primary transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-caption text-muted-foreground">
+                <p className="text-xs font-medium text-[#5d7a64] leading-relaxed">
                   {item.description}
                 </p>
               </Link>

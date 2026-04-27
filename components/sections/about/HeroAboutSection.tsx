@@ -18,8 +18,8 @@ const HeroAboutSection = () => {
     <>
       <Icon className="size-7 shrink-0 mr-3" />
       <div className="flex flex-col items-start leading-tight">
-        <span className="text-[0.65rem] font-normal opacity-80">{prefix}</span>
-        <span className="text-sm font-bold">{label}</span>
+        <span className="text-[10px] font-medium opacity-80 uppercase tracking-wider">{prefix}</span>
+        <span className="text-xs font-extrabold">{label}</span>
       </div>
     </>
   );

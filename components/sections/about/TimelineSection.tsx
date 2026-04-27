@@ -12,8 +12,12 @@ const TimelineSection = () => {
     <section className="section-padding bg-slate-50">
       <div className="container-smarttani">
         <div className="text-center mb-16">
-          <h2 className="section-title text-primary">{ABOUT_TIMELINE.heading}</h2>
-          <p className="section-subtitle max-w-2xl mx-auto">{ABOUT_TIMELINE.subtext}</p>
+          <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl mb-4">
+            {ABOUT_TIMELINE.heading}
+          </h2>
+          <p className="text-sm md:text-base font-medium text-[#5d7a64] max-w-2xl mx-auto">
+            {ABOUT_TIMELINE.subtext}
+          </p>
         </div>
 
         <div className="relative">
@@ -32,25 +36,25 @@ const TimelineSection = () => {
                 >
                   {/* Node ikon */}
                   <div className="relative mb-5">
-                    <div className="w-14 h-14 rounded-full bg-white border border-slate-200 flex items-center justify-center group-hover:border-primary/50 group-hover:bg-primary/5 transition-all duration-300 shadow-sm">
-                      <Icon className="w-5 h-5 text-slate-400 group-hover:text-primary transition-colors duration-300" />
+                    <div className="w-14 h-14 rounded-xl bg-white border border-slate-200 flex items-center justify-center group-hover:border-primary/50 group-hover:bg-primary/5 transition-all duration-300 shadow-sm">
+                      <Icon className="w-6 h-6 text-slate-400 group-hover:text-primary transition-colors duration-300" />
                     </div>
                     {isLast && (
-                      <span className="absolute inset-[-4px] rounded-full border border-primary/40 animate-ping" />
+                      <span className="absolute inset-[-4px] rounded-xl border border-primary/40 animate-ping" />
                     )}
                   </div>
 
                   {/* Konten */}
                   <div>
                     {isLast && (
-                      <span className="inline-block text-caption font-medium px-2.5 py-0.5 rounded-full bg-primary/10 text-primary mb-2">
+                      <span className="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-primary/10 text-primary mb-2">
                         Terkini
                       </span>
                     )}
-                    <div className="text-body-lg font-semibold text-primary mb-2 tracking-tight">
+                    <div className="text-xl font-extrabold text-[#17391f] mb-2 tracking-tight">
                       {item.tahun}
                     </div>
-                    <p className="text-caption text-muted-foreground max-w-[160px] mx-auto">
+                    <p className="text-xs font-medium text-[#5d7a64] max-w-[160px] mx-auto leading-relaxed">
                       {item.keterangan}
                     </p>
                   </div>
