@@ -78,7 +78,7 @@ const TeamAchievementsSection = () => {
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                   <Phone className="w-5 h-5 text-primary" />
                 </div>
-                <a href="tel:082326952833" className="text-sm font-extrabold text-primary hover:text-primary-dark transition-colors">
+                <a href="tel:+6282326952833" className="text-sm font-extrabold text-primary hover:text-primary-dark transition-colors">
                   {ABOUT_ADDRESS.telepon}
                 </a>
               </div>
@@ -90,18 +90,18 @@ const TeamAchievementsSection = () => {
             <h3 className="text-lg font-extrabold text-[#17391f] mb-6">
               {ABOUT_STRATEGIC_PARTNERS.heading}
             </h3>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2 md:gap-3">
               {ABOUT_STRATEGIC_PARTNERS.items.map((mitra) => (
                 <div
                   key={mitra.nama}
-                  className="p-4 rounded-xl bg-white border border-slate-100 flex items-center justify-center hover:shadow-md hover:-translate-y-1 transition-all duration-300"
+                  className="p-2 md:p-4 rounded-xl bg-white border border-slate-100 flex items-center justify-center hover:shadow-md hover:-translate-y-1 transition-all duration-300"
                 >
                   <Image
                     src={mitra.logo}
                     alt={mitra.nama}
                     width={100}
                     height={50}
-                    className="object-contain max-h-8"
+                    className="object-contain max-h-6 md:max-h-8"
                   />
                 </div>
               ))}

@@ -30,9 +30,9 @@ const LAYANAN_HREFS = [
 
 const ServicesSection = () => {
   return (
-    <section className="bg-white">
+    <section className="section-padding bg-white">
       <div className="container-smarttani">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 md:mb-12">
           <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl mb-4">
             {ABOUT_SERVICES.heading}
           </h2>
@@ -41,7 +41,7 @@ const ServicesSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
           {ABOUT_SERVICES.items.map((item, index) => {
             const IconConfig = LAYANAN_ICONS[index] || { icon: ShoppingCart, color: "text-primary", bg: "bg-primary/5" };
             const Icon = IconConfig.icon;
@@ -50,15 +50,15 @@ const ServicesSection = () => {
               <Link
                 key={item.title}
                 href={href}
-                className="bg-slate-50 p-6 rounded-2xl flex flex-col items-center text-center group hover:bg-white hover:shadow-xl hover:-translate-y-1 border border-transparent hover:border-slate-100 transition-all duration-300 h-full cursor-pointer"
+                className="bg-slate-50 p-4 md:p-6 rounded-2xl flex flex-col items-center text-center group hover:bg-white hover:shadow-xl hover:-translate-y-1 border border-transparent hover:border-slate-100 transition-all duration-300 h-full cursor-pointer"
               >
-                <div className={`w-14 h-14 rounded-xl ${IconConfig.bg} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
-                  <Icon className={`w-7 h-7 ${IconConfig.color}`} />
+                <div className={`w-10 h-10 md:w-14 md:h-14 rounded-xl ${IconConfig.bg} flex items-center justify-center mb-3 md:mb-5 group-hover:scale-110 transition-transform duration-300`}>
+                  <Icon className={`w-5 h-5 md:w-7 md:h-7 ${IconConfig.color}`} />
                 </div>
-                <h3 className="text-sm font-extrabold text-[#17391f] mb-2 group-hover:text-primary transition-colors">
+                <h3 className="text-xs md:text-sm font-extrabold text-[#17391f] mb-2 group-hover:text-primary transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-xs font-medium text-[#5d7a64] leading-relaxed">
+                <p className="text-[10px] md:text-xs font-medium text-[#5d7a64] leading-relaxed">
                   {item.description}
                 </p>
               </Link>
