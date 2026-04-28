@@ -16,8 +16,6 @@ export default function RegisterHeroSection() {
             className="w-full h-full object-cover object-center"
           />
         </picture>
-        {/* Gradient Overlay for better text readability - matching home hero style */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#1A6B2F] via-[#1A6B2F]/80 to-transparent md:via-[#1A6B2F]/60 lg:to-transparent" />
       </div>
 
       <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-1 md:mt-7 lg:mt-6">
