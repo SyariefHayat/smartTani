@@ -36,7 +36,7 @@ export default function ContactHeroSection() {
               {CONTACT_HERO.badge}
             </div>
 
-            <h1 className="text-heading-1 md:text-display text-white mb-3 max-w-sm lg:max-w-lg">
+            <h1 className="text-heading-1 md:text-display text-white mb-3 max-w-xs lg:max-w-sm">
               {CONTACT_HERO.heading}
             </h1>
 

@@ -10,19 +10,19 @@ const icons: Record<string, any> = {
 
 export default function LoginTrustBar() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t border-gray-100 mt-12">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-10 border-t border-white/10">
       {LOGIN_TRUST_BAR.map((item, index) => {
         const Icon = icons[item.icon];
         return (
-          <div key={index} className="flex items-start space-x-4">
-            <div className="p-2 bg-primary-50 rounded-lg text-primary-600">
-              <Icon size={24} />
+          <div key={index} className="flex items-start gap-4">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white backdrop-blur-sm">
+              <Icon size={20} strokeWidth={1.5} />
             </div>
-            <div className="space-y-1 text-left">
-              <h4 className="font-bold text-gray-900 text-sm">
+            <div className="space-y-1">
+              <h4 className="font-extrabold text-white text-sm">
                 {item.title}
               </h4>
-              <p className="text-xs text-gray-500 leading-relaxed">
+              <p className="text-xs font-medium text-white/60 leading-relaxed">
                 {item.description}
               </p>
             </div>
@@ -32,3 +32,4 @@ export default function LoginTrustBar() {
     </div>
   );
 }
+

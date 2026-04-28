@@ -1,191 +1,91 @@
-"use client";
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  FieldSeparator,
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+import { LOGIN_FORM } from "@/constants/login"
+import Link from "next/link"
 
-import React, { useState, useEffect, Suspense } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { LOGIN_FORM } from "@/constants/login";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Mail, Lock, Eye, EyeOff, LogIn, Loader2, CheckCircle2 } from "lucide-react";
-
-function LoginFormContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [isRegistered, setIsRegistered] = useState(false);
-
-  useEffect(() => {
-    // Check if user is already logged in
-    const auth = localStorage.getItem("smarttani-auth");
-    if (auth) {
-      try {
-        const user = JSON.parse(auth);
-        if (user.role === "investor") {
-          router.push("/dashboard/investor");
-        } else {
-          router.push("/dashboard/farmer");
-        }
-      } catch (e) {}
-    }
-
-    if (searchParams.get("registered") === "true") {
-      setIsRegistered(true);
-    }
-  }, [router, searchParams]);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(false);
-
-    if (!email || !password) {
-      setError(true);
-      return;
-    }
-
-    setLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Dummy authentication logic
-    const role = email.toLowerCase().includes("investor") ? "investor" : "petani";
-    const name = email.split("@")[0] || "User";
-    
-    localStorage.setItem(
-      "smarttani-auth",
-      JSON.stringify({ email, name, role })
-    );
-
-    // Trigger storage event for other tabs/components
-    window.dispatchEvent(new Event("storage"));
-
-    const redirect = searchParams.get("redirect");
-    if (redirect) {
-      router.push(redirect);
-    } else if (role === "investor") {
-      router.push("/dashboard/investor");
-    } else {
-      router.push("/dashboard/farmer");
-    }
-  };
-
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-8">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900">
-          {LOGIN_FORM.title}
-        </h2>
-      </div>
-
-      {isRegistered && (
-        <div className="flex items-center gap-3 p-4 mb-6 text-sm text-green-800 rounded-lg bg-green-50 border border-green-200">
-          <CheckCircle2 className="h-5 w-5 text-green-600" />
-          <span className="font-medium">✓ Akun berhasil dibuat! Silakan masuk.</span>
-        </div>
-      )}
-
-      {error && (
-        <div className="animate-[shake_0.5s_ease-in-out] flex items-center p-4 mb-6 text-sm text-red-800 rounded-lg bg-red-50 border border-red-200">
-          <span className="font-medium">Email atau kata sandi tidak valid. Silakan coba lagi.</span>
-        </div>
-      )}
-
-      <form className="space-y-6" onSubmit={handleLogin}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-          {/* Email / No HP */}
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-semibold text-gray-700">
-              {LOGIN_FORM.emailLabel}
-            </Label>
-            <div className="relative group">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-green-600 group-focus-within:text-green-700 transition-colors">
-                <Mail size={18} />
-              </div>
-              <Input
-                id="email"
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={LOGIN_FORM.emailPlaceholder}
-                className="pl-10 h-12 border-gray-200 rounded-lg focus:border-green-500 focus:ring-0 shadow-none transition-all"
-                disabled={loading}
-              />
-            </div>
-          </div>
-
-          {/* Password */}
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <Label htmlFor="password" className="text-sm font-semibold text-gray-700">
-                {LOGIN_FORM.passwordLabel}
-              </Label>
-              <Link
-                href="/forgot-password"
-                className="text-sm font-medium text-green-600 hover:text-green-700 transition-colors"
-              >
-                {LOGIN_FORM.forgotPassword}
-              </Link>
-            </div>
-            <div className="relative group">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-green-600 group-focus-within:text-green-700 transition-colors">
-                <Lock size={18} />
-              </div>
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={LOGIN_FORM.passwordPlaceholder}
-                className="pl-10 pr-10 h-12 border-gray-200 rounded-lg focus:border-green-500 focus:ring-0 shadow-none transition-all"
-                disabled={loading}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                disabled={loading}
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <Button 
-          type="submit"
-          disabled={loading}
-          className="w-full h-12 text-lg font-bold bg-green-600 hover:bg-green-700 rounded-lg shadow-md transition-all text-white"
-        >
-          {loading ? (
-            <Loader2 className="mr-2 size-5 animate-spin" />
-          ) : (
-            <LogIn className="mr-2 size-5" />
-          )}
-          {loading ? "Memproses..." : LOGIN_FORM.submitButton}
-        </Button>
-
-        <p className="text-center text-gray-600">
-          {LOGIN_FORM.registerPrompt}{" "}
-          <Link
-            href="/register"
-            className="text-green-600 font-bold hover:underline"
-          >
-            {LOGIN_FORM.registerLink}
-          </Link>
-        </p>
-      </form>
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle className="text-xl">{LOGIN_FORM.title}</CardTitle>
+          <CardDescription>
+            {LOGIN_FORM.description}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form>
+            <FieldGroup>
+              <Field>
+                <Button variant="outline" type="button" className="w-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path
+                      d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  {LOGIN_FORM.googleButton}
+                </Button>
+              </Field>
+              <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
+                {LOGIN_FORM.dividerText}
+              </FieldSeparator>
+              <Field>
+                <FieldLabel htmlFor="email">{LOGIN_FORM.emailLabel}</FieldLabel>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder={LOGIN_FORM.emailPlaceholder}
+                  required
+                />
+              </Field>
+              <Field>
+                <div className="flex items-center">
+                  <FieldLabel htmlFor="password">{LOGIN_FORM.passwordLabel}</FieldLabel>
+                  <Link
+                    href="/forgot-password"
+                    className="ml-auto text-sm underline-offset-4 hover:underline"
+                  >
+                    {LOGIN_FORM.forgotPassword}
+                  </Link>
+                </div>
+                <Input id="password" type="password" placeholder={LOGIN_FORM.passwordPlaceholder} required />
+              </Field>
+              <Field>
+                <Button type="submit" className="w-full">{LOGIN_FORM.submitButton}</Button>
+                <FieldDescription className="text-center">
+                  {LOGIN_FORM.registerPrompt} <Link href="/register" className="underline underline-offset-4">{LOGIN_FORM.registerLink}</Link>
+                </FieldDescription>
+              </Field>
+            </FieldGroup>
+          </form>
+        </CardContent>
+      </Card>
+      <FieldDescription className="px-6 text-center">
+        {LOGIN_FORM.termsAgreement}{" "}
+        <Link href="/terms" className="underline underline-offset-4">{LOGIN_FORM.termsLink}</Link>{" "}
+        dan{" "}
+        <Link href="/privacy" className="underline underline-offset-4">{LOGIN_FORM.privacyLink}</Link>{" "}
+        {LOGIN_FORM.footerText}.
+      </FieldDescription>
     </div>
-  );
-}
-
-export default function LoginForm() {
-  return (
-    <Suspense fallback={<div className="flex justify-center py-8"><Loader2 className="animate-spin text-green-600 size-8" /></div>}>
-      <LoginFormContent />
-    </Suspense>
-  );
+  )
 }

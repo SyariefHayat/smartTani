@@ -1,61 +1,69 @@
 export const LOGIN_META = {
-  title: "Masuk ke Akun — Selamat Datang Kembali di Smarttani",
+  title: "Masuk ke Akun — Selamat Datang Kembali di Smart Tani",
   description:
-    "Masuk ke akun Anda untuk mengakses berbagai layanan Smarttani, platform terintegrasi untuk ekosistem pertanian.",
+    "Masuk ke akun Anda untuk mengakses berbagai layanan Smart Tani, platform digital terintegrasi untuk memajukan ekosistem pertanian Indonesia.",
 };
 
 export const LOGIN_HERO = {
   title: "Selamat Datang Kembali!",
-  subtitle: "Masuk ke akun Anda untuk mengakses berbagai layanan Smarttani.",
+  subtitle: "Silakan masuk untuk melanjutkan perjalanan Anda bersama Smart Tani.",
 };
 
 export const LOGIN_MEMBERSHIP = {
   title: "Pilih Jenis Keanggotaan",
-  subtitle: "Silakan pilih jenis akun Anda untuk melanjutkan",
+  subtitle: "Masuk sesuai dengan peran Anda dalam ekosistem Smart Tani",
   items: [
     {
       id: "petani",
       title: "Petani",
       description: "Akses solusi pertanian, edukasi, dan jaringan pasar.",
-      icon: "/images/register/membership-petani.png", // Assuming these exist or will be mapped
-      },
-      {
+      icon: "/images/register/membership-petani.png",
+    },
+    {
       id: "distributor",
       title: "Distributor",
       description: "Kelola distribusi produk secara efisien.",
       icon: "/images/register/membership-distributor.png",
-      },
-      {
+    },
+    {
       id: "investor",
       title: "Investor",
       description: "Temukan peluang investasi di sektor pertanian.",
       icon: "/images/register/membership-investor.png",
-      },
-      {
+    },
+    {
       id: "mitra_bisnis",
       title: "Mitra Bisnis",
-      description: "Berkolaborasi dalam ekosistem Smarttani.",
+      description: "Berkolaborasi dalam ekosistem Smart Tani.",
       icon: "/images/register/membership-mitra.png",
-      },
-      {
+    },
+    {
       id: "admin_perusahaan",
       title: "Admin Perusahaan",
       description: "Kelola operasional dan data perusahaan.",
       icon: "/images/register/membership-admin.png",
-      },
+    },
   ],
 };
 
 export const LOGIN_FORM = {
-  title: "Masuk ke Akun Anda",
+  title: "Selamat Datang Kembali",
+  description: "Masuk menggunakan akun media sosial atau email Anda",
+  appleButton: "Masuk dengan Apple",
+  googleButton: "Masuk dengan Google",
+  dividerText: "Atau lanjutkan dengan",
   emailLabel: "Email atau Nomor HP",
-  emailPlaceholder: "Masukkan email atau nomor HP Anda",
+  emailPlaceholder: "nama@contoh.com",
   passwordLabel: "Kata Sandi",
   passwordPlaceholder: "Masukkan kata sandi Anda",
   forgotPassword: "Lupa kata sandi?",
-  submitButton: "Masuk",
+  submitButton: "Masuk ke Akun",
   registerPrompt: "Belum punya akun?",
   registerLink: "Daftar sekarang",
+  termsAgreement: "Dengan mengeklik Masuk, Anda menyetujui",
+  termsLink: "Syarat & Ketentuan",
+  privacyLink: "Kebijakan Privasi",
+  footerText: "kami",
 };
 
 export const LOGIN_TRUST_BAR = [

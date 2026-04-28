@@ -3,9 +3,6 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Navbar from "@/components/sections/Navbar";
-import Footer from "@/components/sections/Footer";
-import CartSidebar from "@/components/ui/CartSidebar";
 import ToastContainer from "@/components/ui/ToastContainer";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -34,10 +31,7 @@ export default function RootLayout({
     <html lang="id" className={cn("h-full", plusJakartaSans.variable)}>
       <body className="min-h-full flex flex-col font-sans antialiased">
         <TooltipProvider>
-          <Navbar />
-          <CartSidebar />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          {children}
           <ToastContainer />
         </TooltipProvider>
       </body>
