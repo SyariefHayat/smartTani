@@ -3,7 +3,6 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import ToastContainer from "@/components/ui/ToastContainer";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -32,7 +31,6 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-sans antialiased">
         <TooltipProvider>
           {children}
-          <ToastContainer />
         </TooltipProvider>
       </body>
     </html>

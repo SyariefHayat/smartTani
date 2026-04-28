@@ -11,11 +11,10 @@ export const metadata: Metadata = {
 
 export default function RegisterPage() {
   return (
-    <div className="min-h-screen">
+    <main className="min-h-screen">
       <RegisterHeroSection />
       <RegisterFormSection />
       {/* <RegisterTrustBarSection /> */}
-    </div>
+    </main>
   );
 }
-

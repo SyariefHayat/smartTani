@@ -1,18 +1,20 @@
 import Navbar from "@/components/sections/Navbar";
 import Footer from "@/components/sections/Footer";
 import CartSidebar from "@/components/ui/CartSidebar";
+import ToastContainer from "@/components/ui/ToastContainer";
 
 export default function MainLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <>
       <Navbar />
       <CartSidebar />
-      <main className="flex-1">{children}</main>
+      <div className="flex-1 flex flex-col">{children}</div>
       <Footer />
+      <ToastContainer />
     </>
   );
 }

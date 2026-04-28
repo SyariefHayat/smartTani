@@ -5,8 +5,12 @@ export const LOGIN_META = {
 };
 
 export const LOGIN_HERO = {
-  title: "Selamat Datang Kembali!",
-  subtitle: "Silakan masuk untuk melanjutkan perjalanan Anda bersama Smart Tani.",
+  badge: "Login Smarttani",
+  heading: "Selamat Datang Di \nPT. SmartTani Indonesia",
+  subtext: "Bersama petani, membangun pertanian modern, berkelanjutan dan berdaya saing untuk masa depan yang lebih baik.",
+  bgImageDesktop: "/images/register/desktop-login.png",
+  bgImageTablet: "/images/register/tablet-login.png",
+  bgImageMobile: "/images/register/mobile-login.png",
 };
 
 export const LOGIN_MEMBERSHIP = {
@@ -47,8 +51,8 @@ export const LOGIN_MEMBERSHIP = {
 };
 
 export const LOGIN_FORM = {
-  title: "Selamat Datang Kembali",
-  description: "Masuk menggunakan akun media sosial atau email Anda",
+  title: "Masuk ke Akun Anda",
+  description: "Gunakan email, nomor HP, atau akun media sosial Anda",
   appleButton: "Masuk dengan Apple",
   googleButton: "Masuk dengan Google",
   dividerText: "Atau lanjutkan dengan",
@@ -65,7 +69,6 @@ export const LOGIN_FORM = {
   privacyLink: "Kebijakan Privasi",
   footerText: "kami",
 };
-
 export const LOGIN_TRUST_BAR = [
   {
     title: "Aman & Terpercaya",
