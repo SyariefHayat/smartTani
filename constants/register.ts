@@ -5,6 +5,9 @@ export const REGISTER_META = {
 };
 
 export const REGISTER_HERO = {
+  bgImageDesktop: "/images/register/desktop.png",
+  bgImageTablet: "/images/register/tablet.png",
+  bgImageMobile: "/images/register/mobile.png",
   badge: "Smarttani",
   heading: "Bergabung Bersama Smarttani Mulai Perjalanan Sukses Anda",
   subtext:

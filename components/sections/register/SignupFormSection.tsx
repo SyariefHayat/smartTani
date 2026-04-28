@@ -13,19 +13,19 @@ import {
   REGISTER_BUTTONS,
   REGISTER_TERMS,
 } from "@/constants/register";
-import { 
-  CheckCircle2, 
-  User, 
-  Mail, 
-  Phone, 
-  Lock, 
-  EyeOff, 
-  Calendar as CalendarIcon, 
-  Building2, 
-  Sprout, 
-  Store, 
-  TrendingUp, 
-  Handshake, 
+import {
+  CheckCircle2,
+  User,
+  Mail,
+  Phone,
+  Lock,
+  EyeOff,
+  Calendar as CalendarIcon,
+  Building2,
+  Sprout,
+  Store,
+  TrendingUp,
+  Handshake,
   ShieldCheck,
   Eye,
   Loader2
@@ -77,7 +77,7 @@ function RegisterFormContent() {
   const getPasswordStrength = () => {
     if (!password) return { label: "", color: "" };
     if (password.length < 6) return { label: "Lemah", color: "text-red-500 bg-red-100" };
-    
+
     const hasNumber = /\d/.test(password);
     const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
@@ -87,7 +87,7 @@ function RegisterFormContent() {
     if (password.length >= 6 && hasNumber) {
       return { label: "Sedang", color: "text-yellow-600 bg-yellow-100" };
     }
-    
+
     return { label: "Lemah", color: "text-red-500 bg-red-100" };
   };
 
@@ -161,41 +161,39 @@ function RegisterFormContent() {
   const extraFields = getRoleSpecificFields();
 
   return (
-    <section className="bg-slate-50 py-16 md:py-24">
+    <section className="section-padding">
       <div className="container-smarttani">
-        <div className="grid gap-12 lg:grid-cols-12">
-          
+        <div className="grid gap-8 lg:grid-cols-12">
+
           {/* Left Column: Role Selection & Benefits */}
           <div className="lg:col-span-4">
-            <div className="rounded-3xl bg-white p-6 shadow-xl shadow-slate-200/60 md:p-8">
-              <h2 className="text-xl font-extrabold text-[#17391f] md:text-2xl">
+            <div className="rounded-3xl bg-white p-6 md:p-8 border border-slate-100">
+              <h2 className="text-heading-2 font-bold text-gray-900">
                 {REGISTER_MEMBERSHIP_TYPES.heading}
               </h2>
-              <p className="mt-2 text-xs font-medium text-gray-500 md:text-sm">
+              <p className="mt-2 text-body-sm font-medium text-gray-500">
                 {REGISTER_MEMBERSHIP_TYPES.subtext}
               </p>
 
               <RadioGroup
                 value={selectedRole}
                 onValueChange={setSelectedRole}
-                className="mt-6 space-y-1"
+                className="mt-6 space-y-2"
               >
                 {REGISTER_MEMBERSHIP_TYPES.items.map((role) => (
                   <div key={role.value}>
                     <Label
                       htmlFor={role.value}
-                      className={`relative flex cursor-pointer items-center gap-3 rounded-xl border transition-all hover:border-[#2D6A2D]/30 p-2.5 md:p-4 ${
-                        selectedRole === role.value
-                          ? "border-[#2D6A2D] bg-[#EAF3DE]/30"
-                          : "border-slate-100 bg-white"
-                      }`}
+                      className={`relative flex w-full cursor-pointer items-center gap-3 transition-all`}
                     >
                       <RadioGroupItem
                         value={role.value}
                         id={role.value}
-                        className="sr-only"
+                        className="sr-only hidden"
                       />
-                      <div className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-slate-50 md:size-16">
+
+                      {/* Image */}
+                      <div className="relative border size-10 shrink-0 overflow-hidden rounded-lg bg-slate-50 md:size-14">
                         <NextImage
                           src={roleImages[role.value]}
                           alt={role.label}
@@ -203,66 +201,47 @@ function RegisterFormContent() {
                           className="object-contain p-1"
                         />
                       </div>
+
+                      {/* Text — flex-1 agar mendorong radio ke kanan */}
                       <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-xs font-extrabold text-[#17391f] md:text-sm">
-                            {role.label}
-                          </h3>
-                          <div className={`size-5 rounded-full border-2 flex items-center justify-center ${
-                            selectedRole === role.value ? "border-[#2D6A2D] bg-[#2D6A2D]" : "border-slate-200"
-                          }`}>
-                            {selectedRole === role.value && <div className="size-2 rounded-full bg-white" />}
-                          </div>
-                        </div>
-                        <p className="hidden md:block mt-1 text-[10px] font-medium leading-tight text-gray-500">
+                        <h3 className="text-sm md:text-base font-bold text-gray-900">
+                          {role.label}
+                        </h3>
+                        <p className="hidden md:block mt-1 text-[11px] font-medium leading-tight text-gray-500">
                           {role.description}
                         </p>
-                        {role.badge && (
-                          <span className="mt-1 inline-block rounded-md bg-[#2D6A2D] px-1.5 py-0.5 text-[7px] font-bold text-white md:mt-2 md:px-2 md:text-[8px]">
-                            {role.badge}
-                          </span>
+                      </div>
+
+                      {/* ✅ Radio indicator — child langsung dari Label agar justify works */}
+                      <div className={`shrink-0 size-5 rounded-full border-2 flex items-center justify-center ${selectedRole === role.value
+                        ? "border-[#1A6B2F] bg-[#1A6B2F]"
+                        : "border-slate-200"
+                        }`}>
+                        {selectedRole === role.value && (
+                          <div className="size-1.5 rounded-full bg-white" />
                         )}
                       </div>
                     </Label>
                   </div>
                 ))}
               </RadioGroup>
-
-              {/* Benefits Section */}
-              <div className="mt-10 border-t border-slate-100 pt-8">
-                <h3 className="text-sm font-extrabold text-[#17391f]">
-                  {REGISTER_BENEFITS.heading}
-                </h3>
-                <div className="mt-4 space-y-3">
-                  {REGISTER_BENEFITS.items.map((item) => (
-                    <div key={item} className="flex items-center gap-3">
-                      <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#EAF3DE]">
-                        <CheckCircle2 className="size-3.5 text-[#2D6A2D]" />
-                      </div>
-                      <span className="text-xs font-bold text-[#17391f]">
-                        {item}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
 
           {/* Right Column: Form */}
           <div className="lg:col-span-8">
-            <div className="rounded-[2.5rem] bg-white p-6 shadow-xl shadow-slate-200/60 md:p-10 lg:p-12">
-              <h2 className="text-2xl font-extrabold text-[#17391f] md:text-3xl">
+            <div className="rounded-[2.5rem] bg-white p-6 shadow-xl shadow-slate-200/60 md:p-10 lg:p-12 border border-slate-100">
+              <h2 className="text-heading-2 font-bold text-gray-900">
                 {REGISTER_FORM_LABELS.heading}
               </h2>
-              <p className="mt-2 text-sm font-medium text-gray-500 md:text-base">
+              <p className="mt-2 text-body-sm font-medium text-gray-500">
                 {REGISTER_FORM_LABELS.subtext}
               </p>
 
-              <form onSubmit={handleSubmit} className="mt-10 grid gap-6 md:grid-cols-2">
+              <form onSubmit={handleSubmit} className="mt-6 grid gap-4 md:grid-cols-2">
                 {/* Nama Lengkap */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold text-[#17391f]">
+                  <Label className="text-sm font-bold text-gray-700">
                     {REGISTER_FORM_LABELS.namaLengkap}
                   </Label>
                   <div className="relative">
@@ -270,14 +249,14 @@ function RegisterFormContent() {
                     <Input
                       required
                       placeholder={REGISTER_FORM_PLACEHOLDERS.namaLengkap}
-                      className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white"
+                      className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white transition-all focus:ring-1 focus:ring-primary/20"
                     />
                   </div>
                 </div>
 
                 {/* Email */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold text-[#17391f]">
+                  <Label className="text-sm font-bold text-gray-700">
                     {REGISTER_FORM_LABELS.email}
                   </Label>
                   <div className="relative">
@@ -286,14 +265,14 @@ function RegisterFormContent() {
                       type="email"
                       required
                       placeholder={REGISTER_FORM_PLACEHOLDERS.email}
-                      className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white"
+                      className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white transition-all focus:ring-1 focus:ring-primary/20"
                     />
                   </div>
                 </div>
 
                 {/* Nomor HP */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold text-[#17391f]">
+                  <Label className="text-sm font-bold text-gray-700">
                     {REGISTER_FORM_LABELS.nomorHp}
                   </Label>
                   <div className="relative">
@@ -301,7 +280,7 @@ function RegisterFormContent() {
                     <Input
                       required
                       placeholder={REGISTER_FORM_PLACEHOLDERS.nomorHp}
-                      className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white"
+                      className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white transition-all focus:ring-1 focus:ring-primary/20"
                     />
                   </div>
                 </div>
@@ -309,7 +288,7 @@ function RegisterFormContent() {
                 {/* Kata Sandi */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-sm font-bold text-[#17391f]">
+                    <Label className="text-sm font-bold text-gray-700">
                       {REGISTER_FORM_LABELS.kataSandi}
                     </Label>
                     {password && (
@@ -333,7 +312,7 @@ function RegisterFormContent() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder={REGISTER_FORM_PLACEHOLDERS.kataSandi}
-                      className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 pr-12 focus:bg-white"
+                      className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 pr-12 focus:bg-white transition-all focus:ring-1 focus:ring-primary/20"
                     />
                   </div>
                   <p className="text-[10px] font-medium text-gray-500">
@@ -343,7 +322,7 @@ function RegisterFormContent() {
 
                 {/* Konfirmasi Kata Sandi */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold text-[#17391f]">
+                  <Label className="text-sm font-bold text-gray-700">
                     {REGISTER_FORM_LABELS.konfirmasiKataSandi}
                   </Label>
                   <div className="relative">
@@ -352,7 +331,7 @@ function RegisterFormContent() {
                       required
                       type="password"
                       placeholder={REGISTER_FORM_PLACEHOLDERS.konfirmasiKataSandi}
-                      className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white"
+                      className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white transition-all focus:ring-1 focus:ring-primary/20"
                     />
                   </div>
                 </div>
@@ -361,11 +340,11 @@ function RegisterFormContent() {
 
                 {/* Jenis Kelamin */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold text-[#17391f]">
+                  <Label className="text-sm font-bold text-gray-700">
                     {REGISTER_FORM_LABELS.jenisKelamin}
                   </Label>
                   <Select required>
-                    <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white">
+                    <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all">
                       <SelectValue placeholder={REGISTER_FORM_PLACEHOLDERS.jenisKelamin} />
                     </SelectTrigger>
                     <SelectContent>
@@ -377,7 +356,7 @@ function RegisterFormContent() {
 
                 {/* Tanggal Lahir */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold text-[#17391f]">
+                  <Label className="text-sm font-bold text-gray-700">
                     {REGISTER_FORM_LABELS.tanggalLahir}
                   </Label>
                   <div className="relative">
@@ -385,18 +364,18 @@ function RegisterFormContent() {
                     <Input
                       required
                       type="date"
-                      className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pr-12 focus:bg-white appearance-none block w-full"
+                      className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pr-12 focus:bg-white appearance-none block w-full transition-all"
                     />
                   </div>
                 </div>
 
                 {/* Lokasi (Provinsi) */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold text-[#17391f]">
+                  <Label className="text-sm font-bold text-gray-700">
                     {REGISTER_FORM_LABELS.lokasi}
                   </Label>
                   <Select required value={selectedProvinsi} onValueChange={setSelectedProvinsi}>
-                    <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white">
+                    <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all">
                       <SelectValue placeholder={REGISTER_FORM_PLACEHOLDERS.lokasi} />
                     </SelectTrigger>
                     <SelectContent>
@@ -409,11 +388,11 @@ function RegisterFormContent() {
 
                 {/* Kota/Kabupaten */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-bold text-[#17391f]">
+                  <Label className="text-sm font-bold text-gray-700">
                     {REGISTER_FORM_LABELS.kotaKabupaten}
                   </Label>
                   <Select required disabled={!selectedProvinsi}>
-                    <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white disabled:opacity-50">
+                    <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white disabled:opacity-50 transition-all">
                       <SelectValue placeholder={REGISTER_FORM_PLACEHOLDERS.kotaKabupaten} />
                     </SelectTrigger>
                     <SelectContent>
@@ -424,15 +403,15 @@ function RegisterFormContent() {
                   </Select>
                 </div>
 
-                {/* Information Tambahan (Dynamic) */}
+                {/* Informasi Tambahan (Dynamic) */}
                 {extraFields && (
                   <>
-                    <div className="md:col-span-2 pt-6">
+                    <div className="md:col-span-2 pt-2">
                       <div className="flex items-center gap-3">
-                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#EAF3DE] text-[#2D6A2D]">
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary-light text-primary">
                           <extraFields.icon className="size-5" />
                         </div>
-                        <h3 className="text-base font-extrabold text-[#17391f]">
+                        <h3 className="text-base font-bold text-gray-900">
                           {extraFields.title}
                         </h3>
                       </div>
@@ -441,12 +420,12 @@ function RegisterFormContent() {
 
                     {/* Field 1 */}
                     <div className="space-y-2">
-                      <Label className="text-sm font-bold text-[#17391f]">
+                      <Label className="text-sm font-bold text-gray-700">
                         {extraFields.field1.label}
                       </Label>
                       {extraFields.field1.type === "select" ? (
                         <Select>
-                          <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white">
+                          <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all">
                             <SelectValue placeholder={extraFields.field1.placeholder} />
                           </SelectTrigger>
                           <SelectContent>
@@ -460,7 +439,7 @@ function RegisterFormContent() {
                           {extraFields.field1.icon && <extraFields.field1.icon className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />}
                           <Input
                             placeholder={extraFields.field1.placeholder}
-                            className={`h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white ${extraFields.field1.icon ? 'pl-12' : ''}`}
+                            className={`h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all ${extraFields.field1.icon ? 'pl-12' : ''}`}
                           />
                         </div>
                       )}
@@ -468,12 +447,12 @@ function RegisterFormContent() {
 
                     {/* Field 2 */}
                     <div className="space-y-2">
-                      <Label className="text-sm font-bold text-[#17391f]">
+                      <Label className="text-sm font-bold text-gray-700">
                         {extraFields.field2.label}
                       </Label>
                       {extraFields.field2.type === "select" ? (
                         <Select>
-                          <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white">
+                          <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all">
                             <SelectValue placeholder={extraFields.field2.placeholder} />
                           </SelectTrigger>
                           <SelectContent>
@@ -487,7 +466,7 @@ function RegisterFormContent() {
                           {extraFields.field2.icon && <extraFields.field2.icon className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />}
                           <Input
                             placeholder={extraFields.field2.placeholder}
-                            className={`h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white ${extraFields.field2.icon ? 'pl-12' : ''}`}
+                            className={`h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all ${extraFields.field2.icon ? 'pl-12' : ''}`}
                           />
                         </div>
                       )}
@@ -496,23 +475,23 @@ function RegisterFormContent() {
                 )}
 
                 {/* Syarat & Ketentuan */}
-                <div className="md:col-span-2 flex items-start gap-3 pt-4">
-                  <Checkbox required id="syarat" className="mt-1 border-slate-300 data-[state=checked]:bg-[#2D6A2D] data-[state=checked]:border-[#2D6A2D]" />
-                  <Label htmlFor="syarat" className="text-xs font-bold leading-relaxed text-[#17391f]">
+                <div className="md:col-span-2 flex items-center gap-3">
+                  <Checkbox required id="syarat" className="shrink-0 border-slate-300 data-[state=checked]:bg-primary data-[state=checked]:border-primary" />
+                  <p className="text-xs font-bold leading-relaxed text-gray-700">
                     {REGISTER_TERMS.prefix}{" "}
-                    <span className="text-[#2D6A2D] cursor-pointer hover:underline">{REGISTER_TERMS.syaratKetentuan}</span>{" "}
+                    <span className="text-primary cursor-pointer hover:underline">{REGISTER_TERMS.syaratKetentuan}</span>{" "}
                     {REGISTER_TERMS.conjunction}{" "}
-                    <span className="text-[#2D6A2D] cursor-pointer hover:underline">{REGISTER_TERMS.kebijakanPrivasi}</span>{" "}
+                    <span className="text-primary cursor-pointer hover:underline">{REGISTER_TERMS.kebijakanPrivasi}</span>{" "}
                     {REGISTER_TERMS.suffix}
-                  </Label>
+                  </p>
                 </div>
 
                 {/* Button */}
-                <div className="md:col-span-2 mt-4 space-y-6">
-                  <Button 
+                <div className="md:col-span-2 mt-2 space-y-4">
+                  <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-[#2D6A2D] py-7 text-base font-bold text-white hover:bg-[#235323] rounded-xl shadow-lg shadow-green-100 transition-all active:scale-[0.98]"
+                    className="w-full bg-primary py-6 text-base font-bold text-white hover:bg-primary-dark rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
                   >
                     {loading ? (
                       <Loader2 className="mr-2 size-5 animate-spin" />
@@ -523,10 +502,10 @@ function RegisterFormContent() {
                       </div>
                     )}
                   </Button>
-                  
-                  <p className="text-center text-sm font-bold text-[#17391f]">
+
+                  <p className="text-center text-sm font-bold text-gray-900">
                     {REGISTER_FORM_HINTS.sudahPunyaAkun}{" "}
-                    <Link href="/login" className="text-[#2D6A2D] cursor-pointer hover:underline">
+                    <Link href="/login" className="text-primary cursor-pointer hover:underline">
                       {REGISTER_FORM_HINTS.masukLink}
                     </Link>
                   </p>

@@ -14,7 +14,7 @@ export default function RegisterPage() {
     <div className="min-h-screen">
       <RegisterHeroSection />
       <RegisterFormSection />
-      <RegisterTrustBarSection />
+      {/* <RegisterTrustBarSection /> */}
     </div>
   );
 }

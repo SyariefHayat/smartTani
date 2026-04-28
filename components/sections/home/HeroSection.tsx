@@ -10,7 +10,7 @@ import {
 } from "@/constants";
 
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, Sprout } from "lucide-react";
+import { Sprout } from "lucide-react";
 
 export default function HeroSection() {
   return (
@@ -27,7 +27,6 @@ export default function HeroSection() {
             className="w-full h-full object-cover object-center"
           />
         </picture>
-
       </div>
 
       {/* Content */}
