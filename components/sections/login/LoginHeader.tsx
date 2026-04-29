@@ -10,10 +10,10 @@ export default function LoginHeader() {
       </div>
       <div className="space-y-2">
         <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight drop-shadow-sm">
-          {LOGIN_HERO.title}
+          {LOGIN_HERO.heading}
         </h1>
         <p className="text-white/80 font-medium max-w-md">
-          {LOGIN_HERO.subtitle}
+          {LOGIN_HERO.subtext}
         </p>
       </div>
     </div>
