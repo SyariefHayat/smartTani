@@ -10,6 +10,7 @@ export const LOGIN_HERO = {
   subtext: "Bersama petani, membangun pertanian modern, berkelanjutan dan berdaya saing untuk masa depan yang lebih baik.",
   bgImageDesktop: "/images/register/desktop-login.png",
   bgImageTablet: "/images/register/tablet-login.png",
+  bgImageSmallTablet: "/images/register/sm-tablet-login.png",
   bgImageMobile: "/images/register/mobile-login.png",
 };
 

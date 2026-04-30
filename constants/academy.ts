@@ -13,6 +13,7 @@ export const ACADEMY_HERO = {
     "Tingkatkan pengetahuan dan keterampilan bertani bersama para ahli. Kursus praktis, mudah dipahami, dan bisa diakses kapan saja.",
   bgImageDesktop: "/images/academy/desktop.png",
   bgImageTablet: "/images/academy/tablet.png",
+  bgImageSmallTablet: "/images/academy/sm-tablet.png",
   bgImageMobile: "/images/academy/mobile.png",
   badges: [
     {

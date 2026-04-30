@@ -7,6 +7,7 @@ export const REGISTER_META = {
 export const REGISTER_HERO = {
   bgImageDesktop: "/images/register/desktop-signup.png",
   bgImageTablet: "/images/register/tablet-signup.png",
+  bgImageSmallTablet: "/images/register/sm-tablet-signup.png",
   bgImageMobile: "/images/register/mobile-signup.png",
   badge: "Smarttani",
   heading: "Bergabung Bersama Smarttani Mulai Perjalanan Sukses Anda",
