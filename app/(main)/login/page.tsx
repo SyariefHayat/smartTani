@@ -12,8 +12,8 @@ export default function LoginPage() {
   return (
     <main className="bg-white">
       <HeroLoginSection />
-      
-      <section className="py-16 md:py-24">
+
+      <section className="section-padding">
         <div className="container-smarttani">
           <div className="flex justify-center px-4">
             <LoginForm className="w-full max-w-md" />

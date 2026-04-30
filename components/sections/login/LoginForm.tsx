@@ -18,11 +18,45 @@ import {
 import { Input } from "@/components/ui/input";
 import { LOGIN_FORM } from "@/constants/login";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { showToast } from "@/lib/toast";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    // Simulasi loading
+    setTimeout(() => {
+      // Mock credentials
+      if (email === "petani@smarttani.id" && password === "password123") {
+        const mockUser = {
+          name: "Bapak Budi",
+          email: "petani@smarttani.id",
+          role: "petani"
+        };
+        
+        localStorage.setItem("smarttani-auth", JSON.stringify(mockUser));
+        window.dispatchEvent(new Event("storage"));
+        
+        showToast("Login Berhasil! Selamat datang Bapak Budi.", "success");
+        router.push("/dashboard/farmer");
+      } else {
+        showToast("Email atau password salah. Coba: petani@smarttani.id / password123", "error");
+      }
+      setIsLoading(false);
+    }, 1000);
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -36,7 +70,7 @@ export function LoginForm({
         </CardHeader>
 
         <CardContent>
-          <form>
+          <form onSubmit={handleLogin}>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="email" className="text-sm font-bold text-gray-700 mb-2 block">
@@ -47,6 +81,8 @@ export function LoginForm({
                   type="email"
                   placeholder={LOGIN_FORM.emailPlaceholder}
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="h-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-white focus:border-primary transition-all text-sm px-5"
                 />
               </Field>
@@ -68,17 +104,20 @@ export function LoginForm({
                   type="password"
                   placeholder={LOGIN_FORM.passwordPlaceholder}
                   required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="h-12 rounded-xl bg-slate-50 border-slate-200 focus:bg-white focus:border-primary transition-all text-sm px-5"
                 />
               </Field>
             </FieldGroup>
 
-            <div className="mt-8 space-">
+            <div className="mt-8 space-y-3">
               <Button
                 type="submit"
+                disabled={isLoading}
                 className="w-full h-12 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl shadow-lg shadow-primary/20 active:scale-[0.98] transition-all text-sm"
               >
-                {LOGIN_FORM.submitButton}
+                {isLoading ? "Memproses..." : LOGIN_FORM.submitButton}
               </Button>
 
               <div className="relative flex items-center py-2">
