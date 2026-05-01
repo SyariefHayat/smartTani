@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import ForgotPasswordSection from "@/components/sections/login/ForgotPasswordSection";
+import ForgotPassword from "@/components/sections/login/ForgotPassword";
 
 export const metadata: Metadata = {
   title: "Lupa Kata Sandi",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function ForgotPasswordPage() {
   return (
     <main className="min-h-screen">
-      <ForgotPasswordSection />
+      <ForgotPassword />
     </main>
   );
 }

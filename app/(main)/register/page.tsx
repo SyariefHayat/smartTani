@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import { REGISTER_META } from "@/constants/register";
-import RegisterHeroSection from "@/components/sections/register/SignupHeroSection";
-import RegisterFormSection from "@/components/sections/register/SignupFormSection";
-import RegisterTrustBarSection from "@/components/sections/register/SignupTrustBarSection";
+import Hero from "@/components/sections/register/Hero";
+import Form from "@/components/sections/register/Form";
+import TrustBar from "@/components/sections/register/TrustBar";
 
 export const metadata: Metadata = {
   title: REGISTER_META.title,
@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 export default function RegisterPage() {
   return (
     <main className="min-h-screen">
-      <RegisterHeroSection />
-      <RegisterFormSection />
-      {/* <RegisterTrustBarSection /> */}
+      <Hero />
+      <Form />
+      {/* <TrustBar /> */}
     </main>
   );
 }
