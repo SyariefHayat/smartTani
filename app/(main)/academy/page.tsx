@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { ACADEMY_META } from "@/constants/academy";
-import AcademyHeroSection from "@/components/sections/academy/AcademyHeroSection";
-import AcademyStatsSection from "@/components/sections/academy/AcademyStatsSection";
-import AcademyFeaturesSection from "@/components/sections/academy/AcademyFeaturesSection";
-import AcademyModelSection from "@/components/sections/academy/AcademyModelSection";
-import AcademyCoursesSection from "@/components/sections/academy/AcademyCoursesSection";
-import AcademyInfoGridSection from "@/components/sections/academy/AcademyInfoGridSection";
-import AcademyMoreInfoGridSection from "@/components/sections/academy/AcademyMoreInfoGridSection";
+import Hero from "@/components/sections/academy/Hero";
+import Stats from "@/components/sections/academy/Stats";
+import Features from "@/components/sections/academy/Features";
+import Model from "@/components/sections/academy/Model";
+import Courses from "@/components/sections/academy/Courses";
+import InfoGrid from "@/components/sections/academy/InfoGrid";
+import MoreInfoGrid from "@/components/sections/academy/MoreInfoGrid";
 
 export const metadata: Metadata = {
   title: ACADEMY_META.title,
@@ -16,13 +16,13 @@ export const metadata: Metadata = {
 export default function AcademyPage() {
   return (
     <main>
-      <AcademyHeroSection />
-      <AcademyStatsSection />
-      <AcademyFeaturesSection />
-      <AcademyModelSection />
-      <AcademyCoursesSection />
-      <AcademyInfoGridSection />
-      <AcademyMoreInfoGridSection />
+      <Hero />
+      <Stats />
+      <Features />
+      <Model />
+      <Courses />
+      <InfoGrid />
+      <MoreInfoGrid />
     </main>
   );
 }

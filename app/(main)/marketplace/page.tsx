@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { MARKETPLACE_META } from "@/constants/marketplace";
-import MarketplaceHeroSection from "@/components/sections/marketplace/MarketplaceHeroSection";
-import ProductTabsSection from "@/components/sections/marketplace/ProductTabsSection";
-import TrustBarSection from "@/components/sections/marketplace/TrustBarSection";
-import BestSellingProductSection from "@/components/sections/marketplace/BestSellingProductSection";
-import WhyMarketplaceSection from "@/components/sections/marketplace/WhyMarketplaceSection";
-import MarketplaceLayoutSection from "@/components/sections/marketplace/MarketplaceLayoutSection";
-import CategorySection from "@/components/sections/marketplace/CategorySection";
+import Hero from "@/components/sections/marketplace/Hero";
+import TabsFilter from "@/components/sections/marketplace/TabsFilter";
+import TrustBar from "@/components/sections/marketplace/TrustBar";
+import BestSelling from "@/components/sections/marketplace/BestSelling";
+import WhyMarketplace from "@/components/sections/marketplace/WhyMarketplace";
+import Layout from "@/components/sections/marketplace/Layout";
+import Categories from "@/components/sections/marketplace/Categories";
 
 export const metadata: Metadata = {
   title: MARKETPLACE_META.title,
@@ -16,14 +16,14 @@ export const metadata: Metadata = {
 export default function MarketplacePage() {
   return (
     <main className="min-h-screen bg-white">
-      <MarketplaceHeroSection />
-      <MarketplaceLayoutSection>
-        <ProductTabsSection />
-        {/* <TrustBarSection /> */}
-        <CategorySection />
-        <BestSellingProductSection />
-      </MarketplaceLayoutSection>
-      {/* <WhyMarketplaceSection /> */}
+      <Hero />
+      <Layout>
+        <TabsFilter />
+        {/* <TrustBar /> */}
+        <Categories />
+        <BestSelling />
+      </Layout>
+      {/* <WhyMarketplace /> */}
     </main>
   );
 }

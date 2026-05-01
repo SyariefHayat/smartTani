@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import { CONTACT_META } from "@/constants/contact";
-import ContactHeroSection from "@/components/sections/contact/ContactHeroSection";
-import ContactMiddleSection from "@/components/sections/contact/ContactMiddleSection";
-import ContactLocationSection from "@/components/sections/contact/ContactLocationSection";
+import Hero from "@/components/sections/contact/Hero";
+import FormInfo from "@/components/sections/contact/FormInfo";
+import Location from "@/components/sections/contact/Location";
 
 export const metadata: Metadata = {
   title: CONTACT_META.title,
@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 export default function KontakPage() {
   return (
     <main className="min-h-screen bg-white">
-      <ContactHeroSection />
-      <ContactMiddleSection />
-      <ContactLocationSection />
+      <Hero />
+      <FormInfo />
+      <Location />
     </main>
   );
 }

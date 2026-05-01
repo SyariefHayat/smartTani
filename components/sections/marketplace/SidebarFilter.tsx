@@ -33,7 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from '@/lib/utils';
-import MitraBannerSection from './MitraBannerSection';
+import MitraBanner from './MitraBanner';
 
 const categoryIcons: Record<string, any> = {
   "Benih & Bibit": Sprout,
@@ -250,7 +250,7 @@ function SidebarFilterContent({ className, onClose }: SidebarFilterProps) {
 
       {/* Banner Mitra - Desktop only inside sidebar */}
       <div className="hidden lg:block pt-4">
-        <MitraBannerSection />
+        <MitraBanner />
       </div>
     </aside>
   );

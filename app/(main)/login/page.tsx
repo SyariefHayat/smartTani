@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { LOGIN_META } from "@/constants/login";
-import HeroLoginSection from "@/components/sections/login/HeroLoginSection";
-import { LoginForm } from "@/components/sections/login/LoginForm";
+import Hero from "@/components/sections/login/Hero";
+import { LoginForm } from "@/components/sections/login/Form";
 
 export const metadata: Metadata = {
   title: LOGIN_META.title,
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function LoginPage() {
   return (
     <main className="bg-white">
-      <HeroLoginSection />
+      <Hero />
 
       <section className="section-padding">
         <div className="container-smarttani">

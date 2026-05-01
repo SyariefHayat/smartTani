@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { HOME_META } from "@/constants";
-import HeroSection from "@/components/sections/home/HeroSection";
-import StatsBarSection from "@/components/sections/home/StatsBarSection";
-import StepsSection from "@/components/sections/home/StepsSection";
-import CTABannerSection from "@/components/sections/home/CTABannerSection";
-import FeatureSection from "@/components/sections/home/FeatureSection";
-import TestimonialSection from "@/components/sections/home/TestimonialSection";
+import Hero from "@/components/sections/home/Hero";
+import StatsBar from "@/components/sections/home/StatsBar";
+import Steps from "@/components/sections/home/Steps";
+import CTA from "@/components/sections/home/CTA";
+import Features from "@/components/sections/home/Features";
+import Testimonials from "@/components/sections/home/Testimonials";
 
 export const metadata: Metadata = {
   title: {
@@ -54,12 +54,12 @@ export const metadata: Metadata = {
 export default function BerandaPage() {
   return (
     <main>
-      <HeroSection />
-      <StatsBarSection />
-      <FeatureSection />
-      <StepsSection />
-      <TestimonialSection />
-      <CTABannerSection />
+      <Hero />
+      <StatsBar />
+      <Features />
+      <Steps />
+      <Testimonials />
+      <CTA />
     </main>
   );
 }

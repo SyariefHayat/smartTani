@@ -14,7 +14,7 @@ import {
   Share2,
   BookmarkPlus,
 } from "lucide-react";
-import ArticleNewsletterSection from "@/components/sections/articles/ArticleNewsletterSection";
+import Newsletter from "@/components/sections/articles/Newsletter";
 
 // Generate static params for all articles
 export function generateStaticParams() {
@@ -324,7 +324,7 @@ export default async function ArtikelDetailPage({
       </section>
 
       {/* Newsletter */}
-      <ArticleNewsletterSection />
+      <Newsletter />
     </>
   );
 }
