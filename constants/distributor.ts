@@ -24,11 +24,11 @@ export const DISTRIBUTOR_META = {
 
 export const DISTRIBUTOR_HERO = {
   badge: "Distributor Smarttani",
-  heading: "Bersama Tumbuh, Bersama Membangun Pertanian Indonesia",
-  subtext:
-    "Jadilah bagian dari jaringan distributor resmi Smarttani dan dapatkan produk berkualitas, dukungan penuh, serta peluang keuntungan maksimal.",
+  heading: "Mitra Distribusi untuk Pertumbuhan Berkelanjutan",
+  subtext: "Produk Unggul, Jaringan Luas, Nilai Bisnis Jangka Panjang.",
   bgImageDesktop: "/images/distributor/desktop.png",
   bgImageTablet: "/images/distributor/tablet.png",
+  bgImageSmallTablet: "/images/distributor/sm-tablet.png",
   bgImageMobile: "/images/distributor/mobile.png",
   advantages: [
     { label: "Produk Terjamin", sublabel: "Kualitas asli dari Smarttani" },
@@ -156,7 +156,7 @@ export const DISTRIBUTOR_PRODUK_KATEGORI = {
       label: "Hasil Panen",
       jumlahProduk: "100+",
       image: "/images/distributor/hasil-panen.png",
-    }
+    },
   ],
 };
 

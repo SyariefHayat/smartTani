@@ -4,7 +4,15 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LOGISTICS_HERO } from "@/constants/logistics";
-import { ShieldCheck, Truck, Globe, Search, ArrowRight, CheckCircle2, Circle } from "lucide-react";
+import {
+  ShieldCheck,
+  Truck,
+  Globe,
+  Search,
+  ArrowRight,
+  CheckCircle2,
+  Circle,
+} from "lucide-react";
 import { showToast } from "@/lib/toast";
 
 const LogisticHeroSection = () => {
@@ -14,20 +22,33 @@ const LogisticHeroSection = () => {
   const handleTracking = (e: React.FormEvent) => {
     e.preventDefault();
     if (!trackingNo.trim()) {
-      showToast('Masukkan nomor resi dulu', 'warning');
+      showToast("Masukkan nomor resi dulu", "warning");
       return;
     }
     setShowResult(true);
   };
 
   return (
-    <section className="relative flex items-start md:items-center overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-start md:items-center overflow-hidden min-h-[720px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
-          <source media="(min-width: 1024px)" srcSet={LOGISTICS_HERO.bgImageDesktop} />
-          <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={LOGISTICS_HERO.bgImageTablet} />
-          <source media="(max-width: 767px)" srcSet={LOGISTICS_HERO.bgImageMobile} />
+          <source
+            media="(min-width: 1024px)"
+            srcSet={LOGISTICS_HERO.bgImageDesktop}
+          />
+          <source
+            media="(min-width: 768px) and (max-width: 1023px)"
+            srcSet={LOGISTICS_HERO.bgImageTablet}
+          />
+          <source
+            media="(min-width: 480px) and (max-width: 767px)"
+            srcSet={LOGISTICS_HERO.bgImageSmallTablet}
+          />
+          <source
+            media="(max-width: 479px)"
+            srcSet={LOGISTICS_HERO.bgImageMobile}
+          />
           <img
             src={LOGISTICS_HERO.bgImageDesktop}
             alt="Logistic Smarttani"
@@ -39,7 +60,6 @@ const LogisticHeroSection = () => {
       {/* Content */}
       <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-2">
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-8">
-
           {/* Left Column */}
           <div className="lg:col-span-9 text-white mt-9 md:mt-0">
             {/* Badge */}
@@ -47,11 +67,11 @@ const LogisticHeroSection = () => {
               {LOGISTICS_HERO.badge}
             </div>
 
-            <h1 className="text-heading-1 md:text-display text-white mb-3 max-w-sm lg:max-w-lg">
+            <h1 className="text-heading-1 md:text-display text-white mb-3 w-full md:max-w-sm lg:max-w-lg">
               {LOGISTICS_HERO.heading}
             </h1>
 
-            <p className="text-body-sm max-w-sm md:max-w-md text-white/85">
+            <p className="text-body-sm w-full md:max-w-sm md:max-w-md text-white/85">
               {LOGISTICS_HERO.subtext}
             </p>
           </div>
@@ -98,7 +118,9 @@ const LogisticHeroSection = () => {
               ) : (
                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-base font-extrabold text-[#17391f]">Hasil Pelacakan</h3>
+                    <h3 className="text-base font-extrabold text-[#17391f]">
+                      Hasil Pelacakan
+                    </h3>
                     <button
                       onClick={() => setShowResult(false)}
                       className="text-xs font-bold text-primary hover:underline cursor-pointer"
@@ -107,15 +129,35 @@ const LogisticHeroSection = () => {
                     </button>
                   </div>
                   <div className="bg-[#EAF3DE]/40 rounded-xl p-3 mb-4 border border-[#d4edda]">
-                    <p className="text-[10px] text-[#5d7a64] uppercase font-bold tracking-wider">No. Resi</p>
-                    <p className="text-sm font-extrabold text-[#17391f]">{trackingNo}</p>
+                    <p className="text-[10px] text-[#5d7a64] uppercase font-bold tracking-wider">
+                      No. Resi
+                    </p>
+                    <p className="text-sm font-extrabold text-[#17391f]">
+                      {trackingNo}
+                    </p>
                   </div>
                   <div className="space-y-4">
                     {[
-                      { title: "Pesanan Diterima", date: "Kemarin, 14:20", done: true },
-                      { title: "Diproses di Gudang", date: "Kemarin, 18:45", done: true },
-                      { title: "Dalam Perjalanan", date: "Hari ini, 09:10", done: true },
-                      { title: "Estimasi Tiba", date: "Besok, 12:00", done: false },
+                      {
+                        title: "Pesanan Diterima",
+                        date: "Kemarin, 14:20",
+                        done: true,
+                      },
+                      {
+                        title: "Diproses di Gudang",
+                        date: "Kemarin, 18:45",
+                        done: true,
+                      },
+                      {
+                        title: "Dalam Perjalanan",
+                        date: "Hari ini, 09:10",
+                        done: true,
+                      },
+                      {
+                        title: "Estimasi Tiba",
+                        date: "Besok, 12:00",
+                        done: false,
+                      },
                     ].map((step, i) => (
                       <div key={i} className="flex gap-3">
                         <div className="flex flex-col items-center">
@@ -124,13 +166,21 @@ const LogisticHeroSection = () => {
                           ) : (
                             <Circle className="size-4 text-slate-300" />
                           )}
-                          {i < 3 && <div className={`w-0.5 h-6 ${step.done ? 'bg-primary' : 'bg-slate-200'}`} />}
+                          {i < 3 && (
+                            <div
+                              className={`w-0.5 h-6 ${step.done ? "bg-primary" : "bg-slate-200"}`}
+                            />
+                          )}
                         </div>
                         <div>
-                          <p className={`text-xs font-extrabold ${step.done ? 'text-[#17391f]' : 'text-slate-400'}`}>
+                          <p
+                            className={`text-xs font-extrabold ${step.done ? "text-[#17391f]" : "text-slate-400"}`}
+                          >
                             {step.title}
                           </p>
-                          <p className="text-[10px] font-medium text-[#5d7a64]">{step.date}</p>
+                          <p className="text-[10px] font-medium text-[#5d7a64]">
+                            {step.date}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -139,7 +189,6 @@ const LogisticHeroSection = () => {
               )}
             </div>
           </div>
-
         </div>
       </div>
     </section>

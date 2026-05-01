@@ -7,31 +7,43 @@ import Link from "next/link";
 
 const MarketplaceHeroSection = () => {
   return (
-    <section className="relative flex items-start overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-start overflow-hidden min-h-[720px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
-          <source media="(min-width: 1024px)" srcSet={MARKETPLACE_HERO.bgImageDesktop} />
-          <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={MARKETPLACE_HERO.bgImageTablet} />
-          <source media="(max-width: 767px)" srcSet={MARKETPLACE_HERO.bgImageMobile} />
+          <source
+            media="(min-width: 1024px)"
+            srcSet={MARKETPLACE_HERO.bgImageDesktop}
+          />
+          <source
+            media="(min-width: 768px) and (max-width: 1023px)"
+            srcSet={MARKETPLACE_HERO.bgImageTablet}
+          />
+          <source
+            media="(min-width: 480px) and (max-width: 767px)"
+            srcSet={MARKETPLACE_HERO.bgImageSmallTablet}
+          />
+          <source
+            media="(max-width: 479px)"
+            srcSet={MARKETPLACE_HERO.bgImageMobile}
+          />
           <img
             src={MARKETPLACE_HERO.bgImageDesktop}
             alt="Marketplace Smarttani"
             className="w-full h-full object-cover object-center"
           />
         </picture>
-
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 md:mt-6 lg:mt-11">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-10 md:mt-9 lg:mt-21">
         <div>
           {/* Badge */}
           <div className="mb-3 inline-block rounded-lg bg-primary-medium/80 backdrop-blur-sm px-3 py-1.5 text-caption font-bold text-white">
             {MARKETPLACE_HERO.badge}
           </div>
 
-          <h1 className="text-heading-1 md:text-display text-white mb-3 max-w-sm lg:max-w-lg">
+          <h1 className="text-heading-1 md:text-display text-white mb-3 w-full md:max-w-sm lg:max-w-lg">
             {MARKETPLACE_HERO.heading}
           </h1>
 
@@ -47,7 +59,9 @@ const MarketplaceHeroSection = () => {
               <Link href="/marketplace">
                 <ShoppingBag className="size-7 shrink-0 mr-3" />
                 <div className="flex flex-col items-start leading-tight">
-                  <span className="prefix text-[0.65rem] font-normal opacity-80">Temukan produk</span>
+                  <span className="prefix text-[0.65rem] font-normal opacity-80">
+                    Temukan produk
+                  </span>
                   <span className="text-sm font-bold">Mulai Belanja</span>
                 </div>
               </Link>
@@ -60,7 +74,9 @@ const MarketplaceHeroSection = () => {
               <Link href="/marketplace/jual">
                 <Store className="size-7 shrink-0 mr-3" />
                 <div className="flex flex-col items-start leading-tight">
-                  <span className="prefix text-[0.65rem] font-normal opacity-80">Daftarkan produkmu</span>
+                  <span className="prefix text-[0.65rem] font-normal opacity-80">
+                    Daftarkan produkmu
+                  </span>
                   <span className="text-sm font-bold">Mulai Berjualan</span>
                 </div>
               </Link>

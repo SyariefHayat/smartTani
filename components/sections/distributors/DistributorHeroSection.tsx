@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { DISTRIBUTOR_HERO, DISTRIBUTOR_HERO_ACTIONS } from "@/constants/distributor";
+import {
+  DISTRIBUTOR_HERO,
+  DISTRIBUTOR_HERO_ACTIONS,
+} from "@/constants/distributor";
 import { ShieldCheck, Tag, Headphones, UsersRound } from "lucide-react";
 
 const ICON_MAP = [ShieldCheck, Tag, Headphones, UsersRound];
@@ -13,13 +16,26 @@ const DistributorHeroSection = () => {
   };
 
   return (
-    <section className="relative flex items-start md:items-center overflow-hidden min-h-[850px] md:min-h-[460px] lg:min-h-[420px]">
+    <section className="relative flex items-start md:items-center overflow-hidden min-h-[720px] md:min-h-[460px] lg:min-h-[420px]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <picture className="block w-full h-full">
-          <source media="(min-width: 1024px)" srcSet={DISTRIBUTOR_HERO.bgImageDesktop} />
-          <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={DISTRIBUTOR_HERO.bgImageTablet} />
-          <source media="(max-width: 767px)" srcSet={DISTRIBUTOR_HERO.bgImageMobile} />
+          <source
+            media="(min-width: 1024px)"
+            srcSet={DISTRIBUTOR_HERO.bgImageDesktop}
+          />
+          <source
+            media="(min-width: 768px) and (max-width: 1023px)"
+            srcSet={DISTRIBUTOR_HERO.bgImageTablet}
+          />
+          <source
+            media="(min-width: 480px) and (max-width: 767px)"
+            srcSet={DISTRIBUTOR_HERO.bgImageSmallTablet}
+          />
+          <source
+            media="(max-width: 479px)"
+            srcSet={DISTRIBUTOR_HERO.bgImageMobile}
+          />
           <img
             src={DISTRIBUTOR_HERO.bgImageDesktop}
             alt="Distributor Smarttani"
@@ -29,9 +45,8 @@ const DistributorHeroSection = () => {
       </div>
 
       {/* Content */}
-      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-1 md:mt-7 lg:mt-5.5">
+      <div className="container-smarttani relative z-10 py-10 lg:py-0 mt-1 md:mt-7">
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-12 lg:items-center lg:gap-8">
-
           {/* Left Column */}
           <div className="lg:col-span-9 text-white mt-9 md:mt-0">
             {/* Badge */}
@@ -39,7 +54,7 @@ const DistributorHeroSection = () => {
               {DISTRIBUTOR_HERO.badge}
             </div>
 
-            <h1 className="text-heading-1 md:text-display text-white mb-3 max-w-sm lg:max-w-lg">
+            <h1 className="text-heading-1 md:text-display text-white mb-3 w-full md:max-w-lg">
               {DISTRIBUTOR_HERO.heading}
             </h1>
             <p className="text-body-sm mb-5 max-w-sm md:max-w-md text-white/85">
@@ -47,32 +62,44 @@ const DistributorHeroSection = () => {
             </p>
 
             <div className="grid grid-cols-2 gap-3 max-w-sm mb-4">
-              {DISTRIBUTOR_HERO_ACTIONS.map(({ prefix, label, icon: Icon, className, href }) => (
-                <Button
-                  key={label}
-                  asChild={!!href}
-                  onClick={!href ? handleDownload : undefined}
-                  className={`h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer ${className}`}
-                >
-                  {href ? (
-                    <Link href={href}>
-                      <Icon className="size-7 shrink-0 mr-3" strokeWidth={1.5} />
-                      <div className="flex flex-col items-start leading-tight">
-                        <span className="prefix text-[0.65rem] font-normal opacity-80">{prefix}</span>
-                        <span className="text-sm font-bold">{label}</span>
-                      </div>
-                    </Link>
-                  ) : (
-                    <>
-                      <Icon className="size-7 shrink-0 mr-3" strokeWidth={1.5} />
-                      <div className="flex flex-col items-start leading-tight">
-                        <span className="prefix text-[0.65rem] font-normal opacity-80">{prefix}</span>
-                        <span className="text-sm font-bold">{label}</span>
-                      </div>
-                    </>
-                  )}
-                </Button>
-              ))}
+              {DISTRIBUTOR_HERO_ACTIONS.map(
+                ({ prefix, label, icon: Icon, className, href }) => (
+                  <Button
+                    key={label}
+                    asChild={!!href}
+                    onClick={!href ? handleDownload : undefined}
+                    className={`h-14 justify-start rounded-lg px-4 text-left shadow-lg cursor-pointer ${className}`}
+                  >
+                    {href ? (
+                      <Link href={href}>
+                        <Icon
+                          className="size-7 shrink-0 mr-3"
+                          strokeWidth={1.5}
+                        />
+                        <div className="flex flex-col items-start leading-tight">
+                          <span className="prefix text-[0.65rem] font-normal opacity-80">
+                            {prefix}
+                          </span>
+                          <span className="text-sm font-bold">{label}</span>
+                        </div>
+                      </Link>
+                    ) : (
+                      <>
+                        <Icon
+                          className="size-7 shrink-0 mr-3"
+                          strokeWidth={1.5}
+                        />
+                        <div className="flex flex-col items-start leading-tight">
+                          <span className="prefix text-[0.65rem] font-normal opacity-80">
+                            {prefix}
+                          </span>
+                          <span className="text-sm font-bold">{label}</span>
+                        </div>
+                      </>
+                    )}
+                  </Button>
+                ),
+              )}
             </div>
           </div>
         </div>

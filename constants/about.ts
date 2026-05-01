@@ -8,12 +8,12 @@ export const ABOUT_META = {
 
 export const ABOUT_HERO = {
   badge: "Tentang Smarttani",
-  heading: "Bersama Membangun Masa Depan Pertanian Indonesia",
-  subtext:
-    "PT. Smarttani Indonesia berkomitmen menjadi mitra terpercaya dalam transformasi pertanian Indonesia menuju masa depan yang lebih cerdas, dan berkelanjutan.",
+  heading: "Mendorong Transformasi Pertanian Indonesia",
+  subtext: "Teknologi, Inovasi, dan Keberlanjutan dalam Satu Platform.",
   cta: [{ label: "Pelajari Lebih Lanjut" }, { label: "Hubungi Kami" }],
   bgImageDesktop: "/images/about/desktop.png",
   bgImageTablet: "/images/about/tablet.png",
+  bgImageSmallTablet: "/images/about/sm-tablet.png",
   bgImageMobile: "/images/about/mobile.png",
 };
 
@@ -212,8 +212,14 @@ export const ABOUT_ALAMAT = {
 export const ABOUT_MITRA_STRATEGIS = {
   heading: "Mitra Strategis Kami",
   items: [
-    { nama: "Pupuk Indonesia", logo: "/images/partners/partner-pupuk-indonesia.png" },
-    { nama: "Pos Indonesia", logo: "/images/partners/partner-pos-indonesia.png" },
+    {
+      nama: "Pupuk Indonesia",
+      logo: "/images/partners/partner-pupuk-indonesia.png",
+    },
+    {
+      nama: "Pos Indonesia",
+      logo: "/images/partners/partner-pos-indonesia.png",
+    },
     { nama: "Bank BRI", logo: "/images/partners/partner-bri.png" },
     { nama: "Telkom Indonesia", logo: "/images/partners/partner-telkom.png" },
     { nama: "JNE", logo: "/images/partners/partner-jne.png" },
