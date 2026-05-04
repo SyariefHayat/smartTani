@@ -1,24 +1,23 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
+import * as React from "react";
 import {
+  BookOpen,
+  Bot,
   Command,
+  Frame,
   LifeBuoy,
+  Map,
+  PieChart,
   Send,
-  Home,
-  Package,
-  ClipboardList,
-  Wallet,
-  GraduationCap,
-  ShoppingBag,
-  Truck
-} from "lucide-react"
+  Settings2,
+  SquareTerminal,
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -27,80 +26,96 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 const data = {
   user: {
-    name: "Petani Smart",
-    email: "petani@smarttani.com",
-    avatar: "/avatars/farmer.jpg",
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
     {
-      title: "Dashboard",
-      url: "/dashboard/farmer",
-      icon: Home,
+      title: "Playground",
+      url: "#",
+      icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "Ringkasan",
-          url: "/dashboard/farmer",
+          title: "History",
+          url: "#",
         },
         {
-          title: "Statistik Penjualan",
+          title: "Starred",
+          url: "#",
+        },
+        {
+          title: "Settings",
           url: "#",
         },
       ],
     },
     {
-      title: "Produk Saya",
+      title: "Models",
       url: "#",
-      icon: Package,
+      icon: Bot,
       items: [
         {
-          title: "Daftar Produk",
+          title: "Genesis",
           url: "#",
         },
         {
-          title: "Tambah Produk",
-          url: "/marketplace",
+          title: "Explorer",
+          url: "#",
         },
         {
-          title: "Stok & Inventaris",
+          title: "Quantum",
           url: "#",
         },
       ],
     },
     {
-      title: "Pesanan",
+      title: "Documentation",
       url: "#",
-      icon: ClipboardList,
+      icon: BookOpen,
       items: [
         {
-          title: "Pesanan Baru",
+          title: "Introduction",
           url: "#",
         },
         {
-          title: "Dalam Pengiriman",
-          url: "/logistics",
+          title: "Get Started",
+          url: "#",
         },
         {
-          title: "Riwayat Pesanan",
+          title: "Tutorials",
+          url: "#",
+        },
+        {
+          title: "Changelog",
           url: "#",
         },
       ],
     },
     {
-      title: "Keuangan",
+      title: "Settings",
       url: "#",
-      icon: Wallet,
+      icon: Settings2,
       items: [
         {
-          title: "Saldo & Penarikan",
+          title: "General",
           url: "#",
         },
         {
-          title: "Laporan Transaksi",
+          title: "Team",
+          url: "#",
+        },
+        {
+          title: "Billing",
+          url: "#",
+        },
+        {
+          title: "Limits",
           url: "#",
         },
       ],
@@ -108,66 +123,51 @@ const data = {
   ],
   navSecondary: [
     {
-      title: "Pusat Bantuan",
+      title: "Support",
       url: "#",
       icon: LifeBuoy,
     },
     {
-      title: "Berikan Masukan",
+      title: "Feedback",
       url: "#",
       icon: Send,
     },
   ],
   projects: [
     {
-      name: "Academy (Pelatihan)",
-      url: "/academy",
-      icon: GraduationCap,
+      name: "Design Engineering",
+      url: "#",
+      icon: Frame,
     },
     {
-      name: "Marketplace",
-      url: "/marketplace",
-      icon: ShoppingBag,
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
     },
     {
-      name: "Logistik",
-      url: "/logistics",
-      icon: Truck,
+      name: "Travel",
+      url: "#",
+      icon: Map,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  // Get user from localStorage if available
-  const [user, setUser] = React.useState(data.user);
-
-  React.useEffect(() => {
-    const auth = localStorage.getItem("smarttani-auth");
-    if (auth) {
-      const parsedAuth = JSON.parse(auth);
-      setUser({
-        name: parsedAuth.name || data.user.name,
-        email: parsedAuth.email || data.user.email,
-        avatar: data.user.avatar,
-      });
-    }
-  }, []);
-
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link href="/">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-[#1A6B2F] text-white">
+              <a href="#">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Command className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-bold text-[#1A6B2F]">Smarttani</span>
-                  <span className="truncate text-xs">Petani Dashboard</span>
+                  <span className="truncate font-medium">Acme Inc</span>
+                  <span className="truncate text-xs">Enterprise</span>
                 </div>
-              </Link>
+              </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -178,8 +178,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
