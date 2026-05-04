@@ -38,20 +38,49 @@ export function LoginForm({
     // Simulasi loading
     setTimeout(() => {
       // Mock credentials
-      if (email === "petani@smarttani.id" && password === "password123") {
+      const mockAccounts: Record<string, { name: string, role: string, password?: string }> = {
+        "petani@smarttani.id": { name: "Bapak Budi", role: "petani", password: "password123" },
+        "investor@smarttani.id": { name: "Ibu Siska", role: "investor", password: "password123" },
+        "distributor@smarttani.id": { name: "Pak Jaka", role: "distributor", password: "password123" },
+        "mitra@smarttani.id": { name: "PT Agro Maju", role: "mitra_bisnis", password: "password123" },
+        "admin@smarttani.id": { name: "Super Admin", role: "admin_perusahaan", password: "password123" },
+        "academy@smarttani.id": { name: "Admin Akademi", role: "academy", password: "password123" },
+      };
+
+      // Check mock accounts first
+      let userData = mockAccounts[email];
+      
+      // If not in mock, check localStorage for registered users
+      if (!userData) {
+        const registeredUsersRaw = localStorage.getItem("smarttani-registered-users");
+        if (registeredUsersRaw) {
+          const registeredUsers = JSON.parse(registeredUsersRaw);
+          const user = registeredUsers.find((u: any) => u.email === email && u.password === password);
+          if (user) {
+            userData = { name: user.name, role: user.role };
+          }
+        }
+      }
+
+      if (userData && (userData.password === password || !userData.password)) {
         const mockUser = {
-          name: "Bapak Budi",
-          email: "petani@smarttani.id",
-          role: "petani"
+          name: userData.name,
+          email: email,
+          role: userData.role
         };
         
         localStorage.setItem("smarttani-auth", JSON.stringify(mockUser));
         window.dispatchEvent(new Event("storage"));
         
-        showToast("Login Berhasil! Selamat datang Bapak Budi.", "success");
-        router.push("/dashboard/farmer");
+        showToast(`Login Berhasil! Selamat datang ${userData.name}.`, "success");
+        
+        const dashboardPath = userData.role === "petani" 
+          ? "/dashboard/farmer" 
+          : `/dashboard/${userData.role.replace("_", "-")}`;
+          
+        router.push(dashboardPath);
       } else {
-        showToast("Email atau password salah. Coba: petani@smarttani.id / password123", "error");
+        showToast("Email atau password salah.", "error");
       }
       setIsLoading(false);
     }, 1000);

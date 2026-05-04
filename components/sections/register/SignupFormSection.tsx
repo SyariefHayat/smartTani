@@ -42,6 +42,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { showToast } from "@/lib/toast";
 
 const roleImages: Record<string, string> = {
   petani: "/images/register/farmer.webp",
@@ -49,6 +50,7 @@ const roleImages: Record<string, string> = {
   investor: "/images/register/investor.webp",
   mitra_bisnis: "/images/register/business-partner.webp",
   admin_perusahaan: "/images/register/admin-company.webp",
+  academy: "/images/register/academy.webp",
 };
 
 const regionData: Record<string, string[]> = {
@@ -93,16 +95,44 @@ function RegisterFormContent() {
 
   const strength = getPasswordStrength();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const fullName = formData.get("fullName") as string;
+    const email = formData.get("email") as string;
+    const phone = formData.get("phone") as string;
+    const password = formData.get("password") as string;
+    const gender = formData.get("gender") as string;
+    const dob = formData.get("dob") as string;
+    const city = formData.get("city") as string;
+
     // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    const newUser = {
+      name: fullName,
+      email: email,
+      role: selectedRole,
+      password: password, // For mock login purposes
+    };
+
+    // Get existing users or empty array
+    const existingUsersRaw = localStorage.getItem("smarttani-registered-users");
+    const existingUsers = existingUsersRaw ? JSON.parse(existingUsersRaw) : [];
+
+    // Add new user
+    existingUsers.push(newUser);
+    localStorage.setItem("smarttani-registered-users", JSON.stringify(existingUsers));
+
+    showToast("Pendaftaran berhasil! Silakan masuk dengan akun Anda.", "success");
     router.push("/login?registered=true");
   };
 
   const getRoleSpecificFields = () => {
     type FieldConfig = {
+      name: string;
       label: string;
       placeholder: string;
       type?: string;
@@ -122,36 +152,43 @@ function RegisterFormContent() {
         return {
           title: "Informasi Pertanian",
           icon: Sprout,
-          field1: { label: "Nama Kelompok Tani", placeholder: "Contoh: Tani Makmur Jaya", icon: Building2 },
-          field2: { label: "Komoditas Utama", placeholder: "Pilih komoditas", type: "select", options: ["Padi", "Jagung", "Sayuran", "Buah-buahan", "Lainnya"] },
+          field1: { name: "farmGroupName", label: "Nama Kelompok Tani", placeholder: "Contoh: Tani Makmur Jaya", icon: Building2 },
+          field2: { name: "commodity", label: "Komoditas Utama", placeholder: "Pilih komoditas", type: "select", options: ["Padi", "Jagung", "Sayuran", "Buah-buahan", "Lainnya"] },
         } as RoleFields;
       case "distributor":
         return {
           title: "Informasi Bisnis & Distribusi",
           icon: Store,
-          field1: { label: "Nama Toko / Gudang", placeholder: "Contoh: UD Sumber Rejeki", icon: Building2 },
-          field2: { label: "Cakupan Wilayah", placeholder: "Pilih wilayah", type: "select", options: ["Lokal (Kecamatan)", "Regional (Kabupaten)", "Nasional"] },
+          field1: { name: "storeName", label: "Nama Toko / Gudang", placeholder: "Contoh: UD Sumber Rejeki", icon: Building2 },
+          field2: { name: "coverageArea", label: "Cakupan Wilayah", placeholder: "Pilih wilayah", type: "select", options: ["Lokal (Kecamatan)", "Regional (Kabupaten)", "Nasional"] },
         } as RoleFields;
       case "investor":
         return {
           title: "Profil Investasi",
           icon: TrendingUp,
-          field1: { label: "Tipe Investor", placeholder: "Pilih tipe", type: "select", options: ["Individu / Perorangan", "Institusi / Perusahaan"] },
-          field2: { label: "Rencana Budget Investasi", placeholder: "Pilih range", type: "select", options: ["Rp 1jt - 10jt", "Rp 10jt - 50jt", "Rp 50jt - 100jt", "> Rp 100jt"] },
+          field1: { name: "investorType", label: "Tipe Investor", placeholder: "Pilih tipe", type: "select", options: ["Individu / Perorangan", "Institusi / Perusahaan"] },
+          field2: { name: "budgetRange", label: "Rencana Budget Investasi", placeholder: "Pilih range", type: "select", options: ["Rp 1jt - 10jt", "Rp 10jt - 50jt", "Rp 50jt - 100jt", "> Rp 100jt"] },
         } as RoleFields;
       case "mitra_bisnis":
         return {
           title: "Informasi Kemitraan",
           icon: Handshake,
-          field1: { label: "Nama Perusahaan / Institusi", placeholder: "Contoh: PT Agro Sejahtera", icon: Building2 },
-          field2: { label: "Model Kerjasama", placeholder: "Pilih model", type: "select", options: ["Penyedia Teknologi", "Logistik & Rantai Pasok", "Offtaker / Pembeli Siaga", "Lainnya"] },
+          field1: { name: "companyName", label: "Nama Perusahaan / Institusi", placeholder: "Contoh: PT Agro Sejahtera", icon: Building2 },
+          field2: { name: "partnershipModel", label: "Model Kerjasama", placeholder: "Pilih model", type: "select", options: ["Penyedia Teknologi", "Logistik & Rantai Pasok", "Offtaker / Pembeli Siaga", "Lainnya"] },
         } as RoleFields;
       case "admin_perusahaan":
         return {
           title: "Data Operasional Perusahaan",
           icon: ShieldCheck,
-          field1: { label: "Nama Perusahaan Resmi", placeholder: "Contoh: PT Smarttani Tech", icon: Building2 },
-          field2: { label: "Jabatan / Posisi", placeholder: "Pilih jabatan", type: "select", options: ["Direktur / CEO", "Manajer Operasional", "Admin Sistem", "Staf IT"] },
+          field1: { name: "officialCompanyName", label: "Nama Perusahaan Resmi", placeholder: "Contoh: PT Smarttani Tech", icon: Building2 },
+          field2: { name: "position", label: "Jabatan / Posisi", placeholder: "Pilih jabatan", type: "select", options: ["Direktur / CEO", "Manajer Operasional", "Admin Sistem", "Staf IT"] },
+        } as RoleFields;
+      case "academy":
+        return {
+          title: "Informasi Institusi Pendidikan",
+          icon: GraduationCap,
+          field1: { name: "institutionName", label: "Nama Institusi / Lembaga", placeholder: "Contoh: Akademi Tani Muda", icon: Building2 },
+          field2: { name: "educationFocus", label: "Fokus Pendidikan", placeholder: "Pilih fokus", type: "select", options: ["Teknologi Pertanian", "Manajemen Agribisnis", "Budidaya Organik", "Lainnya"] },
         } as RoleFields;
       default:
         return null;
@@ -247,6 +284,7 @@ function RegisterFormContent() {
                   <div className="relative">
                     <User className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
                     <Input
+                      name="fullName"
                       required
                       placeholder={REGISTER_FORM_PLACEHOLDERS.namaLengkap}
                       className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white transition-all focus:ring-1 focus:ring-primary/20"
@@ -262,6 +300,7 @@ function RegisterFormContent() {
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
                     <Input
+                      name="email"
                       type="email"
                       required
                       placeholder={REGISTER_FORM_PLACEHOLDERS.email}
@@ -278,6 +317,7 @@ function RegisterFormContent() {
                   <div className="relative">
                     <Phone className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
                     <Input
+                      name="phone"
                       required
                       placeholder={REGISTER_FORM_PLACEHOLDERS.nomorHp}
                       className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white transition-all focus:ring-1 focus:ring-primary/20"
@@ -307,6 +347,7 @@ function RegisterFormContent() {
                       {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
                     </button>
                     <Input
+                      name="password"
                       required
                       type={showPassword ? "text" : "password"}
                       value={password}
@@ -328,6 +369,7 @@ function RegisterFormContent() {
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
                     <Input
+                      name="confirmPassword"
                       required
                       type="password"
                       placeholder={REGISTER_FORM_PLACEHOLDERS.konfirmasiKataSandi}
@@ -343,7 +385,7 @@ function RegisterFormContent() {
                   <Label className="text-sm font-bold text-gray-700">
                     {REGISTER_FORM_LABELS.jenisKelamin}
                   </Label>
-                  <Select required>
+                  <Select required name="gender">
                     <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all">
                       <SelectValue placeholder={REGISTER_FORM_PLACEHOLDERS.jenisKelamin} />
                     </SelectTrigger>
@@ -362,6 +404,7 @@ function RegisterFormContent() {
                   <div className="relative">
                     <CalendarIcon className="absolute right-4 top-1/2 size-5 -translate-y-1/2 text-gray-400 pointer-events-none" />
                     <Input
+                      name="dob"
                       required
                       type="date"
                       className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pr-12 focus:bg-white appearance-none block w-full transition-all"
@@ -374,7 +417,7 @@ function RegisterFormContent() {
                   <Label className="text-sm font-bold text-gray-700">
                     {REGISTER_FORM_LABELS.lokasi}
                   </Label>
-                  <Select required value={selectedProvinsi} onValueChange={setSelectedProvinsi}>
+                  <Select required name="province" value={selectedProvinsi} onValueChange={setSelectedProvinsi}>
                     <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all">
                       <SelectValue placeholder={REGISTER_FORM_PLACEHOLDERS.lokasi} />
                     </SelectTrigger>
@@ -391,7 +434,7 @@ function RegisterFormContent() {
                   <Label className="text-sm font-bold text-gray-700">
                     {REGISTER_FORM_LABELS.kotaKabupaten}
                   </Label>
-                  <Select required disabled={!selectedProvinsi}>
+                  <Select required name="city" disabled={!selectedProvinsi}>
                     <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white disabled:opacity-50 transition-all">
                       <SelectValue placeholder={REGISTER_FORM_PLACEHOLDERS.kotaKabupaten} />
                     </SelectTrigger>
@@ -424,7 +467,7 @@ function RegisterFormContent() {
                         {extraFields.field1.label}
                       </Label>
                       {extraFields.field1.type === "select" ? (
-                        <Select>
+                        <Select name={extraFields.field1.name}>
                           <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all">
                             <SelectValue placeholder={extraFields.field1.placeholder} />
                           </SelectTrigger>
@@ -438,6 +481,7 @@ function RegisterFormContent() {
                         <div className="relative">
                           {extraFields.field1.icon && <extraFields.field1.icon className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />}
                           <Input
+                            name={extraFields.field1.name}
                             placeholder={extraFields.field1.placeholder}
                             className={`h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all ${extraFields.field1.icon ? 'pl-12' : ''}`}
                           />
@@ -451,7 +495,7 @@ function RegisterFormContent() {
                         {extraFields.field2.label}
                       </Label>
                       {extraFields.field2.type === "select" ? (
-                        <Select>
+                        <Select name={extraFields.field2.name}>
                           <SelectTrigger className="h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all">
                             <SelectValue placeholder={extraFields.field2.placeholder} />
                           </SelectTrigger>
@@ -465,6 +509,7 @@ function RegisterFormContent() {
                         <div className="relative">
                           {extraFields.field2.icon && <extraFields.field2.icon className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />}
                           <Input
+                            name={extraFields.field2.name}
                             placeholder={extraFields.field2.placeholder}
                             className={`h-12 rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white transition-all ${extraFields.field2.icon ? 'pl-12' : ''}`}
                           />

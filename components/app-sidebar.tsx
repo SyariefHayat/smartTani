@@ -1,21 +1,12 @@
 "use client";
 
 import * as React from "react";
+import { useEffect, useState } from "react";
 import {
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  LifeBuoy,
-  Map,
-  PieChart,
-  Send,
-  Settings2,
-  SquareTerminal,
+  Leaf,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
 import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
 import {
@@ -27,145 +18,66 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-};
+import { 
+  FARMER_DASHBOARD_NAV, 
+  INVESTOR_DASHBOARD_NAV, 
+  DISTRIBUTOR_DASHBOARD_NAV,
+  MITRA_BISNIS_DASHBOARD_NAV,
+  ADMIN_PERUSAHAAN_DASHBOARD_NAV,
+  ACADEMY_DASHBOARD_NAV,
+  SECONDARY_NAV 
+} from "@/constants/navigation";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const auth = localStorage.getItem("smarttani-auth");
+    if (auth) {
+      setUser(JSON.parse(auth));
+    }
+  }, []);
+
+  const getNavMain = () => {
+    switch (user?.role) {
+      case "petani":
+        return FARMER_DASHBOARD_NAV;
+      case "investor":
+        return INVESTOR_DASHBOARD_NAV;
+      case "distributor":
+        return DISTRIBUTOR_DASHBOARD_NAV;
+      case "mitra_bisnis":
+        return MITRA_BISNIS_DASHBOARD_NAV;
+      case "admin_perusahaan":
+        return ADMIN_PERUSAHAAN_DASHBOARD_NAV;
+      case "academy":
+        return ACADEMY_DASHBOARD_NAV;
+      default:
+        return FARMER_DASHBOARD_NAV; // Default to farmer if role unknown
+    }
+  };
+
+  const navMain = getNavMain();
+  
+  const userData = {
+    name: user?.name || "User",
+    email: user?.email || "",
+    avatar: "/avatars/user.jpg",
+  };
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Command className="size-4" />
+              <a href="/">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-[#1A6B2F] text-white">
+                  <Leaf className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  <span className="truncate font-bold text-[#1A6B2F]">Smart Tani</span>
+                  <span className="truncate text-xs text-muted-foreground">Digitalizing Agriculture</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -173,12 +85,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={navMain} />
+        <NavSecondary items={SECONDARY_NAV} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>
   );

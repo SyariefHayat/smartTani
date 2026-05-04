@@ -25,6 +25,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useRouter } from "next/navigation";
+import { showToast } from "@/lib/toast";
 
 export function NavUser({
   user,
@@ -36,6 +38,14 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("smarttani-auth");
+    window.dispatchEvent(new Event("storage"));
+    showToast("Anda telah keluar dari sistem.", "success");
+    router.push("/login");
+  };
 
   return (
     <SidebarMenu>
@@ -98,7 +108,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50">
               <LogOut />
               Log out
             </DropdownMenuItem>

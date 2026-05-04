@@ -54,6 +54,13 @@ export const REGISTER_MEMBERSHIP_TYPES = {
       badge: null,
       defaultSelected: false,
     },
+    {
+      value: "academy",
+      label: "Akademi",
+      description: "Kelola kurikulum dan edukasi pertanian.",
+      badge: null,
+      defaultSelected: false,
+    },
   ],
 };
 

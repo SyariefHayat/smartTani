@@ -18,15 +18,16 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { 
-  Sprout, 
-  Map as MapIcon, 
-  TrendingUp, 
-  Activity,
+  Handshake, 
+  Package, 
+  FileText, 
+  TrendingUp,
   Plus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
-export default function FarmerDashboard() {
+export default function MitraBisnisDashboard() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -34,10 +35,10 @@ export default function FarmerDashboard() {
   useEffect(() => {
     const auth = localStorage.getItem("smarttani-auth");
     if (!auth) {
-      router.push("/login?redirect=/dashboard/farmer");
+      router.push("/login?redirect=/dashboard/mitra-bisnis");
     } else {
       const userData = JSON.parse(auth);
-      if (userData.role !== "petani") {
+      if (userData.role !== "mitra_bisnis") {
         router.push(`/dashboard/${userData.role === 'petani' ? 'farmer' : userData.role.replace('_', '-')}`);
       } else {
         setUser(userData);
@@ -49,10 +50,10 @@ export default function FarmerDashboard() {
   if (loading) return null;
 
   const stats = [
-    { label: "Total Lahan", value: "2.4 Ha", icon: MapIcon, color: "text-green-600", bg: "bg-green-100" },
-    { label: "Produksi Padi", value: "12.5 Ton", icon: Sprout, color: "text-amber-600", bg: "bg-amber-100" },
-    { label: "Estimasi Pendapatan", value: "Rp 45.2M", icon: TrendingUp, color: "text-blue-600", bg: "bg-blue-100" },
-    { label: "Status Alat", value: "8 Active", icon: Activity, color: "text-purple-600", bg: "bg-purple-100" },
+    { label: "Proyek Aktif", value: "8 Proyek", icon: Handshake, color: "text-green-600", bg: "bg-green-100" },
+    { label: "Volume Suplai", value: "450 Ton", icon: Package, color: "text-blue-600", bg: "bg-blue-100" },
+    { label: "Nilai Kontrak", value: "Rp 2.4M", icon: FileText, color: "text-amber-600", bg: "bg-amber-100" },
+    { label: "Pertumbuhan", value: "+15.2%", icon: TrendingUp, color: "text-purple-600", bg: "bg-purple-100" },
   ];
 
   return (
@@ -75,7 +76,7 @@ export default function FarmerDashboard() {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Ringkasan Pertanian</BreadcrumbPage>
+                  <BreadcrumbPage>Dashboard Kemitraan</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -85,12 +86,12 @@ export default function FarmerDashboard() {
         <div className="flex flex-1 flex-col gap-6 p-6 pt-0">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Selamat Datang, {user?.name || "Petani"}!</h1>
-              <p className="text-gray-500">Pantau perkembangan lahan dan hasil tani Anda hari ini.</p>
+              <h1 className="text-2xl font-bold text-gray-900">Selamat Datang, {user?.name || "Mitra Bisnis"}!</h1>
+              <p className="text-gray-500">Monitor kerjasama strategis dan rantai pasok Anda.</p>
             </div>
             <Button className="bg-[#1A6B2F] hover:bg-[#145224]">
               <Plus className="mr-2 h-4 w-4" />
-              Tambah Lahan Baru
+              Ajukan Kerjasama Baru
             </Button>
           </div>
 
@@ -113,42 +114,50 @@ export default function FarmerDashboard() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <div className="col-span-1 lg:col-span-2 bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
               <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                <h2 className="font-bold text-gray-900">Manajemen Lahan Aktif</h2>
+                <h2 className="font-bold text-gray-900">Proyek Kerjasama</h2>
                 <button className="text-sm text-[#1A6B2F] font-medium hover:underline">Lihat Semua</button>
               </div>
-              <div className="p-6">
-                <div className="space-y-4">
-                  {[
-                    { name: "Lahan Sawah A1 - Karangbinangun", status: "Masa Tanam", progress: 65, color: "bg-green-500" },
-                    { name: "Lahan Jagung B2 - Alang-Alang", status: "Pemupukan", progress: 30, color: "bg-blue-500" },
-                    { name: "Lahan Padi C1 - Glagah", status: "Siap Panen", progress: 95, color: "bg-amber-500" },
-                  ].map((land, i) => (
-                    <div key={i} className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="font-medium text-gray-700">{land.name}</span>
-                        <span className="text-gray-500">{land.status} ({land.progress}%)</span>
-                      </div>
-                      <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full ${land.color} transition-all duration-500`} 
-                          style={{ width: `${land.progress}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="bg-gray-50 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                      <th className="px-6 py-4">Nama Proyek</th>
+                      <th className="px-6 py-4">Tipe</th>
+                      <th className="px-6 py-4">Progress</th>
+                      <th className="px-6 py-4">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {[
+                      { name: "Suplai Benih Unggul Jatim", type: "Rantai Pasok", progress: "85%", status: "Berjalan", color: "bg-green-100 text-green-700" },
+                      { name: "Digitalisasi Lahan Lamongan", type: "Teknologi", progress: "40%", status: "Implementasi", color: "bg-blue-100 text-blue-700" },
+                      { name: "Ekspor Beras Organik", type: "Offtaker", progress: "10%", status: "Persiapan", color: "bg-amber-100 text-amber-700" },
+                    ].map((project, i) => (
+                      <tr key={i} className="text-sm hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4 font-bold text-gray-900">{project.name}</td>
+                        <td className="px-6 py-4 text-gray-600">{project.type}</td>
+                        <td className="px-6 py-4 font-bold text-gray-900">{project.progress}</td>
+                        <td className="px-6 py-4">
+                          <Badge className={`${project.color} shadow-none border-none text-[10px]`}>
+                            {project.status}
+                          </Badge>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
 
-            <div className="bg-[#1A6B2F] rounded-xl p-6 text-white flex flex-col justify-between">
+            <div className="bg-[#1A3C2A] rounded-xl p-6 text-white flex flex-col justify-between">
               <div>
-                <h2 className="text-lg font-bold mb-2">Smart Farming Insight</h2>
+                <h2 className="text-lg font-bold mb-2">Update Kualitas</h2>
                 <p className="text-white/80 text-sm leading-relaxed">
-                  Kelembapan tanah di Lahan A1 sedang menurun (15%). Kami merekomendasikan aktivasi irigasi otomatis dalam 2 jam ke depan.
+                  Laporan QC terbaru menunjukkan peningkatan standar kualitas di Klaster Lamongan sebesar 5% dibandingkan bulan lalu.
                 </p>
               </div>
-              <Button variant="secondary" className="mt-6 w-full text-[#1A6B2F] font-bold">
-                Cek Sensor Lahan
+              <Button variant="secondary" className="mt-6 w-full text-[#1A3C2A] font-bold">
+                Buka Laporan QC
               </Button>
             </div>
           </div>
