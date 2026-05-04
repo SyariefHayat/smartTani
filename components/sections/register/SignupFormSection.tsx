@@ -28,7 +28,8 @@ import {
   Handshake,
   ShieldCheck,
   Eye,
-  Loader2
+  Loader2,
+  GraduationCap
 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
