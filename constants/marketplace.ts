@@ -10,11 +10,12 @@ export const MARKETPLACE_META = {
 
 export const MARKETPLACE_HERO = {
   badge: "Marketplace Smarttani",
-  heading: "Semua Kebutuhan Pertanian dalam Satu Platform Terpercaya",
+  heading: "Semua Ada, Semua Mudah, Marketplace Khusus Petani",
   subtext:
-    "Temukan produk berkualitas, harga terbaik, dan pengiriman cepat untuk mendukung setiap langkah usaha pertanian Anda.",
-  bgImageDesktop: "/images/marketplace/desktop-2.png",
-  bgImageTablet: "/images/marketplace/tablet-2.png",
+    "solusi lengkap dari hulu ke hilir. Mulai dari benih unggul, pupuk, alat pertanian, hingga hasil panen.",
+  bgImageDesktop: "/images/marketplace/desktop.png",
+  bgImageTablet: "/images/marketplace/tablet.png",
+  bgImageSmallTablet: "/images/marketplace/sm-tablet.png",
   bgImageMobile: "/images/marketplace/mobile.png",
   badges: [
     { label: "Produk Terverifikasi", sublabel: "Kualitas Terjamin" },

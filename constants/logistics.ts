@@ -1,16 +1,18 @@
 export const LOGISTICS_META = {
-  title: "Logistics Smarttani — Logistics Terintegrasi untuk Pertanian Indonesia",
+  title:
+    "Logistics Smarttani — Logistics Terintegrasi untuk Pertanian Indonesia",
   description:
     "Layanan pengiriman cepat, aman, dan efisien untuk semua kebutuhan pertanian Anda. Dari hasil panen hingga sarana produksi, kami pastikan sampai tujuan dengan tepat waktu.",
 };
 
 export const LOGISTICS_HERO = {
   badge: "Logistik Smarttani",
-  heading: "Logistik Terintegrasi untuk Pertanian Indonesia yang Lebih Maju",
+  heading: "Kirim Cepat, Panen Lancar, Bisnis Makin Untung",
   subtext:
-    "Layanan pengiriman cepat, aman, dan efisien untuk semua kebutuhan pertanian Anda. Dari hasil panen hingga sarana produksi, kami pastikan sampai tujuan dengan tepat waktu.",
+    "Percayakan pengiriman kebutuhan pertanian Anda pada Smarttani cepat, aman, dan tepat waktu dari hulu hingga hilir.",
   bgImageDesktop: "/images/logistics/desktop.png",
   bgImageTablet: "/images/logistics/tablet.png",
+  bgImageSmallTablet: "/images/logistics/sm-tablet.png",
   bgImageMobile: "/images/logistics/mobile.png",
   badges: [
     { label: "Aman & Terpercaya", sublabel: "Asuransi Pengiriman" },
@@ -76,8 +78,7 @@ export const LOGISTICS_SERVICES = {
     },
     {
       title: "Asuransi Kargo",
-      description:
-        "Perlindungan penuh for setiap pengiriman, aman dan tenang.",
+      description: "Perlindungan penuh for setiap pengiriman, aman dan tenang.",
       image: "/images/logistics/asuransi-kargo.png",
       cta: "Selengkapnya →",
     },
@@ -172,9 +173,15 @@ export const LOGISTICS_PARTNERS = {
     { name: "Pelindo", logo: "/images/partners/pelindo.webp" },
     { name: "JNE", logo: "/images/partners/partner-jne.png" },
     { name: "TIKI", logo: "/images/partners/tiki.webp" },
-    { name: "Pos Indonesia", logo: "/images/partners/partner-pos-indonesia.png" },
+    {
+      name: "Pos Indonesia",
+      logo: "/images/partners/partner-pos-indonesia.png",
+    },
     { name: "DAMRI", logo: "/images/partners/damri.webp" },
-    { name: "Garuda Indonesia Cargo", logo: "/images/partners/garuda-indonesia.webp" },
+    {
+      name: "Garuda Indonesia Cargo",
+      logo: "/images/partners/garuda-indonesia.webp",
+    },
     { name: "SIBA", logo: "/images/partners/siba.webp" },
   ],
 };

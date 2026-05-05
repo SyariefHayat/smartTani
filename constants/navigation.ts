@@ -9,6 +9,9 @@ import {
   Newspaper,
   Info,
   Mail,
+  User,
+  Activity,
+  Handshake,
 } from "lucide-react";
 
 export const HEADER_NAV: NavItem[] = [
@@ -21,6 +24,204 @@ export const HEADER_NAV: NavItem[] = [
   { label: "Artikel", href: "/articles", icon: Newspaper },
   { label: "Tentang", href: "/about", icon: Info },
   { label: "Kontak", href: "/contact", icon: Mail },
+];
+
+export const FARMER_DASHBOARD_NAV = [
+  {
+    title: "Ringkasan",
+    url: "/dashboard/farmer",
+    icon: Home,
+    isActive: true,
+  },
+  {
+    title: "Pertanian",
+    url: "#",
+    icon: Package,
+    items: [
+      { title: "Lahan Saya", url: "/dashboard/farmer/lands" },
+      { title: "Manajemen Panen", url: "/dashboard/farmer/harvests" },
+      { title: "Smart Farming", url: "/dashboard/farmer/smart-farming" },
+    ],
+  },
+  {
+    title: "Marketplace",
+    url: "#",
+    icon: Store,
+    items: [
+      { title: "Produk Saya", url: "/dashboard/farmer/products" },
+      { title: "Pesanan Masuk", url: "/dashboard/farmer/orders" },
+    ],
+  },
+  {
+    title: "Akademi",
+    url: "/academy",
+    icon: GraduationCap,
+  },
+];
+
+export const INVESTOR_DASHBOARD_NAV = [
+  {
+    title: "Portfolio",
+    url: "/dashboard/investor",
+    icon: TrendingUp,
+    isActive: true,
+  },
+  {
+    title: "Investasi",
+    url: "#",
+    icon: Package,
+    items: [
+      { title: "Proyek Aktif", url: "/dashboard/investor/active-projects" },
+      { title: "Riwayat Investasi", url: "/dashboard/investor/history" },
+      { title: "Jelajahi Proyek", url: "/investments" },
+    ],
+  },
+  {
+    title: "Laporan",
+    url: "/dashboard/investor/reports",
+    icon: Newspaper,
+  },
+];
+
+export const DISTRIBUTOR_DASHBOARD_NAV = [
+  {
+    title: "Ringkasan Bisnis",
+    url: "/dashboard/distributor",
+    icon: Home,
+    isActive: true,
+  },
+  {
+    title: "Inventaris",
+    url: "#",
+    icon: Package,
+    items: [
+      { title: "Stok Produk", url: "/dashboard/distributor/inventory" },
+      { title: "Manajemen Harga", url: "/dashboard/distributor/pricing" },
+      { title: "Produk Baru", url: "/dashboard/distributor/products/new" },
+    ],
+  },
+  {
+    title: "Penjualan",
+    url: "#",
+    icon: Store,
+    items: [
+      { title: "Pesanan Baru", url: "/dashboard/distributor/orders" },
+      { title: "Riwayat Penjualan", url: "/dashboard/distributor/sales-history" },
+      { title: "Pelanggan", url: "/dashboard/distributor/customers" },
+    ],
+  },
+  {
+    title: "Logistik",
+    url: "/dashboard/distributor/logistics",
+    icon: Truck,
+  },
+];
+
+export const MITRA_BISNIS_DASHBOARD_NAV = [
+  {
+    title: "Dashboard Kemitraan",
+    url: "/dashboard/mitra-bisnis",
+    icon: Home,
+    isActive: true,
+  },
+  {
+    title: "Kerjasama",
+    url: "#",
+    icon: Handshake,
+    items: [
+      { title: "Proyek Bersama", url: "/dashboard/mitra-bisnis/projects" },
+      { title: "Kontrak Aktif", url: "/dashboard/mitra-bisnis/contracts" },
+      { title: "Pengajuan Baru", url: "/dashboard/mitra-bisnis/proposals" },
+    ],
+  },
+  {
+    title: "Rantai Pasok",
+    url: "#",
+    icon: Package,
+    items: [
+      { title: "Monitor Suplai", url: "/dashboard/mitra-bisnis/supply-chain" },
+      { title: "Kualitas Produk", url: "/dashboard/mitra-bisnis/quality-control" },
+    ],
+  },
+];
+
+export const ADMIN_PERUSAHAAN_DASHBOARD_NAV = [
+  {
+    title: "Overview Operasional",
+    url: "/dashboard/admin-perusahaan",
+    icon: Home,
+    isActive: true,
+  },
+  {
+    title: "Manajemen Pengguna",
+    url: "#",
+    icon: User,
+    items: [
+      { title: "Daftar Petani", url: "/dashboard/admin-perusahaan/farmers" },
+      { title: "Daftar Investor", url: "/dashboard/admin-perusahaan/investors" },
+      { title: "Daftar Distributor", url: "/dashboard/admin-perusahaan/distributors" },
+    ],
+  },
+  {
+    title: "Monitoring",
+    url: "#",
+    icon: Activity,
+    items: [
+      { title: "Statistik Platform", url: "/dashboard/admin-perusahaan/stats" },
+      { title: "Log Aktivitas", url: "/dashboard/admin-perusahaan/logs" },
+    ],
+  },
+];
+
+export const ACADEMY_DASHBOARD_NAV = [
+  {
+    title: "Dashboard Akademi",
+    url: "/dashboard/academy",
+    icon: Home,
+    isActive: true,
+  },
+  {
+    title: "Manajemen Kursus",
+    url: "#",
+    icon: GraduationCap,
+    items: [
+      { title: "Daftar Kursus", url: "/dashboard/academy/courses" },
+      { title: "Kurikulum", url: "/dashboard/academy/curriculum" },
+      { title: "Materi Baru", url: "/dashboard/academy/materials/new" },
+    ],
+  },
+  {
+    title: "Peserta & Instruktur",
+    url: "#",
+    icon: User,
+    items: [
+      { title: "Daftar Siswa", url: "/dashboard/academy/students" },
+      { title: "Instruktur", url: "/dashboard/academy/instructors" },
+      { title: "Sertifikasi", url: "/dashboard/academy/certifications" },
+    ],
+  },
+  {
+    title: "Event & Webinar",
+    url: "#",
+    icon: Activity,
+    items: [
+      { title: "Jadwal Webinar", url: "/dashboard/academy/webinars" },
+      { title: "Workshop", url: "/dashboard/academy/workshops" },
+    ],
+  },
+];
+
+export const SECONDARY_NAV = [
+  {
+    title: "Profil",
+    url: "/dashboard/profile",
+    icon: User,
+  },
+  {
+    title: "Bantuan",
+    url: "/contact",
+    icon: Mail,
+  },
 ];
 
 export const FOOTER_SECTIONS: FooterSection[] = [
