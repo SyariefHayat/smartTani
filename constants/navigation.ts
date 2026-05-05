@@ -12,6 +12,13 @@ import {
   User,
   Activity,
   Handshake,
+  ClipboardList,
+  Sprout,
+  ShoppingCart,
+  Boxes,
+  Wallet,
+  BarChart3,
+  Settings,
 } from "lucide-react";
 
 export const HEADER_NAV: NavItem[] = [
@@ -28,34 +35,124 @@ export const HEADER_NAV: NavItem[] = [
 
 export const FARMER_DASHBOARD_NAV = [
   {
-    title: "Ringkasan",
+    title: "Dashboard",
     url: "/dashboard/farmer",
     icon: Home,
     isActive: true,
-  },
-  {
-    title: "Pertanian",
-    url: "#",
-    icon: Package,
-    items: [
-      { title: "Lahan Saya", url: "/dashboard/farmer/lands" },
-      { title: "Manajemen Panen", url: "/dashboard/farmer/harvests" },
-      { title: "Smart Farming", url: "/dashboard/farmer/smart-farming" },
-    ],
   },
   {
     title: "Marketplace",
     url: "#",
     icon: Store,
     items: [
-      { title: "Produk Saya", url: "/dashboard/farmer/products" },
-      { title: "Pesanan Masuk", url: "/dashboard/farmer/orders" },
+      {
+        title: "Daftar Produk",
+        url: "/dashboard/farmer/products",
+      },
+      {
+        title: "Tambah Produk",
+        url: "/dashboard/farmer/products/new",
+      },
+      { title: "Kategori", url: "/dashboard/farmer/categories" },
+      { title: "Promo & Diskon", url: "/dashboard/farmer/promos" },
+      { title: "Ulasan Pembeli", url: "/dashboard/farmer/reviews" },
     ],
   },
   {
-    title: "Akademi",
-    url: "/academy",
-    icon: GraduationCap,
+    title: "Penjualan",
+    url: "#",
+    icon: ShoppingCart,
+    items: [
+      {
+        title: "Pesanan Masuk",
+        url: "/dashboard/farmer/orders",
+      },
+      {
+        title: "Riwayat Penjualan",
+        url: "/dashboard/farmer/orders/history",
+      },
+    ],
+  },
+  {
+    title: "Pembelian",
+    url: "#",
+    icon: ClipboardList,
+    items: [
+      {
+        title: "Daftar Pembelian",
+        url: "/dashboard/farmer/purchases",
+      },
+      {
+        title: "Supplier",
+        url: "/dashboard/farmer/purchases/supplier",
+      },
+    ],
+  },
+  {
+    title: "Persediaan",
+    url: "#",
+    icon: Boxes,
+    items: [
+      {
+        title: "Stok Produk",
+        url: "/dashboard/farmer/inventory",
+      },
+      {
+        title: "Gudang",
+        url: "/dashboard/farmer/inventory/warehouse",
+      },
+    ],
+  },
+  {
+    title: "Manajemen Pertanian",
+    url: "#",
+    icon: Sprout,
+    items: [
+      { title: "Lahan & Tanaman", url: "/dashboard/farmer/lands" },
+      {
+        title: "Manajemen Panen",
+        url: "/dashboard/farmer/harvests",
+      },
+      {
+        title: "Smart Farming",
+        url: "/dashboard/farmer/smart-farming",
+      },
+    ],
+  },
+  {
+    title: "Keuangan",
+    url: "#",
+    icon: Wallet,
+    items: [
+      {
+        title: "Saldo & Penghasilan",
+        url: "/dashboard/farmer/finance",
+      },
+      {
+        title: "Riwayat Transaksi",
+        url: "/dashboard/farmer/finance/history",
+      },
+    ],
+  },
+  {
+    title: "Laporan & BI",
+    url: "#",
+    icon: BarChart3,
+    items: [
+      {
+        title: "Laporan Penjualan",
+        url: "/dashboard/farmer/reports/sales",
+      },
+      {
+        title: "Laporan Pertanian",
+        url: "/dashboard/farmer/reports/farming",
+      },
+    ],
+  },
+  {
+    title: "Pengaturan",
+    url: "/dashboard/farmer/settings",
+    icon: Settings,
   },
 ];
 
@@ -106,7 +203,10 @@ export const DISTRIBUTOR_DASHBOARD_NAV = [
     icon: Store,
     items: [
       { title: "Pesanan Baru", url: "/dashboard/distributor/orders" },
-      { title: "Riwayat Penjualan", url: "/dashboard/distributor/sales-history" },
+      {
+        title: "Riwayat Penjualan",
+        url: "/dashboard/distributor/sales-history",
+      },
       { title: "Pelanggan", url: "/dashboard/distributor/customers" },
     ],
   },
@@ -140,7 +240,10 @@ export const MITRA_BISNIS_DASHBOARD_NAV = [
     icon: Package,
     items: [
       { title: "Monitor Suplai", url: "/dashboard/mitra-bisnis/supply-chain" },
-      { title: "Kualitas Produk", url: "/dashboard/mitra-bisnis/quality-control" },
+      {
+        title: "Kualitas Produk",
+        url: "/dashboard/mitra-bisnis/quality-control",
+      },
     ],
   },
 ];
@@ -158,8 +261,14 @@ export const ADMIN_PERUSAHAAN_DASHBOARD_NAV = [
     icon: User,
     items: [
       { title: "Daftar Petani", url: "/dashboard/admin-perusahaan/farmers" },
-      { title: "Daftar Investor", url: "/dashboard/admin-perusahaan/investors" },
-      { title: "Daftar Distributor", url: "/dashboard/admin-perusahaan/distributors" },
+      {
+        title: "Daftar Investor",
+        url: "/dashboard/admin-perusahaan/investors",
+      },
+      {
+        title: "Daftar Distributor",
+        url: "/dashboard/admin-perusahaan/distributors",
+      },
     ],
   },
   {
@@ -262,7 +371,8 @@ export const FOOTER_SECTIONS: FooterSection[] = [
     title: "Kontak Kami",
     links: [
       {
-        label: "JI. Raya Karangbinangun KM 1 No. 42 Alang- Alang, Karangbinangun Lamongan 62293, Jawa Timur Indonesia",
+        label:
+          "JI. Raya Karangbinangun KM 1 No. 42 Alang- Alang, Karangbinangun Lamongan 62293, Jawa Timur Indonesia",
         href: `https://maps.google.com/?q=${encodeURIComponent("Jakarta Selatan 12345")}`,
         icon: "map-pin",
         external: true,
@@ -296,7 +406,8 @@ export const SOCIAL_LINKS: SocialLink[] = [
 ];
 
 export const FOOTER_CONTACT = {
-  address: "Jl. Raya Karangbinangun KM 1 No. 42 Alang- Alang, Karangbinangun Lamongan 62293, Jawa Timur Indonesia",
+  address:
+    "Jl. Raya Karangbinangun KM 1 No. 42 Alang- Alang, Karangbinangun Lamongan 62293, Jawa Timur Indonesia",
   phone: "0823-2695-2833",
   email: "info@smarttaniindonesia.com",
   website: "www.smarttaniindonesia.com",
