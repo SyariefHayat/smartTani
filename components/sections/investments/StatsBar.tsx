@@ -3,7 +3,7 @@
 import { Building2, Wallet, Users, TrendingUp, PieChart, Star } from "lucide-react";
 import { INVESTMENT_STATS_BAR } from "@/constants/investments";
 import { Separator } from "@/components/ui/separator";
-import { StatItem } from "@/components/sections/home/StatItem";
+import { StatItem } from "@/components/shared/StatItem";
 
 export default function StatsBar() {
   const icons = [Building2, Wallet, Users, TrendingUp, PieChart, Star];

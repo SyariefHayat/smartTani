@@ -2,7 +2,7 @@
 
 import React from "react";
 import { LOGISTICS_STATS_BAR } from "@/constants/logistics";
-import { StatItem } from "../home/StatItem";
+import { StatItem } from "@/components/shared/StatItem";
 import { Separator } from "@/components/ui/separator";
 import {
   Truck,

@@ -1,10 +1,9 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { ABOUT_HERO, ABOUT_HERO_ACTIONS } from "@/constants/about";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Phone } from "lucide-react";
+import { ButtonContent } from "./ButtonContent";
 
 const Hero = () => {
   const scrollToDetail = () => {
@@ -13,24 +12,6 @@ const Hero = () => {
       element.scrollIntoView({ behavior: "smooth" });
     }
   };
-
-  const ButtonContent = ({
-    icon: Icon,
-    prefix,
-    label,
-  }: {
-    icon: React.ElementType;
-    prefix: string;
-    label: string;
-  }) => (
-    <>
-      <Icon className="size-7 shrink-0 mr-3" strokeWidth={1.5} />
-      <div className="flex flex-col items-start leading-tight">
-        <span className="text-[0.65rem] font-normal opacity-80">{prefix}</span>
-        <span className="text-sm font-bold">{label}</span>
-      </div>
-    </>
-  );
 
   return (
     <section className="relative flex items-start md:items-center overflow-hidden min-h-[720px] md:min-h-[460px] lg:min-h-[420px]">

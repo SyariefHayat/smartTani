@@ -3,7 +3,7 @@
 import { UsersRound } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { HOME_STATS_BAR, STAT_BAR_ICONS } from "@/constants";
-import { StatItem } from "./StatItem";
+import { StatItem } from "@/components/shared/StatItem";
 
 export default function StatsBar() {
   return (

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { DISTRIBUTOR_STATS_BAR } from "@/constants/distributor";
-import { StatItem } from "../home/StatItem";
+import { StatItem } from "@/components/shared/StatItem";
 import { Separator } from "@/components/ui/separator";
 
 const StatsBar = () => {

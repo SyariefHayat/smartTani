@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ACADEMY_STATS_BAR } from "@/constants/academy";
-import { StatItem } from "../home/StatItem";
+import { StatItem } from "@/components/shared/StatItem";
 import { Separator } from "@/components/ui/separator";
 import {
   Users,

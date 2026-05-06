@@ -31,27 +31,25 @@ export function StatItem({ icon: Icon, value, label }: StatItemProps) {
   }, [isVisible]);
 
   useEffect(() => {
-    if (isVisible && targetNumber > 0) {
-      let start = 0;
-      const duration = 2000;
-      const frameRate = 16;
-      const totalFrames = duration / frameRate;
-      const increment = targetNumber / totalFrames;
+    if (!isVisible || targetNumber <= 0) return;
 
-      const timer = setInterval(() => {
-        start += increment;
-        if (start >= targetNumber) {
-          setCount(targetNumber);
-          clearInterval(timer);
-        } else {
-          setCount(start);
-        }
-      }, frameRate);
+    let start = 0;
+    const duration = 2000;
+    const frameRate = 16;
+    const totalFrames = duration / frameRate;
+    const increment = targetNumber / totalFrames;
 
-      return () => clearInterval(timer);
-    } else if (isVisible) {
-      setCount(targetNumber);
-    }
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= targetNumber) {
+        setCount(targetNumber);
+        clearInterval(timer);
+      } else {
+        setCount(start);
+      }
+    }, frameRate);
+
+    return () => clearInterval(timer);
   }, [isVisible, targetNumber]);
 
   let displayCount = "";

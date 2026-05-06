@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, Play, BookOpen, Infinity, Award } from "lucide-react";
+import { CheckCircle2, Play, BookOpen, Infinity, Award, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import { showToast } from "@/lib/toast";
@@ -73,7 +73,7 @@ export default function CourseEnroll() {
             { label: "Sertifikat resmi", icon: Award },
             { label: "12 Modul Video HD", icon: BookOpen },
             { label: "Materi terupdate", icon: CheckCircle2 },
-            { label: "Dukungan instruktur", icon: UsersIcon },
+            { label: "Dukungan instruktur", icon: Users },
           ].map((benefit, i) => (
             <div key={i} className="flex items-center gap-3 text-sm font-medium text-[#5d7a64]">
               <benefit.icon className="size-4 text-primary shrink-0" />
@@ -85,23 +85,3 @@ export default function CourseEnroll() {
     </div>
   );
 }
-
-const UsersIcon = ({ className }: { className?: string }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-    <circle cx="9" cy="7" r="4" />
-    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-  </svg>
-);

@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronRight, SearchX } from "lucide-react";
 import { MARKETPLACE_TABS, MARKETPLACE_PRODUK } from "@/constants/marketplace";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ProductCard from "./ProductCard";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ProductCardSkeleton } from "./ProductCardSkeleton";
 import { Button } from "@/components/ui/button";
 
 function ProductTabsContent() {
@@ -17,19 +17,11 @@ function ProductTabsContent() {
   const kategori = searchParams.get("kategori") || "";
   const tabParam = searchParams.get("tab");
 
-  const initialTab = tabParam && MARKETPLACE_TABS.includes(tabParam) ? tabParam : MARKETPLACE_TABS[0];
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const activeTab = tabParam && MARKETPLACE_TABS.includes(tabParam) ? tabParam : MARKETPLACE_TABS[0];
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (tabParam && MARKETPLACE_TABS.includes(tabParam) && tabParam !== activeTab) {
-      setActiveTab(tabParam);
-    }
-  }, [tabParam, activeTab]);
 
   const handleTabChange = (value: string) => {
     setIsLoading(true);
-    setActiveTab(value);
 
     const params = new URLSearchParams(searchParams.toString());
     params.set("tab", value);
@@ -140,20 +132,6 @@ function ProductTabsContent() {
     </div>
   );
 }
-
-const ProductCardSkeleton = () => (
-  <div className="flex flex-col h-full bg-white rounded-lg border border-neutral-200 overflow-hidden">
-    <Skeleton className="aspect-square w-full bg-[#f3f4f6]" />
-    <div className="flex flex-col flex-1 p-2.5 md:p-3 space-y-2 md:space-y-3">
-      <Skeleton className="h-4 md:h-5 w-full" />
-      <Skeleton className="h-3 md:h-4 w-2/3" />
-      <div className="space-y-1.5 md:space-y-2 pt-1 md:pt-2">
-        <Skeleton className="h-5 md:h-6 w-1/2" />
-        <Skeleton className="h-3 md:h-4 w-3/4" />
-      </div>
-    </div>
-  </div>
-);
 
 export default function TabsFilter() {
   return (

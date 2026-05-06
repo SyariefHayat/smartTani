@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ABOUT_STATS_BAR } from "@/constants/about";
-import { StatItem } from "../home/StatItem";
+import { StatItem } from "@/components/shared/StatItem";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import {
