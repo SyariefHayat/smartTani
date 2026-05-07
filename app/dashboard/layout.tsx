@@ -5,10 +5,7 @@ import { useRouter } from "next/navigation";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SearchProvider } from "@/context/search-provider";
 import { DashboardHeader } from "@/components/sections/dashboard/DashboardHeader";
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function DashboardLayout({
   children,
@@ -38,7 +35,7 @@ export default function DashboardLayout({
         <AppSidebar />
         <SidebarInset>
           <DashboardHeader user={user} />
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+          <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </SearchProvider>

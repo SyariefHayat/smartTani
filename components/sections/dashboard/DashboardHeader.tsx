@@ -7,16 +7,12 @@ import { Separator } from "@/components/ui/separator";
 import { Search } from "@/components/sections/dashboard/Search";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import {
-  SidebarMenuButton,
-  SidebarTrigger,
-  useSidebar,
-} from "@/components/ui/sidebar";
+import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 
 import {
   Bell,
   CircleQuestionMark,
-  ChevronsUpDown,
+  ChevronDown,
   Sparkles,
   BadgeCheck,
   CreditCard,
@@ -44,8 +40,16 @@ export function DashboardHeader({ user }: { user: any }) {
     router.push("/login");
   };
 
+  const formatRole = (role: string) => {
+    if (!role) return "";
+    return role
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+    <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b">
       <div className="flex items-center justify-between w-full px-4">
         <div className="flex items-center gap-2">
           <SidebarTrigger className="-ml-1 rounded-sm cursor-pointer" />
@@ -56,45 +60,63 @@ export function DashboardHeader({ user }: { user: any }) {
           <Search />
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm">
-            <Bell /> Notifikasi
+        <div className="flex items-center gap-1 sm:gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 sm:w-auto sm:px-3 sm:gap-1.5"
+          >
+            <Bell className="size-4" />
+            <span className="hidden md:inline text-xs">Notifikasi</span>
           </Button>
-          <Button variant="ghost" size="sm">
-            <CircleQuestionMark /> Bantuan
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 sm:w-auto sm:px-3 sm:gap-1.5"
+          >
+            <CircleQuestionMark className="size-4" />
+            <span className="hidden md:inline text-xs">Bantuan</span>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <SidebarMenuButton
-                size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-white cursor-pointer"
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 px-1.5 sm:px-2 gap-1.5 sm:gap-2 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-pointer"
               >
-                <Avatar className="h-8 w-8 rounded-sm after:rounded-sm">
+                <Avatar className="h-6 w-6 rounded-full">
                   <AvatarImage src={user?.avatar} alt={user?.name} />
-                  <AvatarFallback className="rounded-sm">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-full text-[10px]">
+                    {user?.name?.charAt(0) || "U"}
+                  </AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user?.name}</span>
-                  <span className="truncate text-xs">{user?.email}</span>
+                <div className="hidden sm:flex flex-col text-left text-xs leading-none">
+                  <span className="font-semibold truncate max-w-20">
+                    {user?.name}
+                  </span>
                 </div>
-                <ChevronsUpDown className="ml-auto size-4" />
-              </SidebarMenuButton>
+                <ChevronDown className="size-3 text-muted-foreground" />
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-              side={isMobile ? "bottom" : "right"}
+              className="w-56 rounded-xl"
+              side="bottom"
               align="end"
-              sideOffset={4}
+              sideOffset={8}
             >
               <DropdownMenuLabel className="p-0 font-normal text-black">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                  <Avatar className="h-8 w-8 rounded-sm after:rounded-sm">
+                  <Avatar className="h-8 w-8 rounded-full">
                     <AvatarImage src={user?.avatar} alt={user?.name} />
-                    <AvatarFallback className="rounded-sm">CN</AvatarFallback>
+                    <AvatarFallback className="rounded-full">
+                      {user?.name?.charAt(0) || "U"}
+                    </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-medium">{user?.name}</span>
-                    <span className="truncate text-xs">{user?.email}</span>
+                    <span className="text-muted-foreground mt-0.5">
+                      {formatRole(user?.role)}
+                    </span>
                   </div>
                 </div>
               </DropdownMenuLabel>
@@ -123,7 +145,7 @@ export function DashboardHeader({ user }: { user: any }) {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={handleLogout}
-                className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
+                className="cursor-pointer text-red-600 focus:text-white focus:bg-red-600"
               >
                 <LogOut />
                 Log out

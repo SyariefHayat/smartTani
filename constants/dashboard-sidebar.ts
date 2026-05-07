@@ -8,17 +8,12 @@ import {
   Newspaper,
   Info,
   Mail,
-  User,
-  Settings,
-  ShieldCheck,
-  Activity,
-  Handshake,
-  AudioWaveform,
   Command,
   GalleryVerticalEnd,
 } from "lucide-react";
+import { SidebarData, SidebarTeam, SidebarNavGroup } from "./types";
 
-export const DASHBOARD_TEAMS = [
+export const DASHBOARD_TEAMS: SidebarTeam[] = [
   {
     name: "PT. Smarttani Indonesia",
     logo: Command,
@@ -36,7 +31,7 @@ export const DASHBOARD_TEAMS = [
   },
 ];
 
-export const DASHBOARD_NAV_GROUPS = [
+export const DASHBOARD_NAV_GROUPS: SidebarNavGroup[] = [
   {
     title: "Utama",
     items: [
@@ -98,3 +93,13 @@ export const DASHBOARD_NAV_GROUPS = [
     ],
   },
 ];
+
+export const sidebarData: SidebarData = {
+  user: {
+    name: "SmartTani User",
+    email: "user@smarttaniindonesia.com",
+    avatar: "/images/home/dashboard-logo.png",
+  },
+  teams: DASHBOARD_TEAMS,
+  navGroups: DASHBOARD_NAV_GROUPS,
+};

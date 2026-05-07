@@ -1,8 +1,12 @@
 import React from "react";
 
-import { ArrowRight, ChevronRight, Laptop, Moon, Sun } from "lucide-react";
-import { useSearch } from "@/context/search-provider";
+import { useRouter } from "next/navigation";
 import { useTheme } from "@/context/theme-provider";
+import { useSearch } from "@/context/search-provider";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { sidebarData } from "@/constants/dashboard-sidebar";
+import { ArrowRight, ChevronRight, Laptop, Moon, Sun } from "lucide-react";
+
 import {
   CommandDialog,
   CommandEmpty,
@@ -12,9 +16,6 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { sidebarData } from "./Sidebar-data";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useRouter } from "next/navigation";
 
 export function CommandMenu() {
   const router = useRouter();

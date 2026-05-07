@@ -1,11 +1,26 @@
 "use client";
 
+import { Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import SectionCard from "@/components/sections/dashboard/farmer/SectionCard";
+import CustomerReviews from "@/components/sections/dashboard/farmer/CustomerReviews";
+import { ChartBarInteractive } from "@/components/sections/dashboard/farmer/BarChart";
+import { DataTableDemo } from "@/components/sections/dashboard/farmer/BestSellingProducts";
+import { DatePickerWithRange } from "@/components/sections/dashboard/farmer/DatePickerRange";
+import { TrackOrderStatus } from "@/components/sections/dashboard/farmer/TrackOrderStatus";
+import { DateRangeContext } from "@/context/dateRange";
+import { DateRange } from "react-day-picker";
+import { addDays } from "date-fns";
 
 export default function FarmerDashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(new Date().getFullYear(), 0, 20),
+    to: addDays(new Date(new Date().getFullYear(), 0, 20), 20),
+  });
 
   useEffect(() => {
     const auth = localStorage.getItem("smarttani-auth");
@@ -26,13 +41,35 @@ export default function FarmerDashboard() {
   if (loading) return null;
 
   return (
-    <>
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-        <div className="aspect-video rounded-xl bg-muted/50" />
-        <div className="aspect-video rounded-xl bg-muted/50" />
-        <div className="aspect-video rounded-xl bg-muted/50" />
+    <DateRangeContext.Provider value={{ date, setDate }}>
+      {/* Header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-xl font-bold tracking-tight lg:text-2xl">
+          Dashboard Petani
+        </h1>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+          <DatePickerWithRange />
+          <Button className="w-full sm:w-auto">
+            <Download /> Download
+          </Button>
+        </div>
       </div>
-      <div className="min-h-screen flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-    </>
+
+      <SectionCard />
+      <ChartBarInteractive />
+
+      {/* Table + Reviews */}
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
+        <div className="w-full lg:w-[60%]">
+          <DataTableDemo className="h-full" />
+        </div>
+        <div className="w-full lg:w-[40%]">
+          <CustomerReviews className="h-full" />
+        </div>
+      </div>
+
+      {/* Track Order */}
+      <TrackOrderStatus />
+    </DateRangeContext.Provider>
   );
 }
