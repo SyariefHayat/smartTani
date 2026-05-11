@@ -12,6 +12,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+    command: npm run dev
 
   auth-service:
     build:
@@ -20,5 +21,86 @@ services:
     volumes:
       - ./services/auth-service:/app
       - /app/node_modules
+    ports:
+      - "3001:3001"
     environment:
       - NODE_ENV=development
+    command: npm run dev
+
+  marketplace-service:
+    build:
+      context: ./services/marketplace-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./services/marketplace-service:/app
+      - /app/node_modules
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  order-service:
+    build:
+      context: ./services/order-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./services/order-service:/app
+      - /app/node_modules
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  investment-service:
+    build:
+      context: ./services/investment-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./services/investment-service:/app
+      - /app/node_modules
+    ports:
+      - "3004:3004"
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  logistics-service:
+    build:
+      context: ./services/logistics-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./services/logistics-service:/app
+      - /app/node_modules
+    ports:
+      - "3005:3005"
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  notification-service:
+    build:
+      context: ./services/notification-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./services/notification-service:/app
+      - /app/node_modules
+    ports:
+      - "3006:3006"
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  analytics-service:
+    build:
+      context: ./services/analytics-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./services/analytics-service:/app
+      - /app/node_modules
+    ports:
+      - "3007:3007"
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
