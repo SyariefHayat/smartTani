@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build: ./services/api-gateway
+    ports:
+      - "${API_PORT}:3000"
+    environment:
+      - NODE_ENV=production
+
+  auth-service:
+    build: ./services/auth-service
+    environment:
+      - NODE_ENV=production
+
+  # Add other services as needed
