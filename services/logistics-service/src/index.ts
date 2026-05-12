@@ -1,9 +1,13 @@
 import './config/env';
 import { env } from './config/env';
 import { connectMongoDB } from './lib/mongoose';
+import RedisClient from './lib/redis';
 
 const startServer = async () => {
   try {
+    // Initialize Redis connection
+    RedisClient.getInstance();
+
     // Initialize MongoDB connection
     await connectMongoDB();
 

@@ -5,6 +5,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.string().default('3006').transform(Number),
   DATABASE_URL: z.string().url(),
+  REDIS_URL: z.string().url(),
   SENDGRID_API_KEY: z.string().min(1),
   EMAIL_FROM: z.string().email(),
   FIREBASE_PROJECT_ID: z.string().min(1),

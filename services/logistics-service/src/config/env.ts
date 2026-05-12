@@ -5,6 +5,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.string().default('3005').transform(Number),
   MONGODB_URL: z.string().url(),
+  REDIS_URL: z.string().url(),
   RABBITMQ_URL: z.string().url(),
 });
 
