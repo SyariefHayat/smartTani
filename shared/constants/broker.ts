@@ -39,4 +39,8 @@ export const BROKER_ROUTING_KEYS = {
   SHIPMENT_PICKED_UP: 'shipment.picked_up',
   SHIPMENT_IN_TRANSIT: 'shipment.in_transit',
   SHIPMENT_DELIVERED: 'shipment.delivered',
+
+  // Auth Events
+  AUTH_USER_REGISTERED: 'auth.user.registered',
+  AUTH_USER_VERIFIED: 'auth.user.verified',
 } as const;

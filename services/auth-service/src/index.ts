@@ -20,9 +20,10 @@ import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogge
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
 import healthRoutes from './routes/health.routes';
 import metricsRoutes from './routes/metrics.routes';
+import authRoutes from './routes/auth.routes';
 import { metricsMiddleware } from './middleware/metrics.middleware';
 
-const app = express();
+export const app = express();
 
 app.use(express.json());
 app.use(cors());
@@ -34,13 +35,14 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/health', healthRoutes);
 app.use('/metrics', metricsRoutes);
+app.use('/auth', authRoutes);
 
 // Sentry Error Handler
 Sentry.setupExpressErrorHandler(app);
 
 app.use(errorHandlerMiddleware);
 
-const bootstrap = async () => {
+export const bootstrap = async () => {
   try {
     // Initialize Redis
     RedisClient.getInstance();
@@ -48,13 +50,19 @@ const bootstrap = async () => {
     // Initialize RabbitMQ
     await MessageBroker.connect();
 
-    app.listen(env.PORT, () => {
-      console.log(`🚀 Auth Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
-    });
+    if (process.env.NODE_ENV !== 'test') {
+      app.listen(env.PORT, () => {
+        console.log(`🚀 Auth Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
+      });
+    }
   } catch (error) {
     console.error('Failed to start Auth Service:', error);
     process.exit(1);
   }
 };
 
-bootstrap();
+if (require.main === module) {
+  bootstrap();
+}
+
+export default app;
