@@ -18,6 +18,7 @@ Sentry.init({
 import { correlationIdMiddleware } from '../../../shared/middleware/correlationId';
 import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
+import healthRoutes from './routes/health.routes';
 
 const app = express();
 
@@ -28,9 +29,7 @@ app.use(requestLoggerMiddleware);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.get('/health', (req, res) => {
-  res.json({ success: true, message: 'Auth Service is healthy' });
-});
+app.use('/health', healthRoutes);
 
 // Sentry Error Handler
 Sentry.setupExpressErrorHandler(app);
