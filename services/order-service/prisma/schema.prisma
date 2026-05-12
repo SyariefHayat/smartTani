@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Order {
+  id               String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  buyer_id         String      @db.Uuid
+  total_amount     Decimal     @db.Decimal(15, 2)
+  platform_fee     Decimal     @db.Decimal(15, 2)
+  shipping_cost    Decimal?    @default(0) @db.Decimal(15, 2)
+  status           String      @default("pending_payment") @db.VarChar(50)
+  payment_method   String?     @db.VarChar(100)
+  payment_url      String?     @db.Text
+  shipping_address Json?       @db.JsonB
+  notes            String?     @db.Text
+  paid_at          DateTime?   @db.Timestamptz
+  completed_at     DateTime?   @db.Timestamptz
+  created_at       DateTime    @default(now()) @db.Timestamptz
+  updated_at       DateTime    @updatedAt @db.Timestamptz
+  items            OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id       String  @db.Uuid
+  product_id     String  @db.Uuid
+  farmer_id      String  @db.Uuid
+  quantity       Decimal @db.Decimal(10, 2)
+  price_per_unit Decimal @db.Decimal(15, 2)
+  subtotal       Decimal @db.Decimal(15, 2)
+  order          Order   @relation(fields: [order_id], references: [id], onDelete: Cascade)
+
+  @@map("order_items")
+}

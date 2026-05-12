@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Proposal {
+  id                      String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  farmer_id               String       @db.Uuid
+  title                   String       @db.VarChar(255)
+  commodity               String       @db.VarChar(100)
+  land_area_ha            Float
+  location                Json         @db.JsonB
+  funding_needed          Decimal      @db.Decimal(15, 2)
+  funding_raised          Decimal      @default(0) @db.Decimal(15, 2)
+  projected_roi_percent   Float
+  duration_days           Int
+  harvest_date_estimated  DateTime     @db.Timestamptz
+  description             String       @db.Text
+  use_of_funds            String       @db.Text
+  risk_notes              String       @db.Text
+  supporting_docs         String[]
+  status                  String       @default("pending") @db.VarChar(50)
+  admin_notes             String?      @db.Text
+  approved_at             DateTime?    @db.Timestamptz
+  created_at              DateTime     @default(now()) @db.Timestamptz
+  updated_at              DateTime     @updatedAt @db.Timestamptz
+  investments             Investment[]
+
+  @@map("proposals")
+}
+
+model Investment {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  investor_id           String    @db.Uuid
+  proposal_id           String    @db.Uuid
+  amount                Decimal   @db.Decimal(15, 2)
+  platform_fee_percent  Float
+  projected_return      Decimal   @db.Decimal(15, 2)
+  actual_return         Decimal?  @db.Decimal(15, 2)
+  status                String    @default("paid") @db.VarChar(50)
+  invested_at           DateTime  @default(now()) @db.Timestamptz
+  completed_at          DateTime? @db.Timestamptz
+  proposal              Proposal  @relation(fields: [proposal_id], references: [id])
+
+  @@map("investments")
+}
