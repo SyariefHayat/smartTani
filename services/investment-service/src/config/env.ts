@@ -8,6 +8,7 @@ const envSchema = z.object({
   REDIS_URL: z.string().url(),
   INVESTMENT_FEE_PERCENT: z.string().default('1.0').transform(Number),
   MIN_INVESTMENT_AMOUNT: z.string().default('100000').transform(Number),
+  RABBITMQ_URL: z.string().url(),
 });
 
 const _env = envSchema.safeParse(process.env);

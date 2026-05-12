@@ -1,6 +1,10 @@
+import MessageBroker from './lib/broker';
 import './config/env';
 import { env } from './config/env';
 import { connectMongoDB } from './lib/mongoose';
+// Initialize RabbitMQ connection
+MessageBroker.connect();
+
 import RedisClient from './lib/redis';
 
 const startServer = async () => {

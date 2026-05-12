@@ -6,6 +6,7 @@ const envSchema = z.object({
   PORT: z.string().default('3007').transform(Number),
   DATABASE_URL: z.string().url(),
   REDIS_URL: z.string().url(),
+  RABBITMQ_URL: z.string().url(),
 });
 
 const _env = envSchema.safeParse(process.env);

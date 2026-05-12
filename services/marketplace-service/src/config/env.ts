@@ -10,6 +10,7 @@ const envSchema = z.object({
   AWS_SECRET_ACCESS_KEY: z.string().min(1),
   AWS_BUCKET_NAME: z.string().min(1),
   AWS_REGION: z.string().min(1),
+  RABBITMQ_URL: z.string().url(),
 });
 
 const _env = envSchema.safeParse(process.env);

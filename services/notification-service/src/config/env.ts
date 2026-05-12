@@ -11,6 +11,7 @@ const envSchema = z.object({
   FIREBASE_PROJECT_ID: z.string().min(1),
   FIREBASE_PRIVATE_KEY: z.string().min(1),
   FIREBASE_CLIENT_EMAIL: z.string().email(),
+  RABBITMQ_URL: z.string().url(),
 });
 
 const _env = envSchema.safeParse(process.env);
