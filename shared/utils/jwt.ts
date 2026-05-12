@@ -30,7 +30,9 @@ export const signAccessToken = (
   secret: string,
   expiresIn = '1h'
 ): string => {
-  return jwt.sign(payload, secret, { expiresIn });
+  return jwt.sign(payload, secret, {
+    expiresIn: expiresIn as jwt.SignOptions['expiresIn'],
+  });
 };
 
 /**
@@ -41,7 +43,9 @@ export const signRefreshToken = (
   secret: string,
   expiresIn = '7d'
 ): string => {
-  return jwt.sign(payload, secret, { expiresIn });
+  return jwt.sign(payload, secret, {
+    expiresIn: expiresIn as jwt.SignOptions['expiresIn'],
+  });
 };
 
 /**

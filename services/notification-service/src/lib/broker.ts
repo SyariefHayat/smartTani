@@ -1,14 +1,14 @@
-import * as amqp from 'amqplib';
+import { connect, ChannelModel, Channel, ConsumeMessage } from 'amqplib';
 import { env } from '../config/env';
 
 class MessageBroker {
-  private static connection: amqp.Connection;
-  private static channel: amqp.Channel;
+  private static connection: ChannelModel;
+  private static channel: Channel;
 
   public static async connect(retries = 5): Promise<void> {
     while (retries > 0) {
       try {
-        this.connection = await amqp.connect(env.RABBITMQ_URL);
+        this.connection = await connect(env.RABBITMQ_URL);
         this.channel = await this.connection.createChannel();
 
         console.log('✅ Connected to RabbitMQ');
@@ -56,7 +56,7 @@ class MessageBroker {
     if (!this.channel) await this.connect();
     await this.channel.assertQueue(queue, { durable: true });
 
-    this.channel.consume(queue, (msg: amqp.ConsumeMessage | null) => {
+    this.channel.consume(queue, (msg: ConsumeMessage | null) => {
       if (msg) {
         try {
           const content: unknown = JSON.parse(msg.content.toString());
