@@ -19,6 +19,8 @@ import { correlationIdMiddleware } from '../../../shared/middleware/correlationI
 import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
 import healthRoutes from './routes/health.routes';
+import metricsRoutes from './routes/metrics.routes';
+import { metricsMiddleware } from './middleware/metrics.middleware';
 
 const app = express();
 
@@ -26,10 +28,12 @@ app.use(express.json());
 app.use(cors());
 app.use(correlationIdMiddleware);
 app.use(requestLoggerMiddleware);
+app.use(metricsMiddleware);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/health', healthRoutes);
+app.use('/metrics', metricsRoutes);
 
 // Sentry Error Handler
 Sentry.setupExpressErrorHandler(app);
