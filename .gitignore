@@ -17,6 +17,9 @@ dist/
 build/
 out/
 .next/
+*.js
+*.js.map
+*.d.ts
 
 # IDE/Editor
 .vscode/
