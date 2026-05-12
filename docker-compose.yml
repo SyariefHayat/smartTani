@@ -57,9 +57,35 @@ services:
     volumes:
       - minio_data:/data
 
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./infra/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - '9090:9090'
+    networks:
+      - smarttani-network
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - '3001:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    networks:
+      - smarttani-network
+
 volumes:
   postgres_data:
   mongo_data:
   redis_data:
   rabbitmq_data:
   minio_data:
+  grafana_data:
+
+networks:
+  smarttani-network:
+    driver: bridge
