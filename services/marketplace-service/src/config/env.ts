@@ -11,6 +11,7 @@ const envSchema = z.object({
   AWS_BUCKET_NAME: z.string().min(1),
   AWS_REGION: z.string().min(1),
   RABBITMQ_URL: z.string().url(),
+  SENTRY_DSN: z.string().optional(),
 });
 
 const _env = envSchema.safeParse(process.env);

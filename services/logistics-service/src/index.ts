@@ -1,12 +1,21 @@
 import express from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
+import * as Sentry from '@sentry/node';
 import './config/env';
 import { env } from './config/env';
 import { swaggerSpec } from './config/swagger';
 import RedisClient from './lib/redis';
 import MessageBroker from './lib/broker';
 import { connectMongoDB } from './lib/mongoose';
+
+// Initialize Sentry
+Sentry.init({
+  dsn: env.SENTRY_DSN,
+  environment: env.NODE_ENV,
+  tracesSampleRate: 1.0,
+});
+
 import { correlationIdMiddleware } from '../../../shared/middleware/correlationId';
 import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
@@ -24,17 +33,20 @@ app.get('/health', (req, res) => {
   res.json({ success: true, message: 'Logistics Service is healthy' });
 });
 
+// Sentry Error Handler
+Sentry.setupExpressErrorHandler(app);
+
 app.use(errorHandlerMiddleware);
 
-const startServer = async () => {
+const bootstrap = async () => {
   try {
-    // Initialize RabbitMQ connection
-    MessageBroker.connect();
-
-    // Initialize Redis connection
+    // Initialize Redis
     RedisClient.getInstance();
 
-    // Initialize MongoDB connection
+    // Initialize RabbitMQ
+    await MessageBroker.connect();
+
+    // Initialize MongoDB
     await connectMongoDB();
 
     app.listen(env.PORT, () => {
@@ -46,4 +58,4 @@ const startServer = async () => {
   }
 };
 
-startServer();
+bootstrap();

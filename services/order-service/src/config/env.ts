@@ -17,6 +17,7 @@ const envSchema = z.object({
   PLATFORM_FEE_PERCENT: z.string().default('2.5').transform(Number),
   ORDER_PAYMENT_TIMEOUT_MINUTES: z.string().default('60').transform(Number),
   ORDER_AUTO_COMPLETE_DAYS: z.string().default('7').transform(Number),
+  SENTRY_DSN: z.string().optional(),
 });
 
 const _env = envSchema.safeParse(process.env);

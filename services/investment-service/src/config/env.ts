@@ -9,6 +9,7 @@ const envSchema = z.object({
   INVESTMENT_FEE_PERCENT: z.string().default('1.0').transform(Number),
   MIN_INVESTMENT_AMOUNT: z.string().default('100000').transform(Number),
   RABBITMQ_URL: z.string().url(),
+  SENTRY_DSN: z.string().optional(),
 });
 
 const _env = envSchema.safeParse(process.env);

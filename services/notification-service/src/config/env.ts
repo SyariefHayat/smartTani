@@ -12,6 +12,7 @@ const envSchema = z.object({
   FIREBASE_PRIVATE_KEY: z.string().min(1),
   FIREBASE_CLIENT_EMAIL: z.string().email(),
   RABBITMQ_URL: z.string().url(),
+  SENTRY_DSN: z.string().optional(),
 });
 
 const _env = envSchema.safeParse(process.env);
