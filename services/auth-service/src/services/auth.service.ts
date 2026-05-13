@@ -202,6 +202,24 @@ export class AuthService {
     return userWithoutPassword;
   }
 
+  async getUserById(userId: string) {
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      const error = new Error('User tidak ditemukan') as AppError;
+      error.statusCode = 404;
+      error.code = 'AUTH_010';
+      throw error;
+    }
+
+    // Return only basic info for public detail
+    return {
+      id: user.id,
+      full_name: user.full_name,
+      role: user.role,
+      status: user.status,
+    };
+  }
+
   async updateProfile(userId: string, input: UpdateProfileInput) {
     // Ensure user exists
     const existingUser = await userRepository.findById(userId);

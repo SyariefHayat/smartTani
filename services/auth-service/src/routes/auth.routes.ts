@@ -163,6 +163,26 @@ router.get('/me', authenticate, authController.getMe);
 
 /**
  * @swagger
+ * /auth/users/{id}:
+ *   get:
+ *     summary: Get user by ID
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User profile retrieved
+ *       404:
+ *         description: User not found
+ */
+router.get('/users/:id', authController.getUser);
+
+/**
+ * @swagger
  * /auth/me:
  *   patch:
  *     summary: Update user profile

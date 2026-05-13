@@ -47,8 +47,8 @@ describe('UserRepository', () => {
     const userData = { email: 'new@test.com', password: 'hash', role: 'buyer' };
     (prisma.user.create as jest.Mock).mockResolvedValue({ id: '2', ...userData });
 
-    // @ts-expect-error - testing partial input
-    const result = await userRepository.create(userData);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await userRepository.create(userData as any);
 
     expect(prisma.user.create).toHaveBeenCalledWith({
       data: userData,

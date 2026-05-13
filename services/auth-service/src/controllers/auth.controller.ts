@@ -60,6 +60,16 @@ export class AuthController {
     }
   }
 
+  async getUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const user = await authService.getUserById(id as string);
+      return res.status(200).json(successResponse(user));
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async updateProfile(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = (req as AppRequest).user!.id;
