@@ -35,18 +35,20 @@ app.use(gatewayRateLimiter);
 // NOTE: Must be defined BEFORE express.json() if we want to forward bodies correctly without complex fixes
 const proxyOptions = {
   changeOrigin: true,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onProxyReq: (proxyReq: any, req: any) => {
-    // Forward Correlation ID if present
-    if (req.correlationId) {
-      proxyReq.setHeader('X-Correlation-ID', req.correlationId);
-    }
+  on: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    proxyReq: (proxyReq: any, req: any) => {
+      // Forward Correlation ID if present
+      if (req.correlationId) {
+        proxyReq.setHeader('X-Correlation-ID', req.correlationId);
+      }
 
-    // Forward User Info if present (from gatewayAuthMiddleware)
-    if ((req as AppRequest).user) {
-      proxyReq.setHeader('X-User-Id', (req as AppRequest).user!.id);
-      proxyReq.setHeader('X-User-Role', (req as AppRequest).user!.role as string);
-    }
+      // Forward User Info if present (from gatewayAuthMiddleware)
+      if ((req as AppRequest).user) {
+        proxyReq.setHeader('X-User-Id', (req as AppRequest).user!.id);
+        proxyReq.setHeader('X-User-Role', (req as AppRequest).user!.role as string);
+      }
+    },
   },
 };
 
