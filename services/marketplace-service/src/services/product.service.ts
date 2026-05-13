@@ -146,6 +146,13 @@ export class ProductService {
     return { success: true };
   }
 
+  async restoreStock(items: { productId: string; quantity: number }[]) {
+    for (const item of items) {
+      await productRepository.restoreStock(item.productId, item.quantity);
+    }
+    return { success: true };
+  }
+
   async uploadProductImage(
     userId: string,
     role: string,

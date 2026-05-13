@@ -2,8 +2,21 @@ import { PrismaClient } from '@prisma/client';
 import { AppError } from '../../../../shared/types/express';
 import MidtransManager from '../lib/midtrans';
 import { InitiatePaymentInput } from '../schemas/payment.schema';
+import { BROKER_EXCHANGES, BROKER_ROUTING_KEYS } from '../../../../shared/constants/broker';
+import MessageBroker from '../lib/broker';
+import marketplaceClient from '../lib/marketplace-client';
+import { verifyMidtransSignature } from '../lib/midtrans-verify';
 
 const prisma = new PrismaClient();
+
+interface MidtransWebhookData {
+  order_id: string;
+  status_code: string;
+  gross_amount: string;
+  signature_key: string;
+  transaction_status: string;
+  fraud_status?: string;
+}
 
 export class PaymentService {
   async initiatePayment(
@@ -54,8 +67,8 @@ export class PaymentService {
       item_details: order.items.map((item) => ({
         id: item.product_id,
         price: Math.round(Number(item.price_per_unit)),
-        quantity: item.quantity,
-        name: `Product ${item.product_id}`, // In real app we might fetch title from marketplace-service again or store in OrderItem
+        quantity: Math.round(Number(item.quantity)),
+        name: `Product ${item.product_id}`,
       })),
       expiry: {
         duration: 15,
@@ -97,6 +110,80 @@ export class PaymentService {
       paymentUrl: transaction.redirect_url,
       orderId: order.id,
     };
+  }
+
+  async handleWebhook(data: MidtransWebhookData) {
+    // 1. Verifikasi signature
+    const isValid = verifyMidtransSignature({
+      order_id: data.order_id,
+      status_code: data.status_code,
+      gross_amount: data.gross_amount,
+      signature_key: data.signature_key,
+    });
+
+    if (!isValid) {
+      const error = new Error('Invalid signature') as AppError;
+      error.statusCode = 403;
+      throw error;
+    }
+
+    const orderId = data.order_id;
+    const transactionStatus = data.transaction_status;
+    const fraudStatus = data.fraud_status;
+
+    let newStatus: string | null = null;
+
+    if (transactionStatus === 'capture') {
+      if (fraudStatus === 'accept') {
+        newStatus = 'paid';
+      }
+    } else if (transactionStatus === 'settlement') {
+      newStatus = 'paid';
+    } else if (
+      transactionStatus === 'cancel' ||
+      transactionStatus === 'deny' ||
+      transactionStatus === 'expire'
+    ) {
+      newStatus = 'cancelled';
+    } else if (transactionStatus === 'pending') {
+      newStatus = 'pending_payment';
+    }
+
+    if (!newStatus) return { message: 'Ignored' };
+
+    // 2. Fetch current order
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: { items: true },
+    });
+
+    if (!order) return { message: 'Order not found' };
+    if (order.status === newStatus) return { message: 'No change' };
+
+    // 3. Update Order status
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { status: newStatus },
+    });
+
+    // 4. Action based on status
+    if (newStatus === 'paid') {
+      // Kirim event ORDER_PAID ke RabbitMQ
+      MessageBroker.publish(BROKER_EXCHANGES.EVENTS, BROKER_ROUTING_KEYS.ORDER_PAID, {
+        orderId: order.id,
+        buyerId: order.buyer_id,
+        totalAmount: order.total_amount,
+      }).catch((err) => console.error('❌ Failed to publish ORDER_PAID:', err));
+    } else if (newStatus === 'cancelled') {
+      // Kembalikan stok ke marketplace-service
+      const items = order.items.map((item) => ({
+        productId: item.product_id,
+        quantity: Number(item.quantity),
+      }));
+      await marketplaceClient.restoreStock(items);
+    }
+
+    return { message: `Order status updated to ${newStatus}` };
   }
 }
 

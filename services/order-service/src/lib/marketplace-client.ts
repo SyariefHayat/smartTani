@@ -44,6 +44,20 @@ export class MarketplaceServiceClient {
       return false;
     }
   }
+
+  async restoreStock(items: { productId: string; quantity: number }[]): Promise<boolean> {
+    try {
+      // Use the same reduce-stock endpoint but with negative quantity?
+      // Actually, marketplace-service reduceStock uses $inc with -quantity.
+      // So we need a proper restore-stock endpoint or use negative values if allowed.
+      // Let's implement restore-stock in marketplace-service for clarity.
+      const response = await axios.patch(`${this.baseUrl}/products/restore-stock`, { items });
+      return !!(response.data && response.data.success);
+    } catch (error) {
+      console.error('❌ Failed to restore stock:', error instanceof Error ? error.message : error);
+      return false;
+    }
+  }
 }
 
 export default new MarketplaceServiceClient();

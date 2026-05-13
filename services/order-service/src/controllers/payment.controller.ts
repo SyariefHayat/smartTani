@@ -18,6 +18,15 @@ export class PaymentController {
       next(error);
     }
   }
+
+  async webhook(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await paymentService.handleWebhook(req.body);
+      return res.status(200).json(successResponse(result));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new PaymentController();

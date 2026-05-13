@@ -122,7 +122,12 @@ export class AuthService {
 
     // 5. Generate access token (JWT, 1 jam)
     const accessToken = signAccessToken(
-      { userId: user.id, role: user.role, email: user.email },
+      {
+        userId: user.id,
+        role: user.role,
+        email: user.email,
+        fullName: user.full_name || undefined,
+      },
       env.JWT_SECRET,
       env.JWT_EXPIRES_IN
     );
@@ -166,7 +171,12 @@ export class AuthService {
 
     // 4. Generate access token baru
     const accessToken = signAccessToken(
-      { userId: user.id, role: user.role, email: user.email },
+      {
+        userId: user.id,
+        role: user.role,
+        email: user.email,
+        fullName: user.full_name || undefined,
+      },
       env.JWT_SECRET,
       env.JWT_EXPIRES_IN
     );

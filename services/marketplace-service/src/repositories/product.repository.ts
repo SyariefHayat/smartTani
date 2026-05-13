@@ -25,6 +25,10 @@ export class ProductRepository {
     );
   }
 
+  async restoreStock(id: string, quantity: number): Promise<IProduct | null> {
+    return Product.findByIdAndUpdate(id, { $inc: { stock: quantity } }, { new: true });
+  }
+
   async findAll(params: {
     category?: string;
     location_province?: string;

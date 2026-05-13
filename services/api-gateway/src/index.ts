@@ -47,6 +47,10 @@ const proxyOptions = {
       if ((req as AppRequest).user) {
         proxyReq.setHeader('X-User-Id', (req as AppRequest).user!.id);
         proxyReq.setHeader('X-User-Role', (req as AppRequest).user!.role as string);
+        proxyReq.setHeader('X-User-Email', (req as AppRequest).user!.email as string);
+        if ((req as AppRequest).user!.fullName) {
+          proxyReq.setHeader('X-User-Full-Name', (req as AppRequest).user!.fullName as string);
+        }
       }
     },
   },

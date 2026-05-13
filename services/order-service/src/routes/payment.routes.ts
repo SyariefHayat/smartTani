@@ -37,4 +37,18 @@ router.post(
   paymentController.initiate
 );
 
+/**
+ * @swagger
+ * /payments/webhook:
+ *   post:
+ *     summary: Midtrans payment notification webhook
+ *     tags: [Payment]
+ *     responses:
+ *       200:
+ *         description: Webhook processed
+ *       403:
+ *         description: Invalid signature
+ */
+router.post('/webhook', paymentController.webhook);
+
 export default router;
