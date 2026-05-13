@@ -22,3 +22,22 @@ export const validate = (schema: ZodSchema) => {
     next();
   };
 };
+
+/**
+ * Higher-order middleware to validate request query using Zod
+ */
+export const validateQuery = (schema: ZodSchema) => {
+  return (req: AppRequest, res: Response, next: NextFunction) => {
+    const result = schema.safeParse(req.query);
+
+    if (!result.success) {
+      return res
+        .status(422)
+        .json(errorResponse(ErrorCode.VALIDATION_ERROR, JSON.stringify(result.error.format())));
+    }
+
+    // Replace req.query with the parsed and potentially transformed data
+    Object.assign(req.query, result.data);
+    next();
+  };
+};

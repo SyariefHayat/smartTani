@@ -1,11 +1,57 @@
 import { Router } from 'express';
 import orderController from '../controllers/order.controller';
 import { CheckoutSchema } from '../schemas/cart.schema';
-import { validate } from '../../../../shared/middleware/validate';
+import { GetOrdersQuerySchema } from '../schemas/order.schema';
+import { validate, validateQuery } from '../../../../shared/middleware/validate';
 import { gatewayAuthMiddleware } from '../middleware/auth.middleware';
 import { authorize } from '../middleware/authorize.middleware';
 
 const router = Router();
+
+/**
+ * @swagger
+ * /orders:
+ *   get:
+ *     summary: List orders with filters
+ *     tags: [Order]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: from_date
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *       - in: query
+ *         name: to_date
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of orders
+ *       401:
+ *         description: Unauthorized
+ */
+router.get(
+  '/',
+  gatewayAuthMiddleware,
+  authorize(['buyer', 'petani', 'distributor', 'admin']),
+  validateQuery(GetOrdersQuerySchema),
+  orderController.getOrders
+);
 
 /**
  * @swagger

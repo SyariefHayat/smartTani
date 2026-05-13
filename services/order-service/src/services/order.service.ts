@@ -1,14 +1,82 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { CheckoutInput } from '../schemas/cart.schema';
 import cartService from './cart.service';
 import marketplaceClient from '../lib/marketplace-client';
 import { AppError } from '../../../../shared/types/express';
 import { paymentTimeoutQueue } from '../lib/queue';
 import RedisClient from '../lib/redis';
+import { GetOrdersQuery } from '../schemas/order.schema';
 
 const prisma = new PrismaClient();
 
 export class OrderService {
+  async getOrders(userId: string, role: string, query: GetOrdersQuery) {
+    const { status, from_date, to_date, page, limit } = query;
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.OrderWhereInput = {};
+
+    // Filter by Role
+    if (role === 'petani') {
+      where.items = {
+        some: {
+          farmer_id: userId,
+        },
+      };
+    } else if (role === 'admin') {
+      // Admin sees all
+    } else {
+      // Buyer/Distributor see own
+      where.buyer_id = userId;
+    }
+
+    // Filter by Status
+    if (status) {
+      where.status = status;
+    }
+
+    // Filter by Date Range
+    if (from_date || to_date) {
+      where.created_at = {};
+      if (from_date) where.created_at.gte = new Date(from_date);
+      if (to_date) where.created_at.lte = new Date(to_date);
+    }
+
+    const [orders, total] = await Promise.all([
+      prisma.order.findMany({
+        where,
+        include: {
+          items: true,
+        },
+        orderBy: {
+          created_at: 'desc',
+        },
+        skip,
+        take: limit,
+      }),
+      prisma.order.count({ where }),
+    ]);
+
+    // If role is petani, filter items to only show THEIR products
+    const resultOrders =
+      role === 'petani'
+        ? orders.map((order) => ({
+            ...order,
+            items: order.items.filter((item) => item.farmer_id === userId),
+          }))
+        : orders;
+
+    return {
+      orders: resultOrders,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
   async checkout(userId: string, input: CheckoutInput) {
     // 1. Fetch cart dari Redis
     const cart = await cartService.getCart(userId);
