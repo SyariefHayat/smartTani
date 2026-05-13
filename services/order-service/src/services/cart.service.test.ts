@@ -126,11 +126,43 @@ describe('CartService', () => {
     );
   });
 
-  it('should return cart from redis', async () => {
-    const mockCart = [{ productId: 'p1', quantity: 1 }];
+  it('should return enriched cart with real-time data from redis', async () => {
+    const mockCart = [{ productId: 'p1', quantity: 1, price_per_unit: 1000, subtotal: 1000 }];
+    const mockProduct = {
+      _id: 'p1',
+      status: 'active',
+      price_per_unit: 1200, // Price updated
+      stock: 10,
+      min_order: 1,
+      unit: 'kg',
+    };
     (RedisClient.get as jest.Mock).mockResolvedValue(mockCart);
+    (marketplaceClient.getProductInfo as jest.Mock).mockResolvedValue(mockProduct);
 
     const result = await cartService.getCart('u1');
-    expect(result).toEqual(mockCart);
+
+    expect(result.items[0].price_per_unit).toBe(1200);
+    expect(result.items[0].subtotal).toBe(1200);
+    expect(result.items[0].isAvailable).toBe(true);
+    expect(result.total).toBe(1200);
+  });
+
+  it('should mark items as unavailable if stock is insufficient', async () => {
+    const mockCart = [{ productId: 'p1', quantity: 10, subtotal: 10000 }];
+    const mockProduct = {
+      _id: 'p1',
+      status: 'active',
+      price_per_unit: 1000,
+      stock: 5, // Less than quantity
+      min_order: 1,
+    };
+    (RedisClient.get as jest.Mock).mockResolvedValue(mockCart);
+    (marketplaceClient.getProductInfo as jest.Mock).mockResolvedValue(mockProduct);
+
+    const result = await cartService.getCart('u1');
+
+    expect(result.items[0].isAvailable).toBe(false);
+    expect(result.items[0].reason).toContain('Stok tidak mencukupi');
+    expect(result.total).toBe(0);
   });
 });

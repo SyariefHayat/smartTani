@@ -93,7 +93,54 @@ export class CartService {
 
   async getCart(userId: string) {
     const cacheKey = `cart:${userId}`;
-    return (await RedisClient.get<ICartItem[]>(cacheKey)) || [];
+    const cart = (await RedisClient.get<ICartItem[]>(cacheKey)) || [];
+
+    if (cart.length === 0) {
+      return { items: [], total: 0 };
+    }
+
+    // Fetch real-time info for each product
+    const updatedItems = await Promise.all(
+      cart.map(async (item) => {
+        const product = await marketplaceClient.getProductInfo(item.productId);
+
+        const updatedItem = { ...item };
+        let isAvailable = true;
+        let reason = '';
+
+        if (!product || product.status !== 'active') {
+          isAvailable = false;
+          reason = 'Produk tidak lagi tersedia';
+        } else if (item.quantity > product.stock) {
+          isAvailable = false;
+          reason = `Stok tidak mencukupi (Tersedia: ${product.stock})`;
+        } else if (item.quantity < product.min_order) {
+          isAvailable = false;
+          reason = `Minimal order baru: ${product.min_order} ${product.unit}`;
+        }
+
+        // Update price to latest
+        if (product) {
+          updatedItem.price_per_unit = product.price_per_unit;
+          updatedItem.subtotal = product.price_per_unit * item.quantity;
+        }
+
+        return {
+          ...updatedItem,
+          isAvailable,
+          reason,
+        };
+      })
+    );
+
+    const total = updatedItems.reduce((acc, item) => {
+      return item.isAvailable ? acc + item.subtotal : acc;
+    }, 0);
+
+    return {
+      items: updatedItems,
+      total,
+    };
   }
 }
 
