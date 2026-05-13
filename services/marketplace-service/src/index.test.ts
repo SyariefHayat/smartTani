@@ -107,4 +107,86 @@ describe('Marketplace Service', () => {
       expect(Array.isArray(response.body.data)).toBe(true);
     });
   });
+
+  describe('PATCH /products/:id', () => {
+    it('should update product successfully as owner', async () => {
+      const productId = '6a03d00c22e9882dac8e0a55';
+      const updateData = { title: 'Updated Title' };
+      const mockProduct = {
+        _id: productId,
+        farmer_id: 'farmer-1',
+        title: 'Original Title',
+        location: { city: 'Bandung', province: 'Jawa Barat' },
+      };
+
+      (Product.findById as jest.Mock).mockResolvedValue(mockProduct);
+      (Product.findByIdAndUpdate as jest.Mock).mockResolvedValue({
+        ...mockProduct,
+        ...updateData,
+      });
+
+      const response = await request(app)
+        .patch(`/products/${productId}`)
+        .set('X-User-Id', 'farmer-1')
+        .set('X-User-Role', 'petani')
+        .send(updateData);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.title).toBe(updateData.title);
+    });
+
+    it('should return 403 if user is not the owner', async () => {
+      const productId = '6a03d00c22e9882dac8e0a55';
+      const mockProduct = {
+        _id: productId,
+        farmer_id: 'farmer-1',
+        location: { city: 'Bandung', province: 'Jawa Barat' },
+      };
+
+      (Product.findById as jest.Mock).mockResolvedValue(mockProduct);
+
+      const response = await request(app)
+        .patch(`/products/${productId}`)
+        .set('X-User-Id', 'farmer-2')
+        .set('X-User-Role', 'petani')
+        .send({ title: 'Updated Title' }); // Use valid title to avoid 422
+
+      expect(response.status).toBe(403);
+    });
+
+    it('should allow admin to update any product', async () => {
+      const productId = '6a03d00c22e9882dac8e0a55';
+      const mockProduct = {
+        _id: productId,
+        farmer_id: 'farmer-1',
+        location: { city: 'Bandung', province: 'Jawa Barat' },
+      };
+
+      (Product.findById as jest.Mock).mockResolvedValue(mockProduct);
+      (Product.findByIdAndUpdate as jest.Mock).mockResolvedValue({
+        ...mockProduct,
+        title: 'Admin Edit',
+      });
+
+      const response = await request(app)
+        .patch(`/products/${productId}`)
+        .set('X-User-Id', 'admin-1')
+        .set('X-User-Role', 'admin')
+        .send({ title: 'Admin Edit' });
+
+      expect(response.status).toBe(200);
+    });
+
+    it('should return 404 if product to update is not found', async () => {
+      (Product.findById as jest.Mock).mockResolvedValue(null);
+
+      const response = await request(app)
+        .patch('/products/6a03d00c22e9882dac8e0a55')
+        .set('X-User-Id', 'admin-1')
+        .set('X-User-Role', 'admin')
+        .send({ title: 'Updated Title' });
+
+      expect(response.status).toBe(404);
+    });
+  });
 });

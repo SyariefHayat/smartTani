@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import productController from '../controllers/product.controller';
-import { CreateProductSchema } from '../schemas/product.schema';
+import { CreateProductSchema, UpdateProductSchema } from '../schemas/product.schema';
 import { validate } from '../../../../shared/middleware/validate';
 import { gatewayAuthMiddleware } from '../middleware/auth.middleware';
 import { authorize } from '../middleware/authorize.middleware';
@@ -55,6 +55,44 @@ router.get('/', productController.getProducts);
  *         description: Product not found
  */
 router.get('/:id', productController.getProductById);
+
+/**
+ * @swagger
+ * /products/{id}:
+ *   patch:
+ *     summary: Update a product listing (Farmer/Admin only)
+ *     tags: [Product]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateProductInput'
+ *     responses:
+ *       200:
+ *         description: Product updated successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       422:
+ *         description: Validation error
+ */
+router.patch(
+  '/:id',
+  gatewayAuthMiddleware,
+  authorize(['petani', 'admin']),
+  validate(UpdateProductSchema),
+  productController.updateProduct
+);
 
 /**
  * @swagger

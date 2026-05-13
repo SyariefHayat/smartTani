@@ -41,3 +41,23 @@ export const GetProductsSchema = z.object({
 });
 
 export type GetProductsInput = z.infer<typeof GetProductsSchema>;
+
+export const UpdateProductSchema = z.object({
+  title: z.string().min(5, 'Judul minimal 5 karakter').optional(),
+  description: z.string().min(20, 'Deskripsi minimal 20 karakter').optional(),
+  category: z.string().min(1, 'Kategori wajib diisi').optional(),
+  price_per_unit: z.number().positive('Harga harus lebih dari 0').optional(),
+  unit: z.string().min(1, 'Satuan wajib diisi').optional(),
+  stock: z.number().min(0, 'Stok tidak boleh negatif').optional(),
+  min_order: z.number().min(1, 'Minimal order adalah 1').optional(),
+  location: z
+    .object({
+      province: z.string().min(1, 'Provinsi wajib diisi').optional(),
+      city: z.string().min(1, 'Kota/Kabupaten wajib diisi').optional(),
+    })
+    .optional(),
+  images: z.array(z.string().url()).optional(),
+  status: z.enum(['active', 'inactive', 'pending']).optional(),
+});
+
+export type UpdateProductInput = z.infer<typeof UpdateProductSchema>;

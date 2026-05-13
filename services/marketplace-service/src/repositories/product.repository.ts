@@ -13,6 +13,10 @@ export class ProductRepository {
     return Product.find({ farmer_id: farmerId });
   }
 
+  async update(id: string, data: Partial<IProduct>): Promise<IProduct | null> {
+    return Product.findByIdAndUpdate(id, data, { new: true });
+  }
+
   async findAll(params: {
     category?: string;
     location_province?: string;

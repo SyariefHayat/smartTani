@@ -34,6 +34,18 @@ export class ProductController {
       next(error);
     }
   }
+
+  async updateProduct(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const userId = (req as AppRequest).user!.id;
+      const role = (req as AppRequest).user!.role as string;
+      const product = await productService.updateProduct(userId, role, id as string, req.body);
+      return res.status(200).json(successResponse(product));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new ProductController();
