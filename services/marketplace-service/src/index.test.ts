@@ -4,12 +4,24 @@ import MessageBroker from './lib/broker';
 import Category from './models/category.model';
 import { Product } from './models/product.model';
 import S3Manager from './lib/s3';
+import RedisClient from './lib/redis';
 
 jest.mock('./lib/broker');
 jest.mock('./models/category.model');
 jest.mock('./models/product.model');
 jest.mock('./lib/s3');
 jest.mock('./lib/auth-client');
+jest.mock('./lib/redis', () => ({
+  __esModule: true,
+  default: {
+    getInstance: jest.fn().mockReturnValue({
+      ping: jest.fn().mockResolvedValue('PONG'),
+      call: jest.fn().mockResolvedValue('OK'),
+    }),
+    get: jest.fn(),
+    setex: jest.fn(),
+  },
+}));
 jest.mock('sharp', () => {
   return jest.fn(() => ({
     resize: jest.fn().mockReturnThis(),
@@ -35,17 +47,28 @@ describe('Marketplace Service', () => {
     });
   });
 
-  it('should return 200 and list of categories', async () => {
+  it('should return 200 and list of categories (with caching)', async () => {
     const mockCategories = [{ name: 'Sayuran', slug: 'sayuran' }];
+
+    // First call: Cache miss
+    (RedisClient.get as jest.Mock).mockResolvedValue(null);
     (Category.find as jest.Mock).mockReturnValue({
       sort: jest.fn().mockResolvedValue(mockCategories),
     });
 
-    const response = await request(app).get('/categories');
+    const response1 = await request(app).get('/categories');
+    expect(response1.status).toBe(200);
+    expect(response1.body.data).toEqual(mockCategories);
+    expect(RedisClient.setex).toHaveBeenCalled();
 
-    expect(response.status).toBe(200);
-    expect(response.body.success).toBe(true);
-    expect(response.body.data).toEqual(mockCategories);
+    // Second call: Cache hit
+    jest.clearAllMocks();
+    (RedisClient.get as jest.Mock).mockResolvedValue(mockCategories);
+
+    const response2 = await request(app).get('/categories');
+    expect(response2.status).toBe(200);
+    expect(response2.body.data).toEqual(mockCategories);
+    expect(Category.find).not.toHaveBeenCalled();
   });
 
   describe('POST /products', () => {
