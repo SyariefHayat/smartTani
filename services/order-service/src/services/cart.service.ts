@@ -142,6 +142,17 @@ export class CartService {
       total,
     };
   }
+
+  async removeFromCart(userId: string, productId: string) {
+    const cacheKey = `cart:${userId}`;
+    const cart = (await RedisClient.get<ICartItem[]>(cacheKey)) || [];
+
+    const updatedCart = cart.filter((item) => item.productId !== productId);
+
+    await RedisClient.setex(cacheKey, 604800, updatedCart);
+
+    return updatedCart;
+  }
 }
 
 export default new CartService();

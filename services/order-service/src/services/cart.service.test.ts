@@ -165,4 +165,22 @@ describe('CartService', () => {
     expect(result.items[0].reason).toContain('Stok tidak mencukupi');
     expect(result.total).toBe(0);
   });
+
+  describe('removeFromCart', () => {
+    it('should remove item from cart successfully', async () => {
+      const mockCart = [
+        { productId: 'p1', quantity: 1 },
+        { productId: 'p2', quantity: 2 },
+      ];
+      (RedisClient.get as jest.Mock).mockResolvedValue(mockCart);
+
+      const result = await cartService.removeFromCart('u1', 'p1');
+
+      expect(RedisClient.setex).toHaveBeenCalledWith('cart:u1', 604800, [
+        { productId: 'p2', quantity: 2 },
+      ]);
+      expect(result.length).toBe(1);
+      expect(result[0].productId).toBe('p2');
+    });
+  });
 });

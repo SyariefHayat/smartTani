@@ -23,6 +23,17 @@ export class CartController {
       next(error);
     }
   }
+
+  async removeFromCart(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const userId = (req as AppRequest).user!.id;
+      const cart = await cartService.removeFromCart(userId, id as string);
+      return res.status(200).json(successResponse(cart));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new CartController();

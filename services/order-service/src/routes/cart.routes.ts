@@ -56,4 +56,29 @@ router.get(
   cartController.getCart
 );
 
+/**
+ * @swagger
+ * /cart/items/{id}:
+ *   delete:
+ *     summary: Remove item from cart
+ *     tags: [Cart]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Item removed from cart
+ */
+router.delete(
+  '/items/:id',
+  gatewayAuthMiddleware,
+  authorize(['buyer', 'distributor', 'admin']),
+  cartController.removeFromCart
+);
+
 export default router;

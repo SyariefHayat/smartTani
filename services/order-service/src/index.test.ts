@@ -60,4 +60,18 @@ describe('Order Service', () => {
       expect(response.body.success).toBe(true);
     });
   });
+
+  describe('DELETE /cart/items/:id', () => {
+    it('should remove item from cart', async () => {
+      (cartService.removeFromCart as jest.Mock).mockResolvedValue([]);
+
+      const response = await request(app)
+        .delete('/cart/items/p1')
+        .set('X-User-Id', 'user-1')
+        .set('X-User-Role', 'buyer');
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+    });
+  });
 });
