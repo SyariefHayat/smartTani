@@ -1,8 +1,10 @@
 import request from 'supertest';
 import { app } from './index';
 import MessageBroker from './lib/broker';
+import Category from './models/category.model';
 
 jest.mock('./lib/broker');
+jest.mock('./models/category.model');
 
 describe('Marketplace Service', () => {
   beforeEach(() => {
@@ -19,5 +21,18 @@ describe('Marketplace Service', () => {
       redis: 'ok',
       s3: 'ok',
     });
+  });
+
+  it('should return 200 and list of categories', async () => {
+    const mockCategories = [{ name: 'Sayuran', slug: 'sayuran' }];
+    (Category.find as jest.Mock).mockReturnValue({
+      sort: jest.fn().mockResolvedValue(mockCategories),
+    });
+
+    const response = await request(app).get('/categories');
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.data).toEqual(mockCategories);
   });
 });

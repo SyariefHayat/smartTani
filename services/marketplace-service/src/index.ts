@@ -8,6 +8,7 @@ import { swaggerSpec } from './config/swagger';
 import RedisClient from './lib/redis';
 import MessageBroker from './lib/broker';
 import { connectMongoDB } from './lib/mongoose';
+import { seedCategories } from './scripts/seed-categories';
 
 // Initialize Sentry
 if (env.SENTRY_DSN) {
@@ -22,6 +23,7 @@ import { correlationIdMiddleware } from '../../../shared/middleware/correlationI
 import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
 import { getHealth } from './controllers/health.controller';
+import categoryRoutes from './routes/category.routes';
 
 export const app = express();
 
@@ -33,6 +35,7 @@ app.use(requestLoggerMiddleware);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get('/health', getHealth);
+app.use('/categories', categoryRoutes);
 
 // Sentry Error Handler
 if (env.SENTRY_DSN) {
@@ -51,6 +54,9 @@ export const bootstrap = async () => {
 
     // Initialize MongoDB connection
     await connectMongoDB();
+
+    // Seed categories
+    await seedCategories();
 
     if (process.env.NODE_ENV !== 'test') {
       app.listen(env.PORT, () => {
