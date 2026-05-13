@@ -20,3 +20,35 @@ jest.mock('http-proxy-middleware', () => ({
     .fn()
     .mockReturnValue((_req: unknown, _res: unknown, next: () => void) => next()),
 }));
+
+jest.mock('./src/lib/redis', () => {
+  const mockClient = {
+    call: jest.fn().mockImplementation(async (command: string, ...args: unknown[]) => {
+      const cmd = command.toLowerCase();
+      if (cmd === 'script' && (args[0] === 'LOAD' || args[0] === 'load')) {
+        return 'mock-sha';
+      }
+      if (cmd === 'evalsha' || cmd === 'eval') {
+        return [1, Date.now() + 60000];
+      }
+      return 'OK';
+    }),
+    get: jest.fn(),
+    set: jest.fn(),
+    setex: jest.fn(),
+    del: jest.fn(),
+    quit: jest.fn().mockResolvedValue('OK'),
+    flushdb: jest.fn().mockResolvedValue('OK'),
+  };
+
+  return {
+    __esModule: true,
+    default: {
+      getInstance: jest.fn().mockReturnValue(mockClient),
+      get: jest.fn(),
+      set: jest.fn(),
+      setex: jest.fn(),
+      del: jest.fn(),
+    },
+  };
+});

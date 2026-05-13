@@ -20,6 +20,7 @@ import { correlationIdMiddleware } from '../../../shared/middleware/correlationI
 import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
 import { gatewayAuthMiddleware } from './middleware/auth.middleware';
+import { gatewayRateLimiter } from './middleware/rate-limiter.middleware';
 import { AppRequest } from '../../../shared/types/express';
 
 export const app = express();
@@ -28,6 +29,7 @@ app.use(cors());
 app.use(correlationIdMiddleware);
 app.use(requestLoggerMiddleware);
 app.use(gatewayAuthMiddleware);
+app.use(gatewayRateLimiter);
 
 // Proxy Routes
 // NOTE: Must be defined BEFORE express.json() if we want to forward bodies correctly without complex fixes

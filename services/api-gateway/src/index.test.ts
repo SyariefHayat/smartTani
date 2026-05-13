@@ -1,7 +1,6 @@
 import request from 'supertest';
 import { app } from './index';
 
-jest.mock('./lib/redis');
 jest.mock('./lib/broker');
 
 describe('API Gateway', () => {
