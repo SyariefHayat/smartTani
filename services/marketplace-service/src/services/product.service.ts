@@ -124,6 +124,28 @@ export class ProductService {
     return { message: 'Produk berhasil dinonaktifkan' };
   }
 
+  async reduceStock(items: { productId: string; quantity: number }[]) {
+    const reducedItems: { productId: string; quantity: number }[] = [];
+
+    for (const item of items) {
+      const updated = await productRepository.reduceStock(item.productId, item.quantity);
+      if (!updated) {
+        // Rollback previously reduced items
+        for (const reduced of reducedItems) {
+          await productRepository.update(reduced.productId, {
+            $inc: { stock: reduced.quantity },
+          } as Record<string, unknown>);
+        }
+        const error = new Error(`Stok tidak mencukupi untuk produk ${item.productId}`) as AppError;
+        error.statusCode = 409;
+        error.code = 'MARKET_008';
+        throw error;
+      }
+      reducedItems.push(item);
+    }
+    return { success: true };
+  }
+
   async uploadProductImage(
     userId: string,
     role: string,

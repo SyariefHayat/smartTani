@@ -59,6 +59,36 @@ router.get('/:id', productController.getProductById);
 
 /**
  * @swagger
+ * /products/reduce-stock:
+ *   patch:
+ *     summary: Reduce stock for multiple products (Internal)
+ *     tags: [Product]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               items:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     productId:
+ *                       type: string
+ *                     quantity:
+ *                       type: number
+ *     responses:
+ *       200:
+ *         description: Stock reduced successfully
+ *       409:
+ *         description: Insufficient stock
+ */
+router.patch('/reduce-stock', productController.reduceStock);
+
+/**
+ * @swagger
  * /products/{id}:
  *   patch:
  *     summary: Update a product listing (Farmer/Admin only)

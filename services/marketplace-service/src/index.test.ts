@@ -88,7 +88,7 @@ describe('Marketplace Service', () => {
 
     it('should create product successfully as petani', async () => {
       (Product.create as jest.Mock).mockResolvedValue({
-        id: 'uuid',
+        _id: 'uuid',
         ...validProduct,
         farmer_id: 'farmer-1',
         status: 'active',
@@ -234,7 +234,7 @@ describe('Marketplace Service', () => {
       (Product.findById as jest.Mock).mockResolvedValue(null);
 
       const response = await request(app)
-        .patch('/products/6a03d00c22e9882dac8e0a55')
+        .patch(`/products/${productId}`)
         .set('X-User-Id', 'admin-1')
         .set('X-User-Role', 'admin')
         .send({ title: 'Updated Title' });
@@ -297,6 +297,21 @@ describe('Marketplace Service', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.data.imageUrl).toBe('http://s3/img.webp');
+    });
+  });
+
+  describe('PATCH /products/reduce-stock', () => {
+    it('should reduce stock successfully', async () => {
+      (Product.findOneAndUpdate as jest.Mock).mockResolvedValue({ _id: 'p1' });
+
+      const response = await request(app)
+        .patch('/products/reduce-stock')
+        .send({
+          items: [{ productId: 'p1', quantity: 2 }],
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
     });
   });
 });

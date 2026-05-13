@@ -35,6 +35,16 @@ export class ProductController {
     }
   }
 
+  async reduceStock(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { items } = req.body;
+      const result = await productService.reduceStock(items);
+      return res.status(200).json(successResponse(result));
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async updateProduct(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;

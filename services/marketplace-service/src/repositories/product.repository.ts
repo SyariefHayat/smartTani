@@ -17,6 +17,14 @@ export class ProductRepository {
     return Product.findByIdAndUpdate(id, data, { new: true });
   }
 
+  async reduceStock(id: string, quantity: number): Promise<IProduct | null> {
+    return Product.findOneAndUpdate(
+      { _id: id, stock: { $gte: quantity }, status: 'active' },
+      { $inc: { stock: -quantity } },
+      { new: true }
+    );
+  }
+
   async findAll(params: {
     category?: string;
     location_province?: string;
