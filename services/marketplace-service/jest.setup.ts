@@ -28,6 +28,7 @@ jest.mock('./src/lib/s3', () => ({
     getInstance: jest.fn().mockReturnValue({
       send: jest.fn().mockResolvedValue({ Buckets: [] }),
     }),
+    uploadFile: jest.fn().mockResolvedValue('http://s3/mock-image.webp'),
   },
 }));
 

@@ -1,4 +1,4 @@
-import { S3Client } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { env } from '../config/env';
 
 class S3Manager {
@@ -18,6 +18,30 @@ class S3Manager {
       });
     }
     return S3Manager.instance;
+  }
+
+  public static async uploadFile(
+    fileBuffer: Buffer,
+    key: string,
+    contentType: string
+  ): Promise<string> {
+    const client = this.getInstance();
+    const command = new PutObjectCommand({
+      Bucket: env.AWS_BUCKET_NAME,
+      Key: key,
+      Body: fileBuffer,
+      ContentType: contentType,
+    });
+
+    await client.send(command);
+
+    // Construct public URL
+    // For real S3: https://{bucket}.s3.{region}.amazonaws.com/{key}
+    // For Minio/Local testing, it might be different, but let's use a standard pattern
+    if (process.env.AWS_ENDPOINT) {
+      return `${process.env.AWS_ENDPOINT}/${env.AWS_BUCKET_NAME}/${key}`;
+    }
+    return `https://${env.AWS_BUCKET_NAME}.s3.${env.AWS_REGION}.amazonaws.com/${key}`;
   }
 }
 

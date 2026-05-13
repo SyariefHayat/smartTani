@@ -3,10 +3,20 @@ import { app } from './index';
 import MessageBroker from './lib/broker';
 import Category from './models/category.model';
 import { Product } from './models/product.model';
+import S3Manager from './lib/s3';
 
 jest.mock('./lib/broker');
 jest.mock('./models/category.model');
 jest.mock('./models/product.model');
+jest.mock('./lib/s3');
+jest.mock('./lib/auth-client');
+jest.mock('sharp', () => {
+  return jest.fn(() => ({
+    resize: jest.fn().mockReturnThis(),
+    webp: jest.fn().mockReturnThis(),
+    toBuffer: jest.fn().mockResolvedValue(Buffer.from('processed-image')),
+  }));
+});
 
 describe('Marketplace Service', () => {
   beforeEach(() => {
@@ -109,16 +119,16 @@ describe('Marketplace Service', () => {
   });
 
   describe('PATCH /products/:id', () => {
-    it('should update product successfully as owner', async () => {
-      const productId = '6a03d00c22e9882dac8e0a55';
-      const updateData = { title: 'Updated Title' };
-      const mockProduct = {
-        _id: productId,
-        farmer_id: 'farmer-1',
-        title: 'Original Title',
-        location: { city: 'Bandung', province: 'Jawa Barat' },
-      };
+    const productId = '6a03d00c22e9882dac8e0a55';
+    const updateData = { title: 'Updated Title' };
+    const mockProduct = {
+      _id: productId,
+      farmer_id: 'farmer-1',
+      title: 'Original Title',
+      location: { city: 'Bandung', province: 'Jawa Barat' },
+    };
 
+    it('should update product successfully as owner', async () => {
       (Product.findById as jest.Mock).mockResolvedValue(mockProduct);
       (Product.findByIdAndUpdate as jest.Mock).mockResolvedValue({
         ...mockProduct,
@@ -136,13 +146,6 @@ describe('Marketplace Service', () => {
     });
 
     it('should return 403 if user is not the owner', async () => {
-      const productId = '6a03d00c22e9882dac8e0a55';
-      const mockProduct = {
-        _id: productId,
-        farmer_id: 'farmer-1',
-        location: { city: 'Bandung', province: 'Jawa Barat' },
-      };
-
       (Product.findById as jest.Mock).mockResolvedValue(mockProduct);
 
       const response = await request(app)
@@ -155,13 +158,6 @@ describe('Marketplace Service', () => {
     });
 
     it('should allow admin to update any product', async () => {
-      const productId = '6a03d00c22e9882dac8e0a55';
-      const mockProduct = {
-        _id: productId,
-        farmer_id: 'farmer-1',
-        location: { city: 'Bandung', province: 'Jawa Barat' },
-      };
-
       (Product.findById as jest.Mock).mockResolvedValue(mockProduct);
       (Product.findByIdAndUpdate as jest.Mock).mockResolvedValue({
         ...mockProduct,
@@ -191,13 +187,13 @@ describe('Marketplace Service', () => {
   });
 
   describe('DELETE /products/:id', () => {
-    it('should deactivate product successfully as owner', async () => {
-      const productId = '6a03d00c22e9882dac8e0a55';
-      const mockProduct = {
-        _id: productId,
-        farmer_id: 'farmer-1',
-      };
+    const productId = '6a03d00c22e9882dac8e0a55';
+    const mockProduct = {
+      _id: productId,
+      farmer_id: 'farmer-1',
+    };
 
+    it('should deactivate product successfully as owner', async () => {
       (Product.findById as jest.Mock).mockResolvedValue(mockProduct);
       (Product.findByIdAndUpdate as jest.Mock).mockResolvedValue({
         ...mockProduct,
@@ -214,12 +210,6 @@ describe('Marketplace Service', () => {
     });
 
     it('should return 403 if user is not the owner', async () => {
-      const productId = '6a03d00c22e9882dac8e0a55';
-      const mockProduct = {
-        _id: productId,
-        farmer_id: 'farmer-1',
-      };
-
       (Product.findById as jest.Mock).mockResolvedValue(mockProduct);
 
       const response = await request(app)
@@ -228,6 +218,28 @@ describe('Marketplace Service', () => {
         .set('X-User-Role', 'petani');
 
       expect(response.status).toBe(403);
+    });
+  });
+
+  describe('POST /products/:id/images', () => {
+    it('should upload image successfully', async () => {
+      const productId = '6a03d00c22e9882dac8e0a55';
+      (Product.findById as jest.Mock).mockResolvedValue({
+        _id: productId,
+        farmer_id: 'farmer-1',
+        images: [],
+      });
+      (S3Manager.uploadFile as jest.Mock).mockResolvedValue('http://s3/img.webp');
+      (Product.findByIdAndUpdate as jest.Mock).mockResolvedValue({});
+
+      const response = await request(app)
+        .post(`/products/${productId}/images`)
+        .set('X-User-Id', 'farmer-1')
+        .set('X-User-Role', 'petani')
+        .attach('image', Buffer.from('fake-image'), 'test.jpg');
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.imageUrl).toBe('http://s3/img.webp');
     });
   });
 });

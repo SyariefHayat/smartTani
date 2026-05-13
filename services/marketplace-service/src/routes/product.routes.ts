@@ -4,6 +4,7 @@ import { CreateProductSchema, UpdateProductSchema } from '../schemas/product.sch
 import { validate } from '../../../../shared/middleware/validate';
 import { gatewayAuthMiddleware } from '../middleware/auth.middleware';
 import { authorize } from '../middleware/authorize.middleware';
+import { upload, handleMulterError } from '../middleware/upload.middleware';
 
 const router = Router();
 
@@ -121,6 +122,48 @@ router.delete(
   gatewayAuthMiddleware,
   authorize(['petani', 'admin']),
   productController.deactivateProduct
+);
+
+/**
+ * @swagger
+ * /products/{id}/images:
+ *   post:
+ *     summary: Upload product image (Farmer/Admin only)
+ *     tags: [Product]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Image uploaded successfully
+ *       400:
+ *         description: Invalid file or limit exceeded
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ */
+router.post(
+  '/:id/images',
+  gatewayAuthMiddleware,
+  authorize(['petani', 'admin']),
+  upload.single('image'),
+  handleMulterError,
+  productController.uploadImage
 );
 
 /**

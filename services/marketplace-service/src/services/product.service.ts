@@ -1,3 +1,5 @@
+import sharp from 'sharp';
+import path from 'path';
 import {
   CreateProductInput,
   GetProductsInput,
@@ -5,6 +7,7 @@ import {
 } from '../schemas/product.schema';
 import productRepository from '../repositories/product.repository';
 import authServiceClient from '../lib/auth-client';
+import S3Manager from '../lib/s3';
 import { AppError } from '../../../../shared/types/express';
 
 export class ProductService {
@@ -119,6 +122,60 @@ export class ProductService {
     }
 
     return { message: 'Produk berhasil dinonaktifkan' };
+  }
+
+  async uploadProductImage(
+    userId: string,
+    role: string,
+    productId: string,
+    file: Express.Multer.File
+  ) {
+    const product = await productRepository.findById(productId);
+    if (!product) {
+      const error = new Error('Produk tidak ditemukan') as AppError;
+      error.statusCode = 404;
+      error.code = 'MARKET_001';
+      throw error;
+    }
+
+    // Ownership validation (except admin)
+    if (role !== 'admin' && product.farmer_id !== userId) {
+      const error = new Error('Anda tidak memiliki akses untuk mengubah produk ini') as AppError;
+      error.statusCode = 403;
+      error.code = 'AUTH_011';
+      throw error;
+    }
+
+    // Max 5 images per product
+    if (product.images.length >= 5) {
+      const error = new Error('Maksimal 5 foto per produk.') as AppError;
+      error.statusCode = 400;
+      error.code = 'MARKET_004';
+      throw error;
+    }
+
+    // Image processing with Sharp: resize to max 1200x1200px, convert to WebP, compress quality 80
+    const processedImage = await sharp(file.buffer)
+      .resize(1200, 1200, {
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .webp({ quality: 80 })
+      .toBuffer();
+
+    // Upload to S3: products/{product_id}/{timestamp}-{filename}.webp
+    const timestamp = Date.now();
+    const fileName = path.parse(file.originalname).name;
+    const s3Key = `products/${productId}/${timestamp}-${fileName}.webp`;
+
+    const imageUrl = await S3Manager.uploadFile(processedImage, s3Key, 'image/webp');
+
+    // Update array images di MongoDB (push URL baru)
+    await productRepository.update(productId, {
+      $push: { images: imageUrl },
+    } as Record<string, unknown>);
+
+    return { imageUrl };
   }
 }
 

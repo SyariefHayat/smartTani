@@ -1,9 +1,13 @@
 import productService from './product.service';
 import productRepository from '../repositories/product.repository';
 import authServiceClient from '../lib/auth-client';
+import S3Manager from '../lib/s3';
+import sharp from 'sharp';
 
 jest.mock('../repositories/product.repository');
 jest.mock('../lib/auth-client');
+jest.mock('../lib/s3');
+jest.mock('sharp');
 
 describe('ProductService', () => {
   beforeEach(() => {
@@ -153,6 +157,47 @@ describe('ProductService', () => {
       await expect(productService.deactivateProduct('f1', 'petani', '1')).rejects.toThrow(
         'Gagal menonaktifkan produk'
       );
+    });
+  });
+
+  describe('uploadProductImage', () => {
+    const mockFile = {
+      buffer: Buffer.from('fake-image'),
+      originalname: 'test.jpg',
+      mimetype: 'image/jpeg',
+    } as Express.Multer.File;
+
+    it('should upload image successfully', async () => {
+      const mockProduct = { _id: '1', farmer_id: 'f1', images: [] };
+      (productRepository.findById as jest.Mock).mockResolvedValue(mockProduct);
+      (S3Manager.uploadFile as jest.Mock).mockResolvedValue('http://s3/image.webp');
+
+      const mockSharpChain = {
+        resize: jest.fn().mockReturnThis(),
+        webp: jest.fn().mockReturnThis(),
+        toBuffer: jest.fn().mockResolvedValue(Buffer.from('processed-image')),
+      };
+      (sharp as unknown as jest.Mock).mockReturnValue(mockSharpChain);
+
+      const result = await productService.uploadProductImage('f1', 'petani', '1', mockFile);
+
+      expect(S3Manager.uploadFile).toHaveBeenCalled();
+      expect(productRepository.update).toHaveBeenCalledWith(
+        '1',
+        expect.objectContaining({
+          $push: { images: 'http://s3/image.webp' },
+        })
+      );
+      expect(result.imageUrl).toBe('http://s3/image.webp');
+    });
+
+    it('should throw 400 if product already has 5 images', async () => {
+      const mockProduct = { _id: '1', farmer_id: 'f1', images: ['1', '2', '3', '4', '5'] };
+      (productRepository.findById as jest.Mock).mockResolvedValue(mockProduct);
+
+      await expect(
+        productService.uploadProductImage('f1', 'petani', '1', mockFile)
+      ).rejects.toThrow('Maksimal 5 foto per produk.');
     });
   });
 });

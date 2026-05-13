@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import productService from '../services/product.service';
 import { successResponse } from '../../../../shared/utils/response';
-import { AppRequest } from '../../../../shared/types/express';
+import { AppRequest, AppError } from '../../../../shared/types/express';
 
 export class ProductController {
   async createProduct(req: Request, res: Response, next: NextFunction) {
@@ -53,6 +53,27 @@ export class ProductController {
       const userId = (req as AppRequest).user!.id;
       const role = (req as AppRequest).user!.role as string;
       const result = await productService.deactivateProduct(userId, role, id as string);
+      return res.status(200).json(successResponse(result));
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async uploadImage(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const userId = (req as AppRequest).user!.id;
+      const role = (req as AppRequest).user!.role as string;
+      const file = req.file;
+
+      if (!file) {
+        const error = new Error('File tidak ditemukan') as AppError;
+        error.statusCode = 400;
+        error.code = 'MARKET_005';
+        throw error;
+      }
+
+      const result = await productService.uploadProductImage(userId, role, id as string, file);
       return res.status(200).json(successResponse(result));
     } catch (error) {
       next(error);
