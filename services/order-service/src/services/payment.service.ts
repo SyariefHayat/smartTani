@@ -5,6 +5,7 @@ import { InitiatePaymentInput } from '../schemas/payment.schema';
 import { BROKER_EXCHANGES, BROKER_ROUTING_KEYS } from '../../../../shared/constants/broker';
 import MessageBroker from '../lib/broker';
 import marketplaceClient from '../lib/marketplace-client';
+import { paymentTimeoutQueue } from '../lib/queue';
 import { verifyMidtransSignature } from '../lib/midtrans-verify';
 
 const prisma = new PrismaClient();
@@ -123,7 +124,7 @@ export class PaymentService {
 
     if (!isValid) {
       const error = new Error('Invalid signature') as AppError;
-      error.statusCode = 403;
+      error.statusCode = 400;
       throw error;
     }
 
@@ -139,12 +140,11 @@ export class PaymentService {
       }
     } else if (transactionStatus === 'settlement') {
       newStatus = 'paid';
-    } else if (
-      transactionStatus === 'cancel' ||
-      transactionStatus === 'deny' ||
-      transactionStatus === 'expire'
-    ) {
+    } else if (transactionStatus === 'cancel' || transactionStatus === 'expire') {
       newStatus = 'cancelled';
+    } else if (transactionStatus === 'deny') {
+      console.log(`⚠️ Payment denied for order ${orderId}`);
+      return { message: 'Payment denied' };
     } else if (transactionStatus === 'pending') {
       newStatus = 'pending_payment';
     }
@@ -163,16 +163,32 @@ export class PaymentService {
     // 3. Update Order status
     await prisma.order.update({
       where: { id: orderId },
-      data: { status: newStatus },
+      data: {
+        status: newStatus,
+        paid_at: newStatus === 'paid' ? new Date() : undefined,
+      },
     });
 
     // 4. Action based on status
     if (newStatus === 'paid') {
+      // Batalkan job timeout di Bull Queue
+      const jobId = `payment-timeout:${order.id}`;
+      const job = await paymentTimeoutQueue.getJob(jobId);
+      if (job) {
+        await job.remove();
+        console.log(`✅ Cancelled payment timeout job for order ${order.id}`);
+      }
+
       // Kirim event ORDER_PAID ke RabbitMQ
       MessageBroker.publish(BROKER_EXCHANGES.EVENTS, BROKER_ROUTING_KEYS.ORDER_PAID, {
         orderId: order.id,
         buyerId: order.buyer_id,
         totalAmount: order.total_amount,
+        items: order.items.map((item) => ({
+          productId: item.product_id,
+          quantity: Number(item.quantity),
+          price: Number(item.price_per_unit),
+        })),
       }).catch((err) => console.error('❌ Failed to publish ORDER_PAID:', err));
     } else if (newStatus === 'cancelled') {
       // Kembalikan stok ke marketplace-service

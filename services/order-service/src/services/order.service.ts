@@ -90,7 +90,10 @@ export class OrderService {
       await paymentTimeoutQueue.add(
         'cancel-order',
         { orderId: order.id },
-        { delay: 15 * 60 * 1000 }
+        {
+          delay: 15 * 60 * 1000,
+          jobId: `payment-timeout:${order.id}`,
+        }
       );
 
       return order;

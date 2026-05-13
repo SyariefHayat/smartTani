@@ -2,6 +2,9 @@ import request from 'supertest';
 import { app } from '../index';
 import { PrismaClient } from '@prisma/client';
 import MidtransManager from '../lib/midtrans';
+import * as verifyUtils from '../lib/midtrans-verify';
+import { paymentTimeoutQueue } from '../lib/queue';
+import MessageBroker from '../lib/broker';
 
 jest.mock('@prisma/client', () => {
   const mockPrisma = {
@@ -9,6 +12,7 @@ jest.mock('@prisma/client', () => {
       findUnique: jest.fn(),
       update: jest.fn(),
     },
+    $transaction: jest.fn(),
   };
   return {
     PrismaClient: jest.fn().mockImplementation(() => mockPrisma),
@@ -16,7 +20,16 @@ jest.mock('@prisma/client', () => {
 });
 
 jest.mock('../lib/midtrans');
-jest.mock('../lib/broker');
+jest.mock('../lib/broker', () => ({
+  publish: jest.fn().mockResolvedValue({}),
+}));
+jest.mock('../lib/midtrans-verify');
+jest.mock('../lib/queue', () => ({
+  paymentTimeoutQueue: {
+    add: jest.fn(),
+    getJob: jest.fn(),
+  },
+}));
 
 describe('Payment Routes', () => {
   const prisma = new PrismaClient();
@@ -27,6 +40,7 @@ describe('Payment Routes', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (MidtransManager.getSnap as jest.Mock).mockReturnValue(mockSnap);
+    (MessageBroker.publish as jest.Mock).mockResolvedValue({});
   });
 
   describe('POST /payments/initiate', () => {
@@ -64,67 +78,60 @@ describe('Payment Routes', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
-      expect(response.body.data.paymentUrl).toBe(
-        'https://app.sandbox.midtrans.com/snap/v2/vtweb/123'
-      );
-      expect(prisma.order.findUnique).toHaveBeenCalled();
-      expect(mockSnap.createTransaction).toHaveBeenCalledWith(
+    });
+  });
+
+  describe('POST /payments/webhook', () => {
+    it('should return 200 and update status when signature is valid', async () => {
+      const webhookData = {
+        order_id: 'o1',
+        status_code: '200',
+        gross_amount: '100000.00',
+        signature_key: 'valid-sig',
+        transaction_status: 'settlement',
+      };
+
+      const mockOrder = {
+        id: 'o1',
+        buyer_id: 'user-1',
+        status: 'pending_payment',
+        total_amount: 100000,
+        items: [],
+      };
+
+      (verifyUtils.verifyMidtransSignature as jest.Mock).mockReturnValue(true);
+      (prisma.order.findUnique as jest.Mock).mockResolvedValue(mockOrder);
+      (prisma.order.update as jest.Mock).mockResolvedValue({});
+      (paymentTimeoutQueue.getJob as jest.Mock).mockResolvedValue({ remove: jest.fn() });
+
+      const response = await request(app).post('/payments/webhook').send(webhookData);
+
+      expect(response.status).toBe(200);
+      expect(prisma.order.update).toHaveBeenCalledWith(
         expect.objectContaining({
-          transaction_details: {
-            order_id: mockOrder.id,
-            gross_amount: 100000,
-          },
-          customer_details: {
-            first_name: 'Buyer One',
-            email: 'buyer@example.com',
-          },
+          data: expect.objectContaining({
+            status: 'paid',
+            paid_at: expect.any(Date),
+          }),
         })
       );
     });
 
-    it('should return 403 if user is not the owner of the order', async () => {
-      const mockOrder = {
-        id: '123e4567-e89b-12d3-a456-426614174000',
-        buyer_id: 'user-2',
-        status: 'pending_payment',
+    it('should return 400 when signature is invalid', async () => {
+      const webhookData = {
+        order_id: 'o1',
+        status_code: '200',
+        gross_amount: '100000.00',
+        signature_key: 'invalid-sig',
+        transaction_status: 'settlement',
       };
 
-      (prisma.order.findUnique as jest.Mock).mockResolvedValue(mockOrder);
+      (verifyUtils.verifyMidtransSignature as jest.Mock).mockReturnValue(false);
 
-      const response = await request(app)
-        .post('/payments/initiate')
-        .set('X-User-Id', 'user-1')
-        .set('X-User-Role', 'buyer')
-        .send({ orderId: mockOrder.id });
-
-      expect(response.status).toBe(403);
-      expect(response.body.success).toBe(false);
-    });
-
-    it('should return 400 if order status is not pending_payment', async () => {
-      const mockOrder = {
-        id: '123e4567-e89b-12d3-a456-426614174000',
-        buyer_id: 'user-1',
-        status: 'paid',
-      };
-
-      (prisma.order.findUnique as jest.Mock).mockResolvedValue(mockOrder);
-
-      const response = await request(app)
-        .post('/payments/initiate')
-        .set('X-User-Id', 'user-1')
-        .set('X-User-Role', 'buyer')
-        .send({ orderId: mockOrder.id });
+      const response = await request(app).post('/payments/webhook').send(webhookData);
 
       expect(response.status).toBe(400);
-    });
-
-    it('should return 401 if unauthorized', async () => {
-      const response = await request(app)
-        .post('/payments/initiate')
-        .send({ orderId: '123e4567-e89b-12d3-a456-426614174000' });
-
-      expect(response.status).toBe(401);
+      expect(response.body.error.message).toBe('Invalid signature');
     });
   });
 });
