@@ -149,7 +149,7 @@ describe('Marketplace Service', () => {
         .patch(`/products/${productId}`)
         .set('X-User-Id', 'farmer-2')
         .set('X-User-Role', 'petani')
-        .send({ title: 'Updated Title' }); // Use valid title to avoid 422
+        .send({ title: 'Updated Title' });
 
       expect(response.status).toBe(403);
     });
@@ -187,6 +187,47 @@ describe('Marketplace Service', () => {
         .send({ title: 'Updated Title' });
 
       expect(response.status).toBe(404);
+    });
+  });
+
+  describe('DELETE /products/:id', () => {
+    it('should deactivate product successfully as owner', async () => {
+      const productId = '6a03d00c22e9882dac8e0a55';
+      const mockProduct = {
+        _id: productId,
+        farmer_id: 'farmer-1',
+      };
+
+      (Product.findById as jest.Mock).mockResolvedValue(mockProduct);
+      (Product.findByIdAndUpdate as jest.Mock).mockResolvedValue({
+        ...mockProduct,
+        status: 'inactive',
+      });
+
+      const response = await request(app)
+        .delete(`/products/${productId}`)
+        .set('X-User-Id', 'farmer-1')
+        .set('X-User-Role', 'petani');
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.message).toBe('Produk berhasil dinonaktifkan');
+    });
+
+    it('should return 403 if user is not the owner', async () => {
+      const productId = '6a03d00c22e9882dac8e0a55';
+      const mockProduct = {
+        _id: productId,
+        farmer_id: 'farmer-1',
+      };
+
+      (Product.findById as jest.Mock).mockResolvedValue(mockProduct);
+
+      const response = await request(app)
+        .delete(`/products/${productId}`)
+        .set('X-User-Id', 'farmer-2')
+        .set('X-User-Role', 'petani');
+
+      expect(response.status).toBe(403);
     });
   });
 });

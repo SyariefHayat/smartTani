@@ -96,6 +96,35 @@ router.patch(
 
 /**
  * @swagger
+ * /products/{id}:
+ *   delete:
+ *     summary: Deactivate a product listing (Farmer/Admin only)
+ *     tags: [Product]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Product deactivated successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ */
+router.delete(
+  '/:id',
+  gatewayAuthMiddleware,
+  authorize(['petani', 'admin']),
+  productController.deactivateProduct
+);
+
+/**
+ * @swagger
  * /products:
  *   post:
  *     summary: Create a new product listing (Farmer/Admin only)

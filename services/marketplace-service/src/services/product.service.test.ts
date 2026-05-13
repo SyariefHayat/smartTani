@@ -72,6 +72,7 @@ describe('ProductService', () => {
         _id: 'prod-123',
         farmer_id: 'farmer-123',
         title: 'Product 1',
+        location: { city: 'Bandung', province: 'Jawa Barat' },
         toObject: jest
           .fn()
           .mockReturnValue({ _id: 'prod-123', farmer_id: 'farmer-123', title: 'Product 1' }),
@@ -93,6 +94,64 @@ describe('ProductService', () => {
 
       await expect(productService.getProductById('invalid')).rejects.toThrow(
         'Produk tidak ditemukan'
+      );
+    });
+  });
+
+  describe('updateProduct', () => {
+    const updateInput = { title: 'Updated' };
+
+    it('should update successfully as owner', async () => {
+      const mockProduct = { _id: '1', farmer_id: 'f1', title: 'Old' };
+      (productRepository.findById as jest.Mock).mockResolvedValue(mockProduct);
+      (productRepository.update as jest.Mock).mockResolvedValue({ ...mockProduct, ...updateInput });
+
+      const result = await productService.updateProduct('f1', 'petani', '1', updateInput);
+
+      expect(productRepository.update).toHaveBeenCalled();
+      expect(result.title).toBe('Updated');
+    });
+
+    it('should throw 403 if not owner', async () => {
+      const mockProduct = { _id: '1', farmer_id: 'f1' };
+      (productRepository.findById as jest.Mock).mockResolvedValue(mockProduct);
+
+      await expect(productService.updateProduct('f2', 'petani', '1', updateInput)).rejects.toThrow(
+        'Anda tidak memiliki akses untuk mengubah produk ini'
+      );
+    });
+  });
+
+  describe('deactivateProduct', () => {
+    it('should deactivate successfully as owner', async () => {
+      const mockProduct = { _id: '1', farmer_id: 'f1' };
+      (productRepository.findById as jest.Mock).mockResolvedValue(mockProduct);
+      (productRepository.update as jest.Mock).mockResolvedValue({
+        ...mockProduct,
+        status: 'inactive',
+      });
+
+      const result = await productService.deactivateProduct('f1', 'petani', '1');
+
+      expect(productRepository.update).toHaveBeenCalledWith('1', { status: 'inactive' });
+      expect(result.message).toBe('Produk berhasil dinonaktifkan');
+    });
+
+    it('should throw 404 if product not found', async () => {
+      (productRepository.findById as jest.Mock).mockResolvedValue(null);
+
+      await expect(productService.deactivateProduct('f1', 'petani', 'invalid')).rejects.toThrow(
+        'Produk tidak ditemukan'
+      );
+    });
+
+    it('should throw 500 if update fails', async () => {
+      const mockProduct = { _id: '1', farmer_id: 'f1' };
+      (productRepository.findById as jest.Mock).mockResolvedValue(mockProduct);
+      (productRepository.update as jest.Mock).mockResolvedValue(null);
+
+      await expect(productService.deactivateProduct('f1', 'petani', '1')).rejects.toThrow(
+        'Gagal menonaktifkan produk'
       );
     });
   });

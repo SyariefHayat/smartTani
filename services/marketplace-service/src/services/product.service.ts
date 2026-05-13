@@ -93,6 +93,33 @@ export class ProductService {
 
     return updatedProduct;
   }
+
+  async deactivateProduct(userId: string, role: string, productId: string) {
+    const product = await productRepository.findById(productId);
+    if (!product) {
+      const error = new Error('Produk tidak ditemukan') as AppError;
+      error.statusCode = 404;
+      error.code = 'MARKET_001';
+      throw error;
+    }
+
+    // Ownership validation (except admin)
+    if (role !== 'admin' && product.farmer_id !== userId) {
+      const error = new Error('Anda tidak memiliki akses untuk menghapus produk ini') as AppError;
+      error.statusCode = 403;
+      error.code = 'AUTH_011';
+      throw error;
+    }
+
+    const updatedProduct = await productRepository.update(productId, { status: 'inactive' });
+    if (!updatedProduct) {
+      const error = new Error('Gagal menonaktifkan produk') as AppError;
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return { message: 'Produk berhasil dinonaktifkan' };
+  }
 }
 
 export default new ProductService();
