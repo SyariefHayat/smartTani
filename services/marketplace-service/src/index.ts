@@ -21,8 +21,9 @@ if (env.SENTRY_DSN) {
 import { correlationIdMiddleware } from '../../../shared/middleware/correlationId';
 import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
+import { getHealth } from './controllers/health.controller';
 
-const app = express();
+export const app = express();
 
 app.use(express.json());
 app.use(cors());
@@ -31,9 +32,7 @@ app.use(requestLoggerMiddleware);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.get('/health', (req, res) => {
-  res.json({ success: true, message: 'Marketplace Service is healthy' });
-});
+app.get('/health', getHealth);
 
 // Sentry Error Handler
 if (env.SENTRY_DSN) {
@@ -42,7 +41,7 @@ if (env.SENTRY_DSN) {
 
 app.use(errorHandlerMiddleware);
 
-const bootstrap = async () => {
+export const bootstrap = async () => {
   try {
     // Initialize RabbitMQ connection
     await MessageBroker.connect();
@@ -53,13 +52,21 @@ const bootstrap = async () => {
     // Initialize MongoDB connection
     await connectMongoDB();
 
-    app.listen(env.PORT, () => {
-      console.log(`🚀 Marketplace Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
-    });
+    if (process.env.NODE_ENV !== 'test') {
+      app.listen(env.PORT, () => {
+        console.log(
+          `🚀 Marketplace Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`
+        );
+      });
+    }
   } catch (error) {
     console.error('Failed to start Marketplace Service:', error);
     process.exit(1);
   }
 };
 
-bootstrap();
+if (require.main === module) {
+  bootstrap();
+}
+
+export default app;
