@@ -19,12 +19,15 @@ Sentry.init({
 import { correlationIdMiddleware } from '../../../shared/middleware/correlationId';
 import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
+import { gatewayAuthMiddleware } from './middleware/auth.middleware';
+import { AppRequest } from '../../../shared/types/express';
 
 export const app = express();
 
 app.use(cors());
 app.use(correlationIdMiddleware);
 app.use(requestLoggerMiddleware);
+app.use(gatewayAuthMiddleware);
 
 // Proxy Routes
 // NOTE: Must be defined BEFORE express.json() if we want to forward bodies correctly without complex fixes
@@ -35,6 +38,12 @@ const proxyOptions = {
     // Forward Correlation ID if present
     if (req.correlationId) {
       proxyReq.setHeader('X-Correlation-ID', req.correlationId);
+    }
+
+    // Forward User Info if present (from gatewayAuthMiddleware)
+    if ((req as AppRequest).user) {
+      proxyReq.setHeader('X-User-Id', (req as AppRequest).user!.id);
+      proxyReq.setHeader('X-User-Role', (req as AppRequest).user!.role as string);
     }
   },
 };
