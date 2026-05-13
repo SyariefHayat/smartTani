@@ -13,6 +13,17 @@ export class ProductController {
       next(error);
     }
   }
+
+  async getProducts(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { GetProductsSchema } = await import('../schemas/product.schema');
+      const query = GetProductsSchema.parse(req.query);
+      const result = await productService.getProducts(query);
+      return res.status(200).json(successResponse(result.products, result.meta));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new ProductController();

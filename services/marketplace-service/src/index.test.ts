@@ -88,4 +88,23 @@ describe('Marketplace Service', () => {
       expect(response.status).toBe(403);
     });
   });
+
+  describe('GET /products', () => {
+    it('should return list of products', async () => {
+      (Product.find as jest.Mock).mockReturnValue({
+        sort: jest.fn().mockReturnValue({
+          skip: jest.fn().mockReturnValue({
+            limit: jest.fn().mockResolvedValue([]),
+          }),
+        }),
+      });
+      (Product.countDocuments as jest.Mock).mockResolvedValue(0);
+
+      const response = await request(app).get('/products');
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(Array.isArray(response.body.data)).toBe(true);
+    });
+  });
 });

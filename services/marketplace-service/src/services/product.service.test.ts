@@ -43,4 +43,24 @@ describe('ProductService', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((result as any)._id).toBe('prod-123');
   });
+
+  it('should return paginated products', async () => {
+    const mockResult = {
+      products: [{ id: '1', title: 'Product 1' }],
+      total: 1,
+    };
+    (productRepository.findAll as jest.Mock).mockResolvedValue(mockResult);
+
+    const result = await productService.getProducts({
+      page: 1,
+      limit: 10,
+      min_price: undefined,
+      max_price: undefined,
+    });
+
+    expect(productRepository.findAll).toHaveBeenCalledWith({ page: 1, limit: 10 });
+    expect(result.products).toEqual(mockResult.products);
+    expect(result.meta.total).toBe(1);
+    expect(result.meta.totalPages).toBe(1);
+  });
 });

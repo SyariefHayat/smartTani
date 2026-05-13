@@ -16,3 +16,28 @@ export const CreateProductSchema = z.object({
 });
 
 export type CreateProductInput = z.infer<typeof CreateProductSchema>;
+
+export const GetProductsSchema = z.object({
+  category: z.string().optional(),
+  location_province: z.string().optional(),
+  location_city: z.string().optional(),
+  min_price: z
+    .string()
+    .optional()
+    .transform((v) => (v ? parseFloat(v) : undefined)),
+  max_price: z
+    .string()
+    .optional()
+    .transform((v) => (v ? parseFloat(v) : undefined)),
+  search: z.string().optional(),
+  page: z
+    .string()
+    .optional()
+    .transform((v) => (v ? parseInt(v, 10) : 1)),
+  limit: z
+    .string()
+    .optional()
+    .transform((v) => (v ? parseInt(v, 10) : 20)),
+});
+
+export type GetProductsInput = z.infer<typeof GetProductsSchema>;

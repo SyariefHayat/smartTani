@@ -1,4 +1,4 @@
-import { CreateProductInput } from '../schemas/product.schema';
+import { CreateProductInput, GetProductsInput } from '../schemas/product.schema';
 import productRepository from '../repositories/product.repository';
 
 export class ProductService {
@@ -14,6 +14,20 @@ export class ProductService {
     };
 
     return productRepository.create(productData);
+  }
+
+  async getProducts(params: GetProductsInput) {
+    const { products, total } = await productRepository.findAll(params);
+
+    return {
+      products,
+      meta: {
+        page: params.page,
+        limit: params.limit,
+        total,
+        totalPages: Math.ceil(total / (params.limit || 20)),
+      },
+    };
   }
 }
 

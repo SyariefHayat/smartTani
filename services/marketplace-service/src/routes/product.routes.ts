@@ -10,6 +10,35 @@ const router = Router();
 /**
  * @swagger
  * /products:
+ *   get:
+ *     summary: Get all products with filters and search
+ *     tags: [Product]
+ *     parameters:
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: min_price
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: max_price
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of products
+ */
+router.get('/', productController.getProducts);
+
+/**
+ * @swagger
+ * /products:
  *   post:
  *     summary: Create a new product listing (Farmer/Admin only)
  *     tags: [Product]
