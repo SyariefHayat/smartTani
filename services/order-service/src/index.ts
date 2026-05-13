@@ -21,6 +21,7 @@ import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler'
 import { initWorkers } from './jobs';
 import { getHealth } from './controllers/health.controller';
 import cartRoutes from './routes/cart.routes';
+import orderRoutes from './routes/order.routes';
 
 export const app = express();
 
@@ -33,6 +34,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get('/health', getHealth);
 app.use('/cart', cartRoutes);
+app.use('/orders', orderRoutes);
 
 // Sentry Error Handler
 Sentry.setupExpressErrorHandler(app);

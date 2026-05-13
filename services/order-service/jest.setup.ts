@@ -16,7 +16,12 @@ jest.mock('./src/lib/redis', () => ({
     getInstance: jest.fn().mockReturnValue({
       ping: jest.fn().mockResolvedValue('PONG'),
       call: jest.fn().mockResolvedValue('OK'),
+      del: jest.fn().mockResolvedValue(1),
     }),
+    get: jest.fn(),
+    set: jest.fn(),
+    setex: jest.fn(),
+    del: jest.fn(),
   },
 }));
 

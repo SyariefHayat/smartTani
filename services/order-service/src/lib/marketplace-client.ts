@@ -34,6 +34,16 @@ export class MarketplaceServiceClient {
       return null;
     }
   }
+
+  async reduceStock(items: { productId: string; quantity: number }[]): Promise<boolean> {
+    try {
+      const response = await axios.patch(`${this.baseUrl}/products/reduce-stock`, { items });
+      return !!(response.data && response.data.success);
+    } catch (error) {
+      console.error('❌ Failed to reduce stock:', error instanceof Error ? error.message : error);
+      return false;
+    }
+  }
 }
 
 export default new MarketplaceServiceClient();
