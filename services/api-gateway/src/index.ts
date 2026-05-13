@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import * as Sentry from '@sentry/node';
 import './config/env';
 import { env } from './config/env';
@@ -19,12 +20,86 @@ import { correlationIdMiddleware } from '../../../shared/middleware/correlationI
 import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
 
-const app = express();
+export const app = express();
 
-app.use(express.json());
 app.use(cors());
 app.use(correlationIdMiddleware);
 app.use(requestLoggerMiddleware);
+
+// Proxy Routes
+// NOTE: Must be defined BEFORE express.json() if we want to forward bodies correctly without complex fixes
+const proxyOptions = {
+  changeOrigin: true,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onProxyReq: (proxyReq: any, req: any) => {
+    // Forward Correlation ID if present
+    if (req.correlationId) {
+      proxyReq.setHeader('X-Correlation-ID', req.correlationId);
+    }
+  },
+};
+
+// Auth Service
+app.use(
+  createProxyMiddleware({ ...proxyOptions, target: env.AUTH_SERVICE_URL, pathFilter: '/auth' })
+);
+
+// Marketplace Service
+app.use(
+  createProxyMiddleware({
+    ...proxyOptions,
+    target: env.MARKETPLACE_SERVICE_URL,
+    pathFilter: ['/products', '/categories'],
+  })
+);
+
+// Order Service
+app.use(
+  createProxyMiddleware({
+    ...proxyOptions,
+    target: env.ORDER_SERVICE_URL,
+    pathFilter: ['/cart', '/orders', '/payments'],
+  })
+);
+
+// Investment Service
+app.use(
+  createProxyMiddleware({
+    ...proxyOptions,
+    target: env.INVESTMENT_SERVICE_URL,
+    pathFilter: ['/proposals', '/investments'],
+  })
+);
+
+// Logistics Service
+app.use(
+  createProxyMiddleware({
+    ...proxyOptions,
+    target: env.LOGISTICS_SERVICE_URL,
+    pathFilter: '/shipments',
+  })
+);
+
+// Notification Service
+app.use(
+  createProxyMiddleware({
+    ...proxyOptions,
+    target: env.NOTIFICATION_SERVICE_URL,
+    pathFilter: '/notifications',
+  })
+);
+
+// Analytics Service
+app.use(
+  createProxyMiddleware({
+    ...proxyOptions,
+    target: env.ANALYTICS_SERVICE_URL,
+    pathFilter: '/analytics',
+  })
+);
+
+// Internal Gateway Routes (require JSON parsing)
+app.use(express.json());
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
@@ -37,7 +112,7 @@ Sentry.setupExpressErrorHandler(app);
 
 app.use(errorHandlerMiddleware);
 
-const bootstrap = async () => {
+export const bootstrap = async () => {
   try {
     // Initialize Redis
     RedisClient.getInstance();
@@ -45,13 +120,19 @@ const bootstrap = async () => {
     // Initialize RabbitMQ
     await MessageBroker.connect();
 
-    app.listen(env.PORT, () => {
-      console.log(`🚀 API Gateway is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
-    });
+    if (process.env.NODE_ENV !== 'test') {
+      app.listen(env.PORT, () => {
+        console.log(`🚀 API Gateway is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
+      });
+    }
   } catch (error) {
     console.error('Failed to start API Gateway:', error);
     process.exit(1);
   }
 };
 
-bootstrap();
+if (require.main === module) {
+  bootstrap();
+}
+
+export default app;

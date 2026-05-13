@@ -8,6 +8,15 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters long'),
   SENTRY_DSN: z.string().optional(),
   RABBITMQ_URL: z.string().url(),
+
+  // Downstream Services
+  AUTH_SERVICE_URL: z.string().url().default('http://localhost:3001'),
+  MARKETPLACE_SERVICE_URL: z.string().url().default('http://localhost:3002'),
+  ORDER_SERVICE_URL: z.string().url().default('http://localhost:3003'),
+  INVESTMENT_SERVICE_URL: z.string().url().default('http://localhost:3004'),
+  LOGISTICS_SERVICE_URL: z.string().url().default('http://localhost:3005'),
+  NOTIFICATION_SERVICE_URL: z.string().url().default('http://localhost:3006'),
+  ANALYTICS_SERVICE_URL: z.string().url().default('http://localhost:3007'),
 });
 
 const _env = envSchema.safeParse(process.env);
