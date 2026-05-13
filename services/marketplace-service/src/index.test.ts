@@ -139,6 +139,40 @@ describe('Marketplace Service', () => {
       expect(response.body.success).toBe(true);
       expect(Array.isArray(response.body.data)).toBe(true);
     });
+
+    it('should handle pagination correctly', async () => {
+      const skipMock = jest.fn().mockReturnThis();
+      const limitMock = jest.fn().mockResolvedValue([]);
+      (Product.find as jest.Mock).mockReturnValue({
+        sort: jest.fn().mockReturnValue({
+          skip: skipMock,
+          limit: limitMock,
+        }),
+      });
+
+      await request(app).get('/products?page=2&limit=5');
+
+      expect(skipMock).toHaveBeenCalledWith(5);
+      expect(limitMock).toHaveBeenCalledWith(5);
+    });
+
+    it('should filter by price range', async () => {
+      (Product.find as jest.Mock).mockReturnValue({
+        sort: jest.fn().mockReturnValue({
+          skip: jest.fn().mockReturnValue({
+            limit: jest.fn().mockResolvedValue([]),
+          }),
+        }),
+      });
+
+      await request(app).get('/products?min_price=1000&max_price=5000');
+
+      expect(Product.find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          price_per_unit: { $gte: 1000, $lte: 5000 },
+        })
+      );
+    });
   });
 
   describe('PATCH /products/:id', () => {

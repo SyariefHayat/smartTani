@@ -106,7 +106,12 @@ describe('ProductService', () => {
     const updateInput = { title: 'Updated' };
 
     it('should update successfully as owner', async () => {
-      const mockProduct = { _id: '1', farmer_id: 'f1', title: 'Old' };
+      const mockProduct = {
+        _id: '1',
+        farmer_id: 'f1',
+        title: 'Old',
+        location: { city: 'C', province: 'P' },
+      };
       (productRepository.findById as jest.Mock).mockResolvedValue(mockProduct);
       (productRepository.update as jest.Mock).mockResolvedValue({ ...mockProduct, ...updateInput });
 
@@ -122,6 +127,20 @@ describe('ProductService', () => {
 
       await expect(productService.updateProduct('f2', 'petani', '1', updateInput)).rejects.toThrow(
         'Anda tidak memiliki akses untuk mengubah produk ini'
+      );
+    });
+
+    it('should throw 500 if update fails', async () => {
+      const mockProduct = {
+        _id: '1',
+        farmer_id: 'f1',
+        location: { city: 'C', province: 'P' },
+      };
+      (productRepository.findById as jest.Mock).mockResolvedValue(mockProduct);
+      (productRepository.update as jest.Mock).mockResolvedValue(null);
+
+      await expect(productService.updateProduct('f1', 'petani', '1', updateInput)).rejects.toThrow(
+        'Gagal memperbarui produk'
       );
     });
   });
@@ -198,6 +217,14 @@ describe('ProductService', () => {
       await expect(
         productService.uploadProductImage('f1', 'petani', '1', mockFile)
       ).rejects.toThrow('Maksimal 5 foto per produk.');
+    });
+
+    it('should throw 404 if product not found', async () => {
+      (productRepository.findById as jest.Mock).mockResolvedValue(null);
+
+      await expect(
+        productService.uploadProductImage('f1', 'petani', 'invalid', mockFile)
+      ).rejects.toThrow('Produk tidak ditemukan');
     });
   });
 });
