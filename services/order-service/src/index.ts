@@ -7,22 +7,21 @@ import { env } from './config/env';
 import { swaggerSpec } from './config/swagger';
 import RedisClient from './lib/redis';
 import MessageBroker from './lib/broker';
-import { connectMongoDB } from './lib/mongoose';
 
 // Initialize Sentry
-if (env.SENTRY_DSN) {
-  Sentry.init({
-    dsn: env.SENTRY_DSN,
-    environment: env.NODE_ENV,
-    tracesSampleRate: 1.0,
-  });
-}
+Sentry.init({
+  dsn: env.SENTRY_DSN,
+  environment: env.NODE_ENV,
+  tracesSampleRate: 1.0,
+});
 
 import { correlationIdMiddleware } from '../../../shared/middleware/correlationId';
 import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
+import { initWorkers } from './jobs';
+import { getHealth } from './controllers/health.controller';
 
-const app = express();
+export const app = express();
 
 app.use(express.json());
 app.use(cors());
@@ -31,18 +30,14 @@ app.use(requestLoggerMiddleware);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.get('/health', (req, res) => {
-  res.json({ success: true, message: 'Order Service is healthy' });
-});
+app.get('/health', getHealth);
 
 // Sentry Error Handler
-if (env.SENTRY_DSN) {
-  Sentry.setupExpressErrorHandler(app);
-}
+Sentry.setupExpressErrorHandler(app);
 
 app.use(errorHandlerMiddleware);
 
-const bootstrap = async () => {
+export const bootstrap = async () => {
   try {
     // Initialize RabbitMQ connection
     await MessageBroker.connect();
@@ -50,16 +45,22 @@ const bootstrap = async () => {
     // Initialize Redis connection
     RedisClient.getInstance();
 
-    // Initialize MongoDB connection
-    await connectMongoDB();
+    // Start BullMQ Workers
+    initWorkers();
 
-    app.listen(env.PORT, () => {
-      console.log(`🚀 Order Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
-    });
+    if (process.env.NODE_ENV !== 'test') {
+      app.listen(env.PORT, () => {
+        console.log(`🚀 Order Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
+      });
+    }
   } catch (error) {
     console.error('Failed to start Order Service:', error);
     process.exit(1);
   }
 };
 
-bootstrap();
+if (require.main === module) {
+  bootstrap();
+}
+
+export default app;
