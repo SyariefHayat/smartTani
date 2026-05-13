@@ -17,6 +17,7 @@ const envSchema = z.object({
   ORDER_PAYMENT_TIMEOUT_MINUTES: z.string().default('15').transform(Number),
   ORDER_AUTO_COMPLETE_DAYS: z.string().default('7').transform(Number),
   SENTRY_DSN: z.string().optional(),
+  MARKETPLACE_SERVICE_URL: z.string().url().default('http://localhost:3002'),
 });
 
 const _env = envSchema.safeParse(process.env);

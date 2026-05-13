@@ -20,6 +20,7 @@ import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogge
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
 import { initWorkers } from './jobs';
 import { getHealth } from './controllers/health.controller';
+import cartRoutes from './routes/cart.routes';
 
 export const app = express();
 
@@ -31,6 +32,7 @@ app.use(requestLoggerMiddleware);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get('/health', getHealth);
+app.use('/cart', cartRoutes);
 
 // Sentry Error Handler
 Sentry.setupExpressErrorHandler(app);
