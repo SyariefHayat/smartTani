@@ -24,6 +24,7 @@ import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogge
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
 import { getHealth } from './controllers/health.controller';
 import categoryRoutes from './routes/category.routes';
+import productRoutes from './routes/product.routes';
 
 export const app = express();
 
@@ -36,6 +37,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get('/health', getHealth);
 app.use('/categories', categoryRoutes);
+app.use('/products', productRoutes);
 
 // Sentry Error Handler
 if (env.SENTRY_DSN) {
