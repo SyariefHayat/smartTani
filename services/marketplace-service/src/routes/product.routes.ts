@@ -38,6 +38,26 @@ router.get('/', productController.getProducts);
 
 /**
  * @swagger
+ * /products/{id}:
+ *   get:
+ *     summary: Get product by ID
+ *     tags: [Product]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Product detail
+ *       404:
+ *         description: Product not found
+ */
+router.get('/:id', productController.getProductById);
+
+/**
+ * @swagger
  * /products:
  *   post:
  *     summary: Create a new product listing (Farmer/Admin only)

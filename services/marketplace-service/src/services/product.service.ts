@@ -1,5 +1,7 @@
 import { CreateProductInput, GetProductsInput } from '../schemas/product.schema';
 import productRepository from '../repositories/product.repository';
+import authServiceClient from '../lib/auth-client';
+import { AppError } from '../../../../shared/types/express';
 
 export class ProductService {
   async createProduct(farmerId: string, input: CreateProductInput) {
@@ -27,6 +29,24 @@ export class ProductService {
         total,
         totalPages: Math.ceil(total / (params.limit || 20)),
       },
+    };
+  }
+
+  async getProductById(id: string) {
+    const product = await productRepository.findById(id);
+    if (!product) {
+      const error = new Error('Produk tidak ditemukan') as AppError;
+      error.statusCode = 404;
+      error.code = 'MARKET_001';
+      throw error;
+    }
+
+    // Fetch farmer info
+    const farmer = await authServiceClient.getUserInfo(product.farmer_id);
+
+    return {
+      ...product.toObject(),
+      farmer: farmer || { id: product.farmer_id, full_name: 'Unknown Farmer' },
     };
   }
 }

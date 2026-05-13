@@ -12,6 +12,7 @@ const envSchema = z.object({
   AWS_REGION: z.string().min(1),
   RABBITMQ_URL: z.string().url(),
   SENTRY_DSN: z.string().optional(),
+  AUTH_SERVICE_URL: z.string().url().default('http://localhost:3001'),
 });
 
 const _env = envSchema.safeParse(process.env);

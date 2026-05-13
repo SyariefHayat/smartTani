@@ -1,7 +1,9 @@
 import productService from './product.service';
 import productRepository from '../repositories/product.repository';
+import authServiceClient from '../lib/auth-client';
 
 jest.mock('../repositories/product.repository');
+jest.mock('../lib/auth-client');
 
 describe('ProductService', () => {
   beforeEach(() => {
@@ -62,5 +64,36 @@ describe('ProductService', () => {
     expect(result.products).toEqual(mockResult.products);
     expect(result.meta.total).toBe(1);
     expect(result.meta.totalPages).toBe(1);
+  });
+
+  describe('getProductById', () => {
+    it('should return product with farmer info', async () => {
+      const mockProduct = {
+        _id: 'prod-123',
+        farmer_id: 'farmer-123',
+        title: 'Product 1',
+        toObject: jest
+          .fn()
+          .mockReturnValue({ _id: 'prod-123', farmer_id: 'farmer-123', title: 'Product 1' }),
+      };
+      const mockFarmer = { id: 'farmer-123', full_name: 'Farmer John' };
+
+      (productRepository.findById as jest.Mock).mockResolvedValue(mockProduct);
+      (authServiceClient.getUserInfo as jest.Mock).mockResolvedValue(mockFarmer);
+
+      const result = await productService.getProductById('prod-123');
+
+      expect(productRepository.findById).toHaveBeenCalledWith('prod-123');
+      expect(authServiceClient.getUserInfo).toHaveBeenCalledWith('farmer-123');
+      expect(result.farmer).toEqual(mockFarmer);
+    });
+
+    it('should throw 404 if product not found', async () => {
+      (productRepository.findById as jest.Mock).mockResolvedValue(null);
+
+      await expect(productService.getProductById('invalid')).rejects.toThrow(
+        'Produk tidak ditemukan'
+      );
+    });
   });
 });

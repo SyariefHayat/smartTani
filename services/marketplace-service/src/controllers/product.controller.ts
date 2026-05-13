@@ -24,6 +24,16 @@ export class ProductController {
       next(error);
     }
   }
+
+  async getProductById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const product = await productService.getProductById(id as string);
+      return res.status(200).json(successResponse(product));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new ProductController();
