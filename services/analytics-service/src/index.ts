@@ -1,3 +1,4 @@
+import { logger } from '../../../shared/utils/logger';
 import express from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
@@ -7,6 +8,7 @@ import { env } from './config/env';
 import { swaggerSpec } from './config/swagger';
 import RedisClient from './lib/redis';
 import MessageBroker from './lib/broker';
+import prisma from './lib/prisma';
 
 // Initialize Sentry
 Sentry.init({
@@ -18,6 +20,8 @@ Sentry.init({
 import { correlationIdMiddleware } from '../../../shared/middleware/correlationId';
 import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
+import { initEvents } from './events';
+import overviewRoutes from './routes/overview.routes';
 
 const app = express();
 
@@ -27,6 +31,8 @@ app.use(correlationIdMiddleware);
 app.use(requestLoggerMiddleware);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.use('/analytics', overviewRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ success: true, message: 'Analytics Service is healthy' });
@@ -39,17 +45,22 @@ app.use(errorHandlerMiddleware);
 
 const bootstrap = async () => {
   try {
+    // Initialize Database
+    await prisma.$connect();
+    logger.info('✅ Connected to Database');
+
     // Initialize Redis
     RedisClient.getInstance();
 
     // Initialize RabbitMQ
     await MessageBroker.connect();
+    await initEvents();
 
     app.listen(env.PORT, () => {
-      console.log(`🚀 Analytics Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
+      logger.info(`🚀 Analytics Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
     });
   } catch (error) {
-    console.error('Failed to start Analytics Service:', error);
+    logger.error('Failed to start Analytics Service:', error);
     process.exit(1);
   }
 };

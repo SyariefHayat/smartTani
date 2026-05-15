@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { width: 80%; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
+    .header { background: #FF9800; color: white; padding: 10px; text-align: center; border-radius: 10px 10px 0 0; }
+    .content { padding: 20px; }
+    .footer { text-align: center; font-size: 12px; color: #888; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header"><h1>Pesanan Baru Masuk!</h1></div>
+    <div class="content">
+      <p>Halo {{farmerName}},</p>
+      <p>Anda telah menerima pesanan baru untuk produk Anda.</p>
+      <p><strong>Order ID:</strong> {{orderId}}</p>
+      <p><strong>Total:</strong> Rp {{totalAmount}}</p>
+      <p>Silakan pantau dashboard Anda untuk status pembayaran pesanan ini.</p>
+    </div>
+    <div class="footer">
+      &copy; 2026 SmartTani. Semua hak dilindungi.
+    </div>
+  </div>
+</body>
+</html>

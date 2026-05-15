@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { width: 80%; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
+    .header { background: #607D8B; color: white; padding: 10px; text-align: center; border-radius: 10px 10px 0 0; }
+    .content { padding: 20px; }
+    .footer { text-align: center; font-size: 12px; color: #888; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header"><h1>Status Pesanan Berubah</h1></div>
+    <div class="content">
+      <p>Halo {{buyerName}},</p>
+      <p>Status pesanan Anda dengan ID <strong>{{orderId}}</strong> telah berubah.</p>
+      <p><strong>Status Baru:</strong> {{newStatus}}</p>
+      <p>Silakan cek dashboard aplikasi untuk detail lebih lanjut.</p>
+    </div>
+    <div class="footer">
+      &copy; 2026 SmartTani. Semua hak dilindungi.
+    </div>
+  </div>
+</body>
+</html>

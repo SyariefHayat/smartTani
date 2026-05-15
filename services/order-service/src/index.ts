@@ -1,3 +1,4 @@
+import { logger } from '../../../shared/utils/logger';
 import express from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
@@ -7,6 +8,7 @@ import { env } from './config/env';
 import { swaggerSpec } from './config/swagger';
 import RedisClient from './lib/redis';
 import MessageBroker from './lib/broker';
+import { BROKER_EXCHANGES } from '../../../shared/constants/broker';
 
 // Initialize Sentry
 Sentry.init({
@@ -19,6 +21,7 @@ import { correlationIdMiddleware } from '../../../shared/middleware/correlationI
 import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
 import { initWorkers } from './jobs';
+import { initEvents } from './events';
 import { getHealth } from './controllers/health.controller';
 import cartRoutes from './routes/cart.routes';
 import orderRoutes from './routes/order.routes';
@@ -47,6 +50,10 @@ export const bootstrap = async () => {
   try {
     // Initialize RabbitMQ connection
     await MessageBroker.connect();
+    await MessageBroker.createExchange(BROKER_EXCHANGES.EVENTS, 'topic');
+
+    // Initialize event consumers
+    await initEvents();
 
     // Initialize Redis connection
     RedisClient.getInstance();
@@ -56,11 +63,11 @@ export const bootstrap = async () => {
 
     if (process.env.NODE_ENV !== 'test') {
       app.listen(env.PORT, () => {
-        console.log(`🚀 Order Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
+        logger.info(`🚀 Order Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
       });
     }
   } catch (error) {
-    console.error('Failed to start Order Service:', error);
+    logger.error('Failed to start Order Service:', error);
     process.exit(1);
   }
 };

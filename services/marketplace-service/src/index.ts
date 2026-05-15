@@ -1,3 +1,4 @@
+import { logger } from '../../../shared/utils/logger';
 import express from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
@@ -62,13 +63,13 @@ export const bootstrap = async () => {
 
     if (process.env.NODE_ENV !== 'test') {
       app.listen(env.PORT, () => {
-        console.log(
+        logger.info(
           `🚀 Marketplace Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`
         );
       });
     }
   } catch (error) {
-    console.error('Failed to start Marketplace Service:', error);
+    logger.error('Failed to start Marketplace Service:', error);
     process.exit(1);
   }
 };

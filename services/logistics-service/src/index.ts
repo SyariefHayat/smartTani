@@ -1,3 +1,4 @@
+import { logger } from '../../../shared/utils/logger';
 import express from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
@@ -19,6 +20,8 @@ Sentry.init({
 import { correlationIdMiddleware } from '../../../shared/middleware/correlationId';
 import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
+import { initEvents } from './events';
+import shipmentRoutes from './routes/shipment.routes';
 
 const app = express();
 
@@ -28,6 +31,8 @@ app.use(correlationIdMiddleware);
 app.use(requestLoggerMiddleware);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.use('/shipments', shipmentRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ success: true, message: 'Logistics Service is healthy' });
@@ -46,14 +51,17 @@ const bootstrap = async () => {
     // Initialize RabbitMQ
     await MessageBroker.connect();
 
+    // Initialize events
+    await initEvents();
+
     // Initialize MongoDB
     await connectMongoDB();
 
     app.listen(env.PORT, () => {
-      console.log(`🚀 Logistics Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
+      logger.info(`🚀 Logistics Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
     });
   } catch (error) {
-    console.error('Failed to start Logistics Service:', error);
+    logger.error('Failed to start Logistics Service:', error);
     process.exit(1);
   }
 };

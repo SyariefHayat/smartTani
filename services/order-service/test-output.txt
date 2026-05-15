@@ -1,0 +1,369 @@
+(node:32037) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  console.log
+    {"timestamp":"2026-05-13T17:39:59.500Z","method":"POST","path":"/orders","status":201,"duration":"10ms","correlationId":"test-uuid","userId":"buyer-1","ip":"::ffff:127.0.0.1"}
+
+      at ServerResponse.<anonymous> (../../shared/middleware/requestLogger.ts:24:13)
+
+  console.log
+    {"timestamp":"2026-05-13T17:39:59.570Z","method":"POST","path":"/payments/webhook","status":200,"duration":"2ms","correlationId":"test-uuid","userId":"anonymous","ip":"::ffff:127.0.0.1"}
+
+      at ServerResponse.<anonymous> (../../shared/middleware/requestLogger.ts:24:13)
+
+  console.log
+    {"timestamp":"2026-05-13T17:39:59.598Z","method":"PATCH","path":"/orders/order-flow-1/confirm","status":400,"duration":"13ms","correlationId":"test-uuid","userId":"f1","ip":"::ffff:127.0.0.1"}
+
+      at ServerResponse.<anonymous> (../../shared/middleware/requestLogger.ts:24:13)
+
+  console.error
+    [Error][test-uuid] Gagal mengamankan stok produk. Silakan coba lagi. {
+      stack: 'Error: Gagal mengamankan stok produk. Silakan coba lagi.\n' +
+        '    at OrderService.checkout (/home/syarfxx/projects/smarttani-q1/services/order-service/src/services/order.service.ts:248:21)\n' +
+        '    at processTicksAndRejections (node:internal/process/task_queues:104:5)\n' +
+        '    at checkout (/home/syarfxx/projects/smarttani-q1/services/order-service/src/controllers/order.controller.ts:74:21)',
+      path: '/orders',
+      method: 'POST'
+    }
+
+      20 |
+      21 |   // Log error to console with correlation ID
+    > 22 |   console.error(`[Error][${correlationId}] ${message}`, {
+         |           ^
+      23 |     stack: err.stack,
+      24 |     path: req.path,
+      25 |     method: req.method,
+
+      at errorHandlerMiddleware (../../shared/middleware/errorHandler.ts:22:11)
+      at Layer.handleError (../../node_modules/router/lib/layer.js:116:17)
+      at trimPrefix (../../node_modules/router/index.js:340:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at next (../../node_modules/router/index.js:291:5)
+      at sentryErrorMiddleware (../../node_modules/@sentry/core/src/integrations/express/index.ts:220:5)
+      at Layer.handleError (../../node_modules/router/lib/layer.js:116:17)
+      at trimPrefix (../../node_modules/router/index.js:340:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at next (../../node_modules/router/index.js:291:5)
+      at Layer.handleError (../../node_modules/router/lib/layer.js:111:12)
+      at trimPrefix (../../node_modules/router/index.js:340:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at Immediate.next (../../node_modules/router/index.js:291:5)
+      at Immediate._onImmediate (../../node_modules/router/index.js:688:15)
+
+  console.log
+    {"timestamp":"2026-05-13T17:39:59.708Z","method":"POST","path":"/orders","status":409,"duration":"52ms","correlationId":"test-uuid","userId":"buyer-1","ip":"::ffff:127.0.0.1"}
+
+      at ServerResponse.<anonymous> (../../shared/middleware/requestLogger.ts:24:13)
+
+  console.error
+    [Error][test-uuid] Forbidden: You do not have permission to access this resource {
+      stack: 'Error: Forbidden: You do not have permission to access this resource\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/services/order-service/src/middleware/authorize.middleware.ts:19:23\n' +
+        '    at Layer.handleRequest (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/layer.js:152:17)\n' +
+        '    at next (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/route.js:157:13)\n' +
+        '    at gatewayAuthMiddleware (/home/syarfxx/projects/smarttani-q1/services/order-service/src/middleware/auth.middleware.ts:27:3)\n' +
+        '    at Layer.handleRequest (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/layer.js:152:17)\n' +
+        '    at next (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/route.js:157:13)\n' +
+        '    at Route.dispatch (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/route.js:117:3)\n' +
+        '    at handle (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:435:11)\n' +
+        '    at Layer.handleRequest (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/layer.js:152:17)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:295:15\n' +
+        '    at param (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:600:14)\n' +
+        '    at param (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:610:14)\n' +
+        '    at processParams (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:664:3)\n' +
+        '    at next (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:291:5)\n' +
+        '    at router.handle (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:186:3)\n' +
+        '    at router (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:60:12)\n' +
+        '    at Layer.handleRequest (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/layer.js:152:17)\n' +
+        '    at trimPrefix (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:342:13)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:297:9\n' +
+        '    at processParams (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:582:12)\n' +
+        '    at next (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:291:5)\n' +
+        '    at requestLoggerMiddleware (/home/syarfxx/projects/smarttani-q1/shared/middleware/requestLogger.ts:27:3)\n' +
+        '    at Layer.handleRequest (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/layer.js:152:17)\n' +
+        '    at trimPrefix (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:342:13)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:297:9\n' +
+        '    at processParams (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:582:12)\n' +
+        '    at next (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:291:5)\n' +
+        '    at correlationIdMiddleware (/home/syarfxx/projects/smarttani-q1/shared/middleware/correlationId.ts:18:3)\n' +
+        '    at Layer.handleRequest (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/layer.js:152:17)\n' +
+        '    at trimPrefix (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:342:13)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:297:9\n' +
+        '    at processParams (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:582:12)\n' +
+        '    at next (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:291:5)\n' +
+        '    at cors (/home/syarfxx/projects/smarttani-q1/node_modules/cors/lib/index.js:188:7)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/cors/lib/index.js:224:17\n' +
+        '    at originCallback (/home/syarfxx/projects/smarttani-q1/node_modules/cors/lib/index.js:214:15)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/cors/lib/index.js:219:13\n' +
+        '    at optionsCallback (/home/syarfxx/projects/smarttani-q1/node_modules/cors/lib/index.js:199:9)\n' +
+        '    at corsMiddleware (/home/syarfxx/projects/smarttani-q1/node_modules/cors/lib/index.js:204:7)\n' +
+        '    at Layer.handleRequest (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/layer.js:152:17)\n' +
+        '    at trimPrefix (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:342:13)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:297:9\n' +
+        '    at processParams (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:582:12)\n' +
+        '    at next (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:291:5)\n' +
+        '    at read (/home/syarfxx/projects/smarttani-q1/node_modules/body-parser/lib/read.js:62:5)\n' +
+        '    at jsonParser (/home/syarfxx/projects/smarttani-q1/node_modules/body-parser/lib/types/json.js:88:5)\n' +
+        '    at Layer.handleRequest (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/layer.js:152:17)\n' +
+        '    at trimPrefix (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:342:13)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:297:9\n' +
+        '    at processParams (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:582:12)\n' +
+        '    at next (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:291:5)\n' +
+        '    at router.handle (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:186:3)\n' +
+        '    at app.handle (/home/syarfxx/projects/smarttani-q1/node_modules/express/lib/application.js:177:15)\n' +
+        '    at Server.app (/home/syarfxx/projects/smarttani-q1/node_modules/express/lib/express.js:38:9)\n' +
+        '    at Server.emit (node:events:508:28)\n' +
+        '    at parserOnIncoming (node:_http_server:1210:12)\n' +
+        '    at HTTPParser.parserOnHeadersComplete (node:_http_common:125:17)',
+      path: '/orders/order-flow-1/confirm',
+      method: 'PATCH'
+    }
+
+      20 |
+      21 |   // Log error to console with correlation ID
+    > 22 |   console.error(`[Error][${correlationId}] ${message}`, {
+         |           ^
+      23 |     stack: err.stack,
+      24 |     path: req.path,
+      25 |     method: req.method,
+
+      at errorHandlerMiddleware (../../shared/middleware/errorHandler.ts:22:11)
+      at Layer.handleError (../../node_modules/router/lib/layer.js:116:17)
+      at trimPrefix (../../node_modules/router/index.js:340:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at next (../../node_modules/router/index.js:291:5)
+      at sentryErrorMiddleware (../../node_modules/@sentry/core/src/integrations/express/index.ts:220:5)
+      at Layer.handleError (../../node_modules/router/lib/layer.js:116:17)
+      at trimPrefix (../../node_modules/router/index.js:340:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at next (../../node_modules/router/index.js:291:5)
+      at Layer.handleError (../../node_modules/router/lib/layer.js:111:12)
+      at trimPrefix (../../node_modules/router/index.js:340:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at next (../../node_modules/router/index.js:291:5)
+      at ../../node_modules/router/index.js:688:15
+      at next (../../node_modules/router/index.js:276:14)
+      at next (../../node_modules/router/lib/route.js:132:14)
+      at Layer.handleError (../../node_modules/router/lib/layer.js:111:12)
+      at next (../../node_modules/router/lib/route.js:155:13)
+      at Layer.handleError (../../node_modules/router/lib/layer.js:111:12)
+      at next (../../node_modules/router/lib/route.js:155:13)
+      at src/middleware/authorize.middleware.ts:29:7
+      at Layer.handleRequest (../../node_modules/router/lib/layer.js:152:17)
+      at next (../../node_modules/router/lib/route.js:157:13)
+      at gatewayAuthMiddleware (src/middleware/auth.middleware.ts:27:3)
+      at Layer.handleRequest (../../node_modules/router/lib/layer.js:152:17)
+      at next (../../node_modules/router/lib/route.js:157:13)
+      at Route.dispatch (../../node_modules/router/lib/route.js:117:3)
+      at handle (../../node_modules/router/index.js:435:11)
+      at Layer.handleRequest (../../node_modules/router/lib/layer.js:152:17)
+      at ../../node_modules/router/index.js:295:15
+      at param (../../node_modules/router/index.js:600:14)
+      at param (../../node_modules/router/index.js:610:14)
+      at processParams (../../node_modules/router/index.js:664:3)
+      at next (../../node_modules/router/index.js:291:5)
+      at router.handle (../../node_modules/router/index.js:186:3)
+      at router (../../node_modules/router/index.js:60:12)
+      at Layer.handleRequest (../../node_modules/router/lib/layer.js:152:17)
+      at trimPrefix (../../node_modules/router/index.js:342:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at next (../../node_modules/router/index.js:291:5)
+      at requestLoggerMiddleware (../../shared/middleware/requestLogger.ts:27:3)
+      at Layer.handleRequest (../../node_modules/router/lib/layer.js:152:17)
+      at trimPrefix (../../node_modules/router/index.js:342:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at next (../../node_modules/router/index.js:291:5)
+      at correlationIdMiddleware (../../shared/middleware/correlationId.ts:18:3)
+      at Layer.handleRequest (../../node_modules/router/lib/layer.js:152:17)
+      at trimPrefix (../../node_modules/router/index.js:342:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at next (../../node_modules/router/index.js:291:5)
+      at cors (../../node_modules/cors/lib/index.js:188:7)
+      at ../../node_modules/cors/lib/index.js:224:17
+      at originCallback (../../node_modules/cors/lib/index.js:214:15)
+      at ../../node_modules/cors/lib/index.js:219:13
+      at optionsCallback (../../node_modules/cors/lib/index.js:199:9)
+      at corsMiddleware (../../node_modules/cors/lib/index.js:204:7)
+      at Layer.handleRequest (../../node_modules/router/lib/layer.js:152:17)
+      at trimPrefix (../../node_modules/router/index.js:342:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at next (../../node_modules/router/index.js:291:5)
+      at read (../../node_modules/body-parser/lib/read.js:62:5)
+      at jsonParser (../../node_modules/body-parser/lib/types/json.js:88:5)
+      at Layer.handleRequest (../../node_modules/router/lib/layer.js:152:17)
+      at trimPrefix (../../node_modules/router/index.js:342:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at next (../../node_modules/router/index.js:291:5)
+      at router.handle (../../node_modules/router/index.js:186:3)
+      at app.handle (../../node_modules/express/lib/application.js:177:15)
+      at Server.app (../../node_modules/express/lib/express.js:38:9)
+
+  console.log
+    {"timestamp":"2026-05-13T17:39:59.764Z","method":"PATCH","path":"/orders/order-flow-1/confirm","status":403,"duration":"45ms","correlationId":"test-uuid","userId":"buyer-1","ip":"::ffff:127.0.0.1"}
+
+      at ServerResponse.<anonymous> (../../shared/middleware/requestLogger.ts:24:13)
+
+  console.error
+    [Error][test-uuid] Invalid signature {
+      stack: 'Error: Invalid signature\n' +
+        '    at PaymentService.handleWebhook (/home/syarfxx/projects/smarttani-q1/services/order-service/src/services/payment.service.ts:124:21)\n' +
+        '    at webhook (/home/syarfxx/projects/smarttani-q1/services/order-service/src/controllers/payment.controller.ts:24:43)\n' +
+        '    at Layer.handleRequest (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/layer.js:152:17)\n' +
+        '    at next (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/route.js:157:13)\n' +
+        '    at Route.dispatch (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/route.js:117:3)\n' +
+        '    at handle (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:435:11)\n' +
+        '    at Layer.handleRequest (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/layer.js:152:17)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:295:15\n' +
+        '    at processParams (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:582:12)\n' +
+        '    at next (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:291:5)\n' +
+        '    at router.handle (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:186:3)\n' +
+        '    at router (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:60:12)\n' +
+        '    at Layer.handleRequest (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/layer.js:152:17)\n' +
+        '    at trimPrefix (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:342:13)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:297:9\n' +
+        '    at processParams (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:582:12)\n' +
+        '    at next (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:291:5)\n' +
+        '    at requestLoggerMiddleware (/home/syarfxx/projects/smarttani-q1/shared/middleware/requestLogger.ts:27:3)\n' +
+        '    at Layer.handleRequest (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/layer.js:152:17)\n' +
+        '    at trimPrefix (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:342:13)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:297:9\n' +
+        '    at processParams (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:582:12)\n' +
+        '    at next (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:291:5)\n' +
+        '    at correlationIdMiddleware (/home/syarfxx/projects/smarttani-q1/shared/middleware/correlationId.ts:18:3)\n' +
+        '    at Layer.handleRequest (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/layer.js:152:17)\n' +
+        '    at trimPrefix (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:342:13)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:297:9\n' +
+        '    at processParams (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:582:12)\n' +
+        '    at next (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:291:5)\n' +
+        '    at cors (/home/syarfxx/projects/smarttani-q1/node_modules/cors/lib/index.js:188:7)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/cors/lib/index.js:224:17\n' +
+        '    at originCallback (/home/syarfxx/projects/smarttani-q1/node_modules/cors/lib/index.js:214:15)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/cors/lib/index.js:219:13\n' +
+        '    at optionsCallback (/home/syarfxx/projects/smarttani-q1/node_modules/cors/lib/index.js:199:9)\n' +
+        '    at corsMiddleware (/home/syarfxx/projects/smarttani-q1/node_modules/cors/lib/index.js:204:7)\n' +
+        '    at Layer.handleRequest (/home/syarfxx/projects/smarttani-q1/node_modules/router/lib/layer.js:152:17)\n' +
+        '    at trimPrefix (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:342:13)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:297:9\n' +
+        '    at processParams (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:582:12)\n' +
+        '    at next (/home/syarfxx/projects/smarttani-q1/node_modules/router/index.js:291:5)\n' +
+        '    at /home/syarfxx/projects/smarttani-q1/node_modules/body-parser/lib/read.js:171:5\n' +
+        '    at AsyncResource.runInAsyncScope (node:async_hooks:228:14)\n' +
+        '    at invokeCallback (/home/syarfxx/projects/smarttani-q1/node_modules/raw-body/index.js:238:16)\n' +
+        '    at done (/home/syarfxx/projects/smarttani-q1/node_modules/raw-body/index.js:227:7)\n' +
+        '    at IncomingMessage.onEnd (/home/syarfxx/projects/smarttani-q1/node_modules/raw-body/index.js:287:7)\n' +
+        '    at IncomingMessage.emit (node:events:508:28)\n' +
+        '    at endReadableNT (node:internal/streams/readable:1729:12)\n' +
+        '    at processTicksAndRejections (node:internal/process/task_queues:90:21)',
+      path: '/payments/webhook',
+      method: 'POST'
+    }
+
+      20 |
+      21 |   // Log error to console with correlation ID
+    > 22 |   console.error(`[Error][${correlationId}] ${message}`, {
+         |           ^
+      23 |     stack: err.stack,
+      24 |     path: req.path,
+      25 |     method: req.method,
+
+      at errorHandlerMiddleware (../../shared/middleware/errorHandler.ts:22:11)
+      at Layer.handleError (../../node_modules/router/lib/layer.js:116:17)
+      at trimPrefix (../../node_modules/router/index.js:340:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at next (../../node_modules/router/index.js:291:5)
+      at sentryErrorMiddleware (../../node_modules/@sentry/core/src/integrations/express/index.ts:220:5)
+      at Layer.handleError (../../node_modules/router/lib/layer.js:116:17)
+      at trimPrefix (../../node_modules/router/index.js:340:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at next (../../node_modules/router/index.js:291:5)
+      at Layer.handleError (../../node_modules/router/lib/layer.js:111:12)
+      at trimPrefix (../../node_modules/router/index.js:340:13)
+      at ../../node_modules/router/index.js:297:9
+      at processParams (../../node_modules/router/index.js:582:12)
+      at Immediate.next (../../node_modules/router/index.js:291:5)
+      at Immediate._onImmediate (../../node_modules/router/index.js:688:15)
+
+  console.log
+    {"timestamp":"2026-05-13T17:39:59.871Z","method":"POST","path":"/payments/webhook","status":400,"duration":"25ms","correlationId":"test-uuid","userId":"anonymous","ip":"::ffff:127.0.0.1"}
+
+      at ServerResponse.<anonymous> (../../shared/middleware/requestLogger.ts:24:13)
+
+  console.log
+    {"timestamp":"2026-05-13T17:39:59.880Z","method":"POST","path":"/orders","status":201,"duration":"0ms","correlationId":"test-uuid","userId":"buyer-1","ip":"::ffff:127.0.0.1"}
+
+      at ServerResponse.<anonymous> (../../shared/middleware/requestLogger.ts:24:13)
+
+  console.log
+    🕒 Processing payment timeout for order: order-flow-1
+
+      at bullmq_1.Worker.connection.connection (src/jobs/index.ts:18:15)
+
+  console.log
+    🚫 Cancelling order order-flow-1 due to timeout
+
+      at bullmq_1.Worker.connection.connection (src/jobs/index.ts:28:17)
+
+FAIL src/order-flow.test.ts (19.151 s)
+  Order Flow Integration Tests
+    Full Flow: Checkout -> Payment -> Confirm -> Deliver
+      ✕ should complete the full order lifecycle (201 ms)
+    Stock Conflict
+      ✓ should return 409 if stock reduction fails (67 ms)
+    RBAC: Buyer cannot confirm order
+      ✓ should return 403 if buyer tries to confirm (122 ms)
+    Webhook: Invalid Signature
+      ✓ should return 400 for invalid signature (39 ms)
+    Order Timeout Scheduling
+      ✕ should schedule cancellation job and auto cancel after 15 minutes (5010 ms)
+
+  ● Order Flow Integration Tests › Full Flow: Checkout -> Payment -> Confirm -> Deliver › should complete the full order lifecycle
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      141 |         .set('X-User-Role', 'petani');
+      142 |
+    > 143 |       expect(confirmRes.status).toBe(200);
+          |                                 ^
+      144 |       expect(confirmRes.body.data.status).toBe('confirmed_seller');
+      145 |
+      146 |       // 4. Deliver Order (Buyer)
+
+      at Object.<anonymous> (src/order-flow.test.ts:143:33)
+
+  ● Order Flow Integration Tests › Order Timeout Scheduling › should schedule cancellation job and auto cancel after 15 minutes
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      242 |     });
+      243 |
+    > 244 |     it('should schedule cancellation job and auto cancel after 15 minutes', async () => {
+          |     ^
+      245 |       (cartService.getCart as jest.Mock).mockResolvedValue({
+      246 |         items: [{ isAvailable: true, productId: 'p1', quantity: 1, farmerId: 'f1', price_per_unit: 50000, subtotal: 50000 }],
+      247 |         total: 50000,
+
+      at src/order-flow.test.ts:244:5
+      at src/order-flow.test.ts:221:3
+      at Object.<anonymous> (src/order-flow.test.ts:54:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 3 passed, 5 total
+Snapshots:   0 total
+Time:        19.857 s, estimated 23 s
+Ran all test suites matching src/order-flow.test.ts.

@@ -1,3 +1,4 @@
+import { logger } from '../../../shared/utils/logger';
 import express from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
@@ -20,6 +21,8 @@ if (env.SENTRY_DSN) {
 import { correlationIdMiddleware } from '../../../shared/middleware/correlationId';
 import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
+import { initEvents } from './events';
+import { initFirebase } from './lib/firebase';
 
 const app = express();
 
@@ -46,14 +49,20 @@ const bootstrap = async () => {
     // Initialize RabbitMQ connection
     await MessageBroker.connect();
 
+    // Initialize event consumers
+    await initEvents();
+
+    // Initialize Firebase
+    initFirebase();
+
     // Initialize Redis connection
     RedisClient.getInstance();
 
     app.listen(env.PORT, () => {
-      console.log(`🚀 Notification Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
+      logger.info(`🚀 Notification Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
     });
   } catch (error) {
-    console.error('Failed to start Notification Service:', error);
+    logger.error('Failed to start Notification Service:', error);
     process.exit(1);
   }
 };

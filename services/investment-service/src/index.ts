@@ -1,3 +1,4 @@
+import { logger } from '../../../shared/utils/logger';
 import express from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
@@ -28,6 +29,12 @@ app.use(requestLoggerMiddleware);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+import proposalRoutes from './routes/proposal.routes';
+import investmentRoutes from './routes/investment.routes';
+
+app.use('/proposals', proposalRoutes);
+app.use('/investments', investmentRoutes);
+
 app.get('/health', (req, res) => {
   res.json({ success: true, message: 'Investment Service is healthy' });
 });
@@ -46,10 +53,10 @@ const bootstrap = async () => {
     await MessageBroker.connect();
 
     app.listen(env.PORT, () => {
-      console.log(`🚀 Investment Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
+      logger.info(`🚀 Investment Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
     });
   } catch (error) {
-    console.error('Failed to start Investment Service:', error);
+    logger.error('Failed to start Investment Service:', error);
     process.exit(1);
   }
 };
