@@ -10,7 +10,7 @@ import {
   UpdateUserStatusSchema,
 } from '../schemas/auth.schema';
 import { validate } from '../../../../shared/middleware/validate';
-import { loginRateLimiter } from '../middleware/rate-limiter.middleware';
+import { _loginRateLimiter } from '../middleware/rate-limiter.middleware';
 import { authenticate } from '../middleware/auth.middleware';
 import { authorize } from '../middleware/authorize.middleware';
 
