@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
-  "include": ["src/**/*", "../../shared/**/*"]
+  "include": ["src/**/*", "../../shared/**/*", "jest.setup.ts", "jest.config.js"]
 }
