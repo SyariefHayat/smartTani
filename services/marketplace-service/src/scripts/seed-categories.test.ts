@@ -1,3 +1,4 @@
+import { logger } from '../../../../shared/utils/logger';
 import { seedCategories } from './seed-categories';
 import Category from '../models/category.model';
 
@@ -12,7 +13,7 @@ describe('seedCategories', () => {
     (Category.findOne as jest.Mock).mockResolvedValue(null);
     (Category.create as jest.Mock).mockResolvedValue({});
 
-    // Capture console.log
+    // Capture logger.info
     const logSpy = jest.spyOn(console, 'log').mockImplementation();
 
     await seedCategories();

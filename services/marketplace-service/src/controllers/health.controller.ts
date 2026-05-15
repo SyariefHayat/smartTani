@@ -1,3 +1,4 @@
+import { logger } from '../../../../shared/utils/logger';
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import RedisClient from '../lib/redis';
@@ -17,7 +18,7 @@ export const getHealth = async (req: Request, res: Response) => {
       dependencies.mongodb = 'ok';
     }
   } catch (error) {
-    console.error('❌ Health check failed for MongoDB:', error);
+    logger.error('❌ Health check failed for MongoDB:', error);
   }
 
   try {
@@ -25,7 +26,7 @@ export const getHealth = async (req: Request, res: Response) => {
     await RedisClient.getInstance().ping();
     dependencies.redis = 'ok';
   } catch (error) {
-    console.error('❌ Health check failed for Redis:', error);
+    logger.error('❌ Health check failed for Redis:', error);
   }
 
   try {
@@ -34,7 +35,7 @@ export const getHealth = async (req: Request, res: Response) => {
     await s3.send(new ListBucketsCommand({}));
     dependencies.s3 = 'ok';
   } catch (error) {
-    console.error('❌ Health check failed for S3:', error);
+    logger.error('❌ Health check failed for S3:', error);
   }
 
   const isHealthy = Object.values(dependencies).every((status) => status === 'ok');

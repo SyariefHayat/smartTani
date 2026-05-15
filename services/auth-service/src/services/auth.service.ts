@@ -1,3 +1,4 @@
+import { logger } from '../../../../shared/utils/logger';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import {
@@ -55,7 +56,7 @@ export class AuthService {
       fullName: user.full_name,
       token: verificationToken,
     }).catch((err) => {
-      console.error('❌ Failed to publish AUTH_USER_REGISTERED event:', err);
+      logger.error('❌ Failed to publish AUTH_USER_REGISTERED event:', err);
     });
 
     // 7. Return user data (tanpa password)
@@ -294,8 +295,23 @@ export class AuthService {
       email: updatedUser.email,
       fullName: updatedUser.full_name,
     }).catch((err) => {
-      console.error('❌ Failed to publish AUTH_USER_VERIFIED event:', err);
+      logger.error('❌ Failed to publish AUTH_USER_VERIFIED event:', err);
     });
+
+    const { password: _password, ...userWithoutPassword } = updatedUser;
+    return userWithoutPassword;
+  }
+
+  async updateUserStatus(userId: string, status: string) {
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      const error = new Error('User tidak ditemukan') as AppError;
+      error.statusCode = 404;
+      error.code = 'AUTH_010';
+      throw error;
+    }
+
+    const updatedUser = await userRepository.updateStatus(userId, status);
 
     const { password: _password, ...userWithoutPassword } = updatedUser;
     return userWithoutPassword;

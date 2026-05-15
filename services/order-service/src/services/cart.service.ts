@@ -91,6 +91,53 @@ export class CartService {
     return cart;
   }
 
+  async updateCartItem(userId: string, productId: string, quantity: number) {
+    // 1. Fetch product info and validate
+    const product = await marketplaceClient.getProductInfo(productId);
+    if (!product) {
+      const error = new Error('Produk tidak ditemukan') as AppError;
+      error.statusCode = 404;
+      error.code = 'MARKET_001';
+      throw error;
+    }
+
+    if (quantity < product.min_order) {
+      const error = new Error(
+        `Minimal order adalah ${product.min_order} ${product.unit}`
+      ) as AppError;
+      error.statusCode = 400;
+      error.code = 'MARKET_007';
+      throw error;
+    }
+
+    if (quantity > product.stock) {
+      const error = new Error(`Stok tidak mencukupi (Tersedia: ${product.stock})`) as AppError;
+      error.statusCode = 400;
+      error.code = 'MARKET_008';
+      throw error;
+    }
+
+    // 2. Get current cart from Redis
+    const cacheKey = `cart:${userId}`;
+    const cart = (await RedisClient.get<ICartItem[]>(cacheKey)) || [];
+
+    // 3. Find and update item
+    const itemIndex = cart.findIndex((item) => item.productId === productId);
+    if (itemIndex === -1) {
+      const error = new Error('Item tidak ditemukan di keranjang') as AppError;
+      error.statusCode = 404;
+      throw error;
+    }
+
+    cart[itemIndex].quantity = quantity;
+    cart[itemIndex].subtotal = product.price_per_unit * quantity;
+
+    // 4. Save to Redis
+    await RedisClient.setex(cacheKey, 604800, cart);
+
+    return cart;
+  }
+
   async getCart(userId: string) {
     const cacheKey = `cart:${userId}`;
     const cart = (await RedisClient.get<ICartItem[]>(cacheKey)) || [];

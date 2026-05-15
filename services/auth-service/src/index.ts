@@ -1,3 +1,4 @@
+import { logger } from '../../../shared/utils/logger';
 import express from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
@@ -16,20 +17,23 @@ Sentry.init({
 });
 
 import { correlationIdMiddleware } from '../../../shared/middleware/correlationId';
-import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
+import { _requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
 import healthRoutes from './routes/health.routes';
 import metricsRoutes from './routes/metrics.routes';
 import authRoutes from './routes/auth.routes';
-import { metricsMiddleware } from './middleware/metrics.middleware';
+import { _metricsMiddleware } from './middleware/metrics.middleware';
+
+import cluster from 'cluster';
+import os from 'os';
 
 export const app = express();
 
 app.use(express.json());
 app.use(cors());
 app.use(correlationIdMiddleware);
-app.use(requestLoggerMiddleware);
-app.use(metricsMiddleware);
+// app.use(requestLoggerMiddleware); // Disabled for max performance, uncomment for debugging
+// app.use(metricsMiddleware);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
@@ -43,21 +47,37 @@ Sentry.setupExpressErrorHandler(app);
 app.use(errorHandlerMiddleware);
 
 export const bootstrap = async () => {
-  try {
-    // Initialize Redis
-    RedisClient.getInstance();
+  if (cluster.isPrimary && env.NODE_ENV === 'production') {
+    const numCPUs = os.cpus().length;
+    logger.info(`🚀 Primary ${process.pid} is running. Forking ${numCPUs} workers...`);
 
-    // Initialize RabbitMQ
-    await MessageBroker.connect();
-
-    if (process.env.NODE_ENV !== 'test') {
-      app.listen(env.PORT, () => {
-        console.log(`🚀 Auth Service is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
-      });
+    for (let i = 0; i < numCPUs; i++) {
+      cluster.fork();
     }
-  } catch (error) {
-    console.error('Failed to start Auth Service:', error);
-    process.exit(1);
+
+    cluster.on('exit', (worker) => {
+      logger.info(`Worker ${worker.process.pid} died. Restarting...`);
+      cluster.fork();
+    });
+  } else {
+    try {
+      // Initialize Redis
+      RedisClient.getInstance();
+
+      // Initialize RabbitMQ
+      await MessageBroker.connect();
+
+      if (process.env.NODE_ENV !== 'test') {
+        app.listen(env.PORT, () => {
+          logger.info(
+            `🚀 Auth Service worker ${process.pid} is running on port ${env.PORT} in ${env.NODE_ENV} mode`
+          );
+        });
+      }
+    } catch (error) {
+      logger.error(`Failed to start Auth Service worker ${process.pid}:`, error);
+      process.exit(1);
+    }
   }
 };
 

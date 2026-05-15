@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import cartController from '../controllers/cart.controller';
-import { AddToCartSchema } from '../schemas/cart.schema';
+import { AddToCartSchema, UpdateCartItemSchema } from '../schemas/cart.schema';
 import { validate } from '../../../../shared/middleware/validate';
 import { gatewayAuthMiddleware } from '../middleware/auth.middleware';
 import { authorize } from '../middleware/authorize.middleware';
@@ -35,6 +35,40 @@ router.post(
   authorize(['buyer', 'distributor', 'admin']),
   validate(AddToCartSchema),
   cartController.addToCart
+);
+
+/**
+ * @swagger
+ * /cart/items/{id}:
+ *   patch:
+ *     summary: Update cart item quantity
+ *     tags: [Cart]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateCartItemInput'
+ *     responses:
+ *       200:
+ *         description: Cart updated
+ *       400:
+ *         description: Validation error or stock issues
+ */
+router.patch(
+  '/items/:id',
+  gatewayAuthMiddleware,
+  authorize(['buyer', 'distributor', 'admin']),
+  validate(UpdateCartItemSchema),
+  cartController.updateCartItem
 );
 
 /**

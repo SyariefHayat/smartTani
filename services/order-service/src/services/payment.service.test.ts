@@ -20,6 +20,14 @@ jest.mock('../lib/midtrans');
 jest.mock('../lib/broker');
 jest.mock('../lib/marketplace-client');
 jest.mock('../lib/midtrans-verify');
+jest.mock('../lib/queue', () => ({
+  paymentTimeoutQueue: {
+    getJob: jest.fn(),
+  },
+  autoCompleteQueue: {
+    add: jest.fn(),
+  },
+}));
 
 describe('PaymentService', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,6 +96,7 @@ describe('PaymentService', () => {
         id: 'o1',
         status: 'pending_payment',
         total_amount: 117000,
+        items: [],
       });
       (prisma.order.update as jest.Mock).mockResolvedValue({});
       (MessageBroker.publish as jest.Mock).mockResolvedValue({});
@@ -97,7 +106,7 @@ describe('PaymentService', () => {
       expect(prisma.order.update).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 'o1' },
-          data: { status: 'paid' },
+          data: expect.objectContaining({ status: 'paid' }),
         })
       );
       expect(MessageBroker.publish).toHaveBeenCalled();

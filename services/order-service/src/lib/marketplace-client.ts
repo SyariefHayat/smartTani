@@ -1,3 +1,4 @@
+import { logger } from '../../../../shared/utils/logger';
 import axios from 'axios';
 import { env } from '../config/env';
 
@@ -27,7 +28,7 @@ export class MarketplaceServiceClient {
       }
       return null;
     } catch (error) {
-      console.error(
+      logger.error(
         `❌ Failed to fetch product info for ${productId}:`,
         error instanceof Error ? error.message : error
       );
@@ -40,7 +41,7 @@ export class MarketplaceServiceClient {
       const response = await axios.patch(`${this.baseUrl}/products/reduce-stock`, { items });
       return !!(response.data && response.data.success);
     } catch (error) {
-      console.error('❌ Failed to reduce stock:', error instanceof Error ? error.message : error);
+      logger.error('❌ Failed to reduce stock:', error instanceof Error ? error.message : error);
       return false;
     }
   }
@@ -54,7 +55,7 @@ export class MarketplaceServiceClient {
       const response = await axios.patch(`${this.baseUrl}/products/restore-stock`, { items });
       return !!(response.data && response.data.success);
     } catch (error) {
-      console.error('❌ Failed to restore stock:', error instanceof Error ? error.message : error);
+      logger.error('❌ Failed to restore stock:', error instanceof Error ? error.message : error);
       return false;
     }
   }

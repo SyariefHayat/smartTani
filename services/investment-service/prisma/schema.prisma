@@ -30,6 +30,7 @@ model Proposal {
   updated_at              DateTime     @updatedAt @db.Timestamptz
   investments             Investment[]
 
+  @@index([farmer_id, status])
   @@map("proposals")
 }
 
@@ -46,5 +47,6 @@ model Investment {
   completed_at          DateTime? @db.Timestamptz
   proposal              Proposal  @relation(fields: [proposal_id], references: [id])
 
+  @@index([proposal_id])
   @@map("investments")
 }

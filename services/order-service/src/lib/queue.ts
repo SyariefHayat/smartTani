@@ -20,5 +20,3 @@ export const autoCompleteQueue = new Queue('auto-complete-queue', {
     removeOnFail: 1000,
   },
 });
-
-console.log('✅ BullMQ Queues initialized');

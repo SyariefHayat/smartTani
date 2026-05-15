@@ -1,3 +1,4 @@
+import { logger } from '../../../../shared/utils/logger';
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import RedisClient from '../lib/redis';
@@ -14,14 +15,14 @@ export const getHealth = async (req: Request, res: Response) => {
     await prisma.$queryRaw`SELECT 1`;
     dependencies.postgres = 'ok';
   } catch (error) {
-    console.error('❌ Health check failed for Postgres:', error);
+    logger.error('❌ Health check failed for Postgres:', error);
   }
 
   try {
     await RedisClient.getInstance().ping();
     dependencies.redis = 'ok';
   } catch (error) {
-    console.error('❌ Health check failed for Redis:', error);
+    logger.error('❌ Health check failed for Redis:', error);
   }
 
   const isHealthy = Object.values(dependencies).every((status) => status === 'ok');

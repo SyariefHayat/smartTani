@@ -14,6 +14,7 @@
     "test": "npm run test --workspaces --if-present",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md}\"",
+    "seed:demo": "npx ts-node infra/scripts/seed-demo.ts",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -32,6 +33,7 @@
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.59.2",
     "@typescript-eslint/parser": "^8.59.2",
+    "artillery": "^2.0.31",
     "eslint": "^10.3.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
@@ -44,6 +46,7 @@
   "dependencies": {
     "@sentry/node": "^10.52.0",
     "express": "^5.2.1",
+    "isomorphic-dompurify": "^3.13.0",
     "jsonwebtoken": "^9.0.3",
     "uuid": "^14.0.0"
   }

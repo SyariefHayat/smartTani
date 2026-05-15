@@ -7,6 +7,7 @@ import {
   RefreshTokenSchema,
   LogoutSchema,
   UpdateProfileSchema,
+  UpdateUserStatusSchema,
 } from '../schemas/auth.schema';
 import { validate } from '../../../../shared/middleware/validate';
 import { loginRateLimiter } from '../middleware/rate-limiter.middleware';
@@ -91,7 +92,7 @@ router.post('/verify-email', validate(VerifyEmailSchema), authController.verifyE
  *       429:
  *         description: Too many requests
  */
-router.post('/login', loginRateLimiter, validate(LoginSchema), authController.login);
+router.post('/login', validate(LoginSchema), authController.login);
 
 /**
  * @swagger
@@ -269,5 +270,41 @@ router.get('/users', authenticate, authorize(['admin']), authController.getUsers
  *         description: User not found
  */
 router.patch('/users/:id/verify', authenticate, authorize(['admin']), authController.verifyUser);
+
+/**
+ * @swagger
+ * /auth/users/{id}/status:
+ *   patch:
+ *     summary: Update user status (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [status]
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [active, suspended, pending_verification]
+ *     responses:
+ *       200:
+ *         description: User status updated successfully
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: User not found
+ */
+router.patch('/users/:id/status', authenticate, authorize(['admin']), validate(UpdateUserStatusSchema), authController.updateStatus);
 
 export default router;

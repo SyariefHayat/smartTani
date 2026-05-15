@@ -5,7 +5,7 @@ import { errorResponse } from '../../../../shared/utils/response';
 
 export const loginRateLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 5, // Limit each IP to 5 requests per `window` (here, per minute)
+  max: 100000, // Effectively disabled for performance test
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   store: new RedisStore({

@@ -1,3 +1,4 @@
+import { logger } from '../../../../shared/utils/logger';
 import Redis from 'ioredis';
 import { env } from '../config/env';
 
@@ -10,7 +11,7 @@ class RedisClient {
         maxRetriesPerRequest: null,
         retryStrategy: (times) => {
           if (times > 10) {
-            console.error('❌ Redis connection failed after 10 retries');
+            logger.error('❌ Redis connection failed after 10 retries');
             return null; // stop retrying
           }
           const delay = Math.min(times * 50, 2000);
@@ -19,11 +20,11 @@ class RedisClient {
       });
 
       RedisClient.instance.on('connect', () => {
-        console.log('✅ Connected to Redis');
+        logger.info('✅ Connected to Redis');
       });
 
       RedisClient.instance.on('error', (err) => {
-        console.error('❌ Redis Error:', err);
+        logger.error('❌ Redis Error:', err);
       });
     }
     return RedisClient.instance;

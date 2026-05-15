@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { logger } from '../../../../shared/utils/logger';
 import { AppError } from '../../../../shared/types/express';
 import MidtransManager from '../lib/midtrans';
 import { InitiatePaymentInput } from '../schemas/payment.schema';
@@ -7,8 +7,7 @@ import MessageBroker from '../lib/broker';
 import marketplaceClient from '../lib/marketplace-client';
 import { paymentTimeoutQueue } from '../lib/queue';
 import { verifyMidtransSignature } from '../lib/midtrans-verify';
-
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 interface MidtransWebhookData {
   order_id: string;
@@ -143,7 +142,6 @@ export class PaymentService {
     } else if (transactionStatus === 'cancel' || transactionStatus === 'expire') {
       newStatus = 'cancelled';
     } else if (transactionStatus === 'deny') {
-      console.log(`⚠️ Payment denied for order ${orderId}`);
       return { message: 'Payment denied' };
     } else if (transactionStatus === 'pending') {
       newStatus = 'pending_payment';
@@ -172,11 +170,10 @@ export class PaymentService {
     // 4. Action based on status
     if (newStatus === 'paid') {
       // Batalkan job timeout di Bull Queue
-      const jobId = `payment-timeout:${order.id}`;
+      const jobId = `payment-timeout-${order.id}`;
       const job = await paymentTimeoutQueue.getJob(jobId);
       if (job) {
         await job.remove();
-        console.log(`✅ Cancelled payment timeout job for order ${order.id}`);
       }
 
       // Kirim event ORDER_PAID ke RabbitMQ
@@ -189,7 +186,7 @@ export class PaymentService {
           quantity: Number(item.quantity),
           price: Number(item.price_per_unit),
         })),
-      }).catch((err) => console.error('❌ Failed to publish ORDER_PAID:', err));
+      }).catch((err) => logger.error('❌ Failed to publish ORDER_PAID:', err));
     } else if (newStatus === 'cancelled') {
       // Kembalikan stok ke marketplace-service
       const items = order.items.map((item) => ({

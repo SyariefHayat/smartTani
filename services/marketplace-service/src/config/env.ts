@@ -1,3 +1,4 @@
+import { logger } from '../../../../shared/utils/logger';
 import 'dotenv/config';
 import { z } from 'zod';
 
@@ -10,6 +11,7 @@ const envSchema = z.object({
   AWS_SECRET_ACCESS_KEY: z.string().min(1),
   AWS_BUCKET_NAME: z.string().min(1),
   AWS_REGION: z.string().min(1),
+  AWS_ENDPOINT: z.string().url().optional(),
   RABBITMQ_URL: z.string().url(),
   SENTRY_DSN: z.string().optional(),
   AUTH_SERVICE_URL: z.string().url().default('http://localhost:3001'),
@@ -18,7 +20,7 @@ const envSchema = z.object({
 const _env = envSchema.safeParse(process.env);
 
 if (!_env.success) {
-  console.error('❌ Invalid environment variables:', _env.error.format());
+  logger.error('❌ Invalid environment variables:', _env.error.format());
   process.exit(1);
 }
 

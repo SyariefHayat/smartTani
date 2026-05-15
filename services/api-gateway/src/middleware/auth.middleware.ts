@@ -1,4 +1,4 @@
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { verifyToken, TokenPayload } from '../../../../shared/utils/jwt';
 import { env } from '../config/env';
 import { AppRequest, AppError } from '../../../../shared/types/express';
@@ -11,10 +11,12 @@ const PUBLIC_ENDPOINTS = [
   { method: 'GET', path: /^\/categories(\/.*)?$/ },
   { method: 'GET', path: /^\/health$/ },
   { method: 'GET', path: /^\/api-docs(\/.*)?$/ },
+  { method: 'POST', path: /^\/payments\/webhook$/ },
 ];
 
-export const gatewayAuthMiddleware = (req: AppRequest, res: Response, next: NextFunction) => {
+export const gatewayAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const { method, path } = req;
+  const appReq = req as AppRequest;
 
   // Check if current request is a public endpoint
   const isPublic = PUBLIC_ENDPOINTS.some((endpoint) => {
@@ -38,7 +40,7 @@ export const gatewayAuthMiddleware = (req: AppRequest, res: Response, next: Next
     const payload = verifyToken<TokenPayload>(token, env.JWT_SECRET);
 
     // Attach user info to request object
-    req.user = {
+    appReq.user = {
       id: payload.userId,
       ...payload,
     };

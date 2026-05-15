@@ -1,3 +1,4 @@
+import { logger } from '../../../../shared/utils/logger';
 import { connect, ChannelModel, Channel, ConsumeMessage } from 'amqplib';
 import { env } from '../config/env';
 
@@ -11,22 +12,33 @@ class MessageBroker {
         this.connection = await connect(env.RABBITMQ_URL);
         this.channel = await this.connection.createChannel();
 
-        console.log('✅ Connected to RabbitMQ');
+        this.channel.on('error', (err) => {
+          logger.error('❌ RabbitMQ Channel Error:', err);
+        });
+
+        this.channel.on('close', () => {
+          logger.info('ℹ️ RabbitMQ Channel Closed');
+          MessageBroker.channel = null as any;
+        });
+
+        logger.info('✅ Connected to RabbitMQ');
 
         this.connection.on('error', (err: Error) => {
-          console.error('❌ RabbitMQ Connection Error:', err);
+          logger.error('❌ RabbitMQ Connection Error:', err);
         });
 
         this.connection.on('close', () => {
-          console.log('ℹ️ RabbitMQ Connection Closed');
+          logger.info('ℹ️ RabbitMQ Connection Closed');
+          MessageBroker.connection = null as any;
+          MessageBroker.channel = null as any;
         });
 
         return;
       } catch (err) {
-        console.error(`❌ RabbitMQ Connection Failed. Retries left: ${retries - 1}`, err);
+        logger.error(`❌ RabbitMQ Connection Failed. Retries left: ${retries - 1}`, err);
         retries -= 1;
         if (retries === 0) {
-          console.error('❌ Could not connect to RabbitMQ. Exiting...');
+          logger.error('❌ Could not connect to RabbitMQ. Exiting...');
           process.exit(1);
         }
         await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -52,18 +64,27 @@ class MessageBroker {
     this.channel.publish(exchange, routingKey, content, { persistent: true });
   }
 
-  public static async subscribe(queue: string, handler: (msg: unknown) => void): Promise<void> {
+  public static async bindQueue(queue: string, exchange: string, routingKey: string): Promise<void> {
+    if (!this.channel) await this.connect();
+    await this.channel.assertQueue(queue, { durable: true });
+    await this.channel.bindQueue(queue, exchange, routingKey);
+  }
+
+  public static async subscribe(
+    queue: string,
+    handler: (payload: any, routingKey: string) => void
+  ): Promise<void> {
     if (!this.channel) await this.connect();
     await this.channel.assertQueue(queue, { durable: true });
 
     this.channel.consume(queue, (msg: ConsumeMessage | null) => {
       if (msg) {
         try {
-          const content: unknown = JSON.parse(msg.content.toString());
-          handler(content);
+          const content = JSON.parse(msg.content.toString());
+          handler(content, msg.fields.routingKey);
           this.channel.ack(msg);
         } catch (err) {
-          console.error('❌ Error processing RabbitMQ message:', err);
+          logger.error('❌ Error processing RabbitMQ message:', err);
           this.channel.nack(msg, false, false);
         }
       }

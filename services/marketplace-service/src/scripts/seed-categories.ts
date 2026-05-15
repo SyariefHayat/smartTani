@@ -1,3 +1,4 @@
+import { logger } from '../../../../shared/utils/logger';
 import Category from '../models/category.model';
 
 const CATEGORIES = [
@@ -25,11 +26,11 @@ export const seedCategories = async () => {
       const existing = await Category.findOne({ slug });
       if (!existing) {
         await Category.create({ name, slug });
-        console.log(`🌱 Seeded category: ${name}`);
+        logger.info(`🌱 Seeded category: ${name}`);
       }
     }
-    console.log('✅ Category seeding completed');
+    logger.info('✅ Category seeding completed');
   } catch (error) {
-    console.error('❌ Error seeding categories:', error);
+    logger.error('❌ Error seeding categories:', error);
   }
 };

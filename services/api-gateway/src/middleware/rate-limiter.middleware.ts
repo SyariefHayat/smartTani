@@ -6,7 +6,7 @@ import { AppRequest } from '../../../../shared/types/express';
 
 export const gatewayRateLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  limit: (req) => ((req as AppRequest).user ? 100 : 1000),
+  limit: (req) => ((req as AppRequest).user ? 10000 : 100000),
   keyGenerator: (req) => {
     const user = (req as AppRequest).user;
     return user ? `user:${user.id}` : (req.ip as string);

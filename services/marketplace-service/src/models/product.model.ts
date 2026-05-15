@@ -51,6 +51,8 @@ const productSchema = new Schema<IProduct>(
 // Indexes
 productSchema.index({ search_text: 'text' });
 productSchema.index({ category: 1 });
-productSchema.index({ status: 1 });
+productSchema.index({ status: 1, category: 1 });
+productSchema.index({ status: 1, createdAt: -1 });
+productSchema.index({ 'location.province': 1, 'location.city': 1 });
 
 export const Product = model<IProduct>('Product', productSchema);

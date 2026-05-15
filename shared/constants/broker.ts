@@ -23,6 +23,7 @@ export const BROKER_ROUTING_KEYS = {
   ORDER_CANCELLED: 'order.cancelled',
   ORDER_CONFIRMED: 'order.confirmed',
   ORDER_DELIVERED: 'order.delivered',
+  ORDER_REFUND_REQUESTED: 'order.refund_requested',
 
   // Marketplace Events
   PRODUCT_CREATED: 'marketplace.product.created',
@@ -33,6 +34,7 @@ export const BROKER_ROUTING_KEYS = {
   PROPOSAL_APPROVED: 'proposal.approved',
   PROPOSAL_REJECTED: 'proposal.rejected',
   PROPOSAL_FUNDED: 'proposal.funded',
+  INVESTMENT_CREATED: 'investment.created',
   INVESTMENT_COMPLETED: 'investment.completed',
 
   // Shipment Events

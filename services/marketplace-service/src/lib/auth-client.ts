@@ -1,3 +1,4 @@
+import { logger } from '../../../../shared/utils/logger';
 import axios from 'axios';
 import { env } from '../config/env';
 
@@ -23,7 +24,7 @@ export class AuthServiceClient {
       }
       return null;
     } catch (error) {
-      console.error(
+      logger.error(
         `❌ Failed to fetch user info for ${userId}:`,
         error instanceof Error ? error.message : error
       );

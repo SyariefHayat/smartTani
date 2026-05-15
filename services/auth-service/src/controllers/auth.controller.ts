@@ -101,6 +101,17 @@ export class AuthController {
       next(error);
     }
   }
+
+  async updateStatus(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      const result = await authService.updateUserStatus(id as string, status);
+      return res.status(200).json(successResponse(result));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new AuthController();

@@ -56,3 +56,7 @@ export const GetUsersSchema = z.object({
     .optional()
     .transform((v) => (v ? parseInt(v, 10) : 20)),
 });
+
+export const UpdateUserStatusSchema = z.object({
+  status: z.enum(['active', 'suspended', 'pending_verification']),
+});

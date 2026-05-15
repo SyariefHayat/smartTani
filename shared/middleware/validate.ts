@@ -41,3 +41,22 @@ export const validateQuery = (schema: ZodSchema) => {
     next();
   };
 };
+
+/**
+ * Higher-order middleware to validate request params using Zod
+ */
+export const validateParams = (schema: ZodSchema) => {
+  return (req: AppRequest, res: Response, next: NextFunction) => {
+    const result = schema.safeParse(req.params);
+
+    if (!result.success) {
+      return res
+        .status(400)
+        .json(errorResponse(ErrorCode.VALIDATION_ERROR, JSON.stringify(result.error.format())));
+    }
+
+    // Replace req.params with the parsed data
+    Object.assign(req.params, result.data);
+    next();
+  };
+};

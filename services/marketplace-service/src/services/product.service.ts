@@ -8,10 +8,17 @@ import {
 import productRepository from '../repositories/product.repository';
 import authServiceClient from '../lib/auth-client';
 import S3Manager from '../lib/s3';
+import RedisClient from '../lib/redis';
 import { AppError } from '../../../../shared/types/express';
 
 export class ProductService {
+  private CACHE_KEY = 'products:list';
+  private TTL = 60; // 1 minute
+
   async createProduct(farmerId: string, input: CreateProductInput) {
+    // Invalidate cache
+    await RedisClient.del(this.CACHE_KEY + '*');
+
     // Generate search_text
     const searchText = `${input.title} ${input.description} ${input.category} ${input.location.city} ${input.location.province}`;
 
@@ -26,9 +33,17 @@ export class ProductService {
   }
 
   async getProducts(params: GetProductsInput) {
+    const cacheKey = `${this.CACHE_KEY}:${JSON.stringify(params)}`;
+    
+    // Try to get from cache
+    const cached = await RedisClient.get<{ products: any[]; meta: any }>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
     const { products, total } = await productRepository.findAll(params);
 
-    return {
+    const result = {
       products,
       meta: {
         page: params.page,
@@ -37,6 +52,11 @@ export class ProductService {
         totalPages: Math.ceil(total / (params.limit || 20)),
       },
     };
+
+    // Save to cache
+    await RedisClient.setex(cacheKey, this.TTL, result);
+
+    return result;
   }
 
   async getProductById(id: string) {
