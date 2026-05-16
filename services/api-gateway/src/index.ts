@@ -20,11 +20,11 @@ Sentry.init({
 });
 
 import { correlationIdMiddleware } from '../../../shared/middleware/correlationId';
-import { _requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
+import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
 import { xssSanitizerMiddleware } from '../../../shared/middleware/xssSanitizer';
 import { gatewayAuthMiddleware } from './middleware/auth.middleware';
-import { _gatewayRateLimiter } from './middleware/rate-limiter.middleware';
+import { gatewayRateLimiter } from './middleware/rate-limiter.middleware';
 import { AppRequest } from '../../../shared/types/express';
 
 // Performance: Use keep-alive agents for proxying

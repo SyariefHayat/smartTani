@@ -12,6 +12,7 @@
     "dev": "npm run dev --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
+    "check:system": "./check_system.sh",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md}\"",
     "seed:demo": "npx ts-node infra/scripts/seed-demo.ts",

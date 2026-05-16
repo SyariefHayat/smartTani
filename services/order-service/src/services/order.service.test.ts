@@ -57,7 +57,14 @@ describe('OrderService', () => {
       (marketplaceClient.reduceStock as jest.Mock).mockResolvedValue(true);
 
       const result = await orderService.checkout('u1', {
-        shippingAddress: { province: 'P', city: 'C', full_address: 'Addr 1' },
+        shippingAddress: {
+          recipient_name: 'Tester',
+          phone_number: '081234567890',
+          province: 'P',
+          city: 'C',
+          full_address: 'Addr 1',
+          postal_code: '12345',
+        },
       });
 
       expect(cartService.getCart).toHaveBeenCalledWith('u1');
@@ -147,7 +154,14 @@ describe('OrderService', () => {
         status: 'paid',
         items: [{ farmer_id: 'f1' }],
         buyer_id: 'u2',
-        shipping_address: {},
+        shipping_address: {
+          recipient_name: 'Tester',
+          phone_number: '081234567890',
+          province: 'P',
+          city: 'C',
+          full_address: 'Addr 1',
+          postal_code: '12345',
+        },
       };
       (orderRepository.findById as jest.Mock).mockResolvedValue(mockOrder);
       (orderRepository.updateStatus as jest.Mock).mockResolvedValue({

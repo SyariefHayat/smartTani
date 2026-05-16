@@ -17,12 +17,12 @@ Sentry.init({
 });
 
 import { correlationIdMiddleware } from '../../../shared/middleware/correlationId';
-import { _requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
+import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
 import healthRoutes from './routes/health.routes';
 import metricsRoutes from './routes/metrics.routes';
 import authRoutes from './routes/auth.routes';
-import { _metricsMiddleware } from './middleware/metrics.middleware';
+import { metricsMiddleware } from './middleware/metrics.middleware';
 
 import cluster from 'cluster';
 import os from 'os';

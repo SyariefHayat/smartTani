@@ -75,6 +75,12 @@ You can run all services simultaneously for development:
 ./start_services.sh
 ```
 
+Before or after starting services, you can verify prerequisites and runtime health:
+
+```bash
+npm run check:system
+```
+
 Or run a specific service:
 
 ```bash
@@ -91,6 +97,38 @@ We provide a comprehensive E2E simulation script that demonstrates the full plat
 ```bash
 ./run_e2e_demo.sh
 ```
+
+### Feature Verification Flow
+
+For a practical full-stack verification, use this order:
+
+```bash
+# 1. Start infrastructure
+docker compose up -d
+
+# 2. Start backend services
+./start_services.sh
+
+# 3. Start frontend on a non-conflicting port
+cd frontend/web
+npm run dev -- --port 3008
+
+# 4. Verify stack health
+cd ../..
+npm run check:system
+
+# 5. Run end-to-end demo flow
+./run_e2e_demo.sh
+```
+
+This covers:
+- auth registration/login
+- farmer product listing
+- buyer cart and checkout
+- payment webhook simulation
+- logistics flow
+- investment proposal flow
+- analytics endpoints
 
 ### Load Testing
 
