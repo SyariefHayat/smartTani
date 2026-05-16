@@ -84,9 +84,9 @@ export default function LogisticsShipmentsPage() {
 
       fetchShipments();
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const axiosError = error as { response?: { data?: { error?: { message?: string } } } };
       toast.error(
-        (error as any).response?.data?.error?.message || 'Gagal memperbarui status pengiriman'
+        axiosError.response?.data?.error?.message || 'Gagal memperbarui status pengiriman'
       );
       throw error;
     }
