@@ -9,7 +9,6 @@ interface StockStatsProps {
 }
 
 export function StockStats({ stocks }: StockStatsProps) {
-  const totalItems = stocks.reduce((acc, s) => acc + s.quantity, 0);
   const lowStockCount = stocks.filter((s) => s.status === 'Low Stock').length;
   const outOfStockCount = stocks.filter((s) => s.status === 'Out of Stock').length;
   const totalValue = stocks.reduce((acc, s) => acc + s.quantity * s.pricePerUnit, 0);

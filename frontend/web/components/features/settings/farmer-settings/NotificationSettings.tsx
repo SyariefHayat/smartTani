@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Bell, Mail, Smartphone, ShoppingBag, TrendingUp, ShieldCheck } from 'lucide-react';
+import { Mail, Smartphone, ShoppingBag, TrendingUp, ShieldCheck } from 'lucide-react';
 
 export function NotificationSettings() {
   const notificationOptions = [
