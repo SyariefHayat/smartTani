@@ -130,3 +130,45 @@ export interface AcademyTestimonial {
   rating: number;
   quote: string;
 }
+
+// Dashboard Sidebar Types
+export interface SidebarUser {
+  name: string;
+  email: string;
+  avatar: string;
+}
+
+export interface SidebarTeam {
+  name: string;
+  logo: React.ElementType;
+  plan: string;
+}
+
+export interface SidebarBaseNavItem {
+  title: string;
+  badge?: string;
+  icon?: React.ElementType;
+}
+
+export type SidebarNavLink = SidebarBaseNavItem & {
+  url: string;
+  items?: never;
+};
+
+export type SidebarNavCollapsible = SidebarBaseNavItem & {
+  items: (SidebarBaseNavItem & { url: string })[];
+  url?: never;
+};
+
+export type SidebarNavItem = SidebarNavCollapsible | SidebarNavLink;
+
+export interface SidebarNavGroup {
+  title: string;
+  items: SidebarNavItem[];
+}
+
+export interface SidebarData {
+  user: SidebarUser;
+  teams: SidebarTeam[];
+  navGroups: SidebarNavGroup[];
+}

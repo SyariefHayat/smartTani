@@ -1,31 +1,27 @@
 "use client";
 
+import Image from "next/image";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import {
-  Leaf,
-} from "lucide-react";
-
 import { NavMain } from "@/components/nav-main";
-import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
+
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { 
-  FARMER_DASHBOARD_NAV, 
-  INVESTOR_DASHBOARD_NAV, 
+
+import {
+  FARMER_DASHBOARD_NAV,
+  ACADEMY_DASHBOARD_NAV,
+  INVESTOR_DASHBOARD_NAV,
   DISTRIBUTOR_DASHBOARD_NAV,
   MITRA_BISNIS_DASHBOARD_NAV,
   ADMIN_PERUSAHAAN_DASHBOARD_NAV,
-  ACADEMY_DASHBOARD_NAV,
-  SECONDARY_NAV 
 } from "@/constants/navigation";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -53,12 +49,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       case "academy":
         return ACADEMY_DASHBOARD_NAV;
       default:
-        return FARMER_DASHBOARD_NAV; // Default to farmer if role unknown
+        return FARMER_DASHBOARD_NAV;
     }
   };
 
   const navMain = getNavMain();
-  
+
   const userData = {
     name: user?.name || "User",
     email: user?.email || "",
@@ -66,27 +62,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   };
 
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar collapsible="icon" {...props} className="text-white">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="/">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-[#1A6B2F] text-white">
-                  <Leaf className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-bold text-[#1A6B2F]">Smart Tani</span>
-                  <span className="truncate text-xs text-muted-foreground">Digitalizing Agriculture</span>
-                </div>
-              </a>
-            </SidebarMenuButton>
+            <a href="/" className="flex items-center justify-center px-2 py-3">
+              <Image
+                src="/images/home/dashboard-logo.png"
+                alt="SmartTani Logo"
+                width={200}
+                height={102}
+                className="w-full h-auto object-contain max-w-45"
+              />
+            </a>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navMain} />
-        <NavSecondary items={SECONDARY_NAV} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={userData} />

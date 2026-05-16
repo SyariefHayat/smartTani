@@ -1,35 +1,26 @@
 "use client";
 
+import { Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AppSidebar } from "@/components/app-sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { 
-  Sprout, 
-  Map as MapIcon, 
-  TrendingUp, 
-  Activity,
-  Plus
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SectionCard from "@/components/sections/dashboard/farmer/SectionCard";
+import CustomerReviews from "@/components/sections/dashboard/farmer/CustomerReviews";
+import { ChartBarInteractive } from "@/components/sections/dashboard/farmer/BarChart";
+import { DataTableDemo } from "@/components/sections/dashboard/farmer/BestSellingProducts";
+import { DatePickerWithRange } from "@/components/sections/dashboard/farmer/DatePickerRange";
+import { TrackOrderStatus } from "@/components/sections/dashboard/farmer/TrackOrderStatus";
+import { DateRangeContext } from "@/context/dateRange";
+import { DateRange } from "react-day-picker";
+import { addDays } from "date-fns";
 
 export default function FarmerDashboard() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(new Date().getFullYear(), 0, 20),
+    to: addDays(new Date(new Date().getFullYear(), 0, 20), 20),
+  });
 
   useEffect(() => {
     const auth = localStorage.getItem("smarttani-auth");
@@ -38,9 +29,10 @@ export default function FarmerDashboard() {
     } else {
       const userData = JSON.parse(auth);
       if (userData.role !== "petani") {
-        router.push(`/dashboard/${userData.role === 'petani' ? 'farmer' : userData.role.replace('_', '-')}`);
+        router.push(
+          `/dashboard/${userData.role === "petani" ? "farmer" : userData.role.replace("_", "-")}`,
+        );
       } else {
-        setUser(userData);
         setLoading(false);
       }
     }
@@ -48,112 +40,36 @@ export default function FarmerDashboard() {
 
   if (loading) return null;
 
-  const stats = [
-    { label: "Total Lahan", value: "2.4 Ha", icon: MapIcon, color: "text-green-600", bg: "bg-green-100" },
-    { label: "Produksi Padi", value: "12.5 Ton", icon: Sprout, color: "text-amber-600", bg: "bg-amber-100" },
-    { label: "Estimasi Pendapatan", value: "Rp 45.2M", icon: TrendingUp, color: "text-blue-600", bg: "bg-blue-100" },
-    { label: "Status Alat", value: "8 Active", icon: Activity, color: "text-purple-600", bg: "bg-purple-100" },
-  ];
-
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Dashboard
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Ringkasan Pertanian</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-        
-        <div className="flex flex-1 flex-col gap-6 p-6 pt-0">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Selamat Datang, {user?.name || "Petani"}!</h1>
-              <p className="text-gray-500">Pantau perkembangan lahan dan hasil tani Anda hari ini.</p>
-            </div>
-            <Button className="bg-[#1A6B2F] hover:bg-[#145224]">
-              <Plus className="mr-2 h-4 w-4" />
-              Tambah Lahan Baru
-            </Button>
-          </div>
-
-          {/* Stats Grid */}
-          <div className="grid auto-rows-min gap-4 md:grid-cols-4">
-            {stats.map((stat) => (
-              <div key={stat.label} className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
-                <div className={`${stat.bg} p-3 rounded-lg`}>
-                  <stat.icon className={`h-6 w-6 ${stat.color}`} />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">{stat.label}</p>
-                  <p className="text-xl font-bold text-gray-900">{stat.value}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Main Content Areas */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <div className="col-span-1 lg:col-span-2 bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-              <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                <h2 className="font-bold text-gray-900">Manajemen Lahan Aktif</h2>
-                <button className="text-sm text-[#1A6B2F] font-medium hover:underline">Lihat Semua</button>
-              </div>
-              <div className="p-6">
-                <div className="space-y-4">
-                  {[
-                    { name: "Lahan Sawah A1 - Karangbinangun", status: "Masa Tanam", progress: 65, color: "bg-green-500" },
-                    { name: "Lahan Jagung B2 - Alang-Alang", status: "Pemupukan", progress: 30, color: "bg-blue-500" },
-                    { name: "Lahan Padi C1 - Glagah", status: "Siap Panen", progress: 95, color: "bg-amber-500" },
-                  ].map((land, i) => (
-                    <div key={i} className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="font-medium text-gray-700">{land.name}</span>
-                        <span className="text-gray-500">{land.status} ({land.progress}%)</span>
-                      </div>
-                      <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full ${land.color} transition-all duration-500`} 
-                          style={{ width: `${land.progress}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-[#1A6B2F] rounded-xl p-6 text-white flex flex-col justify-between">
-              <div>
-                <h2 className="text-lg font-bold mb-2">Smart Farming Insight</h2>
-                <p className="text-white/80 text-sm leading-relaxed">
-                  Kelembapan tanah di Lahan A1 sedang menurun (15%). Kami merekomendasikan aktivasi irigasi otomatis dalam 2 jam ke depan.
-                </p>
-              </div>
-              <Button variant="secondary" className="mt-6 w-full text-[#1A6B2F] font-bold">
-                Cek Sensor Lahan
-              </Button>
-            </div>
-          </div>
+    <DateRangeContext.Provider value={{ date, setDate }}>
+      {/* Header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-xl font-bold tracking-tight lg:text-2xl">
+          Dashboard Petani
+        </h1>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+          <DatePickerWithRange />
+          <Button className="w-full sm:w-auto">
+            <Download /> Download
+          </Button>
         </div>
-      </SidebarInset>
-    </SidebarProvider>
+      </div>
+
+      <SectionCard />
+      <ChartBarInteractive />
+
+      {/* Table + Reviews */}
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch">
+        <div className="w-full lg:w-[60%]">
+          <DataTableDemo className="h-full" />
+        </div>
+        <div className="w-full lg:w-[40%]">
+          <CustomerReviews className="h-full" />
+        </div>
+      </div>
+
+      {/* Track Order */}
+      <TrackOrderStatus />
+    </DateRangeContext.Provider>
   );
 }
