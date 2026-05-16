@@ -2,13 +2,7 @@
 
 import { Boxes, CheckCircle2, Clock3, PackageX } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Product } from './types';
 
 interface ProductStatsProps {

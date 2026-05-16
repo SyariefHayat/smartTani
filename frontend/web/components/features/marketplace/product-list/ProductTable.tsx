@@ -29,7 +29,7 @@ export function ProductTable({ table, columnsCount }: ProductTableProps) {
   const toRow = Math.min(currentPage * pageSize, totalRows);
 
   return (
-    <Card className="overflow-hidden border-slate-200 shadow-sm p-0">
+    <Card className="overflow-hidden border-slate-200 shadow-sm">
       <div className="w-full overflow-x-auto">
         <Table className="w-full">
           <TableHeader className="">
