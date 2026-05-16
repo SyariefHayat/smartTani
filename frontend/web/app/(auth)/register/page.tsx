@@ -34,9 +34,7 @@ const registerSchema = z.object({
   password: z.string().min(8, 'Password minimal 8 karakter'),
   confirmPassword: z.string(),
   full_name: z.string().min(3, 'Nama lengkap minimal 3 karakter'),
-  role: z.enum(['petani', 'buyer', 'investor', 'distributor'], {
-    required_error: 'Silakan pilih peran Anda',
-  }),
+  role: z.enum(['petani', 'buyer', 'investor', 'distributor']),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Konfirmasi password tidak cocok",
   path: ["confirmPassword"],

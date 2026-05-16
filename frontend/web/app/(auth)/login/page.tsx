@@ -12,6 +12,7 @@ import Cookies from 'js-cookie';
 import { authService } from '@/services/auth';
 import { useAuthStore } from '@/stores/auth';
 import { COOKIE_KEYS } from '@/lib/cookies';
+import { getRoleHomePath } from '@/lib/role-routes';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -49,25 +50,20 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const response = await authService.login(values);
-      const { user, tokens } = response.data;
+      const { user, accessToken, refreshToken } = response.data;
 
-      setAuth(user, tokens.accessToken, tokens.refreshToken);
+      setAuth(user, accessToken, refreshToken);
 
       // Set cookies for middleware
-      Cookies.set(COOKIE_KEYS.ACCESS_TOKEN, tokens.accessToken, { expires: 7 });
-      Cookies.set(COOKIE_KEYS.REFRESH_TOKEN, tokens.refreshToken, { expires: 7 });
+      Cookies.set(COOKIE_KEYS.ACCESS_TOKEN, accessToken, { expires: 7 });
+      Cookies.set(COOKIE_KEYS.REFRESH_TOKEN, refreshToken, { expires: 7 });
       Cookies.set(COOKIE_KEYS.USER_ROLE, user.role, { expires: 7 });
 
       toast.success('Login berhasil!', {
         description: `Selamat datang kembali, ${user.full_name}`,
       });
 
-      // Redirect based on role
-      if (user.role === 'admin') {
-        router.push('/admin');
-      } else {
-        router.push('/dashboard');
-      }
+      router.push(getRoleHomePath(user.role));
     } catch (error) {
       const axiosError = error as AxiosError<{ error: { message: string } }>;
       const message = axiosError.response?.data?.error?.message || 'Email atau password salah';

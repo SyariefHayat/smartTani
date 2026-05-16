@@ -27,7 +27,7 @@ export function OrderFilter({ status, onStatusChange }: OrderFilterProps) {
   return (
     <div className="flex items-center gap-4 mb-6">
       <div className="w-full md:w-[240px]">
-        <Select value={status} onValueChange={onStatusChange}>
+        <Select value={status} onValueChange={(value) => onStatusChange(value ?? 'all')}>
           <SelectTrigger>
             <SelectValue placeholder="Pilih Status" />
           </SelectTrigger>

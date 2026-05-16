@@ -53,7 +53,7 @@ export function ProposalFilter({
         </div>
       </div>
       <div className="w-full md:w-[200px]">
-        <Select value={category} onValueChange={onCategoryChange}>
+        <Select value={category} onValueChange={(value) => onCategoryChange(value ?? 'all')}>
           <SelectTrigger>
             <SelectValue placeholder="Komoditas" />
           </SelectTrigger>
@@ -67,7 +67,7 @@ export function ProposalFilter({
         </Select>
       </div>
       <div className="w-full md:w-[200px]">
-        <Select value={province} onValueChange={onProvinceChange}>
+        <Select value={province} onValueChange={(value) => onProvinceChange(value ?? 'all')}>
           <SelectTrigger>
             <SelectValue placeholder="Lokasi" />
           </SelectTrigger>

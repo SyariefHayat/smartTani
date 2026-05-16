@@ -127,10 +127,11 @@ export default function FarmerProductsPage() {
                   <TableCell>{getStatusBadge(product)}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
+                      <DropdownMenuTrigger className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent">
+                        <span className="sr-only">Buka menu aksi produk</span>
+                        <span aria-hidden="true">
                           <MoreVertical className="w-4 h-4" />
-                        </Button>
+                        </span>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => handleEdit(product)}>

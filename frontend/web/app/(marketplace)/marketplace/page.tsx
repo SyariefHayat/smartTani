@@ -73,7 +73,7 @@ export default function MarketplacePage() {
               <label className="text-sm font-medium mb-2 block">Kategori</label>
               <Select 
                 value={params.category || 'all'} 
-                onValueChange={(val) => updateParam('category', val === 'all' ? undefined : val)}
+                onValueChange={(val) => updateParam('category', !val || val === 'all' ? undefined : val)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Semua Kategori" />

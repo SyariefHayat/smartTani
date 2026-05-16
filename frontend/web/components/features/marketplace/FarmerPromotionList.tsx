@@ -80,7 +80,7 @@ export function FarmerPromotionList() {
 
   return (
     <div className="w-full text-slate-900">
-      <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-4">
+      <div className="mx-auto flex w-full flex-col gap-4">
         <PromotionHeader />
 
         <Card className="rounded-xl shadow-sm">

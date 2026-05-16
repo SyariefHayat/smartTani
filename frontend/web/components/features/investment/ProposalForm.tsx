@@ -48,6 +48,7 @@ const proposalFormSchema = z.object({
 });
 
 export type ProposalFormValues = z.infer<typeof proposalFormSchema>;
+type ProposalFormInput = z.input<typeof proposalFormSchema>;
 
 interface ProposalFormProps {
   onSubmit: (values: ProposalFormValues, type: 'draft' | 'submit') => void;
@@ -56,7 +57,7 @@ interface ProposalFormProps {
 }
 
 export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: ProposalFormProps) {
-  const form = useForm<ProposalFormValues>({
+  const form = useForm<ProposalFormInput, unknown, ProposalFormValues>({
     resolver: zodResolver(proposalFormSchema),
     defaultValues: {
       title: '',
@@ -134,7 +135,12 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
                     <FormItem>
                       <FormLabel>Luas Lahan (Hektar)</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.1" {...field} />
+                        <Input
+                          type="number"
+                          step="0.1"
+                          {...field}
+                          value={typeof field.value === 'number' || typeof field.value === 'string' ? field.value : ''}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -227,7 +233,11 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
                     <FormItem>
                       <FormLabel>Dana yang Dibutuhkan (Rp)</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} />
+                        <Input
+                          type="number"
+                          {...field}
+                          value={typeof field.value === 'number' || typeof field.value === 'string' ? field.value : ''}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -240,7 +250,12 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
                     <FormItem>
                       <FormLabel>Proyeksi ROI (%)</FormLabel>
                       <FormControl>
-                        <Input type="number" step="0.1" {...field} />
+                        <Input
+                          type="number"
+                          step="0.1"
+                          {...field}
+                          value={typeof field.value === 'number' || typeof field.value === 'string' ? field.value : ''}
+                        />
                       </FormControl>
                       <FormDescription>Estimasi bagi hasil untuk investor</FormDescription>
                       <FormMessage />
@@ -256,7 +271,11 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
                     <FormItem>
                       <FormLabel>Durasi Proyek (Hari)</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} />
+                        <Input
+                          type="number"
+                          {...field}
+                          value={typeof field.value === 'number' || typeof field.value === 'string' ? field.value : ''}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

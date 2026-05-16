@@ -3,10 +3,12 @@
 import Link from 'next/link';
 import { useAuthStore } from '@/stores/auth';
 import { logout } from '@/lib/auth';
+import { getRoleHomePath } from '@/lib/role-routes';
 import { Button } from '@/components/ui/button';
 
 export function Navbar() {
   const user = useAuthStore((state) => state.user);
+  const dashboardHref = getRoleHomePath(user?.role);
 
   return (
     <nav className="border-b bg-white">
@@ -22,13 +24,13 @@ export function Navbar() {
             Investasi
           </Link>
           {user?.role === 'investor' && (
-            <Link href="/portfolio" className="text-sm font-medium hover:text-green-600">
-              Portofolio
-            </Link>
+              <Link href="/portfolio" className="text-sm font-medium hover:text-green-600">
+                Portofolio
+              </Link>
           )}
           {user ? (
             <>
-              <Link href="/dashboard" className="text-sm font-medium hover:text-green-600">
+              <Link href={dashboardHref} className="text-sm font-medium hover:text-green-600">
                 Dashboard
               </Link>
               <span className="text-sm text-gray-500">Halo, {user.full_name}</span>

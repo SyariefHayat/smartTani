@@ -10,15 +10,20 @@ import { getStoredAuthUser, type StoredUser } from '@/lib/auth-storage';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [user] = useState<StoredUser | null>(() => getStoredAuthUser());
+  const [mounted, setMounted] = useState(false);
+  const [user, setUser] = useState<StoredUser | null>(null);
 
   useEffect(() => {
-    if (!user) {
+    setMounted(true);
+    const storedUser = getStoredAuthUser();
+    setUser(storedUser);
+    
+    if (!storedUser) {
       router.push('/login?redirect=/dashboard');
     }
-  }, [router, user]);
+  }, [router]);
 
-  if (!user) return null;
+  if (!mounted || !user) return null;
 
   return (
     <SearchProvider>

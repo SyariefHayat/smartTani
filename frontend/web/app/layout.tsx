@@ -1,22 +1,18 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import Providers from "@/components/shared/Providers";
-import { Navbar } from "@/components/shared/Navbar";
+import type { Metadata } from 'next';
+import './globals.css';
+import { cn } from '@/lib/utils';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { Geist } from 'next/font/google';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  title: "SmartTani - Marketplace Agrikultur Terpercaya",
-  description: "Marketplace agrikultur (Petani, Buyer, Investor, Distributor, Logistik, Admin)",
+  metadataBase: new URL('https://smarttani.id'),
+  title: {
+    default: 'Smarttani Indonesia — Solusi Pertanian Modern',
+    template: '%s | Smarttani Indonesia',
+  },
+  description: 'Platform ekosistem pertanian terintegrasi untuk petani, investor, dan pembeli.',
 };
 
 export default function RootLayout({
@@ -25,12 +21,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-      <body className="min-h-screen bg-background font-sans antialiased">
-        <Providers>
-          <Navbar />
-          <main>{children}</main>
-        </Providers>
+    <html lang="id" className={cn('antialiased', 'font-sans', geist.variable)}>
+      <body className="min-h-full flex flex-col font-sans antialiased">
+        <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>
   );
