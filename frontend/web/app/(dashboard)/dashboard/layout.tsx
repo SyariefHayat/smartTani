@@ -14,10 +14,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [user, setUser] = useState<StoredUser | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const storedUser = getStoredAuthUser();
     setUser(storedUser);
-    
+
     if (!storedUser) {
       router.push('/login?redirect=/dashboard');
     }

@@ -1,16 +1,16 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import { investmentService, Proposal } from '@/services/investment'
-import { formatCurrency } from '@/lib/utils'
-import { formatDate } from 'date-fns'
-import { id as idLocale } from 'date-fns/locale'
-import { toast } from 'sonner'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, CheckCircle, XCircle } from 'lucide-react'
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { investmentService, Proposal } from '@/services/investment';
+import { formatCurrency } from '@/lib/utils';
+import { formatDate } from 'date-fns';
+import { id as idLocale } from 'date-fns/locale';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, CheckCircle, XCircle } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -19,75 +19,77 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 
 export default function AdminProposalDetailPage() {
-  const { id } = useParams()
-  const router = useRouter()
-  
-  const [proposal, setProposal] = useState<Proposal | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [rejectReason, setRejectReason] = useState('')
-  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
+  const { id } = useParams();
+  const router = useRouter();
+
+  const [proposal, setProposal] = useState<Proposal | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [rejectReason, setRejectReason] = useState('');
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     async function fetchProposal() {
       try {
-        setLoading(true)
-        const response = await investmentService.getProposalById(id as string)
-        setProposal(response.data)
+        setLoading(true);
+        const response = await investmentService.getProposalById(id as string);
+        setProposal(response.data);
       } catch (error) {
-        console.error('Failed to fetch proposal:', error)
-        toast.error('Gagal memuat detail proposal')
-        router.push('/admin/proposals')
+        console.error('Failed to fetch proposal:', error);
+        toast.error('Gagal memuat detail proposal');
+        router.push('/admin/proposals');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    if (id) fetchProposal()
-  }, [id, router])
+    if (id) fetchProposal();
+  }, [id, router]);
 
   const handleApprove = async () => {
     try {
-      setSubmitting(true)
-      await investmentService.approveProposal(id as string)
-      toast.success('Proposal disetujui')
-      router.push('/admin/proposals')
-    } catch (error: any) {
-      toast.error(error.response?.data?.error?.message || 'Gagal menyetujui proposal')
+      setSubmitting(true);
+      await investmentService.approveProposal(id as string);
+      toast.success('Proposal disetujui');
+      router.push('/admin/proposals');
+    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      toast.error((error as any).response?.data?.error?.message || 'Gagal menyetujui proposal');
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   const handleReject = async () => {
     if (!rejectReason.trim() || rejectReason.length < 10) {
-      toast.error('Alasan penolakan minimal 10 karakter')
-      return
+      toast.error('Alasan penolakan minimal 10 karakter');
+      return;
     }
 
     try {
-      setSubmitting(true)
-      await investmentService.rejectProposal(id as string, rejectReason)
-      toast.success('Proposal ditolak')
-      setIsRejectDialogOpen(false)
-      router.push('/admin/proposals')
-    } catch (error: any) {
-      toast.error(error.response?.data?.error?.message || 'Gagal menolak proposal')
+      setSubmitting(true);
+      await investmentService.rejectProposal(id as string, rejectReason);
+      toast.success('Proposal ditolak');
+      setIsRejectDialogOpen(false);
+      router.push('/admin/proposals');
+    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      toast.error((error as any).response?.data?.error?.message || 'Gagal menolak proposal');
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   if (loading) {
-    return <div className="p-8">Memuat detail proposal...</div>
+    return <div className="p-8">Memuat detail proposal...</div>;
   }
 
-  if (!proposal) return null
+  if (!proposal) return null;
 
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
@@ -105,7 +107,12 @@ export default function AdminProposalDetailPage() {
               <div className="flex justify-between items-start">
                 <div>
                   <CardTitle className="text-2xl">{proposal.title}</CardTitle>
-                  <CardDescription>Diajukan pada {formatDate(new Date(proposal.created_at), 'dd MMMM yyyy', { locale: idLocale })}</CardDescription>
+                  <CardDescription>
+                    Diajukan pada{' '}
+                    {formatDate(new Date(proposal.created_at), 'dd MMMM yyyy', {
+                      locale: idLocale,
+                    })}
+                  </CardDescription>
                 </div>
                 <Badge variant="outline" className="capitalize text-lg px-4 py-1">
                   {proposal.status}
@@ -132,7 +139,11 @@ export default function AdminProposalDetailPage() {
                 </div>
                 <div>
                   <h4 className="font-semibold mb-1">Estimasi Panen</h4>
-                  <p>{formatDate(new Date(proposal.harvest_date_estimated), 'dd MMM yyyy', { locale: idLocale })}</p>
+                  <p>
+                    {formatDate(new Date(proposal.harvest_date_estimated), 'dd MMM yyyy', {
+                      locale: idLocale,
+                    })}
+                  </p>
                 </div>
               </div>
               <div>
@@ -159,11 +170,15 @@ export default function AdminProposalDetailPage() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Proyeksi ROI</p>
-                <p className="text-xl font-semibold text-green-600">{proposal.projected_roi_percent}%</p>
+                <p className="text-xl font-semibold text-green-600">
+                  {proposal.projected_roi_percent}%
+                </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Lokasi</p>
-                <p className="font-medium">{proposal.location.city}, {proposal.location.province}</p>
+                <p className="font-medium">
+                  {proposal.location.city}, {proposal.location.province}
+                </p>
                 <p className="text-sm text-muted-foreground">{proposal.location.full_address}</p>
               </div>
             </CardContent>
@@ -176,32 +191,38 @@ export default function AdminProposalDetailPage() {
                 <CardDescription>Proposal ini menunggu tinjauan Anda.</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col gap-3">
-                <Button 
-                  className="w-full bg-green-600 hover:bg-green-700" 
+                <Button
+                  className="w-full bg-green-600 hover:bg-green-700"
                   onClick={handleApprove}
                   disabled={submitting}
                 >
                   <CheckCircle className="h-4 w-4 mr-2" /> Setujui Proposal
                 </Button>
-                
+
                 <Dialog open={isRejectDialogOpen} onOpenChange={setIsRejectDialogOpen}>
-                  <DialogTrigger render={
-                    <Button variant="outline" className="w-full text-red-600 border-red-200 hover:bg-red-50">
-                      <XCircle className="h-4 w-4 mr-2" /> Tolak Proposal
-                    </Button>
-                  } />
+                  <DialogTrigger
+                    render={
+                      <Button
+                        variant="outline"
+                        className="w-full text-red-600 border-red-200 hover:bg-red-50"
+                      >
+                        <XCircle className="h-4 w-4 mr-2" /> Tolak Proposal
+                      </Button>
+                    }
+                  />
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>Tolak Proposal</DialogTitle>
                       <DialogDescription>
-                        Berikan alasan penolakan yang jelas agar petani dapat memperbaiki proposal mereka.
+                        Berikan alasan penolakan yang jelas agar petani dapat memperbaiki proposal
+                        mereka.
                       </DialogDescription>
                     </DialogHeader>
                     <div className="py-4 space-y-2">
                       <Label htmlFor="reason">Alasan Penolakan</Label>
-                      <Textarea 
-                        id="reason" 
-                        placeholder="Misal: Dana yang diajukan tidak masuk akal untuk komoditas ini..." 
+                      <Textarea
+                        id="reason"
+                        placeholder="Misal: Dana yang diajukan tidak masuk akal untuk komoditas ini..."
                         value={rejectReason}
                         onChange={(e) => setRejectReason(e.target.value)}
                         className="min-h-[120px]"
@@ -209,9 +230,11 @@ export default function AdminProposalDetailPage() {
                       <p className="text-xs text-muted-foreground">Minimal 10 karakter.</p>
                     </div>
                     <DialogFooter>
-                      <Button variant="outline" onClick={() => setIsRejectDialogOpen(false)}>Batal</Button>
-                      <Button 
-                        variant="destructive" 
+                      <Button variant="outline" onClick={() => setIsRejectDialogOpen(false)}>
+                        Batal
+                      </Button>
+                      <Button
+                        variant="destructive"
                         onClick={handleReject}
                         disabled={submitting || rejectReason.length < 10}
                       >
@@ -226,5 +249,5 @@ export default function AdminProposalDetailPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

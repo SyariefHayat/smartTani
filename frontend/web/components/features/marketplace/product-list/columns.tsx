@@ -71,7 +71,7 @@ export const columns: ColumnDef<Product>[] = [
         className="h-4 w-4 rounded border-slate-300 accent-green-600"
         checked={
           table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && ('indeterminate' as any))
+          (table.getIsSomePageRowsSelected() && ('indeterminate' as const))
         }
         onChange={(e) => table.toggleAllPageRowsSelected(!!e.target.checked)}
         aria-label="Select all"
@@ -196,7 +196,7 @@ export const columns: ColumnDef<Product>[] = [
     id: 'actions',
     accessorKey: 'Aksi',
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: () => {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

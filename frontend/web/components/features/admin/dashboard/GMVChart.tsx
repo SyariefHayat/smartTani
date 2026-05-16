@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   LineChart,
@@ -8,14 +8,14 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatCurrency } from '@/lib/utils'
-import { OrderAnalyticsData } from '@/services/analytics'
+} from 'recharts';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { formatCurrency } from '@/lib/utils';
+import { OrderAnalyticsData } from '@/services/analytics';
 
 interface GMVChartProps {
-  data?: OrderAnalyticsData[]
-  loading?: boolean
+  data?: OrderAnalyticsData[];
+  loading?: boolean;
 }
 
 export function GMVChart({ data, loading }: GMVChartProps) {
@@ -41,8 +41,8 @@ export function GMVChart({ data, loading }: GMVChartProps) {
                   tickLine={false}
                   axisLine={false}
                   tickFormatter={(value) => {
-                    const date = new Date(value)
-                    return date.toLocaleDateString('id-ID', { weekday: 'short' })
+                    const date = new Date(value);
+                    return date.toLocaleDateString('id-ID', { weekday: 'short' });
                   }}
                 />
                 <YAxis
@@ -53,12 +53,15 @@ export function GMVChart({ data, loading }: GMVChartProps) {
                   tickFormatter={(value) => `Rp${value / 1000000}jt`}
                 />
                 <Tooltip
-                  formatter={(value: any) => [formatCurrency(Number(value) || 0), 'GMV']}
+                  formatter={(value: string | number) => [
+                    formatCurrency(Number(value) || 0),
+                    'GMV',
+                  ]}
                   labelFormatter={(label) => {
                     return new Date(label).toLocaleDateString('id-ID', {
                       day: 'numeric',
                       month: 'long',
-                    })
+                    });
                   }}
                 />
                 <Line
@@ -75,5 +78,5 @@ export function GMVChart({ data, loading }: GMVChartProps) {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

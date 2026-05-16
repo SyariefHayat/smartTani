@@ -106,7 +106,7 @@ export function ReviewItem({ review }: ReviewItemProps) {
                   <span className="text-green-700 font-semibold">{currentReview.productName}</span>
                 </p>
                 <p className="text-sm text-slate-700 leading-relaxed mt-1">
-                  "{currentReview.comment}"
+                  &quot;{currentReview.comment}&quot;
                 </p>
               </div>
               <DropdownMenu>
@@ -135,9 +135,7 @@ export function ReviewItem({ review }: ReviewItemProps) {
                   <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none px-1.5 py-0 text-[10px]">
                     <CheckCircle2 className="w-3 h-3 mr-1" /> Dibalas
                   </Badge>
-                  <span className="text-[10px] font-semibold text-slate-500">
-                    Penjual (Anda)
-                  </span>
+                  <span className="text-[10px] font-semibold text-slate-500">Penjual (Anda)</span>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed mt-1.5">
                   {currentReview.reply}

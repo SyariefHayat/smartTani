@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   Table,
@@ -7,41 +7,39 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { User } from '@/services/user'
-import { formatDate } from 'date-fns'
-import { id } from 'date-fns/locale'
-import { CheckCircle, XCircle, ShieldAlert } from 'lucide-react'
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { User } from '@/services/user';
+import { formatDate } from 'date-fns';
+import { id } from 'date-fns/locale';
+import { CheckCircle, ShieldAlert } from 'lucide-react';
 
 interface UserTableProps {
-  users: User[]
-  loading: boolean
-  onVerify: (id: string) => void
-  onSuspend: (id: string) => void
-  onActivate: (id: string) => void
+  users: User[];
+  loading: boolean;
+  onVerify: (id: string) => void;
+  onSuspend: (id: string) => void;
+  onActivate: (id: string) => void;
 }
 
-export function UserTable({
-  users,
-  loading,
-  onVerify,
-  onSuspend,
-  onActivate,
-}: UserTableProps) {
+export function UserTable({ users, loading, onVerify, onSuspend, onActivate }: UserTableProps) {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-green-100 text-green-700 hover:bg-green-100">Aktif</Badge>
+        return <Badge className="bg-green-100 text-green-700 hover:bg-green-100">Aktif</Badge>;
       case 'pending_verification':
-        return <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">Menunggu Verifikasi</Badge>
+        return (
+          <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">
+            Menunggu Verifikasi
+          </Badge>
+        );
       case 'suspended':
-        return <Badge className="bg-red-100 text-red-700 hover:bg-red-100">Ditangguhkan</Badge>
+        return <Badge className="bg-red-100 text-red-700 hover:bg-red-100">Ditangguhkan</Badge>;
       default:
-        return <Badge variant="outline">{status}</Badge>
+        return <Badge variant="outline">{status}</Badge>;
     }
-  }
+  };
 
   const getRoleLabel = (role: string) => {
     const roles: Record<string, string> = {
@@ -51,9 +49,9 @@ export function UserTable({
       distributor: 'Distributor',
       logistik: 'Logistik',
       admin: 'Admin',
-    }
-    return roles[role] || role
-  }
+    };
+    return roles[role] || role;
+  };
 
   if (loading) {
     return (
@@ -82,7 +80,7 @@ export function UserTable({
           </TableBody>
         </Table>
       </div>
-    )
+    );
   }
 
   return (
@@ -153,5 +151,5 @@ export function UserTable({
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }

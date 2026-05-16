@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
-import { useEffect, useState, useCallback } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
-import { userService, User, GetUsersResponse } from '@/services/user'
-import { UserTable } from '@/components/features/admin/users/UserTable'
-import { UserFilter } from '@/components/features/admin/users/UserFilter'
-import { toast } from 'sonner'
+import { useEffect, useState, useCallback } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { userService, GetUsersResponse } from '@/services/user';
+import { UserTable } from '@/components/features/admin/users/UserTable';
+import { UserFilter } from '@/components/features/admin/users/UserFilter';
+import { toast } from 'sonner';
 import {
   Pagination,
   PaginationContent,
@@ -13,79 +13,82 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination'
+} from '@/components/ui/pagination';
 
 export default function AdminUsersPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  
-  const [data, setData] = useState<GetUsersResponse | null>(null)
-  const [loading, setLoading] = useState(true)
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const role = searchParams.get('role') || 'all'
-  const status = searchParams.get('status') || 'all'
-  const page = parseInt(searchParams.get('page') || '1', 10)
+  const [data, setData] = useState<GetUsersResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const role = searchParams.get('role') || 'all';
+  const status = searchParams.get('status') || 'all';
+  const page = parseInt(searchParams.get('page') || '1', 10);
 
   const fetchUsers = useCallback(async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const params = {
         role: role === 'all' ? undefined : role,
         status: status === 'all' ? undefined : status,
         page,
         limit: 10,
-      }
-      const response = await userService.getUsers(params)
-      setData(response)
+      };
+      const response = await userService.getUsers(params);
+      setData(response);
     } catch (error) {
-      console.error('Failed to fetch users:', error)
-      toast.error('Gagal memuat data pengguna')
+      console.error('Failed to fetch users:', error);
+      toast.error('Gagal memuat data pengguna');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [role, status, page])
+  }, [role, status, page]);
 
   useEffect(() => {
-    fetchUsers()
-  }, [fetchUsers])
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchUsers();
+  }, [fetchUsers]);
 
   const updateFilters = (newRole: string, newStatus: string) => {
-    const params = new URLSearchParams(searchParams.toString())
-    if (newRole === 'all') params.delete('role')
-    else params.set('role', newRole)
-    
-    if (newStatus === 'all') params.delete('status')
-    else params.set('status', newStatus)
-    
-    params.set('page', '1')
-    router.push(`/admin/users?${params.toString()}`)
-  }
+    const params = new URLSearchParams(searchParams.toString());
+    if (newRole === 'all') params.delete('role');
+    else params.set('role', newRole);
+
+    if (newStatus === 'all') params.delete('status');
+    else params.set('status', newStatus);
+
+    params.set('page', '1');
+    router.push(`/admin/users?${params.toString()}`);
+  };
 
   const handlePageChange = (newPage: number) => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set('page', newPage.toString())
-    router.push(`/admin/users?${params.toString()}`)
-  }
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', newPage.toString());
+    router.push(`/admin/users?${params.toString()}`);
+  };
 
   const handleVerify = async (id: string) => {
     try {
-      await userService.verifyUser(id)
-      toast.success('Pengguna berhasil diverifikasi')
-      fetchUsers()
-    } catch (error) {
-      toast.error('Gagal memverifikasi pengguna')
+      await userService.verifyUser(id);
+      toast.success('Pengguna berhasil diverifikasi');
+
+      fetchUsers();
+    } catch {
+      toast.error('Gagal memverifikasi pengguna');
     }
-  }
+  };
 
   const handleUpdateStatus = async (id: string, newStatus: 'active' | 'suspended') => {
     try {
-      await userService.updateStatus(id, newStatus)
-      toast.success(`Status pengguna diperbarui menjadi ${newStatus}`)
-      fetchUsers()
-    } catch (error) {
-      toast.error('Gagal memperbarui status pengguna')
+      await userService.updateStatus(id, newStatus);
+      toast.success(`Status pengguna diperbarui menjadi ${newStatus}`);
+
+      fetchUsers();
+    } catch {
+      toast.error('Gagal memperbarui status pengguna');
     }
-  }
+  };
 
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
@@ -113,11 +116,11 @@ export default function AdminUsersPage() {
           <Pagination>
             <PaginationContent>
               <PaginationItem>
-                <PaginationPrevious 
-                  href="#" 
+                <PaginationPrevious
+                  href="#"
                   onClick={(e) => {
-                    e.preventDefault()
-                    if (page > 1) handlePageChange(page - 1)
+                    e.preventDefault();
+                    if (page > 1) handlePageChange(page - 1);
                   }}
                   className={page <= 1 ? 'pointer-events-none opacity-50' : ''}
                 />
@@ -127,8 +130,8 @@ export default function AdminUsersPage() {
                   <PaginationLink
                     href="#"
                     onClick={(e) => {
-                      e.preventDefault()
-                      handlePageChange(i + 1)
+                      e.preventDefault();
+                      handlePageChange(i + 1);
                     }}
                     isActive={page === i + 1}
                   >
@@ -140,8 +143,8 @@ export default function AdminUsersPage() {
                 <PaginationNext
                   href="#"
                   onClick={(e) => {
-                    e.preventDefault()
-                    if (page < data.meta.totalPages) handlePageChange(page + 1)
+                    e.preventDefault();
+                    if (page < data.meta.totalPages) handlePageChange(page + 1);
                   }}
                   className={page >= data.meta.totalPages ? 'pointer-events-none opacity-50' : ''}
                 />
@@ -151,5 +154,5 @@ export default function AdminUsersPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -8,13 +8,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Shipment } from '@/services/logistics'
-import { formatDate } from 'date-fns'
-import { id } from 'date-fns/locale'
-import { Package, Truck, CheckCircle, MoreHorizontal } from 'lucide-react'
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Shipment } from '@/services/logistics';
+import { formatDate } from 'date-fns';
+import { id } from 'date-fns/locale';
+import { Package, Truck, CheckCircle } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -22,53 +22,64 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 
 interface ShipmentTableProps {
-  shipments: Shipment[]
-  loading: boolean
-  onUpdateStatus: (orderId: string, status: string, notes?: string) => Promise<void>
+  shipments: Shipment[];
+  loading: boolean;
+  onUpdateStatus: (orderId: string, status: string, notes?: string) => Promise<void>;
 }
 
 export function ShipmentTable({ shipments, loading, onUpdateStatus }: ShipmentTableProps) {
-  const [selectedShipment, setSelectedShipment] = useState<{ id: string, orderId: string, targetStatus: string } | null>(null)
-  const [notes, setNotes] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [selectedShipment, setSelectedShipment] = useState<{
+    id: string;
+    orderId: string;
+    targetStatus: string;
+  } | null>(null);
+  const [notes, setNotes] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending_pickup':
-        return <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">Menunggu Pickup</Badge>
+        return (
+          <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">
+            Menunggu Pickup
+          </Badge>
+        );
       case 'picked_up':
-        return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">Sudah Pickup</Badge>
+        return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">Sudah Pickup</Badge>;
       case 'in_transit':
-        return <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-100">Dalam Perjalanan</Badge>
+        return (
+          <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-100">
+            Dalam Perjalanan
+          </Badge>
+        );
       case 'delivered':
-        return <Badge className="bg-green-100 text-green-700 hover:bg-green-100">Diterima</Badge>
+        return <Badge className="bg-green-100 text-green-700 hover:bg-green-100">Diterima</Badge>;
       case 'cancelled':
-        return <Badge className="bg-red-100 text-red-700 hover:bg-red-100">Dibatalkan</Badge>
+        return <Badge className="bg-red-100 text-red-700 hover:bg-red-100">Dibatalkan</Badge>;
       default:
-        return <Badge variant="outline">{status}</Badge>
+        return <Badge variant="outline">{status}</Badge>;
     }
-  }
+  };
 
   const handleUpdate = async () => {
-    if (!selectedShipment) return
+    if (!selectedShipment) return;
 
     try {
-      setSubmitting(true)
-      await onUpdateStatus(selectedShipment.orderId, selectedShipment.targetStatus, notes)
-      setIsDialogOpen(false)
-      setNotes('')
-      setSelectedShipment(null)
+      setSubmitting(true);
+      await onUpdateStatus(selectedShipment.orderId, selectedShipment.targetStatus, notes);
+      setIsDialogOpen(false);
+      setNotes('');
+      setSelectedShipment(null);
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -95,7 +106,7 @@ export function ShipmentTable({ shipments, loading, onUpdateStatus }: ShipmentTa
           </TableBody>
         </Table>
       </div>
-    )
+    );
   }
 
   return (
@@ -133,8 +144,12 @@ export function ShipmentTable({ shipments, loading, onUpdateStatus }: ShipmentTa
                         size="sm"
                         className="bg-yellow-600 hover:bg-yellow-700"
                         onClick={() => {
-                          setSelectedShipment({ id: shipment.id, orderId: shipment.order_id, targetStatus: 'pickup' })
-                          setIsDialogOpen(true)
+                          setSelectedShipment({
+                            id: shipment.id,
+                            orderId: shipment.order_id,
+                            targetStatus: 'pickup',
+                          });
+                          setIsDialogOpen(true);
                         }}
                       >
                         <Package className="h-4 w-4 mr-1" /> Pickup
@@ -145,8 +160,12 @@ export function ShipmentTable({ shipments, loading, onUpdateStatus }: ShipmentTa
                         size="sm"
                         className="bg-purple-600 hover:bg-purple-700 mr-2"
                         onClick={() => {
-                          setSelectedShipment({ id: shipment.id, orderId: shipment.order_id, targetStatus: 'transit' })
-                          setIsDialogOpen(true)
+                          setSelectedShipment({
+                            id: shipment.id,
+                            orderId: shipment.order_id,
+                            targetStatus: 'transit',
+                          });
+                          setIsDialogOpen(true);
                         }}
                       >
                         <Truck className="h-4 w-4 mr-1" /> In Transit
@@ -157,8 +176,12 @@ export function ShipmentTable({ shipments, loading, onUpdateStatus }: ShipmentTa
                         size="sm"
                         className="bg-green-600 hover:bg-green-700"
                         onClick={() => {
-                          setSelectedShipment({ id: shipment.id, orderId: shipment.order_id, targetStatus: 'deliver' })
-                          setIsDialogOpen(true)
+                          setSelectedShipment({
+                            id: shipment.id,
+                            orderId: shipment.order_id,
+                            targetStatus: 'deliver',
+                          });
+                          setIsDialogOpen(true);
                         }}
                       >
                         <CheckCircle className="h-4 w-4 mr-1" /> Deliver
@@ -201,5 +224,5 @@ export function ShipmentTable({ shipments, loading, onUpdateStatus }: ShipmentTa
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }
