@@ -18,8 +18,8 @@ export function SalesHistoryStats({ orders }: SalesHistoryStatsProps) {
       label: 'Total Pendapatan',
       value: `Rp ${totalRevenue.toLocaleString('id-ID')}`,
       icon: DollarSign,
-      color: 'text-emerald-600',
-      bgColor: 'bg-emerald-50',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
     },
     {
       label: 'Total Transaksi',
@@ -32,8 +32,8 @@ export function SalesHistoryStats({ orders }: SalesHistoryStatsProps) {
       label: 'Penjualan Berhasil',
       value: orders.filter((o) => o.status === 'delivered' || o.status === 'completed').length,
       icon: CheckCircle2,
-      color: 'text-emerald-600',
-      bgColor: 'bg-emerald-50',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
     },
     {
       label: 'Transaksi Batal',
@@ -49,7 +49,7 @@ export function SalesHistoryStats({ orders }: SalesHistoryStatsProps) {
       {stats.map((stat) => (
         <Card
           key={stat.label}
-          className="border-slate-100 shadow-sm overflow-hidden border-l-4 border-l-emerald-500"
+          className="border-slate-100 shadow-sm overflow-hidden border-l-4 border-l-green-500"
         >
           <CardContent className="flex items-center gap-4 p-5">
             <div className={`rounded-xl p-3 ${stat.bgColor}`}>

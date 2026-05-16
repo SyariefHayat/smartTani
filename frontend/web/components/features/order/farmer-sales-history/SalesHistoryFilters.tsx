@@ -38,7 +38,7 @@ export function SalesHistoryFilters<TData>({ table }: SalesHistoryFiltersProps<T
             onChange={(event) =>
               table.getColumn('customerName')?.setFilterValue(event.target.value)
             }
-            className="pl-10 bg-slate-50 border-transparent focus:bg-white focus:ring-emerald-500 transition-all"
+            className="pl-10 bg-slate-50 border-transparent focus:bg-white focus:ring-green-500 transition-all"
           />
         </div>
 

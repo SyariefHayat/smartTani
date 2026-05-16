@@ -77,7 +77,7 @@ export const columns: ColumnDef<FarmerOrder>[] = [
           <Button
             variant="ghost"
             size="sm"
-            className="h-8 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+            className="h-8 text-green-600 hover:text-green-700 hover:bg-green-50"
           >
             <FileText className="mr-1 h-3.5 w-3.5" />
             Invoice
