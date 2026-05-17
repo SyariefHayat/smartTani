@@ -34,6 +34,20 @@ coverage/
 .DS_Store
 Thumbs.db
 
+# Performance & E2E Testing
+*-report*.json
+load-test-*.yml
+users.csv
+seed_load_test.ts
+e2e_demo*.ts
+run_e2e_demo.sh
+start_perf_services.sh
+setup_rabbitmq.sh
+check_system.sh
+
+# Environment & Services
+services/*/.env
+
 # Agents
 .GEMINI.md
 
