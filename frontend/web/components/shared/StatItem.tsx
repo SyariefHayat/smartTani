@@ -71,7 +71,7 @@ export function StatItem({ icon: Icon, value, label }: StatItemProps) {
         <Icon className="size-7" />
       </div>
       {/* Value */}
-      <p className="text-sm font-extrabold text-[#17391f] sm:text-base lg:text-lg whitespace-nowrap md:max-w-[100px]">
+      <p className="text-sm font-extrabold text-[#17391f] sm:text-base lg:text-lg whitespace-nowrap md:max-w-25">
         {displayValue}
       </p>
       {/* Label — boleh wrap, dibatasi lebar agar tidak melebar */}
