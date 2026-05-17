@@ -15,6 +15,7 @@
     "check:system": "./check_system.sh",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md}\"",
+    "db:push": "npm run db:push --workspaces --if-present",
     "seed:demo": "npx ts-node infra/scripts/seed-demo.ts",
     "prepare": "husky"
   },
