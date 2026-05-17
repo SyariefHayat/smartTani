@@ -5,7 +5,7 @@ MINIO_ENDPOINT="http://postgres:9000" # Using 'postgres' as a placeholder or hos
 # Since we run from host, we use localhost:9000
 MINIO_URL="http://localhost:9000"
 MINIO_ROOT_USER="minioadmin"
-MINIO_ROOT_PASSWORD="minioadmin123"
+MINIO_ROOT_PASSWORD="your_minio_root_password"
 BUCKET_NAME="smarttani-media"
 
 echo "⏳ Waiting for MinIO to be ready..."
