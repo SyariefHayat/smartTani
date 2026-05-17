@@ -1,4 +1,4 @@
-import type { LucideIcon } from "lucide-react";
+import type { LucideIcon } from 'lucide-react';
 
 export interface NavItem {
   label: string;
@@ -15,7 +15,7 @@ export interface SocialLink {
 export interface FooterLink {
   label: string;
   href: string;
-  icon?: "map-pin" | "phone" | "mail" | "globe";
+  icon?: 'map-pin' | 'phone' | 'mail' | 'globe';
   external?: boolean;
 }
 
@@ -79,7 +79,7 @@ export interface Product {
   rating: number;
   terjual: string;
   isPromo: boolean;
-  storeType: "Official Store" | "Distributor Resmi" | "UMKM";
+  storeType: 'Official Store' | 'Distributor Resmi' | 'UMKM';
   storeName: string;
 }
 
@@ -102,7 +102,7 @@ export interface AcademyCourse {
   rating: number;
   ulasan: number;
   durasi: string;
-  mode: "Online" | "Offline" | "Blended";
+  mode: 'Online' | 'Offline' | 'Blended';
   cta: string;
 }
 
@@ -136,6 +136,13 @@ export interface SidebarUser {
   name: string;
   email: string;
   avatar: string;
+}
+
+export interface AuthUser {
+  name: string;
+  email: string;
+  role: string;
+  avatar?: string;
 }
 
 export interface SidebarTeam {

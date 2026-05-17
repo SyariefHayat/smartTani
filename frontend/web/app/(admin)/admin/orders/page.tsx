@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { orderService, Order } from '@/services/order';
 import { OrderTable } from '@/components/features/admin/orders/OrderTable';
@@ -82,7 +82,7 @@ export default function AdminOrdersPage() {
               <PaginationItem>
                 <PaginationPrevious
                   href="#"
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     if (page > 1) handlePageChange(page - 1);
                   }}
@@ -93,7 +93,7 @@ export default function AdminOrdersPage() {
                 <PaginationItem key={i}>
                   <PaginationLink
                     href="#"
-                    onClick={(e) => {
+                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                       e.preventDefault();
                       handlePageChange(i + 1);
                     }}
@@ -106,7 +106,7 @@ export default function AdminOrdersPage() {
               <PaginationItem>
                 <PaginationNext
                   href="#"
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     if (page < meta.totalPages) handlePageChange(page + 1);
                   }}

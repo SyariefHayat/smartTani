@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { userService, GetUsersResponse } from '@/services/user';
 import { UserTable } from '@/components/features/admin/users/UserTable';
@@ -118,7 +118,7 @@ export default function AdminUsersPage() {
               <PaginationItem>
                 <PaginationPrevious
                   href="#"
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     if (page > 1) handlePageChange(page - 1);
                   }}
@@ -129,7 +129,7 @@ export default function AdminUsersPage() {
                 <PaginationItem key={i}>
                   <PaginationLink
                     href="#"
-                    onClick={(e) => {
+                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                       e.preventDefault();
                       handlePageChange(i + 1);
                     }}
@@ -142,7 +142,7 @@ export default function AdminUsersPage() {
               <PaginationItem>
                 <PaginationNext
                   href="#"
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     if (page < data.meta.totalPages) handlePageChange(page + 1);
                   }}

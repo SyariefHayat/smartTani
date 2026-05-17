@@ -200,16 +200,14 @@ export default function AdminProposalDetailPage() {
                 </Button>
 
                 <Dialog open={isRejectDialogOpen} onOpenChange={setIsRejectDialogOpen}>
-                  <DialogTrigger
-                    render={
-                      <Button
-                        variant="outline"
-                        className="w-full text-red-600 border-red-200 hover:bg-red-50"
-                      >
-                        <XCircle className="h-4 w-4 mr-2" /> Tolak Proposal
-                      </Button>
-                    }
-                  />
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full text-red-600 border-red-200 hover:bg-red-50"
+                    >
+                      <XCircle className="h-4 w-4 mr-2" /> Tolak Proposal
+                    </Button>
+                  </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>Tolak Proposal</DialogTitle>

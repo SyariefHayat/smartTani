@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { investmentService, Proposal } from '@/services/investment';
 import { ProposalTable } from '@/components/features/admin/proposals/ProposalTable';
@@ -82,7 +82,7 @@ export default function AdminProposalsPage() {
               <PaginationItem>
                 <PaginationPrevious
                   href="#"
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     if (page > 1) handlePageChange(page - 1);
                   }}
@@ -93,7 +93,7 @@ export default function AdminProposalsPage() {
                 <PaginationItem key={i}>
                   <PaginationLink
                     href="#"
-                    onClick={(e) => {
+                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                       e.preventDefault();
                       handlePageChange(i + 1);
                     }}
@@ -106,7 +106,7 @@ export default function AdminProposalsPage() {
               <PaginationItem>
                 <PaginationNext
                   href="#"
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     if (page < meta.totalPages) handlePageChange(page + 1);
                   }}

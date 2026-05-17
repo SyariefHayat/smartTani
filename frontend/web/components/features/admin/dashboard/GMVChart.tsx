@@ -53,12 +53,10 @@ export function GMVChart({ data, loading }: GMVChartProps) {
                   tickFormatter={(value) => `Rp${value / 1000000}jt`}
                 />
                 <Tooltip
-                  formatter={(value: string | number) => [
-                    formatCurrency(Number(value) || 0),
-                    'GMV',
-                  ]}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  formatter={(value: any) => [formatCurrency(Number(value) || 0), 'GMV']}
                   labelFormatter={(label) => {
-                    return new Date(label).toLocaleDateString('id-ID', {
+                    return new Date(label || '').toLocaleDateString('id-ID', {
                       day: 'numeric',
                       month: 'long',
                     });

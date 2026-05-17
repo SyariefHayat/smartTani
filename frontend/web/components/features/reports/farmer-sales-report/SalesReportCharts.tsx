@@ -71,11 +71,13 @@ export function SalesReportCharts({ data }: SalesReportChartsProps) {
                       return (
                         <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
                           <p className="mb-1 text-xs font-medium text-slate-500">
-                            {new Date(label).toLocaleDateString('id-ID', {
-                              day: 'numeric',
-                              month: 'long',
-                              year: 'numeric',
-                            })}
+                            {label
+                              ? new Date(label).toLocaleDateString('id-ID', {
+                                  day: 'numeric',
+                                  month: 'long',
+                                  year: 'numeric',
+                                })
+                              : ''}
                           </p>
                           <p className="text-sm font-bold text-green-600">
                             {formatCurrency(payload[0].value as number)}
@@ -140,10 +142,12 @@ export function SalesReportCharts({ data }: SalesReportChartsProps) {
                       return (
                         <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
                           <p className="mb-1 text-xs font-medium text-slate-500">
-                            {new Date(label).toLocaleDateString('id-ID', {
-                              day: 'numeric',
-                              month: 'long',
-                            })}
+                            {label
+                              ? new Date(label).toLocaleDateString('id-ID', {
+                                  day: 'numeric',
+                                  month: 'long',
+                                })
+                              : ''}
                           </p>
                           <p className="text-sm font-bold text-blue-600">
                             {payload[0].value} Pesanan

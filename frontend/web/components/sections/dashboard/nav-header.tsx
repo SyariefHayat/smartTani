@@ -45,7 +45,7 @@ export function DashboardHeader({ user }: { user: DashboardHeaderUser | null }) 
     router.push('/login');
   };
 
-  const formatRole = (role: string) => {
+  const formatRole = (role?: string | null) => {
     if (!role) return '';
     return role
       .split('_')
@@ -82,7 +82,7 @@ export function DashboardHeader({ user }: { user: DashboardHeaderUser | null }) 
                 className="h-9 px-1.5 sm:px-2 gap-1.5 sm:gap-2 focus-visible:ring-0 focus-visible:ring-offset-0 cursor-pointer"
               >
                 <Avatar className="h-6 w-6 rounded-full">
-                  <AvatarImage src={user?.avatar} alt={user?.name} />
+                  <AvatarImage src={user?.avatar || undefined} alt={user?.name || undefined} />
                   <AvatarFallback className="rounded-full text-[10px]">
                     {user?.name?.charAt(0) || 'U'}
                   </AvatarFallback>
@@ -102,7 +102,7 @@ export function DashboardHeader({ user }: { user: DashboardHeaderUser | null }) 
               <DropdownMenuLabel className="p-0 font-normal text-black">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="h-8 w-8 rounded-full">
-                    <AvatarImage src={user?.avatar} alt={user?.name} />
+                    <AvatarImage src={user?.avatar || undefined} alt={user?.name || undefined} />
                     <AvatarFallback className="rounded-full">
                       {user?.name?.charAt(0) || 'U'}
                     </AvatarFallback>

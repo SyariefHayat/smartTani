@@ -49,7 +49,7 @@ export function TransactionFilters<TData>({ table }: TransactionFiltersProps<TDa
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
-            <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+            <Calendar mode="single" selected={date} onSelect={setDate} />
           </PopoverContent>
         </Popover>
 

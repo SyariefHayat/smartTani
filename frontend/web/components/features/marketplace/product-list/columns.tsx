@@ -4,6 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, Edit, Eye, MoreVertical, Star, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -66,23 +67,18 @@ export const columns: ColumnDef<Product>[] = [
   {
     id: 'select',
     header: ({ table }) => (
-      <input
-        type="checkbox"
-        className="h-4 w-4 rounded border-slate-300 accent-green-600"
+      <Checkbox
         checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && ('indeterminate' as const))
+          table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
-        onChange={(e) => table.toggleAllPageRowsSelected(!!e.target.checked)}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
-      <input
-        type="checkbox"
-        className="h-4 w-4 rounded border-slate-300 accent-green-600"
+      <Checkbox
         checked={row.getIsSelected()}
-        onChange={(e) => row.toggleSelected(!!e.target.checked)}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
       />
     ),

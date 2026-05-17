@@ -1,0 +1,25 @@
+import { Metadata } from 'next';
+import { LOGIN_META } from '@/constants/login';
+import Hero from '@/components/sections/login/Hero';
+import { LoginForm } from '@/components/sections/login/Form';
+
+export const metadata: Metadata = {
+  title: LOGIN_META.title,
+  description: LOGIN_META.description,
+};
+
+export default function LoginPage() {
+  return (
+    <main className="bg-white">
+      <Hero />
+
+      <section className="section-padding">
+        <div className="container-smarttani">
+          <div className="flex justify-center px-4">
+            <LoginForm className="w-full max-w-md" />
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
