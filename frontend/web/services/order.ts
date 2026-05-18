@@ -42,6 +42,24 @@ export interface Order {
   notes?: string;
   created_at: string;
   items: OrderItem[];
+  buyer?: {
+    id: string;
+    full_name: string;
+    email: string;
+  };
+}
+
+export interface GetOrdersResponse {
+  success: boolean;
+  data: {
+    orders: Order[];
+    pagination: {
+      total: number;
+      page: number;
+      limit: number;
+      pages: number;
+    };
+  };
 }
 
 export interface CreateOrderResponse {
@@ -96,7 +114,7 @@ export const orderService = {
     return response.data;
   },
 
-  getOrders: async (params?: GetOrdersParams) => {
+  getOrders: async (params?: GetOrdersParams): Promise<GetOrdersResponse> => {
     const response = await api.get('/orders', { params });
     return response.data;
   },

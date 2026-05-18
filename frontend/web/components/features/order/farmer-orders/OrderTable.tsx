@@ -15,9 +15,20 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 interface OrderTableProps<TData> {
   table: ReactTable<TData>;
   columnsCount: number;
+  totalRows?: number;
 }
 
-export function OrderTable<TData>({ table, columnsCount }: OrderTableProps<TData>) {
+export function OrderTable<TData>({
+  table,
+  columnsCount,
+  totalRows: manualTotalRows,
+}: OrderTableProps<TData>) {
+  const currentPage = table.getState().pagination.pageIndex + 1;
+  const pageSize = table.getState().pagination.pageSize;
+  const totalRows = manualTotalRows ?? table.getFilteredRowModel().rows.length;
+  const fromRow = totalRows === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const toRow = Math.min(currentPage * pageSize, totalRows);
+
   return (
     <div className="space-y-4">
       <div className="rounded-md border bg-white">
@@ -60,8 +71,7 @@ export function OrderTable<TData>({ table, columnsCount }: OrderTableProps<TData
       </div>
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
-          Menampilkan {table.getRowModel().rows.length} dari{' '}
-          {table.getFilteredRowModel().rows.length} pesanan.
+          Menampilkan {fromRow}–{toRow} dari {totalRows} pesanan.
         </div>
         <div className="flex items-center space-x-2">
           <Button
