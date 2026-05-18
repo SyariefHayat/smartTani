@@ -18,12 +18,17 @@ import { Product } from './types';
 interface ProductTableProps {
   table: ReactTable<Product>;
   columnsCount: number;
+  totalRows?: number;
 }
 
-export function ProductTable({ table, columnsCount }: ProductTableProps) {
+export function ProductTable({
+  table,
+  columnsCount,
+  totalRows: manualTotalRows,
+}: ProductTableProps) {
   const currentPage = table.getState().pagination.pageIndex + 1;
   const totalPages = table.getPageCount();
-  const totalRows = table.getFilteredRowModel().rows.length;
+  const totalRows = manualTotalRows ?? table.getFilteredRowModel().rows.length;
   const pageSize = table.getState().pagination.pageSize;
   const fromRow = totalRows === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const toRow = Math.min(currentPage * pageSize, totalRows);
