@@ -18,7 +18,16 @@ describe('Personal Analytics', () => {
 
   describe('GET /analytics/farmer/:id', () => {
     it('should return 200 for farmer accessing own data', async () => {
-      const mockData = { total_sales: 5000000, total_orders: 10, top_products: [] };
+      const mockData = {
+        total_revenue: 5000000,
+        total_orders: 10,
+        total_products: 5,
+        pending_orders: 2,
+        monthly_revenue: 1000000,
+        prev_month_revenue: 800000,
+        revenue_change_percent: 25,
+        top_products: [],
+      };
       (personalAnalyticsService.getFarmerAnalytics as jest.Mock).mockResolvedValue(mockData);
 
       const res = await request(app)
@@ -40,7 +49,16 @@ describe('Personal Analytics', () => {
     });
 
     it('should return 200 for admin accessing any farmer data', async () => {
-      const mockData = { total_sales: 5000000, total_orders: 10, top_products: [] };
+      const mockData = {
+        total_revenue: 5000000,
+        total_orders: 10,
+        total_products: 5,
+        pending_orders: 2,
+        monthly_revenue: 1000000,
+        prev_month_revenue: 800000,
+        revenue_change_percent: 25,
+        top_products: [],
+      };
       (personalAnalyticsService.getFarmerAnalytics as jest.Mock).mockResolvedValue(mockData);
 
       const res = await request(app)

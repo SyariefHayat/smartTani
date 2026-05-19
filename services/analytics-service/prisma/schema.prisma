@@ -40,8 +40,22 @@ model OrderItem {
   price_per_unit Decimal @db.Decimal(15, 2)
   subtotal       Decimal @db.Decimal(15, 2)
   order          Order   @relation(fields: [order_id], references: [id])
+  product        Product? @relation(fields: [product_id], references: [id])
 
   @@map("order_items")
+}
+
+model Product {
+  id         String      @id @db.Text
+  farmer_id  String      @db.Uuid
+  title      String      @db.VarChar(255)
+  image      String?     @db.Text
+  status     String      @db.VarChar(50)
+  created_at DateTime    @default(now()) @db.Timestamptz
+  updated_at DateTime    @updatedAt @db.Timestamptz
+  items      OrderItem[]
+
+  @@map("products")
 }
 
 model Proposal {
