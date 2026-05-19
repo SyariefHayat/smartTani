@@ -22,6 +22,7 @@ import {
   MoreHorizontal,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -44,63 +45,7 @@ import {
 } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-
-const data: Order[] = [
-  {
-    id: '1083',
-    customer: 'Marvin Dekidis',
-    product: 'Kemeja Batik Slim Fit',
-    qty: 2,
-    amount: 345000,
-    paymentMethod: 'E-Wallet',
-    status: 'new order',
-  },
-  {
-    id: '1082',
-    customer: 'Carter Lipshitz',
-    product: 'Celana Chino Premium',
-    qty: 6,
-    amount: 605000,
-    paymentMethod: 'Transfer Bank',
-    status: 'in progress',
-  },
-  {
-    id: '1081',
-    customer: 'Addison Philips',
-    product: 'Sepatu Kulit Formal',
-    qty: 3,
-    amount: 475000,
-    paymentMethod: 'E-Wallet',
-    status: 'new order',
-  },
-  {
-    id: '1079',
-    customer: 'Craig Siphron',
-    product: 'Tas Selempang Canvas',
-    qty: 15,
-    amount: 898000,
-    paymentMethod: 'Transfer Bank',
-    status: 'on hold',
-  },
-  {
-    id: '1078',
-    customer: 'Emma Johnson',
-    product: 'Jaket Bomber Pria',
-    qty: 4,
-    amount: 1207500,
-    paymentMethod: 'Kartu Kredit',
-    status: 'completed',
-  },
-  {
-    id: '1077',
-    customer: 'Michael Smith',
-    product: 'Kemeja Batik Slim Fit',
-    qty: 8,
-    amount: 2105000,
-    paymentMethod: 'Dompet Digital',
-    status: 'completed',
-  },
-];
+import { orderService, Order as ApiOrder, OrderItem as ApiOrderItem } from '@/services/order';
 
 export type Order = {
   id: string;
@@ -109,20 +54,24 @@ export type Order = {
   qty: number;
   amount: number;
   paymentMethod: string;
-  status: 'new order' | 'in progress' | 'on hold' | 'completed';
+  status: string;
 };
 
-const statusConfig: Record<Order['status'], { label: string; className: string }> = {
-  'new order': { label: 'New Order', className: 'bg-blue-100 text-blue-700' },
-  'in progress': {
+const statusConfig: Record<string, { label: string; className: string }> = {
+  paid: { label: 'New Order', className: 'bg-blue-100 text-blue-700' },
+  confirmed_seller: {
     label: 'In Progress',
     className: 'bg-yellow-100 text-yellow-700',
   },
-  'on hold': { label: 'On Hold', className: 'bg-orange-100 text-orange-700' },
-  completed: {
+  shipped: {
+    label: 'In Progress',
+    className: 'bg-yellow-100 text-yellow-700',
+  },
+  delivered: {
     label: 'Completed',
     className: 'bg-emerald-100 text-emerald-700',
   },
+  cancelled: { label: 'Cancelled', className: 'bg-red-100 text-red-700' },
 };
 
 export const columns: ColumnDef<Order>[] = [
@@ -187,10 +136,15 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: 'status',
     header: 'Status',
     cell: ({ row }) => {
-      const status = row.getValue('status') as Order['status'];
-      const { label, className } = statusConfig[status];
+      const status = row.getValue('status') as string;
+      const config = statusConfig[status] || {
+        label: status,
+        className: 'bg-gray-100 text-gray-700',
+      };
       return (
-        <span className={`text-xs px-2 py-1 rounded-md font-medium ${className}`}>{label}</span>
+        <span className={`text-xs px-2 py-1 rounded-md font-medium ${config.className}`}>
+          {config.label}
+        </span>
       );
     },
   },
@@ -231,9 +185,27 @@ export function TrackOrderStatus() {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  // eslint-disable-next-line react-hooks/incompatible-library
+  const { data: apiResponse, isLoading } = useQuery({
+    queryKey: ['farmer-orders-track'],
+    queryFn: () => orderService.getOrders({ limit: 10 }),
+  });
+
+  const orders: Order[] = React.useMemo(() => {
+    if (!apiResponse?.data?.orders) return [];
+
+    return apiResponse.data.orders.map((o: ApiOrder) => ({
+      id: o.id.slice(-6).toUpperCase(),
+      customer: o.buyer?.full_name || 'Pembeli #' + o.buyer_id.slice(-4),
+      product: o.items[0] ? 'Produk #' + o.items[0].product_id.slice(-4) : '-',
+      qty: o.items.reduce((acc: number, item: ApiOrderItem) => acc + item.quantity, 0),
+      amount: o.total_amount,
+      paymentMethod: o.payment_url ? 'Online' : 'Manual',
+      status: o.status,
+    }));
+  }, [apiResponse]);
+
   const table = useReactTable({
-    data,
+    data: orders,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -251,13 +223,62 @@ export function TrackOrderStatus() {
     },
   });
 
+  const stats = React.useMemo(() => {
+    const rawOrders = apiResponse?.data?.orders || [];
+    const counts = {
+      paid: rawOrders.filter((o: ApiOrder) => o.status === 'paid').length,
+      progress: rawOrders.filter((o: ApiOrder) =>
+        ['confirmed_seller', 'shipped'].includes(o.status)
+      ).length,
+      delivered: rawOrders.filter((o: ApiOrder) => o.status === 'delivered').length,
+      cancelled: rawOrders.filter((o: ApiOrder) => o.status === 'cancelled').length,
+    };
+
+    const total = rawOrders.length || 1;
+
+    return [
+      {
+        label: 'New Order',
+        value: counts.paid,
+        change: 0.5,
+        trend: 'up',
+        progress: (counts.paid / total) * 100,
+        barColor: '[&>div]:bg-blue-500',
+      },
+      {
+        label: 'On Progress',
+        value: counts.progress,
+        change: 0.3,
+        trend: 'down',
+        progress: (counts.progress / total) * 100,
+        barColor: '[&>div]:bg-emerald-500',
+      },
+      {
+        label: 'Completed',
+        value: counts.delivered,
+        change: 0.5,
+        trend: 'up',
+        progress: (counts.delivered / total) * 100,
+        barColor: '[&>div]:bg-green-400',
+      },
+      {
+        label: 'Cancelled',
+        value: counts.cancelled,
+        change: 0.5,
+        trend: 'down',
+        progress: (counts.cancelled / total) * 100,
+        barColor: '[&>div]:bg-orange-400',
+      },
+    ];
+  }, [apiResponse]);
+
   return (
     <Card className="w-full">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>Lacak Status Pesanan</CardTitle>
-            <CardDescription>Analisis pertumbuhan dan perubahan pola pengunjung</CardDescription>
+            <CardDescription>Ringkasan status pesanan terbaru Anda</CardDescription>
           </div>
           <div className="flex items-center gap-2">
             <Link href="/dashboard/farmer/orders">
@@ -272,40 +293,7 @@ export function TrackOrderStatus() {
         </div>
 
         <div className="grid grid-cols-4 gap-3 pt-2">
-          {[
-            {
-              label: 'New Order',
-              value: 43,
-              change: 0.5,
-              trend: 'up',
-              progress: 43,
-              barColor: '[&>div]:bg-blue-500',
-            },
-            {
-              label: 'On Progress',
-              value: 12,
-              change: 0.3,
-              trend: 'down',
-              progress: 25,
-              barColor: '[&>div]:bg-emerald-500',
-            },
-            {
-              label: 'Completed',
-              value: 40,
-              change: 0.5,
-              trend: 'up',
-              progress: 82,
-              barColor: '[&>div]:bg-green-400',
-            },
-            {
-              label: 'Return',
-              value: 2,
-              change: 0.5,
-              trend: 'down',
-              progress: 5,
-              barColor: '[&>div]:bg-orange-400',
-            },
-          ].map(({ label, value, change, trend, progress, barColor }) => (
+          {stats.map(({ label, value, change, trend, progress, barColor }) => (
             <div key={label} className="space-y-1.5">
               <p className="text-2xl font-medium">{value}</p>
               <div className="flex items-center gap-1.5">
@@ -378,7 +366,17 @@ export function TrackOrderStatus() {
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows?.length ? (
+              {isLoading ? (
+                [...Array(5)].map((_, i) => (
+                  <TableRow key={i}>
+                    {columns.map((_, j) => (
+                      <TableCell key={j}>
+                        <div className="h-4 w-full animate-pulse bg-slate-100 rounded" />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                     {row.getVisibleCells().map((cell) => (
@@ -390,37 +388,16 @@ export function TrackOrderStatus() {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
-                    No results.
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    Belum ada pesanan terbaru.
                   </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
-        </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredSelectedRowModel().rows.length} of{' '}
-            {table.getFilteredRowModel().rows.length} pesanan
-          </div>
-          <div className="space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              Next
-            </Button>
-          </div>
         </div>
       </CardContent>
     </Card>
