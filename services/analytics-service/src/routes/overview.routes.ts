@@ -3,7 +3,11 @@ import overviewController from '../controllers/overview.controller';
 import { gatewayAuthMiddleware } from '../middleware/auth.middleware';
 import { authorize } from '../middleware/authorize.middleware';
 import { validateQuery } from '../../../../shared/middleware/validate';
-import { UserGrowthQuerySchema, OrderAnalyticsQuerySchema } from '../schemas/analytics.schema';
+import {
+  UserGrowthQuerySchema,
+  OrderAnalyticsQuerySchema,
+  FarmerRevenueChartQuerySchema,
+} from '../schemas/analytics.schema';
 
 const router = Router();
 
@@ -139,10 +143,41 @@ router.get(
  *       200:
  *         description: Farmer analytics data
  */
+router.get('/farmer/:id', gatewayAuthMiddleware, overviewController.getFarmerAnalytics);
+
+/**
+ * @swagger
+ * /analytics/farmer/{id}/revenue-chart:
+ *   get:
+ *     summary: Get revenue chart data for a farmer
+ *     tags: [Analytics]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: from_date
+ *         schema:
+ *           type: string
+ *           format: date
+ *       - in: query
+ *         name: to_date
+ *         schema:
+ *           type: string
+ *           format: date
+ *     responses:
+ *       200:
+ *         description: Farmer revenue chart data
+ */
 router.get(
-  '/farmer/:id',
+  '/farmer/:id/revenue-chart',
   gatewayAuthMiddleware,
-  overviewController.getFarmerAnalytics
+  validateQuery(FarmerRevenueChartQuerySchema),
+  overviewController.getFarmerRevenueChart
 );
 
 /**
@@ -163,10 +198,6 @@ router.get(
  *       200:
  *         description: Investor analytics data
  */
-router.get(
-  '/investor/:id',
-  gatewayAuthMiddleware,
-  overviewController.getInvestorAnalytics
-);
+router.get('/investor/:id', gatewayAuthMiddleware, overviewController.getInvestorAnalytics);
 
 export default router;

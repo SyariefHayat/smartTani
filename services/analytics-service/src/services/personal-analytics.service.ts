@@ -21,6 +21,25 @@ class PersonalAnalyticsService {
     return metrics;
   }
 
+  async getFarmerRevenueChart(farmerId: string, query: { from_date?: string; to_date?: string }) {
+    const cacheKey = `analytics:farmer:${farmerId}:revenue-chart:${JSON.stringify(query)}`;
+
+    const cachedData = await RedisClient.get(cacheKey);
+    if (cachedData) {
+      logger.info(`⚡ Returning farmer revenue chart for ${farmerId} from cache`);
+      return JSON.parse(cachedData as string);
+    }
+
+    const data = await farmerAnalyticsRepository.getRevenueChart(
+      farmerId,
+      query.from_date,
+      query.to_date
+    );
+    await RedisClient.setex(cacheKey, this.TTL, JSON.stringify(data));
+
+    return data;
+  }
+
   async getInvestorAnalytics(investorId: string) {
     const cacheKey = `analytics:investor:${investorId}`;
 

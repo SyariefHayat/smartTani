@@ -1,4 +1,5 @@
 import prisma from '../lib/prisma';
+import { Prisma } from '@prisma/client';
 
 class FarmerAnalyticsRepository {
   async getFarmerMetrics(farmerId: string) {
@@ -116,6 +117,43 @@ class FarmerAnalyticsRepository {
       revenue_change_percent: Math.round(revenue_change_percent * 10) / 10,
       top_products,
     };
+  }
+
+  async getRevenueChart(farmerId: string, from_date?: string, to_date?: string) {
+    const conditions: Prisma.Sql[] = [];
+    conditions.push(Prisma.sql`oi.farmer_id = ${farmerId}::uuid`);
+    conditions.push(Prisma.sql`o.status IN ('completed', 'delivered')`);
+
+    if (from_date) {
+      conditions.push(Prisma.sql`o.created_at >= ${from_date}::timestamptz`);
+    }
+    if (to_date) {
+      conditions.push(Prisma.sql`o.created_at <= ${to_date}::timestamptz`);
+    }
+
+    const whereClause = Prisma.sql`WHERE ${Prisma.join(conditions, ' AND ')}`;
+
+    // pendapatan = sum(subtotal), pengeluaran = estimasi platform fee per item (subtotal * percentage)
+    const query = Prisma.sql`
+      SELECT 
+        DATE_TRUNC('day', o.created_at) as date,
+        SUM(oi.subtotal)::float as pendapatan,
+        (SUM(oi.subtotal) * 0.02)::float as pengeluaran
+      FROM order_items oi
+      JOIN orders o ON oi.order_id = o.id
+      ${whereClause}
+      GROUP BY date
+      ORDER BY date ASC
+    `;
+
+    const result =
+      await prisma.$queryRaw<Array<{ date: Date; pendapatan: number; pengeluaran: number }>>(query);
+
+    return result.map((r) => ({
+      date: r.date.toISOString().split('T')[0],
+      pendapatan: r.pendapatan,
+      pengeluaran: r.pengeluaran,
+    }));
   }
 }
 

@@ -12,5 +12,10 @@ export const OrderAnalyticsQuerySchema = z.object({
   granularity: z.enum(['day', 'week', 'month']).default('day'),
 });
 
+export const FarmerRevenueChartQuerySchema = z.object({
+  from_date: z.string().optional(),
+  to_date: z.string().optional(),
+});
+
 export type UserGrowthQuery = z.infer<typeof UserGrowthQuerySchema>;
 export type OrderAnalyticsQuery = z.infer<typeof OrderAnalyticsQuerySchema>;
