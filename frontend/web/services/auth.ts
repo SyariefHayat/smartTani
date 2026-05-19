@@ -21,4 +21,12 @@ export const authService = {
     const response = await api.post('/auth/login', data);
     return response.data;
   },
+  getProfile: async () => {
+    const response = await api.get('/auth/me');
+    return response.data;
+  },
+  updateProfile: async (data: { full_name?: string; phone?: string; avatar_url?: string }) => {
+    const response = await api.patch('/auth/me', data);
+    return response.data;
+  },
 };
