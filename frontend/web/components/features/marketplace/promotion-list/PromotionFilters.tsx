@@ -25,6 +25,7 @@ export function PromotionFilters({
           { id: 'active', label: 'Aktif' },
           { id: 'scheduled', label: 'Terjadwal' },
           { id: 'expired', label: 'Berakhir' },
+          { id: 'inactive', label: 'Nonaktif' },
         ].map((tab) => (
           <button
             key={tab.id}

@@ -48,17 +48,26 @@ export function PromotionTable({ promos, onReset }: PromotionTableProps) {
         );
       case 'scheduled':
         return (
-          <Badge
-            variant="outline"
-            className="border-blue-200 bg-blue-50 font-normal text-blue-600"
-          >
+          <Badge variant="outline" className="border-blue-200 bg-blue-50 font-normal text-blue-600">
             Terjadwal
           </Badge>
         );
       case 'expired':
         return (
-          <Badge variant="secondary" className="border-none bg-slate-100 font-normal text-slate-500">
+          <Badge
+            variant="secondary"
+            className="border-none bg-slate-100 font-normal text-slate-500"
+          >
             Berakhir
+          </Badge>
+        );
+      case 'inactive':
+        return (
+          <Badge
+            variant="secondary"
+            className="border-none bg-slate-100 font-normal text-slate-500"
+          >
+            Nonaktif
           </Badge>
         );
       default:
@@ -67,7 +76,7 @@ export function PromotionTable({ promos, onReset }: PromotionTableProps) {
   };
 
   const formatValue = (type: string, value: number) => {
-    if (type === 'percentage') return `${value}%`;
+    if (type === 'discount_percent') return `${value}%`;
     return `Rp ${value.toLocaleString('id-ID')}`;
   };
 
@@ -98,7 +107,7 @@ export function PromotionTable({ promos, onReset }: PromotionTableProps) {
             {promos.length > 0 ? (
               promos.map((promo) => (
                 <TableRow
-                  key={promo.id}
+                  key={promo._id}
                   className="border-slate-50 transition-colors hover:bg-slate-50/30"
                 >
                   <TableCell>
@@ -106,23 +115,21 @@ export function PromotionTable({ promos, onReset }: PromotionTableProps) {
                       <div
                         className={cn(
                           'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border shadow-sm',
-                          promo.type === 'percentage'
+                          promo.type === 'discount_percent'
                             ? 'border-pink-100 bg-pink-50 text-pink-600'
                             : 'border-indigo-100 bg-indigo-50 text-indigo-600'
                         )}
                       >
-                        {promo.type === 'percentage' ? (
+                        {promo.type === 'discount_percent' ? (
                           <Percent className="h-5 w-5" />
                         ) : (
                           <Tag className="h-5 w-5" />
                         )}
                       </div>
                       <div className="min-w-0">
-                        <span className="line-clamp-1 font-bold text-slate-900">
-                          {promo.name}
-                        </span>
+                        <span className="line-clamp-1 font-bold text-slate-900">{promo.title}</span>
                         <span className="mt-1 inline-flex rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-slate-600">
-                          {promo.code}
+                          {promo.code || 'PROMO'}
                         </span>
                       </div>
                     </div>
@@ -133,9 +140,7 @@ export function PromotionTable({ promos, onReset }: PromotionTableProps) {
                         {formatValue(promo.type, promo.value)}
                       </span>
                       <span className="text-[10px] capitalize text-slate-400">
-                        {promo.type === 'percentage'
-                          ? 'Potongan Harga'
-                          : 'Potongan Langsung'}
+                        {promo.type === 'discount_percent' ? 'Potongan Harga' : 'Potongan Langsung'}
                       </span>
                     </div>
                   </TableCell>
@@ -143,12 +148,12 @@ export function PromotionTable({ promos, onReset }: PromotionTableProps) {
                     <div className="flex items-center gap-1.5 text-xs text-slate-600">
                       <Calendar className="h-3 w-3 text-slate-400" />
                       <span>
-                        {new Date(promo.startDate).toLocaleDateString('id-ID', {
+                        {new Date(promo.start_date).toLocaleDateString('id-ID', {
                           day: 'numeric',
                           month: 'short',
                         })}{' '}
                         -{' '}
-                        {new Date(promo.endDate).toLocaleDateString('id-ID', {
+                        {new Date(promo.end_date).toLocaleDateString('id-ID', {
                           day: 'numeric',
                           month: 'short',
                           year: 'numeric',
@@ -160,21 +165,23 @@ export function PromotionTable({ promos, onReset }: PromotionTableProps) {
                     <div className="flex w-32 flex-col gap-1.5">
                       <div className="flex justify-between text-[10px]">
                         <span className="font-medium text-slate-500">
-                          {promo.usageCount} Terpakai
+                          {promo.usageCount || 0} Terpakai
                         </span>
                         <span className="text-slate-400">
-                          {Math.round((promo.usageCount / promo.limit) * 100)}%
+                          {Math.round(((promo.usageCount || 0) / (promo.limit || 100)) * 100)}%
                         </span>
                       </div>
                       <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
                         <div
                           className={cn(
                             'h-full rounded-full transition-all duration-500',
-                            promo.usageCount / promo.limit > 0.8
+                            (promo.usageCount || 0) / (promo.limit || 100) > 0.8
                               ? 'bg-amber-500'
                               : 'bg-green-500'
                           )}
-                          style={{ width: `${(promo.usageCount / promo.limit) * 100}%` }}
+                          style={{
+                            width: `${((promo.usageCount || 0) / (promo.limit || 100)) * 100}%`,
+                          }}
                         />
                       </div>
                     </div>
