@@ -127,26 +127,6 @@ router.get(
 
 /**
  * @swagger
- * /analytics/farmer/{id}:
- *   get:
- *     summary: Get personal analytics for a farmer
- *     tags: [Analytics]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Farmer analytics data
- */
-router.get('/farmer/:id', gatewayAuthMiddleware, overviewController.getFarmerAnalytics);
-
-/**
- * @swagger
  * /analytics/farmer/{id}/revenue-chart:
  *   get:
  *     summary: Get revenue chart data for a farmer
@@ -179,6 +159,26 @@ router.get(
   validateQuery(FarmerRevenueChartQuerySchema),
   overviewController.getFarmerRevenueChart
 );
+
+/**
+ * @swagger
+ * /analytics/farmer/{id}:
+ *   get:
+ *     summary: Get personal analytics for a farmer
+ *     tags: [Analytics]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Farmer analytics data
+ */
+router.get('/farmer/:id', gatewayAuthMiddleware, overviewController.getFarmerAnalytics);
 
 /**
  * @swagger

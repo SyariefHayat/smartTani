@@ -20,11 +20,11 @@ Sentry.init({
 });
 
 import { correlationIdMiddleware } from '../../../shared/middleware/correlationId';
-import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
+import { requestLoggerMiddleware as _requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
 import { xssSanitizerMiddleware } from '../../../shared/middleware/xssSanitizer';
 import { gatewayAuthMiddleware } from './middleware/auth.middleware';
-import { gatewayRateLimiter } from './middleware/rate-limiter.middleware';
+import { gatewayRateLimiter as _gatewayRateLimiter } from './middleware/rate-limiter.middleware';
 import { AppRequest } from '../../../shared/types/express';
 
 // Performance: Use keep-alive agents for proxying
@@ -41,17 +41,16 @@ const _httpsAgent = new https.Agent(agentOptions);
 
 export const app = express();
 
-app.use(cors({
-  origin: env.CORS_ORIGIN === '*' ? '*' : env.CORS_ORIGIN.split(','),
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: env.CORS_ORIGIN === '*' ? '*' : env.CORS_ORIGIN.split(','),
+    credentials: true,
+  })
+);
 
 // HTTPS Enforcement (for production/staging)
 app.use((req, res, next) => {
-  if (
-    env.NODE_ENV === 'production' &&
-    req.headers['x-forwarded-proto'] !== 'https'
-  ) {
+  if (env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
     return res.redirect(`https://${req.headers.host}${req.url}`);
   }
   next();
@@ -73,6 +72,7 @@ const proxyOptions = {
   changeOrigin: true,
   agent: httpAgent, // Use keep-alive agent
   on: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     proxyReq: (proxyReq: any, req: any) => {
       // Forward Correlation ID if present
       if (req.correlationId) {
@@ -99,7 +99,6 @@ const proxyOptions = {
     },
   },
 };
-
 
 // Auth Service
 app.use(
@@ -156,7 +155,7 @@ app.use(
   createProxyMiddleware({
     ...proxyOptions,
     target: env.ANALYTICS_SERVICE_URL,
-    pathFilter: '/analytics',
+    pathFilter: ['/analytics'],
   })
 );
 

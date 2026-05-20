@@ -55,7 +55,7 @@ class OverviewController {
 
   async getFarmerAnalytics(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const user = (req as AppRequest).user as { id: string; role: string };
 
       if (user.role !== 'admin' && user.id !== id) {
@@ -74,7 +74,7 @@ class OverviewController {
 
   async getFarmerRevenueChart(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const user = (req as AppRequest).user as { id: string; role: string };
 
       if (user.role !== 'admin' && user.id !== id) {
@@ -95,7 +95,7 @@ class OverviewController {
 
   async getInvestorAnalytics(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const user = (req as AppRequest).user as { id: string; role: string };
 
       if (user.role !== 'admin' && user.id !== id) {
