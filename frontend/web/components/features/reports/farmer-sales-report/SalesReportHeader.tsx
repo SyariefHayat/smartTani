@@ -4,7 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Download, FileDown, Printer } from 'lucide-react';
 import { DatePickerWithRange } from '@/components/sections/dashboard/farmer/DatePickerRange';
 
-export function SalesReportHeader() {
+interface SalesReportHeaderProps {
+  onExportCSV?: () => void;
+  isExporting?: boolean;
+}
+
+export function SalesReportHeader({ onExportCSV, isExporting }: SalesReportHeaderProps) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
@@ -22,9 +27,13 @@ export function SalesReportHeader() {
           <FileDown className="mr-2 h-4 w-4" />
           PDF
         </Button>
-        <Button className="bg-green-600 hover:bg-green-700">
+        <Button
+          className="bg-green-600 hover:bg-green-700"
+          onClick={onExportCSV}
+          disabled={isExporting}
+        >
           <Download className="mr-2 h-4 w-4" />
-          Export CSV
+          {isExporting ? 'Mengekspor...' : 'Export CSV'}
         </Button>
       </div>
     </div>
