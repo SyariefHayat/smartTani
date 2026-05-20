@@ -1,6 +1,7 @@
 'use client';
 
-import { ColumnDef } from '@tanstack/react-table';
+import * as React from 'react';
+import { ColumnDef, Row } from '@tanstack/react-table';
 import { ProductStock } from './types';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, Eye, Edit, History, AlertCircle } from 'lucide-react';
@@ -14,6 +15,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { format } from 'date-fns';
+
+interface ActionCellProps {
+  row: Row<ProductStock>;
+  onUpdateStock?: (p: ProductStock) => void;
+  onSetMinStock?: (p: ProductStock) => void;
+}
 
 export const columns: ColumnDef<ProductStock>[] = [
   {
@@ -100,7 +107,9 @@ export const columns: ColumnDef<ProductStock>[] = [
   },
   {
     id: 'actions',
-    cell: () => {
+    cell: (props) => {
+      const { row, onUpdateStock, onSetMinStock } = props as unknown as ActionCellProps;
+      const product = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -115,9 +124,13 @@ export const columns: ColumnDef<ProductStock>[] = [
               <Eye className="mr-2 h-4 w-4" />
               Lihat Detail
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onUpdateStock?.(product)}>
               <Edit className="mr-2 h-4 w-4" />
               Update Stok
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onSetMinStock?.(product)}>
+              <AlertCircle className="mr-2 h-4 w-4" />
+              Set Min. Stok
             </DropdownMenuItem>
             <DropdownMenuItem>
               <History className="mr-2 h-4 w-4" />

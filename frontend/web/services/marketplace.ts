@@ -18,6 +18,7 @@ export interface Product {
   price_per_unit: number;
   unit: string;
   stock: number;
+  min_stock: number;
   min_order: number;
   location: {
     province: string;
@@ -73,7 +74,7 @@ export const marketplaceService = {
     const response = await api.get('/products', { params });
     return response.data;
   },
-  
+
   getProductById: async (id: string): Promise<GetProductResponse> => {
     const response = await api.get(`/products/${id}`);
     return response.data;
@@ -108,5 +109,5 @@ export const marketplaceService = {
   getCategories: async (): Promise<GetCategoriesResponse> => {
     const response = await api.get('/categories');
     return response.data;
-  }
+  },
 };
