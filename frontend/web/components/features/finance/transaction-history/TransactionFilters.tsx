@@ -25,6 +25,14 @@ export function TransactionFilters<TData>({ table }: TransactionFiltersProps<TDa
   const isFiltered = table.getState().columnFilters.length > 0;
   const [date, setDate] = React.useState<Date>();
 
+  React.useEffect(() => {
+    if (date) {
+      table.getColumn('date')?.setFilterValue(format(date, 'yyyy-MM-dd'));
+    } else {
+      table.getColumn('date')?.setFilterValue(undefined);
+    }
+  }, [date, table]);
+
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-1 items-center gap-2">
@@ -56,7 +64,10 @@ export function TransactionFilters<TData>({ table }: TransactionFiltersProps<TDa
         {isFiltered && (
           <Button
             variant="ghost"
-            onClick={() => table.resetColumnFilters()}
+            onClick={() => {
+              setDate(undefined);
+              table.resetColumnFilters();
+            }}
             className="h-8 px-2 lg:px-3"
           >
             Reset
