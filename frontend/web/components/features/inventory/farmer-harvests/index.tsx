@@ -11,84 +11,63 @@ import {
   type SortingState,
   type VisibilityState,
 } from '@tanstack/react-table';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { HarvestHeader } from './HarvestHeader';
 import { HarvestStats } from './HarvestStats';
 import { HarvestFilters } from './HarvestFilters';
 import { WarehouseTable } from '../farmer-warehouse/WarehouseTable';
 import { columns } from './columns';
+import { harvestService } from '@/services/harvest';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { HarvestForm } from './HarvestForm';
+import { toast } from 'sonner';
 import { FarmerHarvest } from './types';
 
-const MOCK_HARVESTS: FarmerHarvest[] = [
-  {
-    id: 'HRV-001',
-    landId: 'LND-001',
-    landName: 'Sawah Utara Blok A',
-    cropName: 'Padi Ciherang',
-    harvestDate: '2024-05-15T08:00:00Z',
-    actualYield: 5200,
-    expectedYield: 5000,
-    unit: 'kg',
-    status: 'completed',
-    quality: 'A',
-  },
-  {
-    id: 'HRV-002',
-    landId: 'LND-002',
-    landName: 'Kebun Jagung Selatan',
-    cropName: 'Jagung Hibrida',
-    harvestDate: '2024-05-10T08:00:00Z',
-    actualYield: 2450,
-    expectedYield: 2500,
-    unit: 'kg',
-    status: 'completed',
-    quality: 'B',
-  },
-  {
-    id: 'HRV-003',
-    landId: 'LND-003',
-    landName: 'Lahan Sayur Blok B',
-    cropName: 'Cabai Keriting',
-    harvestDate: '2024-06-20T08:00:00Z',
-    expectedYield: 800,
-    unit: 'kg',
-    status: 'scheduled',
-    quality: 'pending',
-  },
-  {
-    id: 'HRV-004',
-    landId: 'LND-001',
-    landName: 'Sawah Utara Blok A',
-    cropName: 'Padi Ciherang',
-    harvestDate: '2024-03-10T08:00:00Z',
-    actualYield: 4800,
-    expectedYield: 5000,
-    unit: 'kg',
-    status: 'completed',
-    quality: 'B',
-  },
-  {
-    id: 'HRV-005',
-    landId: 'LND-004',
-    landName: 'Sawah Timur Blok C',
-    cropName: 'Kedelai',
-    harvestDate: '2024-05-25T08:00:00Z',
-    expectedYield: 1500,
-    unit: 'kg',
-    status: 'scheduled',
-    quality: 'pending',
-  },
-];
-
 export function FarmerHarvestManagement() {
+  const queryClient = useQueryClient();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const [editingHarvest, setEditingHarvest] = React.useState<FarmerHarvest | null>(null);
+  const [deletingHarvestId, setDeletingHarvestId] = React.useState<string | null>(null);
+
+  const {
+    data: harvests = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['farmer-harvests'],
+    queryFn: () => harvestService.getHarvests(),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => harvestService.deleteHarvest(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['farmer-harvests'] });
+      toast.success('Catatan panen berhasil dihapus');
+      setDeletingHarvestId(null);
+    },
+    onError: (error: unknown) => {
+      const axiosError = error as { response?: { data?: { message?: string } } };
+      const errMsg = axiosError?.response?.data?.message || 'Gagal menghapus catatan panen';
+      toast.error(errMsg);
+    },
+  });
+
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
-    data: MOCK_HARVESTS,
+    data: harvests,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -104,18 +83,98 @@ export function FarmerHarvestManagement() {
       columnVisibility,
       rowSelection,
     },
+    meta: {
+      onEdit: (harvest: FarmerHarvest) => setEditingHarvest(harvest),
+      onDelete: (id: string) => setDeletingHarvestId(id),
+    },
   });
+
+  if (error) {
+    return (
+      <div className="flex h-64 flex-col items-center justify-center gap-4 text-center">
+        <p className="text-destructive font-medium">Gagal mengambil data panen</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="text-sm text-green-600 hover:underline font-medium"
+        >
+          Coba lagi
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full text-slate-900">
       <div className="mx-auto flex w-full flex-col gap-6">
         <HarvestHeader />
-        <HarvestStats harvests={MOCK_HARVESTS} />
+
+        {isLoading ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-28 w-full rounded-2xl" />
+            ))}
+          </div>
+        ) : (
+          <HarvestStats harvests={harvests} />
+        )}
+
         <div className="space-y-4">
           <HarvestFilters table={table} />
-          <WarehouseTable table={table} columnsCount={columns.length} />
+          {isLoading ? (
+            <div className="space-y-3">
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-24 w-full" />
+            </div>
+          ) : (
+            <WarehouseTable table={table} columnsCount={columns.length} />
+          )}
         </div>
       </div>
+
+      {/* Edit Dialog */}
+      <Dialog
+        open={!!editingHarvest}
+        onOpenChange={(open: boolean) => !open && setEditingHarvest(null)}
+      >
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Catatan Panen</DialogTitle>
+            <DialogDescription>Perbarui data panen hasil tani Anda.</DialogDescription>
+          </DialogHeader>
+          {editingHarvest && (
+            <HarvestForm initialData={editingHarvest} onSuccess={() => setEditingHarvest(null)} />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Alert Dialog */}
+      <Dialog
+        open={!!deletingHarvestId}
+        onOpenChange={(open: boolean) => !open && setDeletingHarvestId(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Hapus Catatan Panen?</DialogTitle>
+            <DialogDescription>
+              Tindakan ini tidak dapat dibatalkan. Catatan hasil panen akan dihapus secara permanen
+              dari sistem.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-3 pt-4">
+            <Button variant="outline" onClick={() => setDeletingHarvestId(null)}>
+              Batal
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => deletingHarvestId && deleteMutation.mutate(deletingHarvestId)}
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? 'Menghapus...' : 'Ya, Hapus'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

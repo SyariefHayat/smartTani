@@ -1,16 +1,19 @@
-export type HarvestStatus = 'scheduled' | 'ongoing' | 'completed' | 'cancelled';
-export type HarvestQuality = 'A' | 'B' | 'C' | 'D' | 'pending';
+export type HarvestQuality = 'A' | 'B' | 'C';
 
 export interface FarmerHarvest {
   id: string;
-  landId: string;
-  landName: string;
-  cropName: string;
-  harvestDate: string;
-  actualYield?: number;
-  expectedYield: number;
+  farmer_id: string;
+  land_id: string;
+  crop_name: string;
+  quantity: number;
   unit: string;
-  status: HarvestStatus;
-  quality: HarvestQuality;
+  harvest_date: string;
+  quality_grade: HarvestQuality;
   notes?: string;
+  created_at: string;
+  updated_at: string;
+  land?: {
+    id: string;
+    name: string;
+  };
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { Sprout, TrendingUp, Award, AlertCircle } from 'lucide-react';
+import { Sprout, TrendingUp, Award, Leaf } from 'lucide-react';
 import { FarmerHarvest } from './types';
 
 interface HarvestStatsProps {
@@ -9,37 +9,36 @@ interface HarvestStatsProps {
 }
 
 export function HarvestStats({ harvests }: HarvestStatsProps) {
-  const completedHarvests = harvests.filter((h) => h.status === 'completed');
-  const totalYield = completedHarvests.reduce((acc, h) => acc + (h.actualYield || 0), 0);
-  const goodQualityCount = completedHarvests.filter((h) => ['A', 'B'].includes(h.quality)).length;
-  const scheduledCount = harvests.filter((h) => h.status === 'scheduled').length;
+  const totalYield = harvests.reduce((acc, h) => acc + (h.quantity || 0), 0);
+  const goodQualityCount = harvests.filter((h) => ['A', 'B'].includes(h.quality_grade)).length;
+  const uniqueCrops = new Set(harvests.map((h) => h.crop_name)).size;
 
   const stats = [
     {
-      label: 'Total Panen Selesai',
-      value: completedHarvests.length,
+      label: 'Total Catatan Panen',
+      value: harvests.length,
       icon: Sprout,
       color: 'text-blue-600',
       bgColor: 'bg-blue-100',
     },
     {
-      label: 'Total Hasil (kg)',
+      label: 'Total Hasil Panen (kg)',
       value: totalYield.toLocaleString('id-ID'),
       icon: TrendingUp,
       color: 'text-green-600',
       bgColor: 'bg-green-100',
     },
     {
-      label: 'Kualitas Baik (A/B)',
+      label: 'Kualitas Baik (Grade A/B)',
       value: goodQualityCount,
       icon: Award,
       color: 'text-orange-600',
       bgColor: 'bg-orange-100',
     },
     {
-      label: 'Akan Datang',
-      value: scheduledCount,
-      icon: AlertCircle,
+      label: 'Jenis Tanaman',
+      value: uniqueCrops,
+      icon: Leaf,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
     },

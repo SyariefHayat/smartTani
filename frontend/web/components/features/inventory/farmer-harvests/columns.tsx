@@ -6,12 +6,13 @@ import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
-import { Eye, Edit2, ClipboardCheck, MoreHorizontal } from 'lucide-react';
+import { Edit2, Trash2, MoreHorizontal } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
@@ -19,53 +20,47 @@ export const columns: ColumnDef<FarmerHarvest>[] = [
   {
     accessorKey: 'id',
     header: 'ID Panen',
-    cell: ({ row }) => <span className="font-mono text-xs">#{row.getValue('id')}</span>,
+    cell: ({ row }) => (
+      <span className="font-mono text-xs">#{(row.getValue('id') as string).substring(0, 8)}</span>
+    ),
   },
   {
-    accessorKey: 'landName',
+    accessorKey: 'land.name',
+    id: 'landName',
     header: 'Lahan',
     cell: ({ row }) => (
       <div className="flex flex-col">
-        <span className="font-medium">{row.getValue('landName')}</span>
-        <span className="text-xs text-muted-foreground">{row.original.cropName}</span>
+        <span className="font-semibold text-slate-900">{row.original.land?.name || 'Lahan'}</span>
+        <span className="text-xs text-slate-500 mt-0.5">{row.original.crop_name}</span>
       </div>
     ),
   },
   {
-    accessorKey: 'harvestDate',
+    accessorKey: 'harvest_date',
     header: 'Tanggal Panen',
     cell: ({ row }) => {
-      const date = new Date(row.getValue('harvestDate'));
+      const date = new Date(row.getValue('harvest_date'));
       return <span className="text-sm">{format(date, 'dd MMM yyyy', { locale: id })}</span>;
     },
   },
   {
-    accessorKey: 'actualYield',
+    accessorKey: 'quantity',
     header: 'Hasil Panen',
     cell: ({ row }) => {
-      const actual = row.original.actualYield;
-      const expected = row.original.expectedYield;
+      const quantity = row.original.quantity;
       const unit = row.original.unit;
-
-      if (!actual)
-        return (
-          <span className="text-sm text-muted-foreground italic">
-            Est: {expected} {unit}
-          </span>
-        );
-
       return (
         <span className="font-bold text-green-600">
-          {actual} {unit}
+          {quantity} {unit}
         </span>
       );
     },
   },
   {
-    accessorKey: 'status',
-    header: 'Status',
+    accessorKey: 'quality_grade',
+    header: 'Kualitas',
     cell: ({ row }) => {
-      const status = row.getValue('status') as string;
+      const grade = row.getValue('quality_grade') as string;
       const config: Record<
         string,
         {
@@ -80,47 +75,47 @@ export const columns: ColumnDef<FarmerHarvest>[] = [
             | 'info';
         }
       > = {
-        completed: { label: 'Selesai', variant: 'success' },
-        ongoing: { label: 'Berlangsung', variant: 'info' },
-        scheduled: { label: 'Terjadwal', variant: 'warning' },
-        cancelled: { label: 'Batal', variant: 'secondary' },
+        A: { label: 'Grade A', variant: 'success' },
+        B: { label: 'Grade B', variant: 'info' },
+        C: { label: 'Grade C', variant: 'warning' },
       };
-      const { label, variant } = config[status] || { label: status, variant: 'outline' };
+      const { label, variant } = config[grade] || { label: grade, variant: 'outline' };
       return <Badge variant={variant}>{label}</Badge>;
     },
   },
   {
     id: 'actions',
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const harvest = row.original;
+      const meta = table.options.meta as {
+        onEdit?: (harvest: FarmerHarvest) => void;
+        onDelete?: (id: string) => void;
+      };
+
       return (
-        <div className="flex items-center gap-2">
-          {harvest.status === 'scheduled' && (
-            <Button size="sm" className="bg-green-600 hover:bg-green-700 h-8">
-              <ClipboardCheck className="mr-1 h-3.5 w-3.5" />
-              Catat
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
             </Button>
-          )}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-              <DropdownMenuItem>
-                <Eye className="mr-2 h-4 w-4" />
-                Lihat Detail
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Edit2 className="mr-2 h-4 w-4" />
-                Edit Jadwal
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => meta?.onEdit?.(harvest)}>
+              <Edit2 className="mr-2 h-4 w-4" />
+              Edit Panen
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onClick={() => meta?.onDelete?.(harvest.id)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Hapus Panen
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },

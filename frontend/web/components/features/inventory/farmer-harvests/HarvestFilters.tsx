@@ -44,20 +44,19 @@ export function HarvestFilters<TData>({ table }: HarvestFiltersProps<TData>) {
       </div>
       <div className="flex items-center gap-2">
         <Select
-          value={(table.getColumn('status')?.getFilterValue() as string) ?? 'all'}
+          value={(table.getColumn('quality_grade')?.getFilterValue() as string) ?? 'all'}
           onValueChange={(value) =>
-            table.getColumn('status')?.setFilterValue(value === 'all' ? '' : value)
+            table.getColumn('quality_grade')?.setFilterValue(value === 'all' ? '' : value)
           }
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Status Panen" />
+            <SelectValue placeholder="Kualitas" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Semua Status</SelectItem>
-            <SelectItem value="scheduled">Terjadwal</SelectItem>
-            <SelectItem value="ongoing">Berlangsung</SelectItem>
-            <SelectItem value="completed">Selesai</SelectItem>
-            <SelectItem value="cancelled">Dibatalkan</SelectItem>
+            <SelectItem value="all">Semua Kualitas</SelectItem>
+            <SelectItem value="A">Grade A</SelectItem>
+            <SelectItem value="B">Grade B</SelectItem>
+            <SelectItem value="C">Grade C</SelectItem>
           </SelectContent>
         </Select>
       </div>
