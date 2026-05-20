@@ -17,12 +17,13 @@ Sentry.init({
 });
 
 import { correlationIdMiddleware } from '../../../shared/middleware/correlationId';
-import { requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
+import { requestLoggerMiddleware as _requestLoggerMiddleware } from '../../../shared/middleware/requestLogger';
 import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler';
 import healthRoutes from './routes/health.routes';
 import metricsRoutes from './routes/metrics.routes';
 import authRoutes from './routes/auth.routes';
-import { metricsMiddleware } from './middleware/metrics.middleware';
+import landRoutes from './routes/land.routes';
+import { metricsMiddleware as _metricsMiddleware } from './middleware/metrics.middleware';
 
 import cluster from 'cluster';
 import os from 'os';
@@ -37,9 +38,11 @@ app.use(correlationIdMiddleware);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+app.get('/health', (req, res) => res.json({ status: 'ok' })); // Simple health check for gateway
 app.use('/health', healthRoutes);
 app.use('/metrics', metricsRoutes);
 app.use('/auth', authRoutes);
+app.use('/lands', landRoutes);
 
 // Sentry Error Handler
 Sentry.setupExpressErrorHandler(app);

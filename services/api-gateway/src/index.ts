@@ -102,7 +102,11 @@ const proxyOptions = {
 
 // Auth Service
 app.use(
-  createProxyMiddleware({ ...proxyOptions, target: env.AUTH_SERVICE_URL, pathFilter: '/auth' })
+  createProxyMiddleware({
+    ...proxyOptions,
+    target: env.AUTH_SERVICE_URL,
+    pathFilter: ['/auth', '/lands'],
+  })
 );
 
 // Marketplace Service
