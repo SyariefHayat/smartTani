@@ -70,3 +70,5 @@ export const analyticsService = {
     return response.data.data;
   },
 };
+
+export const farmerAnalyticsService = analyticsService;
