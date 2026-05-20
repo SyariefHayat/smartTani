@@ -3,12 +3,17 @@ import { app } from './index';
 import MessageBroker from './lib/broker';
 import Category from './models/category.model';
 import { Product } from './models/product.model';
+import { Review } from './models/review.model';
+import orderServiceClient from './lib/order-client';
 import S3Manager from './lib/s3';
 import RedisClient from './lib/redis';
+import sharp from 'sharp';
 
 jest.mock('./lib/broker');
 jest.mock('./models/category.model');
 jest.mock('./models/product.model');
+jest.mock('./models/review.model');
+jest.mock('./lib/order-client');
 jest.mock('./lib/s3');
 jest.mock('./lib/auth-client');
 jest.mock('./lib/redis', () => ({
@@ -17,9 +22,12 @@ jest.mock('./lib/redis', () => ({
     getInstance: jest.fn().mockReturnValue({
       ping: jest.fn().mockResolvedValue('PONG'),
       call: jest.fn().mockResolvedValue('OK'),
+      del: jest.fn().mockResolvedValue(1),
     }),
-    get: jest.fn(),
-    setex: jest.fn(),
+    get: jest.fn().mockResolvedValue(null),
+    set: jest.fn().mockResolvedValue('OK'),
+    setex: jest.fn().mockResolvedValue('OK'),
+    del: jest.fn().mockResolvedValue(1),
   },
 }));
 jest.mock('sharp', () => {
@@ -32,8 +40,30 @@ jest.mock('sharp', () => {
 
 describe('Marketplace Service', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
     (MessageBroker.connect as jest.Mock).mockResolvedValue(undefined);
+
+    // Re-setup essential mocks that were reset
+    (RedisClient.getInstance as jest.Mock).mockReturnValue({
+      ping: jest.fn().mockResolvedValue('PONG'),
+      call: jest.fn().mockResolvedValue('OK'),
+      del: jest.fn().mockResolvedValue(1),
+      send: jest.fn().mockResolvedValue({}),
+    });
+    (RedisClient.get as jest.Mock).mockResolvedValue(null);
+    (RedisClient.set as jest.Mock).mockResolvedValue('OK');
+    (RedisClient.setex as jest.Mock).mockResolvedValue('OK');
+    (RedisClient.del as jest.Mock).mockResolvedValue(1);
+
+    (S3Manager.getInstance as jest.Mock).mockReturnValue({
+      send: jest.fn().mockResolvedValue({}),
+    });
+
+    (sharp as unknown as jest.Mock).mockImplementation(() => ({
+      resize: jest.fn().mockReturnThis(),
+      webp: jest.fn().mockReturnThis(),
+      toBuffer: jest.fn().mockResolvedValue(Buffer.from('processed-image')),
+    }));
   });
 
   it('should return 200 for health check', async () => {
@@ -312,6 +342,82 @@ describe('Marketplace Service', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
+    });
+  });
+
+  describe('POST /products/:id/reviews', () => {
+    const productId = '6a03d00c22e9882dac8e0a55';
+    const reviewData = {
+      rating: 5,
+      comment: 'Barang sangat bagus dan segar!',
+    };
+
+    it('should create review successfully as buyer', async () => {
+      (Product.findById as jest.Mock).mockResolvedValue({ _id: productId });
+      (orderServiceClient.checkPurchase as jest.Mock).mockResolvedValue({
+        hasPurchased: true,
+        orderId: 'order-123',
+      });
+      (Review.findOne as jest.Mock).mockResolvedValue(null);
+      (Review.create as jest.Mock).mockResolvedValue({
+        _id: 'rev-1',
+        ...reviewData,
+        buyer_id: 'buyer-1',
+        buyer_name: 'Buyer One',
+        product_id: productId,
+      });
+
+      const response = await request(app)
+        .post(`/products/${productId}/reviews`)
+        .set('X-User-Id', 'buyer-1')
+        .set('X-User-Role', 'buyer')
+        .set('X-User-Name', 'Buyer One')
+        .send(reviewData);
+
+      expect(response.status).toBe(201);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.rating).toBe(reviewData.rating);
+      expect(response.body.data.buyer_name).toBe('Buyer One');
+    });
+
+    it('should return 422 for invalid rating', async () => {
+      const response = await request(app)
+        .post(`/products/${productId}/reviews`)
+        .set('X-User-Id', 'buyer-1')
+        .set('X-User-Role', 'buyer')
+        .send({ rating: 6, comment: 'Too high' });
+
+      expect(response.status).toBe(422);
+    });
+
+    it('should return 403 if not purchased', async () => {
+      (Product.findById as jest.Mock).mockResolvedValue({ _id: productId });
+      (orderServiceClient.checkPurchase as jest.Mock).mockResolvedValue({ hasPurchased: false });
+
+      const response = await request(app)
+        .post(`/products/${productId}/reviews`)
+        .set('X-User-Id', 'buyer-1')
+        .set('X-User-Role', 'buyer')
+        .send(reviewData);
+
+      expect(response.status).toBe(403);
+    });
+
+    it('should return 409 if already reviewed', async () => {
+      (Product.findById as jest.Mock).mockResolvedValue({ _id: productId });
+      (orderServiceClient.checkPurchase as jest.Mock).mockResolvedValue({
+        hasPurchased: true,
+        orderId: 'order-123',
+      });
+      (Review.findOne as jest.Mock).mockResolvedValue({ _id: 'rev-0' });
+
+      const response = await request(app)
+        .post(`/products/${productId}/reviews`)
+        .set('X-User-Id', 'buyer-1')
+        .set('X-User-Role', 'buyer')
+        .send(reviewData);
+
+      expect(response.status).toBe(409);
     });
   });
 });

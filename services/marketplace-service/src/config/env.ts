@@ -15,6 +15,7 @@ const envSchema = z.object({
   RABBITMQ_URL: z.string().url(),
   SENTRY_DSN: z.string().optional(),
   AUTH_SERVICE_URL: z.string().url().default('http://localhost:3001'),
+  ORDER_SERVICE_URL: z.string().url().default('http://localhost:3003'),
 });
 
 const _env = envSchema.safeParse(process.env);

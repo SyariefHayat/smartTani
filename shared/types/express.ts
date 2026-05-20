@@ -4,6 +4,8 @@ export interface AppRequest extends Request {
   correlationId?: string;
   user?: {
     id: string;
+    role?: string;
+    full_name?: string;
     [key: string]: unknown;
   };
 }

@@ -1,0 +1,11 @@
+import { z } from 'zod';
+
+export const CreateReviewSchema = z.object({
+  rating: z.number().min(1, 'Rating minimal 1').max(5, 'Rating maksimal 5'),
+  comment: z
+    .string()
+    .min(10, 'Komentar minimal 10 karakter')
+    .max(500, 'Komentar maksimal 500 karakter'),
+});
+
+export type CreateReviewInput = z.infer<typeof CreateReviewSchema>;

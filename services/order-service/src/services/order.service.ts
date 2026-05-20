@@ -1,5 +1,4 @@
 import { logger } from '../../../../shared/utils/logger';
-import { Prisma } from '@prisma/client';
 import { CheckoutInput } from '../schemas/cart.schema';
 import cartService from './cart.service';
 import marketplaceClient from '../lib/marketplace-client';
@@ -32,7 +31,7 @@ export class OrderService {
       role === 'petani'
         ? orders.map((order) => ({
             ...order,
-            items: order.items.filter((item: any) => item.farmer_id === userId),
+            items: order.items.filter((item: { farmer_id: string }) => item.farmer_id === userId),
           }))
         : orders;
 
@@ -136,7 +135,9 @@ export class OrderService {
 
     // Validation: must be 'shipped' or 'delivered'
     if (order.status !== 'shipped' && order.status !== 'delivered') {
-      const error = new Error('Hanya order yang sedang dikirim atau sudah sampai yang bisa dikonfirmasi terima') as AppError;
+      const error = new Error(
+        'Hanya order yang sedang dikirim atau sudah sampai yang bisa dikonfirmasi terima'
+      ) as AppError;
       error.statusCode = 400;
       error.code = 'ORDER_002';
       throw error;
@@ -205,12 +206,16 @@ export class OrderService {
     const updatedOrder = await orderRepository.requestRefund(orderId, input.reason);
 
     // Publish Event for notification-service (Admin notification)
-    await MessageBroker.publish(BROKER_EXCHANGES.EVENTS, BROKER_ROUTING_KEYS.ORDER_REFUND_REQUESTED, {
-      orderId: updatedOrder.id,
-      buyerId: updatedOrder.buyer_id,
-      totalAmount: updatedOrder.total_amount,
-      reason: input.reason,
-    });
+    await MessageBroker.publish(
+      BROKER_EXCHANGES.EVENTS,
+      BROKER_ROUTING_KEYS.ORDER_REFUND_REQUESTED,
+      {
+        orderId: updatedOrder.id,
+        buyerId: updatedOrder.buyer_id,
+        totalAmount: updatedOrder.total_amount,
+        reason: input.reason,
+      }
+    );
 
     return updatedOrder;
   }
@@ -323,6 +328,22 @@ export class OrderService {
       logger.error('❌ Checkout failed:', error);
       throw error;
     }
+  }
+
+  async hasPurchasedProduct(buyerId: string, productId: string) {
+    const order = await prisma.order.findFirst({
+      where: {
+        buyer_id: buyerId,
+        status: { in: ['delivered', 'completed'] },
+        items: {
+          some: {
+            product_id: productId,
+          },
+        },
+      },
+    });
+
+    return order;
   }
 }
 

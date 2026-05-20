@@ -77,6 +77,16 @@ export class OrderController {
       next(error);
     }
   }
+
+  async checkPurchase(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { buyerId, productId } = req.query;
+      const order = await orderService.hasPurchasedProduct(buyerId as string, productId as string);
+      return res.status(200).json(successResponse({ hasPurchased: !!order, orderId: order?.id }));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new OrderController();

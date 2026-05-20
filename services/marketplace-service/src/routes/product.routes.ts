@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import productController from '../controllers/product.controller';
+import reviewController from '../controllers/review.controller';
 import { CreateProductSchema, UpdateProductSchema } from '../schemas/product.schema';
+import { CreateReviewSchema } from '../schemas/review.schema';
 import { validate } from '../../../../shared/middleware/validate';
 import { gatewayAuthMiddleware } from '../middleware/auth.middleware';
 import { authorize } from '../middleware/authorize.middleware';
@@ -56,6 +58,72 @@ router.get('/', productController.getProducts);
  *         description: Product not found
  */
 router.get('/:id', productController.getProductById);
+
+/**
+ * @swagger
+ * /products/{id}/reviews:
+ *   post:
+ *     summary: Post a review for a product (Buyer only)
+ *     tags: [Product]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - rating
+ *               - comment
+ *             properties:
+ *               rating:
+ *                 type: integer
+ *                 minimum: 1
+ *                 maximum: 5
+ *               comment:
+ *                 type: string
+ *                 minLength: 10
+ *                 maxLength: 500
+ *     responses:
+ *       201:
+ *         description: Review created successfully
+ *       403:
+ *         description: Forbidden (Not purchased/delivered)
+ *       409:
+ *         description: Already reviewed
+ */
+router.post(
+  '/:id/reviews',
+  gatewayAuthMiddleware,
+  authorize(['buyer']),
+  validate(CreateReviewSchema),
+  reviewController.createReview
+);
+
+/**
+ * @swagger
+ * /products/{id}/reviews:
+ *   get:
+ *     summary: Get product reviews
+ *     tags: [Product]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of reviews
+ */
+router.get('/:id/reviews', reviewController.getProductReviews);
 
 /**
  * @swagger

@@ -28,4 +28,7 @@ const reviewSchema = new Schema<IReview>(
 // Index for efficient querying of product reviews sorted by date
 reviewSchema.index({ product_id: 1, created_at: -1 });
 
+// Ensure a buyer can only review a product once
+reviewSchema.index({ buyer_id: 1, product_id: 1 }, { unique: true });
+
 export const Review = model<IReview>('Review', reviewSchema);

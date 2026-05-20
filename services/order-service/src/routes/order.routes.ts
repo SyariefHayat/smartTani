@@ -53,6 +53,8 @@ router.get(
   orderController.getOrders
 );
 
+router.get('/check-purchase', orderController.checkPurchase);
+
 /**
  * @swagger
  * /orders/{id}:
