@@ -1,18 +1,18 @@
-export type LandStatus = 'cultivating' | 'harvested' | 'fallow' | 'preparing';
-
-export interface CropInfo {
-  name: string;
-  plantingDate: string;
-  estimatedHarvestDate: string;
-  expectedYield: number; // in kg/ton
-}
+export type LandStatus = 'active' | 'fallow' | 'rented';
 
 export interface FarmerLand {
   id: string;
+  farmer_id: string;
   name: string;
-  location: string;
-  areaHa: number;
-  soilType: string;
+  location_province: string;
+  location_city: string;
+  location_district: string;
+  full_address: string;
+  area_ha: number;
+  soil_type?: string;
   status: LandStatus;
-  activeCrop?: CropInfo;
+  current_crop?: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
 }
