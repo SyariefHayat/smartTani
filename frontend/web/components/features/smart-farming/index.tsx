@@ -1,176 +1,114 @@
 'use client';
 
 import * as React from 'react';
-import { SmartFarmingHeader } from './SmartFarmingHeader';
-import { SensorOverview } from './SensorOverview';
-import { AutomationControl } from './AutomationControl';
-import { DeviceStatusList } from './DeviceStatusList';
-import { SensorData, AutomationTask, IoTDevice } from './types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Cloud, Sun, Droplets, Wind, Activity } from 'lucide-react';
-
-const MOCK_SENSORS: SensorData[] = [
-  {
-    id: '1',
-    name: 'Kelembaban Tanah',
-    type: 'moisture',
-    value: 45,
-    unit: '%',
-    status: 'normal',
-    lastReading: '2024-05-16T10:00:00Z',
-  },
-  {
-    id: '2',
-    name: 'Suhu Udara',
-    type: 'temperature',
-    value: 28.5,
-    unit: '°C',
-    status: 'normal',
-    lastReading: '2024-05-16T10:00:00Z',
-  },
-  {
-    id: '3',
-    name: 'pH Tanah',
-    type: 'ph',
-    value: 6.2,
-    unit: 'pH',
-    status: 'normal',
-    lastReading: '2024-05-16T10:00:00Z',
-  },
-  {
-    id: '4',
-    name: 'Intensitas Cahaya',
-    type: 'light',
-    value: 850,
-    unit: 'lux',
-    status: 'high',
-    lastReading: '2024-05-16T10:00:00Z',
-  },
-];
-
-const MOCK_TASKS: AutomationTask[] = [
-  {
-    id: '1',
-    name: 'Penyiraman Otomatis',
-    type: 'irrigation',
-    isEnabled: true,
-    status: 'active',
-    config: 'Moisture < 40%',
-  },
-  {
-    id: '2',
-    name: 'Pemupukan Cair',
-    type: 'fertilizer',
-    isEnabled: false,
-    status: 'idle',
-    config: 'Setiap Senin 08:00',
-  },
-  {
-    id: '3',
-    name: 'Penyemprotan Hama',
-    type: 'irrigation',
-    isEnabled: true,
-    status: 'scheduled',
-    config: 'Interval 3 hari',
-  },
-];
-
-const MOCK_DEVICES: IoTDevice[] = [
-  {
-    id: 'DEV-991',
-    name: 'Node Sensor Lahan A',
-    location: 'Blok Utara',
-    status: 'online',
-    battery: 85,
-    signal: 92,
-  },
-  {
-    id: 'DEV-992',
-    name: 'Gateway Utama',
-    location: 'Rumah Pompa',
-    status: 'online',
-    battery: 100,
-    signal: 98,
-  },
-  {
-    id: 'DEV-993',
-    name: 'Node Sensor Lahan B',
-    location: 'Blok Selatan',
-    status: 'warning',
-    battery: 15,
-    signal: 45,
-  },
-];
+import { Card, CardContent } from '@/components/ui/card';
+import { Cpu, Wifi, Layers, Bot, Sparkles, Activity } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export function SmartFarmingManagement() {
   return (
-    <div className="w-full text-slate-900">
+    <div className="w-full text-slate-900 animate-in fade-in duration-500">
       <div className="mx-auto flex w-full flex-col gap-6">
-        <SmartFarmingHeader />
-
-        <SensorOverview sensors={MOCK_SENSORS} />
-
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2 space-y-6">
-            <AutomationControl tasks={MOCK_TASKS} />
-
-            {/* Weather Card Placeholder */}
-            <Card className="shadow-sm border-none bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Prakiraan Cuaca</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <Sun className="h-12 w-12 text-yellow-300" />
-                    <div>
-                      <div className="text-3xl font-bold">31°C</div>
-                      <div className="text-sm opacity-90">Cerah Berawan • Lamongan, Jatim</div>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-x-8 gap-y-2">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Droplets className="h-4 w-4" /> 15% Hujan
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <Wind className="h-4 w-4" /> 12 km/h
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <Cloud className="h-4 w-4" /> 40% Awan
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <Activity className="h-4 w-4" /> UV: Sedang
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        {/* Header Section */}
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Smart Farming IoT</h1>
+            <p className="text-muted-foreground">
+              Integrasi teknologi Internet of Things (IoT) untuk pertanian presisi dan otomatisasi
+              lahan.
+            </p>
           </div>
+        </div>
 
-          <div className="space-y-6">
-            <DeviceStatusList devices={MOCK_DEVICES} />
+        {/* Coming Soon Glowing Hero Card */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 p-8 md:p-12 text-white shadow-xl border border-slate-800">
+          {/* Decorative glowing blobs */}
+          <div className="absolute -right-16 -top-16 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl" />
+          <div className="absolute -bottom-16 -left-16 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
 
-            <Card className="shadow-sm border-none">
-              <CardHeader>
-                <CardTitle className="text-sm font-bold">Log Aktivitas Terbaru</CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="space-y-0 text-xs">
-                  {[
-                    { time: '10:05', msg: 'Pompa Blok A dinyalakan otomatis' },
-                    { time: '09:30', msg: 'Sensor Moisture Lahan B mencapai batas bawah' },
-                    { time: '08:00', msg: 'Sistem Sinkronisasi Berhasil' },
-                  ].map((log, i) => (
-                    <div key={i} className="flex items-center gap-3 p-3 border-t">
-                      <span className="font-mono text-muted-foreground whitespace-nowrap">
-                        {log.time}
-                      </span>
-                      <span className="truncate">{log.msg}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+          <div className="relative z-10 flex flex-col items-center text-center max-w-2xl mx-auto py-10">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400 border border-emerald-500/20 mb-6 animate-pulse">
+              <Sparkles className="h-3.5 w-3.5" />
+              Fitur Masa Depan (IoT)
+            </div>
+
+            <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-emerald-300">
+              Integrasi Sensor & Irigasi Otomatis
+            </h2>
+
+            <p className="text-base text-slate-300 mb-8 leading-relaxed">
+              Kami sedang merancang sistem integrasi Internet of Things (IoT) yang tangguh. Anda
+              akan dapat memantau tingkat kelembaban tanah, keasaman (pH), suhu lingkungan secara
+              langsung, dan mengontrol perangkat irigasi presisi secara otomatis dari satu dashboard
+              terpadu.
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-lg shadow-emerald-950/30 transition-all duration-300 hover:shadow-emerald-600/30 hover:scale-[1.02]">
+                <Wifi className="mr-2 h-4 w-4" /> Hubungkan Perangkat IoT
+              </Button>
+              <div className="flex items-center gap-2 text-xs font-mono text-emerald-400">
+                <Activity className="h-4 w-4 text-emerald-400" /> Rilis Direncanakan: Q3 2026
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Upcoming Features Grid */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-bold text-slate-800">
+            Teknologi Pintar yang Sedang Dipersiapkan:
+          </h3>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                title: 'Sensor Tanah Realtime',
+                desc: 'Pantau kelembaban, pH tanah, suhu harian, dan kandungan hara secara presisi langsung dari sensor fisik di lahan.',
+                icon: Cpu,
+                color: 'text-emerald-500',
+                bgColor: 'bg-emerald-500/10',
+                borderColor: 'border-emerald-500/20',
+              },
+              {
+                title: 'Otomatisasi Pompa Air',
+                desc: 'Atur sistem irigasi pintar yang menyala otomatis jika kelembaban tanah berada di bawah ambang batas optimal tanaman.',
+                icon: Wifi,
+                color: 'text-blue-500',
+                bgColor: 'bg-blue-500/10',
+                borderColor: 'border-blue-500/20',
+              },
+              {
+                title: 'Pemetaan Lahan IoT',
+                desc: 'Visualisasikan denah blok lahan pertanian Anda dengan indikator kondisi tanaman termal terintegrasi sensor.',
+                icon: Layers,
+                color: 'text-purple-500',
+                bgColor: 'bg-purple-500/10',
+                borderColor: 'border-purple-500/20',
+              },
+              {
+                title: 'Asisten AI SmartTani',
+                desc: 'AI akan menganalisis tren data sensor harian untuk memberikan rekomendasi pemupukan dan penanggulangan hama.',
+                icon: Bot,
+                color: 'text-amber-500',
+                bgColor: 'bg-amber-500/10',
+                borderColor: 'border-amber-500/20',
+              },
+            ].map((feat) => (
+              <Card
+                key={feat.title}
+                className={`border ${feat.borderColor} bg-white transition-all duration-300 hover:shadow-md hover:-translate-y-0.5`}
+              >
+                <CardContent className="p-6">
+                  <div
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center ${feat.bgColor} mb-4`}
+                  >
+                    <feat.icon className={`h-5 w-5 ${feat.color}`} />
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-800 mb-1">{feat.title}</h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{feat.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </div>
