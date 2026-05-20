@@ -59,6 +59,33 @@ class RedisClient {
   public static async setex(key: string, seconds: number, value: unknown): Promise<void> {
     await this.set(key, value, seconds);
   }
+
+  public static async invalidateUserRefreshTokens(userId: string): Promise<void> {
+    const client = RedisClient.getInstance();
+    const stream = client.scanStream({
+      match: 'refresh:*',
+      count: 100,
+    });
+
+    for await (const keys of stream) {
+      if (keys.length > 0) {
+        const values = await client.mget(...keys);
+        const keysToDelete = keys.filter((key, index) => {
+          const value = values[index];
+          if (!value) return false;
+          try {
+            return JSON.parse(value) === userId;
+          } catch {
+            return value === userId;
+          }
+        });
+
+        if (keysToDelete.length > 0) {
+          await client.del(...keysToDelete);
+        }
+      }
+    }
+  }
 }
 
 export default RedisClient;

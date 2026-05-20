@@ -8,6 +8,7 @@ import {
   LogoutSchema,
   UpdateProfileSchema,
   UpdateUserStatusSchema,
+  ChangePasswordSchema,
 } from '../schemas/auth.schema';
 import { validate } from '../../../../shared/middleware/validate';
 import { loginRateLimiter } from '../middleware/rate-limiter.middleware';
@@ -92,7 +93,7 @@ router.post('/verify-email', validate(VerifyEmailSchema), authController.verifyE
  *       429:
  *         description: Too many requests
  */
-router.post('/login', validate(LoginSchema), authController.login);
+router.post('/login', loginRateLimiter, validate(LoginSchema), authController.login);
 
 /**
  * @swagger
@@ -145,6 +146,41 @@ router.post('/refresh', validate(RefreshTokenSchema), authController.refresh);
  *         description: Unauthorized
  */
 router.post('/logout', authenticate, validate(LogoutSchema), authController.logout);
+
+/**
+ * @swagger
+ * /auth/change-password:
+ *   post:
+ *     summary: Change user password
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [currentPassword, newPassword]
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *       401:
+ *         description: Invalid current password
+ *       422:
+ *         description: Validation error
+ */
+router.post(
+  '/change-password',
+  authenticate,
+  validate(ChangePasswordSchema),
+  authController.changePassword
+);
 
 /**
  * @swagger
@@ -305,6 +341,12 @@ router.patch('/users/:id/verify', authenticate, authorize(['admin']), authContro
  *       404:
  *         description: User not found
  */
-router.patch('/users/:id/status', authenticate, authorize(['admin']), validate(UpdateUserStatusSchema), authController.updateStatus);
+router.patch(
+  '/users/:id/status',
+  authenticate,
+  authorize(['admin']),
+  validate(UpdateUserStatusSchema),
+  authController.updateStatus
+);
 
 export default router;

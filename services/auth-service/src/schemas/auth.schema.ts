@@ -60,3 +60,10 @@ export const GetUsersSchema = z.object({
 export const UpdateUserStatusSchema = z.object({
   status: z.enum(['active', 'suspended', 'pending_verification']),
 });
+
+export const ChangePasswordSchema = z.object({
+  currentPassword: z.string().min(1, 'Password saat ini wajib diisi'),
+  newPassword: z.string().min(8, 'Password baru minimal 8 karakter'),
+});
+
+export type ChangePasswordInput = z.infer<typeof ChangePasswordSchema>;

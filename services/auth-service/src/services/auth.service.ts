@@ -316,6 +316,37 @@ export class AuthService {
     const { password: _password, ...userWithoutPassword } = updatedUser;
     return userWithoutPassword;
   }
+
+  async changePassword(userId: string, input: { currentPassword: string; newPassword: string }) {
+    // 1. Fetch user dari DB
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      const error = new Error('User tidak ditemukan') as AppError;
+      error.statusCode = 404;
+      error.code = 'AUTH_010';
+      throw error;
+    }
+
+    // 2. Compare currentPassword
+    const isPasswordValid = await bcrypt.compare(input.currentPassword, user.password);
+    if (!isPasswordValid) {
+      const error = new Error('Password saat ini salah') as AppError;
+      error.statusCode = 401;
+      error.code = 'AUTH_011';
+      throw error;
+    }
+
+    // 3. Hash newPassword
+    const hashedPassword = await bcrypt.hash(input.newPassword, 12);
+
+    // 4. Update di DB
+    await userRepository.update(userId, { password: hashedPassword });
+
+    // 5. Invalidate semua refresh token user di Redis
+    await RedisClient.invalidateUserRefreshTokens(userId);
+
+    return { message: 'Password berhasil diubah' };
+  }
 }
 
 export default new AuthService();
