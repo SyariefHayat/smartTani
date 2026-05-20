@@ -8,6 +8,7 @@ export interface IProduct extends Document {
   price_per_unit: number;
   unit: string;
   stock: number;
+  min_stock: number;
   min_order: number;
   location: {
     province: string;
@@ -29,6 +30,7 @@ const productSchema = new Schema<IProduct>(
     price_per_unit: { type: Number, required: true },
     unit: { type: String, required: true },
     stock: { type: Number, required: true, default: 0 },
+    min_stock: { type: Number, required: true, default: 10 },
     min_order: { type: Number, required: true, default: 1 },
     location: {
       province: { type: String, required: true },

@@ -7,6 +7,7 @@ export const CreateProductSchema = z.object({
   price_per_unit: z.number().positive('Harga harus lebih dari 0'),
   unit: z.string().min(1, 'Satuan wajib diisi'),
   stock: z.number().min(0, 'Stok tidak boleh negatif'),
+  min_stock: z.number().min(0, 'Stok minimal tidak boleh negatif').optional().default(10),
   min_order: z.number().min(1, 'Minimal order adalah 1'),
   location: z.object({
     province: z.string().min(1, 'Provinsi wajib diisi'),
@@ -49,6 +50,7 @@ export const UpdateProductSchema = z.object({
   price_per_unit: z.number().positive('Harga harus lebih dari 0').optional(),
   unit: z.string().min(1, 'Satuan wajib diisi').optional(),
   stock: z.number().min(0, 'Stok tidak boleh negatif').optional(),
+  min_stock: z.number().min(0, 'Stok minimal tidak boleh negatif').optional(),
   min_order: z.number().min(1, 'Minimal order adalah 1').optional(),
   location: z
     .object({

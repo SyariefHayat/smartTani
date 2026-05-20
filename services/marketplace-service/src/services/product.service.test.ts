@@ -8,10 +8,23 @@ jest.mock('../repositories/product.repository');
 jest.mock('../lib/auth-client');
 jest.mock('../lib/s3');
 jest.mock('sharp');
+jest.mock('../lib/redis', () => ({
+  __esModule: true,
+  default: {
+    get: jest.fn(),
+    del: jest.fn(),
+    setex: jest.fn(),
+  },
+}));
+
+import RedisClient from '../lib/redis';
 
 describe('ProductService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    (RedisClient.get as jest.Mock).mockResolvedValue(null);
+    (RedisClient.del as jest.Mock).mockResolvedValue(undefined);
+    (RedisClient.setex as jest.Mock).mockResolvedValue(undefined);
   });
 
   it('should create a product with generated search_text', async () => {
@@ -22,6 +35,7 @@ describe('ProductService', () => {
       price_per_unit: 15000,
       unit: 'kg',
       stock: 100,
+      min_stock: 10,
       min_order: 1,
       location: {
         province: 'Jawa Barat',
@@ -38,11 +52,13 @@ describe('ProductService', () => {
       status: 'active',
     });
 
-    const result = await productService.createProduct('farmer-123', mockInput);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await productService.createProduct('farmer-123', mockInput as any);
 
     expect(productRepository.create).toHaveBeenCalledWith(
       expect.objectContaining({
         farmer_id: 'farmer-123',
+        min_stock: 10,
         search_text: expect.stringContaining('Tomat Merah Segar'),
       })
     );
@@ -103,13 +119,14 @@ describe('ProductService', () => {
   });
 
   describe('updateProduct', () => {
-    const updateInput = { title: 'Updated' };
+    const updateInput = { title: 'Updated', min_stock: 15 };
 
     it('should update successfully as owner', async () => {
       const mockProduct = {
         _id: '1',
         farmer_id: 'f1',
         title: 'Old',
+        min_stock: 10,
         location: { city: 'C', province: 'P' },
       };
       (productRepository.findById as jest.Mock).mockResolvedValue(mockProduct);
@@ -117,8 +134,15 @@ describe('ProductService', () => {
 
       const result = await productService.updateProduct('f1', 'petani', '1', updateInput);
 
-      expect(productRepository.update).toHaveBeenCalled();
+      expect(productRepository.update).toHaveBeenCalledWith(
+        '1',
+        expect.objectContaining({
+          title: 'Updated',
+          min_stock: 15,
+        })
+      );
       expect(result.title).toBe('Updated');
+      expect(result.min_stock).toBe(15);
     });
 
     it('should throw 403 if not owner', async () => {
