@@ -51,7 +51,7 @@ export function PurchaseTable<TData>({ table, columnsCount }: PurchaseTableProps
             ) : (
               <TableRow>
                 <TableCell colSpan={columnsCount} className="h-24 text-center">
-                  Tidak ada data pembelian.
+                  Belum ada catatan pengeluaran.
                 </TableCell>
               </TableRow>
             )}

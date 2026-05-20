@@ -1,56 +1,74 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { ShoppingCart, Clock, Truck, CheckCircle2 } from 'lucide-react';
-import { FarmerPurchase } from './types';
+import { Receipt, Wallet, CalendarDays, Store } from 'lucide-react';
+import { PurchaseRecord } from './types';
 
 interface PurchaseStatsProps {
-  purchases: FarmerPurchase[];
+  purchases: PurchaseRecord[];
 }
 
 export function PurchaseStats({ purchases }: PurchaseStatsProps) {
+  const totalExpenditure = purchases.reduce((acc, p) => acc + p.total_cost, 0);
+  const formattedTotal = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    maximumFractionDigits: 0,
+  }).format(totalExpenditure);
+
+  const thisMonth = new Date().getMonth();
+  const thisYear = new Date().getFullYear();
+  const purchasesThisMonth = purchases.filter((p) => {
+    const d = new Date(p.purchase_date);
+    return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
+  }).length;
+
+  const uniqueSuppliers = new Set(purchases.map((p) => p.supplier_name)).size;
+
   const stats = [
     {
-      label: 'Total Pembelian',
+      label: 'Total Catatan',
       value: purchases.length,
-      icon: ShoppingCart,
+      icon: Receipt,
       color: 'text-blue-600',
-      bgColor: 'bg-blue-100',
+      bgColor: 'bg-blue-50',
     },
     {
-      label: 'Menunggu',
-      value: purchases.filter((p) => p.status === 'pending').length,
-      icon: Clock,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100',
+      label: 'Total Pengeluaran',
+      value: formattedTotal,
+      icon: Wallet,
+      color: 'text-emerald-600',
+      bgColor: 'bg-emerald-50',
     },
     {
-      label: 'Dikirim',
-      value: purchases.filter((p) => p.status === 'shipped').length,
-      icon: Truck,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100',
+      label: 'Bulan Ini',
+      value: purchasesThisMonth,
+      icon: CalendarDays,
+      color: 'text-amber-600',
+      bgColor: 'bg-amber-50',
     },
     {
-      label: 'Selesai',
-      value: purchases.filter((p) => p.status === 'completed' || p.status === 'delivered').length,
-      icon: CheckCircle2,
-      color: 'text-green-600',
-      bgColor: 'bg-green-100',
+      label: 'Supplier',
+      value: uniqueSuppliers,
+      icon: Store,
+      color: 'text-violet-600',
+      bgColor: 'bg-violet-50',
     },
   ];
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => (
-        <Card key={stat.label}>
+        <Card key={stat.label} className="border-none shadow-sm">
           <CardContent className="flex items-center gap-4 p-4">
-            <div className={`rounded-full p-2 ${stat.bgColor}`}>
-              <stat.icon className={`h-5 w-5 ${stat.color}`} />
+            <div className={`rounded-xl p-3 ${stat.bgColor}`}>
+              <stat.icon className={`h-6 w-6 ${stat.color}`} />
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
-              <h3 className="text-2xl font-bold">{stat.value}</h3>
+              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                {stat.label}
+              </p>
+              <h3 className="text-xl font-bold text-slate-900">{stat.value}</h3>
             </div>
           </CardContent>
         </Card>
