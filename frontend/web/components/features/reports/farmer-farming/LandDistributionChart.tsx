@@ -4,51 +4,83 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Cell, Pie, PieChart } from 'recharts';
 
-const data = [
-  { name: 'Padi', value: 40, color: 'hsl(var(--chart-1))' },
-  { name: 'Jagung', value: 25, color: 'hsl(var(--chart-2))' },
-  { name: 'Cabai', value: 15, color: 'hsl(var(--chart-3))' },
-  { name: 'Bawang', value: 10, color: 'hsl(var(--chart-4))' },
-  { name: 'Lainnya', value: 10, color: 'hsl(var(--chart-5))' },
-];
+interface DistributionItem {
+  name: string;
+  value: number;
+  color: string;
+}
 
-const chartConfig = {
-  padi: { label: 'Padi', color: 'hsl(var(--chart-1))' },
-  jagung: { label: 'Jagung', color: 'hsl(var(--chart-2))' },
-  cabai: { label: 'Cabai', color: 'hsl(var(--chart-3))' },
-  bawang: { label: 'Bawang', color: 'hsl(var(--chart-4))' },
-  lainnya: { label: 'Lainnya', color: 'hsl(var(--chart-5))' },
-};
+interface LandDistributionChartProps {
+  data: DistributionItem[];
+}
 
-export function LandDistributionChart() {
+export function LandDistributionChart({ data }: LandDistributionChartProps) {
+  // Setup config dynamically based on incoming items
+  const chartConfig = React.useMemo(() => {
+    const config: Record<string, { label: string; color: string }> = {};
+    data.forEach((item, idx) => {
+      config[`crop_${idx}`] = {
+        label: item.name,
+        color: item.color,
+      };
+    });
+    return config;
+  }, [data]);
+
+  const chartData = React.useMemo(() => {
+    return data.map((item, idx) => ({
+      name: item.name,
+      value: item.value,
+      color: item.color,
+      fill: item.color,
+      key: `crop_${idx}`,
+    }));
+  }, [data]);
+
   return (
     <Card className="border-none shadow-sm h-full">
       <CardHeader>
-        <CardTitle>Distribusi Lahan</CardTitle>
-        <CardDescription>Persentase penggunaan lahan berdasarkan jenis tanaman.</CardDescription>
+        <CardTitle className="text-base font-bold">Distribusi Lahan</CardTitle>
+        <CardDescription>Persentase penggunaan lahan berdasarkan komoditas.</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
-          <PieChart>
-            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-            <Pie data={data} dataKey="value" nameKey="name" innerRadius={60} strokeWidth={5}>
-              {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
+        {data.length === 0 ? (
+          <div className="flex h-[200px] flex-col items-center justify-center text-sm text-muted-foreground">
+            Tidak ada data distribusi lahan aktif.
+          </div>
+        ) : (
+          <>
+            <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[200px]">
+              <PieChart>
+                <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                <Pie
+                  data={chartData}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={60}
+                  strokeWidth={5}
+                >
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ChartContainer>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              {data.map((item) => (
+                <div key={item.name} className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color }} />
+                  <span className="text-xs font-medium truncate max-w-[120px]">
+                    {item.name} ({item.value}%)
+                  </span>
+                </div>
               ))}
-            </Pie>
-          </PieChart>
-        </ChartContainer>
-        <div className="mt-4 grid grid-cols-2 gap-2">
-          {data.map((item) => (
-            <div key={item.name} className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color }} />
-              <span className="text-xs font-medium">
-                {item.name} ({item.value}%)
-              </span>
             </div>
-          ))}
-        </div>
+          </>
+        )}
       </CardContent>
     </Card>
   );
 }
+
+import * as React from 'react';

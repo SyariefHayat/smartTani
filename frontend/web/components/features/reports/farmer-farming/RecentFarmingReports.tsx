@@ -17,110 +17,100 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { HarvestRecord } from '@/services/harvest';
+import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
 
-const MOCK_REPORTS = [
-  {
-    id: 'RPT-001',
-    date: '2024-05-15',
-    land: 'Lahan Utara Blok A',
-    crop: 'Padi Ciherang',
-    yield: '5.2 Ton',
-    health: '95/100',
-    status: 'Final',
-  },
-  {
-    id: 'RPT-002',
-    date: '2024-05-12',
-    land: 'Lahan Selatan Blok B',
-    crop: 'Jagung Hibrida',
-    yield: '3.8 Ton',
-    health: '88/100',
-    status: 'Final',
-  },
-  {
-    id: 'RPT-003',
-    date: '2024-05-10',
-    land: 'Lahan Barat Blok C',
-    crop: 'Cabai Keriting',
-    yield: '1.2 Ton',
-    health: '82/100',
-    status: 'Draft',
-  },
-  {
-    id: 'RPT-004',
-    date: '2024-05-05',
-    land: 'Lahan Timur Blok D',
-    crop: 'Bawang Merah',
-    yield: '2.5 Ton',
-    health: '90/100',
-    status: 'Final',
-  },
-];
+interface RecentFarmingReportsProps {
+  data: HarvestRecord[];
+}
 
-export function RecentFarmingReports() {
+export function RecentFarmingReports({ data }: RecentFarmingReportsProps) {
+  const getHealthScore = (grade: 'A' | 'B' | 'C') => {
+    if (grade === 'A') return { value: 95, text: '95/100', color: 'bg-green-500' };
+    if (grade === 'B') return { value: 80, text: '80/100', color: 'bg-blue-500' };
+    return { value: 65, text: '65/100', color: 'bg-amber-500' };
+  };
+
   return (
     <div className="rounded-md border bg-white overflow-hidden shadow-sm">
-      <Table>
-        <TableHeader className="bg-slate-50">
-          <TableRow>
-            <TableHead>ID Laporan</TableHead>
-            <TableHead>Tanggal</TableHead>
-            <TableHead>Lahan</TableHead>
-            <TableHead>Komoditas</TableHead>
-            <TableHead>Hasil Panen</TableHead>
-            <TableHead>Kesehatan</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Aksi</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {MOCK_REPORTS.map((report) => (
-            <TableRow key={report.id}>
-              <TableCell className="font-medium text-xs">{report.id}</TableCell>
-              <TableCell className="text-xs">{report.date}</TableCell>
-              <TableCell className="text-xs">{report.land}</TableCell>
-              <TableCell className="text-xs">{report.crop}</TableCell>
-              <TableCell className="text-xs font-bold">{report.yield}</TableCell>
-              <TableCell className="text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="h-1.5 w-12 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-green-500"
-                      style={{ width: report.health.split('/')[0] + '%' }}
-                    />
-                  </div>
-                  {report.health}
-                </div>
-              </TableCell>
-              <TableCell>
-                <Badge
-                  variant={report.status === 'Final' ? 'success' : 'outline'}
-                  className="h-4 text-[10px]"
-                >
-                  {report.status}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
-                      <Eye className="mr-2 h-4 w-4" /> Detail
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Download className="mr-2 h-4 w-4" /> Download PDF
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
+      {data.length === 0 ? (
+        <div className="flex h-[200px] flex-col items-center justify-center text-sm text-muted-foreground bg-white">
+          Belum ada rekaman hasil panen tercatat.
+        </div>
+      ) : (
+        <Table>
+          <TableHeader className="bg-slate-50">
+            <TableRow>
+              <TableHead>ID Laporan</TableHead>
+              <TableHead>Tanggal</TableHead>
+              <TableHead>Lahan</TableHead>
+              <TableHead>Komoditas</TableHead>
+              <TableHead>Hasil Panen</TableHead>
+              <TableHead>Kesehatan</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Aksi</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {data.map((harvest) => {
+              const health = getHealthScore(harvest.quality_grade);
+              const harvestDate = new Date(harvest.harvest_date);
+
+              return (
+                <TableRow key={harvest.id}>
+                  <TableCell className="font-mono text-xs text-muted-foreground">
+                    #{harvest.id.slice(-6).toUpperCase()}
+                  </TableCell>
+                  <TableCell className="text-xs">
+                    {format(harvestDate, 'dd MMM yyyy', { locale: id })}
+                  </TableCell>
+                  <TableCell className="text-xs font-medium">
+                    {harvest.land?.name || `Lahan #${harvest.land_id.slice(-4)}`}
+                  </TableCell>
+                  <TableCell className="text-xs">{harvest.crop_name}</TableCell>
+                  <TableCell className="text-xs font-bold">
+                    {harvest.quantity} {harvest.unit}
+                  </TableCell>
+                  <TableCell className="text-xs">
+                    <div className="flex items-center gap-2">
+                      <div className="h-1.5 w-12 bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full ${health.color}`}
+                          style={{ width: `${health.value}%` }}
+                        />
+                      </div>
+                      {health.text}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="success" className="h-4 text-[10px] uppercase">
+                      Final
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem>
+                          <Eye className="mr-2 h-4 w-4" /> Detail
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Download className="mr-2 h-4 w-4" /> Download PDF
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      )}
     </div>
   );
 }

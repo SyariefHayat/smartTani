@@ -2,37 +2,49 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Sprout, Ruler, Activity, TrendingUp } from 'lucide-react';
+import { FarmingStats } from './types';
 
-export function FarmingReportStats() {
+interface FarmingReportStatsProps {
+  summary: FarmingStats;
+}
+
+export function FarmingReportStats({ summary }: FarmingReportStatsProps) {
   const stats = [
     {
       label: 'Luas Lahan Aktif',
-      value: '12.5 Ha',
-      description: '+1.2 Ha dari bulan lalu',
+      value: `${summary.totalLandArea.toLocaleString('id-ID')} Ha`,
+      description: 'Total luas wilayah lahan produktif',
       icon: Ruler,
       color: 'text-green-600',
       bgColor: 'bg-green-100',
     },
     {
       label: 'Tanaman Berjalan',
-      value: '8 Jenis',
-      description: 'Padi, Jagung, Cabai, dll',
+      value: `${summary.activeCropCount} Jenis`,
+      description: 'Komoditas aktif di lahan',
       icon: Sprout,
       color: 'text-blue-600',
       bgColor: 'bg-blue-100',
     },
     {
       label: 'Skor Kesehatan Rata-rata',
-      value: '92/100',
-      description: 'Kondisi Sangat Baik',
+      value: `${summary.averageHealthScore}/100`,
+      description:
+        summary.averageHealthScore >= 85
+          ? 'Kondisi Sangat Baik'
+          : summary.averageHealthScore >= 75
+            ? 'Kondisi Baik'
+            : summary.averageHealthScore > 0
+              ? 'Kondisi Cukup'
+              : 'Tidak ada data',
       icon: Activity,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100',
     },
     {
-      label: 'Estimasi Hasil Panen',
-      value: '45.2 Ton',
-      description: 'Proyeksi Q2 2024',
+      label: 'Total Hasil Panen',
+      value: `${summary.projectedHarvestVal.toLocaleString('id-ID')} Unit`,
+      description: 'Akumulasi volume panen',
       icon: TrendingUp,
       color: 'text-orange-600',
       bgColor: 'bg-orange-100',
