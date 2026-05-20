@@ -110,7 +110,7 @@ app.use(
   createProxyMiddleware({
     ...proxyOptions,
     target: env.MARKETPLACE_SERVICE_URL,
-    pathFilter: ['/products', '/categories'],
+    pathFilter: ['/products', '/categories', '/promotions'],
   })
 );
 
