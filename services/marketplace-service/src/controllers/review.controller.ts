@@ -77,6 +77,27 @@ export class ReviewController {
       next(error);
     }
   }
+
+  async getFarmerReviews(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { farmer_id, page, limit } = req.query;
+      if (!farmer_id) {
+        return res.status(400).json({ success: false, message: 'farmer_id is required' });
+      }
+
+      const result = await (
+        await import('../repositories/review.repository')
+      ).default.findByFarmerId(
+        farmer_id as string,
+        page ? parseInt(page as string) : 1,
+        limit ? parseInt(limit as string) : 10
+      );
+
+      return res.status(200).json(successResponse(result.reviews, { total: result.total }));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new ReviewController();

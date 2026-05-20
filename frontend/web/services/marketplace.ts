@@ -69,7 +69,67 @@ export interface GetProductResponse {
   data: Product;
 }
 
+export interface Review {
+  _id: string;
+  product_id: string;
+  order_id: string;
+  buyer_id: string;
+  buyer_name: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+  product_title?: string;
+}
+
+export interface ReviewSummary {
+  average_rating: number;
+  total_reviews: number;
+  rating_breakdown: Record<string, number>;
+}
+
+export interface GetReviewsResponse {
+  success: boolean;
+  data: Review[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    average_rating?: number;
+    rating_breakdown?: Record<string, number>;
+  };
+}
+
+export interface GetSummaryResponse {
+  success: boolean;
+  data: ReviewSummary;
+}
+
 export const marketplaceService = {
+  getReviewsSummary: async (farmerId: string): Promise<GetSummaryResponse> => {
+    const response = await api.get('/products/reviews/summary', {
+      params: { farmer_id: farmerId },
+    });
+    return response.data;
+  },
+
+  getFarmerReviews: async (
+    farmerId: string,
+    params?: { page?: number; limit?: number }
+  ): Promise<GetReviewsResponse> => {
+    const response = await api.get('/products/reviews', {
+      params: { ...params, farmer_id: farmerId },
+    });
+    return response.data;
+  },
+
+  getProductReviews: async (
+    productId: string,
+    params?: { page?: number; limit?: number }
+  ): Promise<GetReviewsResponse> => {
+    const response = await api.get(`/products/${productId}/reviews`, { params });
+    return response.data;
+  },
+
   getProducts: async (params: GetProductsParams): Promise<GetProductsResponse> => {
     const response = await api.get('/products', { params });
     return response.data;

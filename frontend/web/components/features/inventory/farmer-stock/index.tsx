@@ -117,12 +117,10 @@ export function FarmerStockManagement() {
           ...col,
           cell: (cellProps: unknown) => {
             // Re-define action cell to pass handlers
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const OriginalCell = col.cell as React.ComponentType<any>;
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const OriginalCell = col.cell as React.ComponentType<Record<string, unknown>>;
             return (
               <OriginalCell
-                {...(cellProps as any)}
+                {...(cellProps as Record<string, unknown>)}
                 onUpdateStock={handleUpdateStock}
                 onSetMinStock={handleSetMinStock}
               />

@@ -83,6 +83,53 @@ export class ReviewRepository {
       rating_breakdown: breakdown,
     };
   }
+
+  async findByFarmerId(
+    farmerId: string,
+    page: number = 1,
+    limit: number = 10
+  ): Promise<{ reviews: (IReview & { product_title?: string })[]; total: number }> {
+    const { Product } = await import('../models/product.model');
+    const productIds = await Product.find({ farmer_id: farmerId }).distinct('_id');
+    const stringProductIds = productIds.map((id) => id.toString());
+
+    const skip = (page - 1) * limit;
+    const [reviews, total] = await Promise.all([
+      Review.aggregate([
+        { $match: { product_id: { $in: stringProductIds } } },
+        { $sort: { created_at: -1 } },
+        { $skip: skip },
+        { $limit: limit },
+        {
+          $addFields: {
+            product_id_obj: { $toObjectId: '$product_id' },
+          },
+        },
+        {
+          $lookup: {
+            from: 'products',
+            localField: 'product_id_obj',
+            foreignField: '_id',
+            as: 'product',
+          },
+        },
+        {
+          $addFields: {
+            product_title: { $arrayElemAt: ['$product.title', 0] },
+          },
+        },
+        {
+          $project: {
+            product: 0,
+            product_id_obj: 0,
+          },
+        },
+      ]),
+      Review.countDocuments({ product_id: { $in: stringProductIds } }),
+    ]);
+
+    return { reviews, total };
+  }
 }
 
 export default new ReviewRepository();
