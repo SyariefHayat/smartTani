@@ -16,9 +16,14 @@ model User {
   phone      String?  @db.VarChar(20)
   avatar_url String?  @db.Text
   status     String   @default("pending_verification") @db.VarChar(50)
-  fcm_token  String?  @db.Text
-  created_at DateTime @default(now()) @db.Timestamptz
-  updated_at DateTime @updatedAt @db.Timestamptz
+  fcm_token        String?  @db.Text
+  farm_name        String?  @db.VarChar(255)
+  farm_address     String?  @db.Text
+  farm_size_ha     Float?
+  commodities      Json?    @default("[]")
+  farm_description String?  @db.Text
+  created_at       DateTime @default(now()) @db.Timestamptz
+  updated_at       DateTime @updatedAt @db.Timestamptz
 
   @@map("users")
 }

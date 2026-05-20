@@ -40,6 +40,11 @@ export const UpdateProfileSchema = z.object({
   full_name: z.string().min(3, 'Nama lengkap minimal 3 karakter').optional(),
   phone: z.string().min(10, 'Nomor telepon minimal 10 karakter').optional(),
   avatar_url: z.string().url('Format URL avatar tidak valid').optional().or(z.literal('')),
+  farm_name: z.string().min(3, 'Nama tani minimal 3 karakter').optional(),
+  farm_address: z.string().optional(),
+  farm_size_ha: z.number().nonnegative('Luas lahan tidak boleh negatif').optional(),
+  commodities: z.array(z.string()).optional(),
+  farm_description: z.string().optional(),
 });
 
 export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>;

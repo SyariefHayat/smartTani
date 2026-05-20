@@ -96,12 +96,23 @@ describe('Auth Service Full Integration', () => {
     expect(meRes.body.data.email).toBe(adminData.email);
 
     // 3. Update Profile
+    const farmData = {
+      full_name: 'New Admin Name',
+      farm_name: 'SmartTani Experimental Farm',
+      farm_address: 'Cianjur, Jawa Barat',
+      farm_size_ha: 2.5,
+      commodities: ['Padi', 'Jagung'],
+      farm_description: 'Kebun percobaan untuk riset SmartTani',
+    };
     const updateRes = await request(app)
       .patch('/auth/me')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ full_name: 'New Admin Name' });
+      .send(farmData);
     expect(updateRes.status).toBe(200);
-    expect(updateRes.body.data.full_name).toBe('New Admin Name');
+    expect(updateRes.body.data.full_name).toBe(farmData.full_name);
+    expect(updateRes.body.data.farm_name).toBe(farmData.farm_name);
+    expect(updateRes.body.data.farm_size_ha).toBe(farmData.farm_size_ha);
+    expect(updateRes.body.data.commodities).toEqual(farmData.commodities);
 
     // 4. List Users
     const usersRes = await request(app)
