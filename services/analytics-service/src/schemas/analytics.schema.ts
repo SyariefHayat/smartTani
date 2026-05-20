@@ -17,5 +17,16 @@ export const FarmerRevenueChartQuerySchema = z.object({
   to_date: z.string().optional(),
 });
 
+export const FarmerFinanceQuerySchema = z.object({
+  page: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val) : 1)),
+  limit: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val) : 20)),
+});
+
 export type UserGrowthQuery = z.infer<typeof UserGrowthQuerySchema>;
 export type OrderAnalyticsQuery = z.infer<typeof OrderAnalyticsQuerySchema>;

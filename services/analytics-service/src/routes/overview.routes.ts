@@ -7,6 +7,7 @@ import {
   UserGrowthQuerySchema,
   OrderAnalyticsQuerySchema,
   FarmerRevenueChartQuerySchema,
+  FarmerFinanceQuerySchema,
 } from '../schemas/analytics.schema';
 
 const router = Router();
@@ -158,6 +159,41 @@ router.get(
   gatewayAuthMiddleware,
   validateQuery(FarmerRevenueChartQuerySchema),
   overviewController.getFarmerRevenueChart
+);
+
+/**
+ * @swagger
+ * /analytics/farmer/{id}/finance:
+ *   get:
+ *     summary: Get finance analytics for a farmer
+ *     tags: [Analytics]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *     responses:
+ *       200:
+ *         description: Farmer finance analytics data
+ */
+router.get(
+  '/farmer/:id/finance',
+  gatewayAuthMiddleware,
+  validateQuery(FarmerFinanceQuerySchema),
+  overviewController.getFarmerFinance
 );
 
 /**

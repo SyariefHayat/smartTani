@@ -93,6 +93,27 @@ class OverviewController {
     }
   }
 
+  async getFarmerFinance(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.params.id as string;
+      const user = (req as AppRequest).user as { id: string; role: string };
+
+      if (user.role !== 'admin' && user.id !== id) {
+        const error: CustomError = new Error('Anda tidak memiliki akses ke data ini');
+        error.statusCode = 403;
+        error.code = 'FORBIDDEN';
+        throw error;
+      }
+
+      const query = req.query as Record<string, unknown>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data = await personalAnalyticsService.getFarmerFinance(id, query as any);
+      return res.status(200).json(successResponse(data));
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async getInvestorAnalytics(req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.params.id as string;

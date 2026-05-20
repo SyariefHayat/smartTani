@@ -40,6 +40,23 @@ class PersonalAnalyticsService {
     return data;
   }
 
+  async getFarmerFinance(farmerId: string, query: { page?: number; limit?: number }) {
+    const page = query.page || 1;
+    const limit = query.limit || 20;
+    const cacheKey = `analytics:farmer:${farmerId}:finance:${page}:${limit}`;
+
+    const cachedData = await RedisClient.get(cacheKey);
+    if (cachedData) {
+      logger.info(`⚡ Returning farmer finance for ${farmerId} from cache`);
+      return JSON.parse(cachedData as string);
+    }
+
+    const data = await farmerAnalyticsRepository.getFinanceAnalytics(farmerId, page, limit);
+    await RedisClient.setex(cacheKey, this.TTL, JSON.stringify(data));
+
+    return data;
+  }
+
   async getInvestorAnalytics(investorId: string) {
     const cacheKey = `analytics:investor:${investorId}`;
 

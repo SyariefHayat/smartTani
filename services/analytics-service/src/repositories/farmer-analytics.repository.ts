@@ -156,6 +156,142 @@ class FarmerAnalyticsRepository {
       pengeluaran: r.pengeluaran,
     }));
   }
+
+  async getFinanceAnalytics(farmerId: string, page: number = 1, limit: number = 20) {
+    const skip = (page - 1) * limit;
+    const now = new Date();
+    const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfPrevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const endOfPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+
+    const [
+      totalEarnings,
+      pendingBalance,
+      monthlyRevenue,
+      prevMonthRevenue,
+      transactionsRaw,
+      total,
+    ] = await Promise.all([
+      // total_earnings (delivered/completed)
+      prisma.orderItem.aggregate({
+        _sum: { subtotal: true },
+        where: {
+          farmer_id: farmerId,
+          order: { status: { in: ['completed', 'delivered'] } },
+        },
+      }),
+
+      // pending_balance (paid, confirmed_seller, shipped)
+      prisma.orderItem.aggregate({
+        _sum: { subtotal: true },
+        where: {
+          farmer_id: farmerId,
+          order: { status: { in: ['paid', 'confirmed_seller', 'shipped'] } },
+        },
+      }),
+
+      // monthly_revenue (this month for change calculation)
+      prisma.orderItem.aggregate({
+        _sum: { subtotal: true },
+        where: {
+          farmer_id: farmerId,
+          order: {
+            status: { in: ['completed', 'delivered'] },
+            created_at: { gte: startOfCurrentMonth },
+          },
+        },
+      }),
+
+      // prev_month_revenue (last month)
+      prisma.orderItem.aggregate({
+        _sum: { subtotal: true },
+        where: {
+          farmer_id: farmerId,
+          order: {
+            status: { in: ['completed', 'delivered'] },
+            created_at: { gte: startOfPrevMonth, lte: endOfPrevMonth },
+          },
+        },
+      }),
+
+      // transactions (paginated)
+      prisma.orderItem.findMany({
+        where: { farmer_id: farmerId },
+        include: {
+          order: {
+            select: { id: true, created_at: true, status: true },
+          },
+          product: {
+            select: { title: true },
+          },
+        },
+        orderBy: { order: { created_at: 'desc' } },
+        skip,
+        take: limit,
+      }),
+
+      // total count for meta
+      prisma.orderItem.count({
+        where: { farmer_id: farmerId },
+      }),
+    ]);
+
+    const totalEarningVal = Number(totalEarnings._sum.subtotal || 0);
+    const platformFee = totalEarningVal * 0.02;
+    const currentBalance = totalEarningVal - platformFee;
+
+    const monthly = Number(monthlyRevenue._sum.subtotal || 0);
+    const prev = Number(prevMonthRevenue._sum.subtotal || 0);
+    const earnings_change_percent =
+      prev === 0 ? (monthly > 0 ? 100 : 0) : ((monthly - prev) / prev) * 100;
+
+    interface Transaction {
+      id: string;
+      date: string;
+      type: 'revenue' | 'fee';
+      amount: number;
+      description: string;
+      order_id: string;
+    }
+
+    const transactions: Transaction[] = [];
+    transactionsRaw.forEach((item) => {
+      // Add revenue transaction
+      transactions.push({
+        id: `${item.id}-rev`,
+        date: item.order.created_at.toISOString(),
+        type: 'revenue',
+        amount: Number(item.subtotal),
+        description: `Penjualan ${item.product?.title || 'Produk'}`,
+        order_id: item.order_id,
+      });
+
+      // Add fee transaction if completed/delivered
+      if (['completed', 'delivered'].includes(item.order.status)) {
+        transactions.push({
+          id: `${item.id}-fee`,
+          date: item.order.created_at.toISOString(),
+          type: 'fee',
+          amount: Number(item.subtotal) * 0.02,
+          description: `Platform Fee (2%) - ${item.product?.title || 'Produk'}`,
+          order_id: item.order_id,
+        });
+      }
+    });
+
+    return {
+      current_balance: currentBalance,
+      total_earnings: totalEarningVal,
+      pending_balance: Number(pendingBalance._sum.subtotal || 0),
+      earnings_change_percent: Math.round(earnings_change_percent * 10) / 10,
+      transactions: transactions.slice(0, limit), // slice because we might added 2 records per item
+      meta: {
+        page,
+        limit,
+        total,
+      },
+    };
+  }
 }
 
 export default new FarmerAnalyticsRepository();
