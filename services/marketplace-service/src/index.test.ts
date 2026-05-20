@@ -420,4 +420,37 @@ describe('Marketplace Service', () => {
       expect(response.status).toBe(409);
     });
   });
+
+  describe('GET /products/:id/reviews', () => {
+    it('should return reviews and metadata for a product', async () => {
+      const productId = '6a03d00c22e9882dac8e0a55';
+      const mockReviews = [
+        { _id: 'rev-1', rating: 5, comment: 'Bagus' },
+        { _id: 'rev-2', rating: 4, comment: 'Cukup bagus' },
+      ];
+
+      (Review.find as jest.Mock).mockReturnValue({
+        sort: jest.fn().mockReturnValue({
+          skip: jest.fn().mockReturnValue({
+            limit: jest.fn().mockResolvedValue(mockReviews),
+          }),
+        }),
+      });
+      (Review.countDocuments as jest.Mock).mockResolvedValue(2);
+      (Review.aggregate as jest.Mock).mockResolvedValue([
+        { _id: 5, count: 1 },
+        { _id: 4, count: 1 },
+      ]);
+
+      const response = await request(app).get(`/products/${productId}/reviews`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.length).toBe(2);
+      expect(response.body.meta.average_rating).toBe(4.5);
+      expect(response.body.meta.total_reviews).toBe(2);
+      expect(response.body.meta.rating_breakdown['5']).toBe(1);
+      expect(response.body.meta.rating_breakdown['4']).toBe(1);
+    });
+  });
 });

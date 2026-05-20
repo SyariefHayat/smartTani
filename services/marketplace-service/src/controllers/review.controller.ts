@@ -25,15 +25,23 @@ export class ReviewController {
   async getProductReviews(req: Request, res: Response, next: NextFunction) {
     try {
       const { id: productId } = req.params;
-      const { page, limit } = req.query;
+      const page = req.query.page ? parseInt(req.query.page as string) : 1;
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+
       const result = await (
         await import('../repositories/review.repository')
-      ).default.findByProductId(
-        productId as string,
-        page ? parseInt(page as string) : 1,
-        limit ? parseInt(limit as string) : 10
+      ).default.findByProductId(productId as string, page, limit);
+
+      return res.status(200).json(
+        successResponse(result.reviews, {
+          average_rating: result.average_rating,
+          total_reviews: result.total,
+          rating_breakdown: result.rating_breakdown,
+          page,
+          limit,
+          total: result.total,
+        })
       );
-      return res.status(200).json(successResponse(result.reviews, { total: result.total }));
     } catch (error) {
       next(error);
     }
