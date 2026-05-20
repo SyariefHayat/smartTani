@@ -1,14 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  MessageCircle,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
+import { MessageCircle, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useQuery } from '@tanstack/react-query';
+import { marketplaceService } from '@/services/marketplace';
+import { getStoredAuthUser } from '@/lib/auth-storage';
 
 import { ReviewHeader } from './review-list/ReviewHeader';
 import { ReviewStats } from './review-list/ReviewStats';
@@ -16,84 +15,77 @@ import { ReviewFilters } from './review-list/ReviewFilters';
 import { ReviewItem } from './review-list/ReviewItem';
 import { Review } from './review-list/types';
 
-// Mock data
-const MOCK_REVIEWS: Review[] = [
-  {
-    id: '1',
-    customerName: 'Budi Santoso',
-    customerAvatar: '/avatars/01.png',
-    productName: 'Pupuk Organik Cair Hayati - 1 Liter',
-    rating: 5,
-    date: '2024-05-14T10:30:00',
-    comment:
-      'Pupuknya sangat bagus, tanaman padi saya tumbuh lebih hijau dan cepat setelah pakai ini. Pengiriman juga sangat cepat. Rekomendasi banget buat petani lain!',
-    status: 'replied',
-    reply:
-      'Terima kasih banyak Bapak Budi atas kepercayaannya. Senang mendengar hasil panennya meningkat. Ditunggu pesanan selanjutnya ya Pak!',
-  },
-  {
-    id: '2',
-    customerName: 'Siti Aminah',
-    customerAvatar: '',
-    productName: 'Benih Jagung Hibrida P35',
-    rating: 4,
-    date: '2024-05-12T14:15:00',
-    comment:
-      'Benihnya bagus, daya tumbuhnya tinggi. Cuma sayangnya kemasan agak penyok pas sampai, untung isinya aman.',
-    status: 'unreplied',
-    reply: '',
-  },
-  {
-    id: '3',
-    customerName: 'Ahmad Dahlan',
-    customerAvatar: '/avatars/03.png',
-    productName: 'Pestisida Alami Anti-Hama',
-    rating: 5,
-    date: '2024-05-10T09:20:00',
-    comment:
-      'Sangat ampuh membasmi kutu daun di tanaman cabai saya. Baunya juga tidak menyengat karena alami. Mantap!',
-    status: 'replied',
-    reply:
-      'Alhamdulillah, terima kasih ulasannya Pak Ahmad. Kami selalu berusaha memberikan produk organik terbaik.',
-  },
-  {
-    id: '4',
-    customerName: 'Joko Widodo',
-    customerAvatar: '',
-    productName: 'Cangkul Baja Modern',
-    rating: 3,
-    date: '2024-05-08T16:45:00',
-    comment:
-      'Cangkulnya lumayan tajam, tapi gagangnya terasa agak kurang kokoh kalau dipakai di tanah yang sangat keras. Sesuai harga lah.',
-    status: 'unreplied',
-    reply: '',
-  },
-];
-
 export function FarmerReviewList() {
+  const user = getStoredAuthUser();
+  const farmerId = user?.id;
+
   const [searchTerm, setSearchTerm] = useState('');
   const [ratingFilter, setRatingFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
-  const filteredReviews = MOCK_REVIEWS.filter((review) => {
-    const matchesSearch =
-      review.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      review.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      review.comment.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesRating = ratingFilter === 'all' || review.rating.toString() === ratingFilter;
-    const matchesStatus = statusFilter === 'all' || review.status === statusFilter;
-
-    return matchesSearch && matchesRating && matchesStatus;
+  const { data: summaryResponse, isLoading: summaryLoading } = useQuery({
+    queryKey: ['reviews-summary', farmerId],
+    queryFn: () => marketplaceService.getReviewsSummary(farmerId!),
+    enabled: !!farmerId,
   });
+
+  const { data: reviewsResponse, isLoading: reviewsLoading } = useQuery({
+    queryKey: ['farmer-reviews', farmerId, page],
+    queryFn: () => marketplaceService.getFarmerReviews(farmerId!, { page, limit }),
+    enabled: !!farmerId,
+  });
+
+  const summary = summaryResponse?.data;
+  const rawReviews = reviewsResponse?.data || [];
+  const total = reviewsResponse?.meta?.total || 0;
+  const totalPages = Math.ceil(total / limit);
+
+  // Filter reviews client-side based on search and rating (if not implemented in backend)
+  // Note: Backend findByFarmerId doesn't support search/rating filtering yet.
+  // For now, we'll do client-side filtering on the current page.
+  const reviews: Review[] = rawReviews
+    .map((r) => ({
+      id: r._id,
+      customerName: r.buyer_name,
+      customerAvatar: '',
+      productName: r.product_title || 'Produk tidak ditemukan',
+      rating: r.rating,
+      date: r.created_at,
+      comment: r.comment,
+      status: 'unreplied', // Reply feature not implemented in backend yet
+      reply: '',
+    }))
+    .filter((review) => {
+      const matchesSearch =
+        review.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        review.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        review.comment.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesRating = ratingFilter === 'all' || review.rating.toString() === ratingFilter;
+      const matchesStatus = statusFilter === 'all' || review.status === statusFilter;
+
+      return matchesSearch && matchesRating && matchesStatus;
+    });
+
+  const isLoading = summaryLoading || reviewsLoading;
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-96 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-green-700" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full text-slate-900">
       <div className="mx-auto flex w-full flex-col gap-4">
         <ReviewHeader />
-        
-        <ReviewStats />
 
-        <ReviewFilters 
+        <ReviewStats summary={summary} />
+
+        <ReviewFilters
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           statusFilter={statusFilter}
@@ -104,10 +96,8 @@ export function FarmerReviewList() {
 
         {/* Reviews List */}
         <div className="space-y-4">
-          {filteredReviews.length > 0 ? (
-            filteredReviews.map((review) => (
-              <ReviewItem key={review.id} review={review} />
-            ))
+          {reviews.length > 0 ? (
+            reviews.map((review) => <ReviewItem key={review.id} review={review} />)
           ) : (
             <Card className="border-none shadow-sm rounded-xl">
               <CardContent className="h-64 flex flex-col items-center justify-center text-center p-6">
@@ -133,36 +123,49 @@ export function FarmerReviewList() {
           )}
         </div>
 
-        {/* Pagination (Mock) */}
-        {filteredReviews.length > 0 && (
+        {/* Pagination */}
+        {total > 0 && (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 mt-2">
             <p className="text-xs text-slate-500">
               Menampilkan{' '}
-              <span className="font-medium text-slate-900">1 - {filteredReviews.length}</span> dari{' '}
-              <span className="font-medium text-slate-900">{filteredReviews.length}</span> ulasan
+              <span className="font-medium text-slate-900">
+                {(page - 1) * limit + 1} - {Math.min(page * limit, total)}
+              </span>{' '}
+              dari <span className="font-medium text-slate-900">{total}</span> ulasan
             </p>
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="icon"
                 className="h-8 w-8 bg-white border-slate-200"
-                disabled
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
               >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
               <div className="flex items-center gap-1">
-                <Button
-                  size="sm"
-                  className="h-8 w-8 p-0 bg-green-700 text-white hover:bg-green-800 shadow-sm"
-                >
-                  1
-                </Button>
+                {Array.from({ length: totalPages }).map((_, i) => (
+                  <Button
+                    key={i + 1}
+                    size="sm"
+                    className={cn(
+                      'h-8 w-8 p-0 shadow-sm',
+                      page === i + 1
+                        ? 'bg-green-700 text-white hover:bg-green-800'
+                        : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
+                    )}
+                    onClick={() => setPage(i + 1)}
+                  >
+                    {i + 1}
+                  </Button>
+                ))}
               </div>
               <Button
                 variant="outline"
                 size="icon"
                 className="h-8 w-8 bg-white border-slate-200"
-                disabled
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
               >
                 <ChevronRight className="w-4 h-4" />
               </Button>
