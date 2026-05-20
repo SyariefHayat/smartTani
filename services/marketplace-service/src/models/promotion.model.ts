@@ -8,7 +8,7 @@ export interface IPromotion extends Document {
   product_ids: string[];
   start_date: Date;
   end_date: Date;
-  status: 'active' | 'inactive' | 'expired' | 'scheduled';
+  status: 'active' | 'inactive' | 'expired' | 'scheduled' | 'deleted';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -28,7 +28,7 @@ const promotionSchema = new Schema<IPromotion>(
     end_date: { type: Date, required: true },
     status: {
       type: String,
-      enum: ['active', 'inactive', 'expired', 'scheduled'],
+      enum: ['active', 'inactive', 'expired', 'scheduled', 'deleted'],
       default: 'active',
       required: true,
     },

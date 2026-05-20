@@ -26,6 +26,7 @@ import { errorHandlerMiddleware } from '../../../shared/middleware/errorHandler'
 import { getHealth } from './controllers/health.controller';
 import categoryRoutes from './routes/category.routes';
 import productRoutes from './routes/product.routes';
+import promotionRoutes from './routes/promotion.routes';
 
 export const app = express();
 
@@ -39,6 +40,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/health', getHealth);
 app.use('/categories', categoryRoutes);
 app.use('/products', productRoutes);
+app.use('/promotions', promotionRoutes);
 
 // Sentry Error Handler
 if (env.SENTRY_DSN) {
