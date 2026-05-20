@@ -11,70 +11,17 @@ import {
   type SortingState,
   type VisibilityState,
 } from '@tanstack/react-table';
+import { useQuery } from '@tanstack/react-query';
+import { orderService } from '@/services/order';
+import { toast } from 'sonner';
+import { Skeleton } from '@/components/ui/skeleton';
 
 import { SalesHistoryHeader } from './SalesHistoryHeader';
 import { SalesHistoryStats } from './SalesHistoryStats';
 import { SalesHistoryFilters } from './SalesHistoryFilters';
 import { SalesHistoryTable } from './SalesHistoryTable';
 import { columns } from './columns';
-import { FarmerOrder } from '../farmer-orders/types';
-
-const MOCK_SALES: FarmerOrder[] = [
-  {
-    id: 'ORD-20240428-001',
-    customerName: 'Budi Santoso',
-    date: '2024-04-28T08:30:00Z',
-    totalAmount: 1250000,
-    paymentMethod: 'Transfer Bank',
-    status: 'delivered',
-    items: [{ id: '1', name: 'Pupuk NPK', quantity: 10, price: 125000, image: '' }],
-  },
-  {
-    id: 'ORD-20240425-002',
-    customerName: 'Siti Aminah',
-    date: '2024-04-25T09:15:00Z',
-    totalAmount: 750000,
-    paymentMethod: 'E-Wallet',
-    status: 'delivered',
-    items: [{ id: '2', name: 'Benih Padi', quantity: 5, price: 150000, image: '' }],
-  },
-  {
-    id: 'ORD-20240420-003',
-    customerName: 'Ahmad Fauzi',
-    date: '2024-04-20T10:45:00Z',
-    totalAmount: 2100000,
-    paymentMethod: 'Transfer Bank',
-    status: 'cancelled',
-    items: [{ id: '3', name: 'Alat Semprot', quantity: 2, price: 1050000, image: '' }],
-  },
-  {
-    id: 'ORD-20240415-015',
-    customerName: 'Dewi Lestari',
-    date: '2024-04-15T14:20:00Z',
-    totalAmount: 450000,
-    paymentMethod: 'COD',
-    status: 'delivered',
-    items: [{ id: '4', name: 'Cangkul Baja', quantity: 3, price: 150000, image: '' }],
-  },
-  {
-    id: 'ORD-20240410-009',
-    customerName: 'Hendra Wijaya',
-    date: '2024-04-10T11:20:00Z',
-    totalAmount: 3200000,
-    paymentMethod: 'Transfer Bank',
-    status: 'delivered',
-    items: [{ id: '5', name: 'Traktor Tangan', quantity: 1, price: 3200000, image: '' }],
-  },
-  {
-    id: 'ORD-20240405-012',
-    customerName: 'Ani Maryani',
-    date: '2024-04-05T15:45:00Z',
-    totalAmount: 150000,
-    paymentMethod: 'E-Wallet',
-    status: 'refunded',
-    items: [{ id: '6', name: 'Gunting Stek', quantity: 2, price: 75000, image: '' }],
-  },
-];
+import { FarmerOrder, OrderStatus } from '../farmer-orders/types';
 
 export function FarmerSalesHistory() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -82,9 +29,50 @@ export function FarmerSalesHistory() {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  // 1. Fetch Orders with target statuses (delivered, completed, cancelled)
+  const {
+    data: ordersResponse,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['farmer-sales-history'],
+    queryFn: async () => orderService.getOrders({ status: 'delivered,completed,cancelled' }),
+  });
+
+  React.useEffect(() => {
+    if (error) {
+      toast.error('Gagal mengambil data riwayat pesanan');
+    }
+  }, [error]);
+
+  // 2. Map backend Order type to UI FarmerOrder type
+  const orders: FarmerOrder[] = React.useMemo(() => {
+    const rawOrders = ordersResponse?.data?.orders || [];
+    return rawOrders.map((o) => {
+      const items = o.items.map((item) => ({
+        id: item.id,
+        name: `Produk #${item.product_id.slice(-4)}`,
+        quantity: item.quantity,
+        price: item.price_per_unit,
+        image: '',
+      }));
+
+      return {
+        id: o.id,
+        customerName: o.buyer?.full_name || `Pembeli #${o.buyer_id.slice(-4)}`,
+        date: o.created_at,
+        totalAmount: o.total_amount,
+        paymentMethod: o.payment_url ? 'Online (Midtrans)' : 'Manual',
+        status: o.status as OrderStatus,
+        items,
+      };
+    });
+  }, [ordersResponse]);
+
+  // 3. Setup React Table
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
-    data: MOCK_SALES,
+    data: orders,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -106,10 +94,29 @@ export function FarmerSalesHistory() {
     <div className="w-full text-slate-900">
       <div className="mx-auto flex w-full flex-col gap-8">
         <SalesHistoryHeader />
-        <SalesHistoryStats orders={MOCK_SALES} />
+
+        {isLoading ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-24 w-full rounded-xl" />
+            ))}
+          </div>
+        ) : (
+          <SalesHistoryStats orders={orders} />
+        )}
+
         <div className="space-y-6">
           <SalesHistoryFilters table={table} />
-          <SalesHistoryTable table={table} columnsCount={columns.length} />
+
+          {isLoading ? (
+            <div className="space-y-3">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-20 w-full" />
+            </div>
+          ) : (
+            <SalesHistoryTable table={table} columnsCount={columns.length} />
+          )}
         </div>
       </div>
     </div>
