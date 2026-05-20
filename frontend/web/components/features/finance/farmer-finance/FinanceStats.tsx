@@ -32,11 +32,11 @@ export function FinanceStats({ summary }: FinanceStatsProps) {
       bgColor: 'bg-orange-100',
     },
     {
-      label: 'Penarikan (Bulan Ini)',
-      value: `Rp ${summary.monthlyWithdrawal.toLocaleString('id-ID')}`,
+      label: 'Pertumbuhan (Bulan Ini)',
+      value: `${summary.earningsChangePercent >= 0 ? '+' : ''}${summary.earningsChangePercent}%`,
       icon: ArrowDownToLine,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100',
+      color: summary.earningsChangePercent >= 0 ? 'text-green-600' : 'text-rose-600',
+      bgColor: summary.earningsChangePercent >= 0 ? 'bg-green-100' : 'bg-rose-100',
     },
   ];
 

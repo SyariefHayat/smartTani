@@ -39,6 +39,14 @@ export const columns: ColumnDef<FarmerTransaction>[] = [
           </div>
         );
       }
+      if (type === 'fee') {
+        return (
+          <div className="flex items-center text-amber-600 gap-1.5">
+            <MinusCircle className="h-4 w-4" />
+            <span className="text-sm font-medium">Biaya Layanan</span>
+          </div>
+        );
+      }
       return (
         <div className="flex items-center text-rose-600 gap-1.5">
           <MinusCircle className="h-4 w-4" />
@@ -60,7 +68,15 @@ export const columns: ColumnDef<FarmerTransaction>[] = [
       }).format(amount);
 
       return (
-        <span className={`font-bold ${type === 'revenue' ? 'text-green-600' : 'text-rose-600'}`}>
+        <span
+          className={`font-bold ${
+            type === 'revenue'
+              ? 'text-green-600'
+              : type === 'fee'
+                ? 'text-amber-600'
+                : 'text-rose-600'
+          }`}
+        >
           {type === 'revenue' ? '+' : '-'} {formatted}
         </span>
       );
@@ -71,6 +87,8 @@ export const columns: ColumnDef<FarmerTransaction>[] = [
     header: 'Status',
     cell: ({ row }) => {
       const status = row.getValue('status') as string;
+      if (!status) return <Badge variant="outline">Berhasil</Badge>; // Default to Success for revenue/fee from items
+
       const config: Record<
         string,
         { label: string; variant: 'success' | 'warning' | 'destructive' }

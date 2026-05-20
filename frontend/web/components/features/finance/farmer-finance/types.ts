@@ -1,4 +1,4 @@
-export type TransactionType = 'revenue' | 'withdrawal' | 'refund';
+export type TransactionType = 'revenue' | 'fee' | 'withdrawal' | 'refund';
 export type TransactionStatus = 'success' | 'pending' | 'failed';
 
 export interface FarmerTransaction {
@@ -7,12 +7,13 @@ export interface FarmerTransaction {
   type: TransactionType;
   amount: number;
   description: string;
-  status: TransactionStatus;
+  status?: TransactionStatus;
+  order_id?: string;
 }
 
 export interface FinanceSummary {
   currentBalance: number;
   totalEarnings: number;
   pendingBalance: number;
-  monthlyWithdrawal: number;
+  earningsChangePercent: number;
 }

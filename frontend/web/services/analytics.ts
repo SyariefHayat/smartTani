@@ -36,6 +36,26 @@ export interface FarmerAnalytics {
   top_products: Record<string, unknown>[];
 }
 
+export interface FarmerFinance {
+  current_balance: number;
+  total_earnings: number;
+  pending_balance: number;
+  earnings_change_percent: number;
+  transactions: {
+    id: string;
+    date: string;
+    type: 'revenue' | 'fee';
+    amount: number;
+    description: string;
+    order_id: string;
+  }[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+  };
+}
+
 export const analyticsService = {
   getOverview: async (): Promise<OverviewMetrics> => {
     const response = await api.get('/analytics/overview');
@@ -67,6 +87,14 @@ export const analyticsService = {
     params?: { from_date?: string; to_date?: string }
   ): Promise<Record<string, unknown>[]> => {
     const response = await api.get(`/analytics/farmer/${id}/revenue-chart`, { params });
+    return response.data.data;
+  },
+
+  getFarmerFinance: async (
+    id: string,
+    params?: { page?: number; limit?: number }
+  ): Promise<FarmerFinance> => {
+    const response = await api.get(`/analytics/farmer/${id}/finance`, { params });
     return response.data.data;
   },
 };
