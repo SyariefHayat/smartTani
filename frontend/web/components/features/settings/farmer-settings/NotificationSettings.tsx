@@ -1,89 +1,124 @@
 'use client';
 
+import * as React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Mail, Smartphone, ShoppingBag, TrendingUp, ShieldCheck } from 'lucide-react';
+import { Mail, Smartphone, CreditCard } from 'lucide-react';
+import { toast } from 'sonner';
 
 export function NotificationSettings() {
-  const notificationOptions = [
-    {
-      id: 'orders',
-      title: 'Pesanan Masuk',
-      description: 'Dapatkan notifikasi ketika ada pembeli memesan produk Anda.',
-      icon: ShoppingBag,
-      defaultChecked: true,
-    },
-    {
-      id: 'investments',
-      title: 'Update Investasi',
-      description: 'Notifikasi mengenai progres pendanaan atau pencairan investasi.',
-      icon: TrendingUp,
-      defaultChecked: true,
-    },
-    {
-      id: 'system',
-      title: 'Keamanan Akun',
-      description: 'Notifikasi penting mengenai login dan perubahan password.',
-      icon: ShieldCheck,
-      defaultChecked: true,
-    },
-  ];
+  const [preferences, setPreferences] = React.useState({
+    email_new_order: true,
+    email_payment: true,
+    push_notification: true,
+  });
+
+  // Load preferences from localStorage on component mount
+  React.useEffect(() => {
+    try {
+      const stored = localStorage.getItem('smarttani_notification_preferences');
+      if (stored) {
+        setTimeout(() => {
+          setPreferences(JSON.parse(stored));
+        }, 0);
+      }
+    } catch (e) {
+      console.error('Failed to load notification preferences from localStorage', e);
+    }
+  }, []);
+
+  const handleToggle = (key: keyof typeof preferences, checked: boolean) => {
+    setPreferences((prev) => ({
+      ...prev,
+      [key]: checked,
+    }));
+  };
+
+  const handleSave = () => {
+    try {
+      localStorage.setItem('smarttani_notification_preferences', JSON.stringify(preferences));
+      toast.success('Preferensi notifikasi berhasil disimpan');
+    } catch (e) {
+      console.error('Failed to save notification preferences', e);
+      toast.error('Gagal menyimpan preferensi notifikasi');
+    }
+  };
 
   return (
-    <Card className="border-none shadow-sm">
+    <Card className="border-none shadow-sm text-slate-900">
       <CardHeader>
         <CardTitle>Preferensi Notifikasi</CardTitle>
-        <CardDescription>Pilih jenis informasi yang ingin Anda terima.</CardDescription>
+        <CardDescription>
+          Pilih jenis informasi dan saluran notifikasi yang ingin Anda terima.
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50/50">
+          <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50/50 hover:bg-slate-50 transition-colors">
             <div className="flex items-center gap-3">
-              <Mail className="h-5 w-5 text-blue-500" />
+              <div className="p-2 rounded-md bg-blue-50 text-blue-600">
+                <Mail className="h-5 w-5" />
+              </div>
               <div>
-                <Label className="text-sm font-bold">Notifikasi Email</Label>
+                <Label className="text-sm font-bold cursor-pointer">Email Order Baru</Label>
                 <p className="text-xs text-muted-foreground">
-                  Kirim laporan mingguan ke email Anda.
+                  Terima notifikasi email setiap kali ada pesanan baru untuk produk pertanian Anda.
                 </p>
               </div>
             </div>
-            <Switch defaultChecked />
+            <Switch
+              checked={preferences.email_new_order}
+              onCheckedChange={(checked) => handleToggle('email_new_order', checked)}
+            />
           </div>
 
-          <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50/50">
+          <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50/50 hover:bg-slate-50 transition-colors">
             <div className="flex items-center gap-3">
-              <Smartphone className="h-5 w-5 text-green-500" />
+              <div className="p-2 rounded-md bg-indigo-50 text-indigo-600">
+                <CreditCard className="h-5 w-5" />
+              </div>
               <div>
-                <Label className="text-sm font-bold">Push Notification</Label>
+                <Label className="text-sm font-bold cursor-pointer">Email Pembayaran</Label>
                 <p className="text-xs text-muted-foreground">
-                  Notifikasi langsung ke perangkat mobile.
+                  Terima notifikasi email ketika pembayaran dari pembeli telah berhasil
+                  dikonfirmasi.
                 </p>
               </div>
             </div>
-            <Switch defaultChecked />
+            <Switch
+              checked={preferences.email_payment}
+              onCheckedChange={(checked) => handleToggle('email_payment', checked)}
+            />
+          </div>
+
+          <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50/50 hover:bg-slate-50 transition-colors">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-md bg-green-50 text-green-600">
+                <Smartphone className="h-5 w-5" />
+              </div>
+              <div>
+                <Label className="text-sm font-bold cursor-pointer">Push Notification</Label>
+                <p className="text-xs text-muted-foreground">
+                  Terima notifikasi instan langsung di peramban (browser) atau perangkat Anda.
+                </p>
+              </div>
+            </div>
+            <Switch
+              checked={preferences.push_notification}
+              onCheckedChange={(checked) => handleToggle('push_notification', checked)}
+            />
           </div>
         </div>
 
-        <div className="space-y-4 pt-4 border-t">
-          <h4 className="text-sm font-bold">Jenis Aktivitas</h4>
-          {notificationOptions.map((opt) => (
-            <div key={opt.id} className="flex items-start justify-between">
-              <div className="flex gap-3">
-                <opt.icon className="h-5 w-5 text-slate-400 mt-1" />
-                <div className="space-y-0.5">
-                  <Label className="text-sm font-medium">{opt.title}</Label>
-                  <p className="text-xs text-muted-foreground">{opt.description}</p>
-                </div>
-              </div>
-              <Switch defaultChecked={opt.defaultChecked} />
-            </div>
-          ))}
-        </div>
-
-        <div className="flex justify-end pt-4">
-          <Button className="bg-slate-900 text-white hover:bg-slate-800">Simpan Pengaturan</Button>
+        <div className="flex justify-end pt-4 border-t">
+          <Button
+            className="bg-green-600 text-white hover:bg-green-700 font-medium"
+            onClick={handleSave}
+          >
+            Simpan Pengaturan
+          </Button>
         </div>
       </CardContent>
     </Card>
