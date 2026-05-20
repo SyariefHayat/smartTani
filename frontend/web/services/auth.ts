@@ -29,4 +29,8 @@ export const authService = {
     const response = await api.patch('/auth/me', data);
     return response.data;
   },
+  changePassword: async (data: Record<string, string>) => {
+    const response = await api.post('/auth/change-password', data);
+    return response.data;
+  },
 };

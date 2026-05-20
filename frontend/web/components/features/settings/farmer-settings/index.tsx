@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ProfileSettings } from './ProfileSettings';
 import { FarmSettings } from './FarmSettings';
 import { NotificationSettings } from './NotificationSettings';
+import { SecuritySettings } from './SecuritySettings';
 import { User, Sprout, Bell, Shield } from 'lucide-react';
 
 export function FarmerSettingsManagement() {
@@ -52,14 +53,7 @@ export function FarmerSettingsManagement() {
             </TabsContent>
 
             <TabsContent value="security">
-              {/* Placeholder Security Settings */}
-              <div className="rounded-lg border border-dashed p-12 text-center">
-                <Shield className="mx-auto h-12 w-12 text-muted-foreground opacity-20" />
-                <h3 className="mt-4 text-lg font-bold">Keamanan Akun</h3>
-                <p className="text-sm text-muted-foreground">
-                  Fitur perubahan kata sandi dan 2FA sedang dalam pengembangan.
-                </p>
-              </div>
+              <SecuritySettings />
             </TabsContent>
           </div>
         </Tabs>
