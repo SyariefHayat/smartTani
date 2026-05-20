@@ -119,7 +119,7 @@ app.use(
   createProxyMiddleware({
     ...proxyOptions,
     target: env.ORDER_SERVICE_URL,
-    pathFilter: ['/cart', '/orders', '/payments'],
+    pathFilter: ['/cart', '/orders', '/payments', '/purchases'],
   })
 );
 

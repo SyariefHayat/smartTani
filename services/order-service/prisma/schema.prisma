@@ -42,3 +42,21 @@ model OrderItem {
 
   @@map("order_items")
 }
+
+model PurchaseRecord {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  farmer_id     String   @db.Uuid
+  supplier_name String   @db.VarChar(255)
+  item_name     String   @db.VarChar(255)
+  quantity      Decimal  @db.Decimal(10, 2)
+  unit          String   @db.VarChar(50)
+  total_cost    Decimal  @db.Decimal(15, 2)
+  purchase_date DateTime @db.Timestamptz
+  notes         String?  @db.Text
+  receipt_url   String?  @db.Text
+  created_at    DateTime @default(now()) @db.Timestamptz
+  updated_at    DateTime @updatedAt @db.Timestamptz
+
+  @@index([farmer_id, purchase_date])
+  @@map("purchase_records")
+}

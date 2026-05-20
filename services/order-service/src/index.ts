@@ -26,6 +26,7 @@ import { getHealth } from './controllers/health.controller';
 import cartRoutes from './routes/cart.routes';
 import orderRoutes from './routes/order.routes';
 import paymentRoutes from './routes/payment.routes';
+import purchaseRoutes from './routes/purchase.routes';
 
 export const app = express();
 
@@ -40,6 +41,7 @@ app.get('/health', getHealth);
 app.use('/cart', cartRoutes);
 app.use('/orders', orderRoutes);
 app.use('/payments', paymentRoutes);
+app.use('/purchases', purchaseRoutes);
 
 // Sentry Error Handler
 Sentry.setupExpressErrorHandler(app);
