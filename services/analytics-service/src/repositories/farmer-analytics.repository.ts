@@ -95,6 +95,7 @@ class FarmerAnalyticsRepository {
     const top_products = topProductsRaw.map((p) => {
       const product = products.find((pr) => pr.id === p.product_id);
       return {
+        id: p.product_id,
         title: product?.title || 'Unknown Product',
         image: product?.image || null,
         sold_count: Number(p._sum.quantity || 0),

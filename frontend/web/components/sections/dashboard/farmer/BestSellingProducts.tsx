@@ -36,6 +36,9 @@ import {
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { useAuthStore } from '@/stores/auth';
+import { useFarmerAnalytics } from '@/hooks/use-farmer-analytics';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export type Product = {
   id: string;
@@ -45,57 +48,12 @@ export type Product = {
   sales: number;
 };
 
-const data: Product[] = [
-  {
-    id: 'PRD-001',
-    product: 'Kemeja Batik Slim Fit',
-    image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=48&h=48&fit=crop',
-    sold: 1240,
-    sales: 186000000,
-  },
-  {
-    id: 'PRD-002',
-    product: 'Celana Chino Premium',
-    image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=48&h=48&fit=crop',
-    sold: 980,
-    sales: 147000000,
-  },
-  {
-    id: 'PRD-003',
-    product: 'Sepatu Kulit Formal',
-    image: 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=48&h=48&fit=crop',
-    sold: 754,
-    sales: 226200000,
-  },
-  {
-    id: 'PRD-004',
-    product: 'Tas Selempang Canvas',
-    image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=48&h=48&fit=crop',
-    sold: 612,
-    sales: 73440000,
-  },
-  {
-    id: 'PRD-005',
-    product: 'Jaket Bomber Pria',
-    image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=48&h=48&fit=crop',
-    sold: 430,
-    sales: 103200000,
-  },
-  {
-    id: 'PRD-005',
-    product: 'Jaket Bomber Pria',
-    image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=48&h=48&fit=crop',
-    sold: 430,
-    sales: 103200000,
-  },
-];
-
 export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: 'product',
     header: 'Produk',
     cell: ({ row }) => {
-      const image = row.original.image;
+      const image = row.original.image || 'https://placehold.co/48x48?text=Product';
       const name = row.getValue('product') as string;
       const id = row.original.id;
       return (
@@ -108,8 +66,15 @@ export const columns: ColumnDef<Product>[] = [
             className="h-10 w-10 rounded-md object-cover border"
           />
           <div className="flex flex-col">
-            <span className="font-medium text-sm">{name}</span>
-            <span className="text-xs text-muted-foreground">{id}</span>
+            <span
+              className="font-medium text-sm truncate max-w-[150px] lg:max-w-[200px]"
+              title={name}
+            >
+              {name}
+            </span>
+            <span className="text-[10px] text-muted-foreground uppercase">
+              {id.split('-')[0]}...
+            </span>
           </div>
         </div>
       );
@@ -178,14 +143,29 @@ export const columns: ColumnDef<Product>[] = [
 ];
 
 export function DataTableDemo({ className }: { className?: string }) {
+  const user = useAuthStore((s) => s.user);
+  const { data: analytics, isLoading, error } = useFarmerAnalytics(user?.id);
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const tableData = React.useMemo(() => {
+    if (!analytics?.top_products) return [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (analytics.top_products as any[]).map((p) => ({
+      id: p.id,
+      product: p.title,
+      image: p.image,
+      sold: p.sold_count,
+      sales: p.revenue,
+    }));
+  }, [analytics]);
+
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
-    data,
+    data: tableData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -202,6 +182,42 @@ export function DataTableDemo({ className }: { className?: string }) {
       rowSelection,
     },
   });
+
+  if (isLoading) {
+    return (
+      <Card className={cn('w-full', className)}>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-8 w-40" />
+            <Skeleton className="h-9 w-24" />
+          </div>
+          <div className="flex items-center pt-4">
+            <Skeleton className="h-9 w-full max-w-sm" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="h-12 w-full" />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card
+        className={cn(
+          'w-full h-64 flex items-center justify-center text-red-500 border-red-200 bg-red-50',
+          className
+        )}
+      >
+        Gagal memuat data produk terlaris
+      </Card>
+    );
+  }
 
   return (
     <Card className={cn('w-full', className)}>
