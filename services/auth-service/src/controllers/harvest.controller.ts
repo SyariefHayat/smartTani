@@ -1,14 +1,14 @@
 import { Response, NextFunction } from 'express';
-import landService from '../services/land.service';
+import harvestService from '../services/harvest.service';
 import { successResponse } from '../../../../shared/utils/response';
 import { AppRequest } from '../../../../shared/types/express';
 
-export class LandController {
+export class HarvestController {
   async create(req: AppRequest, res: Response, next: NextFunction) {
     try {
       const farmerId = req.user!.id;
-      const land = await landService.createLand(farmerId, req.body);
-      res.status(201).json(successResponse(land, 'Data lahan berhasil dibuat'));
+      const harvest = await harvestService.createHarvest(farmerId, req.body);
+      res.status(201).json(successResponse(harvest, 'Catatan panen berhasil dibuat'));
     } catch (error) {
       next(error);
     }
@@ -17,8 +17,8 @@ export class LandController {
   async getAll(req: AppRequest, res: Response, next: NextFunction) {
     try {
       const farmerId = req.user!.id;
-      const lands = await landService.getLands(farmerId);
-      res.status(200).json(successResponse(lands));
+      const harvests = await harvestService.getHarvests(farmerId);
+      res.status(200).json(successResponse(harvests));
     } catch (error) {
       next(error);
     }
@@ -28,8 +28,8 @@ export class LandController {
     try {
       const { id } = req.params;
       const farmerId = req.user!.id;
-      const land = await landService.updateLand(id as string, farmerId, req.body);
-      res.status(200).json(successResponse(land, 'Data lahan berhasil diperbarui'));
+      const harvest = await harvestService.updateHarvest(id as string, farmerId, req.body);
+      res.status(200).json(successResponse(harvest, 'Catatan panen berhasil diperbarui'));
     } catch (error) {
       next(error);
     }
@@ -39,12 +39,12 @@ export class LandController {
     try {
       const { id } = req.params;
       const farmerId = req.user!.id;
-      await landService.deleteLand(id as string, farmerId);
-      res.status(200).json(successResponse(null, 'Data lahan berhasil dihapus'));
+      await harvestService.deleteHarvest(id as string, farmerId);
+      res.status(200).json(successResponse(null, 'Catatan panen berhasil dihapus'));
     } catch (error) {
       next(error);
     }
   }
 }
 
-export default new LandController();
+export default new HarvestController();

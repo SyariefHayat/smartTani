@@ -25,6 +25,7 @@ model User {
   created_at       DateTime @default(now()) @db.Timestamptz
   updated_at       DateTime @updatedAt @db.Timestamptz
   farm_lands       FarmLand[]
+  harvest_records  HarvestRecord[]
 
   @@map("users")
 }
@@ -45,7 +46,28 @@ model FarmLand {
   created_at        DateTime @default(now()) @db.Timestamptz
   updated_at        DateTime @updatedAt @db.Timestamptz
   user              User     @relation(fields: [farmer_id], references: [id], onDelete: Cascade)
+  harvest_records   HarvestRecord[]
 
   @@index([farmer_id])
   @@map("farm_lands")
+}
+
+model HarvestRecord {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  farmer_id     String   @db.Uuid
+  land_id       String   @db.Uuid
+  crop_name     String   @db.VarChar(100)
+  quantity      Float
+  unit          String   @db.VarChar(50)
+  harvest_date  DateTime @db.Date
+  quality_grade String   @db.VarChar(10) // A | B | C
+  notes         String?  @db.Text
+  created_at    DateTime @default(now()) @db.Timestamptz
+  updated_at    DateTime @updatedAt @db.Timestamptz
+  user          User     @relation(fields: [farmer_id], references: [id], onDelete: Cascade)
+  land          FarmLand @relation(fields: [land_id], references: [id], onDelete: Cascade)
+
+  @@index([farmer_id])
+  @@index([land_id])
+  @@map("harvest_records")
 }

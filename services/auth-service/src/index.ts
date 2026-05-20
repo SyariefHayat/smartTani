@@ -23,6 +23,7 @@ import healthRoutes from './routes/health.routes';
 import metricsRoutes from './routes/metrics.routes';
 import authRoutes from './routes/auth.routes';
 import landRoutes from './routes/land.routes';
+import harvestRoutes from './routes/harvest.routes';
 import { metricsMiddleware as _metricsMiddleware } from './middleware/metrics.middleware';
 
 import cluster from 'cluster';
@@ -43,6 +44,7 @@ app.use('/health', healthRoutes);
 app.use('/metrics', metricsRoutes);
 app.use('/auth', authRoutes);
 app.use('/lands', landRoutes);
+app.use('/harvests', harvestRoutes);
 
 // Sentry Error Handler
 Sentry.setupExpressErrorHandler(app);

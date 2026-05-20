@@ -105,7 +105,7 @@ app.use(
   createProxyMiddleware({
     ...proxyOptions,
     target: env.AUTH_SERVICE_URL,
-    pathFilter: ['/auth', '/lands'],
+    pathFilter: ['/auth', '/lands', '/harvests'],
   })
 );
 
