@@ -41,6 +41,24 @@ router.get('/', productController.getProducts);
 
 /**
  * @swagger
+ * /products/reviews/summary:
+ *   get:
+ *     summary: Get reviews summary for a farmer
+ *     tags: [Product]
+ *     parameters:
+ *       - in: query
+ *         name: farmer_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Reviews summary
+ */
+router.get('/reviews/summary', reviewController.getFarmerReviewsSummary);
+
+/**
+ * @swagger
  * /products/{id}:
  *   get:
  *     summary: Get product by ID

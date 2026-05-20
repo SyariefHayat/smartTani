@@ -46,6 +46,37 @@ export class ReviewController {
       next(error);
     }
   }
+
+  async getFarmerReviewsSummary(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { farmer_id } = req.query;
+      if (!farmer_id) {
+        return res.status(400).json({ success: false, message: 'farmer_id is required' });
+      }
+
+      const cacheKey = `farmer_reviews_summary:${farmer_id}`;
+      const RedisClient = (await import('../lib/redis')).default;
+
+      const cachedData = await RedisClient.get<{
+        average_rating: number;
+        total_reviews: number;
+        rating_breakdown: Record<number, number>;
+      }>(cacheKey);
+      if (cachedData) {
+        return res.status(200).json(successResponse(cachedData));
+      }
+
+      const result = await (
+        await import('../repositories/review.repository')
+      ).default.getFarmerReviewsSummary(farmer_id as string);
+
+      await RedisClient.setex(cacheKey, 300, result); // 5 minutes TTL
+
+      return res.status(200).json(successResponse(result));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new ReviewController();

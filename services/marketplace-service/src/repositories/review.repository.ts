@@ -52,6 +52,37 @@ export class ReviewRepository {
       rating_breakdown: breakdown,
     };
   }
+
+  async getFarmerReviewsSummary(farmerId: string) {
+    const { Product } = await import('../models/product.model');
+    const productIds = await Product.find({ farmer_id: farmerId }).distinct('_id');
+
+    const stats = await Review.aggregate([
+      { $match: { product_id: { $in: productIds.map((id) => id.toString()) } } },
+      {
+        $group: {
+          _id: '$rating',
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const breakdown: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    let totalScore = 0;
+    let totalReviews = 0;
+
+    stats.forEach((stat) => {
+      breakdown[stat._id] = stat.count;
+      totalScore += stat._id * stat.count;
+      totalReviews += stat.count;
+    });
+
+    return {
+      average_rating: totalReviews > 0 ? parseFloat((totalScore / totalReviews).toFixed(1)) : 0,
+      total_reviews: totalReviews,
+      rating_breakdown: breakdown,
+    };
+  }
 }
 
 export default new ReviewRepository();

@@ -453,4 +453,43 @@ describe('Marketplace Service', () => {
       expect(response.body.meta.rating_breakdown['4']).toBe(1);
     });
   });
+
+  describe('GET /products/reviews/summary', () => {
+    it('should return aggregated reviews for a farmer', async () => {
+      const farmerId = 'farmer-123';
+      const mockProductIds = ['p1', 'p2'];
+
+      // Mock Product.find().distinct('_id')
+      (Product.find as jest.Mock).mockReturnValue({
+        distinct: jest.fn().mockResolvedValue(mockProductIds),
+      });
+
+      (Review.aggregate as jest.Mock).mockResolvedValue([
+        { _id: 5, count: 10 },
+        { _id: 4, count: 5 },
+      ]);
+
+      const response = await request(app).get(`/products/reviews/summary?farmer_id=${farmerId}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.average_rating).toBe(4.7);
+      expect(response.body.data.total_reviews).toBe(15);
+      expect(response.body.data.rating_breakdown['5']).toBe(10);
+      expect(response.body.data.rating_breakdown['4']).toBe(5);
+    });
+
+    it('should use cache for summary if available', async () => {
+      const farmerId = 'farmer-cached';
+      const mockData = { average_rating: 4.8, total_reviews: 20 };
+
+      (RedisClient.get as jest.Mock).mockResolvedValue(mockData);
+
+      const response = await request(app).get(`/products/reviews/summary?farmer_id=${farmerId}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.average_rating).toBe(4.8);
+      expect(Review.aggregate).not.toHaveBeenCalled();
+    });
+  });
 });
