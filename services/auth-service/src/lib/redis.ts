@@ -70,7 +70,7 @@ class RedisClient {
     for await (const keys of stream) {
       if (keys.length > 0) {
         const values = await client.mget(...keys);
-        const keysToDelete = keys.filter((key, index) => {
+        const keysToDelete = (keys as string[]).filter((key: string, index: number) => {
           const value = values[index];
           if (!value) return false;
           try {
