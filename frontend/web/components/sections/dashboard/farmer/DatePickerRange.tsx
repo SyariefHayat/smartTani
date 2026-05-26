@@ -1,17 +1,12 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Field } from "@/components/ui/field";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { useDateRange } from "@/context/dateRange";
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Field } from '@/components/ui/field';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useDateRange } from '@/context/dateRange';
 
 export function DatePickerWithRange() {
   const { date, setDate } = useDateRange();
@@ -23,17 +18,16 @@ export function DatePickerWithRange() {
           <Button
             variant="outline"
             id="date-picker-range"
-            className="justify-start px-2.5 font-normal"
+            className="justify-start px-2.5 font-normal cursor-pointer"
           >
             <CalendarIcon />
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
+                  {format(date.from, 'LLL dd, y')} - {format(date.to, 'LLL dd, y')}
                 </>
               ) : (
-                format(date.from, "LLL dd, y")
+                format(date.from, 'LLL dd, y')
               )
             ) : (
               <span>Pilih tanggal</span>

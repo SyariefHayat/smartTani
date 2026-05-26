@@ -37,41 +37,59 @@ const SectionCard = () => {
     );
   }
 
+  const hasPrevRevenue =
+    data?.prev_month_revenue !== undefined && Number(data.prev_month_revenue) > 0;
+  const revenueChange = hasPrevRevenue ? data?.revenue_change_percent || 0 : 0;
+
   const cards = [
     {
-      title: 'Total Pendapatan',
+      title: 'Total Penjualan',
       value: formatCurrency(data?.total_revenue || 0),
-      percentage: `${Math.abs(data?.revenue_change_percent || 0).toFixed(1)}%`,
-      trend: (data?.revenue_change_percent || 0) >= 0 ? 'up' : ('down' as const),
-    },
-    {
-      title: 'Pendapatan Bulan Ini',
-      value: formatCurrency(data?.monthly_revenue || 0),
-      percentage: `${Math.abs(data?.revenue_change_percent || 0).toFixed(1)}%`,
-      trend: (data?.revenue_change_percent || 0) >= 0 ? 'up' : ('down' as const),
+      hasCompare: hasPrevRevenue,
+      change: revenueChange,
+      footer: hasPrevRevenue
+        ? `${revenueChange >= 0 ? 'Naik' : 'Turun'} dari bulan lalu`
+        : 'dari bulan lalu',
     },
     {
       title: 'Total Pesanan',
       value: (data?.total_orders || 0).toLocaleString('id-ID'),
-      percentage: 'Total keseluruhan',
-      trend: 'up' as const,
-      hideTrendIcon: true,
+      hasCompare: false, // Defaulting to false as backend doesn't provide prev month order count yet
+      change: 0,
+      footer: 'dari bulan lalu',
     },
     {
-      title: 'Pesanan Pending',
-      value: (data?.pending_orders || 0).toLocaleString('id-ID'),
-      percentage: 'Perlu diproses',
-      trend: (data?.pending_orders || 0) > 0 ? 'down' : ('up' as const),
-      hideTrendIcon: true,
+      title: 'Total Produk',
+      value: (data?.total_products || 0).toLocaleString('id-ID'),
+      hasCompare: false,
+      change: 0,
+      footer: 'dari bulan lalu',
     },
-  ];
+    {
+      title: 'Total Pelanggan',
+      value: (data?.total_customers || 0).toLocaleString('id-ID'),
+      hasCompare: false,
+      change: 0,
+      footer: 'dari bulan lalu',
+    },
+  ] as const;
 
   return (
     <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
       {cards.map((card, index) => {
-        const isUp = card.trend === 'up';
-        const colorClass = isUp ? 'text-green-500' : 'text-red-500';
-        const Icon = isUp ? ArrowUp : ArrowDown;
+        const hasCompare = card.hasCompare;
+        const isUp = card.change > 0;
+        const isDown = card.change < 0;
+
+        let colorClass = 'text-muted-foreground';
+        let Icon = null;
+        let percentageText = '0.0%';
+
+        if (hasCompare) {
+          colorClass = isUp ? 'text-green-500' : isDown ? 'text-red-500' : 'text-muted-foreground';
+          Icon = isUp ? ArrowUp : isDown ? ArrowDown : null;
+          percentageText = `${Math.abs(card.change).toFixed(1)}%`;
+        }
 
         return (
           <Card key={index} className="min-w-0">
@@ -86,10 +104,10 @@ const SectionCard = () => {
             </CardHeader>
             <CardFooter className="flex-col items-start gap-1.5 text-sm">
               <div className="flex w-full min-w-0 items-center gap-1 font-medium">
-                {!card.hideTrendIcon && <Icon className={`size-4 shrink-0 ${colorClass}`} />}
+                {Icon && <Icon className={`size-4 shrink-0 ${colorClass}`} />}
                 <span className="truncate">
-                  {!card.hideTrendIcon && <span className={colorClass}>{card.percentage}</span>}
-                  {card.hideTrendIcon ? card.percentage : ' dari bulan lalu'}
+                  <span className={colorClass}>{percentageText} </span>
+                  <span className="text-muted-foreground">{card.footer}</span>
                 </span>
               </div>
             </CardFooter>

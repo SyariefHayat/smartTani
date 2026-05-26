@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import {
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -15,6 +14,8 @@ import {
 } from '@tanstack/react-table';
 import { ArrowUpDown, FolderUp, MoreHorizontal } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -35,10 +36,12 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 import { useAuthStore } from '@/stores/auth';
 import { useFarmerAnalytics } from '@/hooks/use-farmer-analytics';
 import { Skeleton } from '@/components/ui/skeleton';
+import { exportToCSV } from '@/lib/export-csv';
+import { flexRender } from '@tanstack/react-table';
 
 export type Product = {
   id: string;
@@ -66,10 +69,7 @@ export const columns: ColumnDef<Product>[] = [
             className="h-10 w-10 rounded-md object-cover border"
           />
           <div className="flex flex-col">
-            <span
-              className="font-medium text-sm truncate max-w-[150px] lg:max-w-[200px]"
-              title={name}
-            >
+            <span className="font-medium text-sm truncate max-w-37.5 lg:max-w-50" title={name}>
               {name}
             </span>
             <span className="text-[10px] text-muted-foreground uppercase">
@@ -102,20 +102,22 @@ export const columns: ColumnDef<Product>[] = [
         <ArrowUpDown className="ml-1 h-3.5 w-3.5" />
       </Button>
     ),
-    cell: ({ row }) => {
-      const formatted = new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        maximumFractionDigits: 0,
-      }).format(row.getValue('sales') as number);
-      return <div className="text-right font-medium tabular-nums">{formatted}</div>;
-    },
+    cell: ({ row }) => (
+      <div className="text-right font-medium tabular-nums">
+        {new Intl.NumberFormat('id-ID', {
+          style: 'currency',
+          currency: 'IDR',
+          maximumFractionDigits: 0,
+        }).format(row.getValue('sales') as number)}
+      </div>
+    ),
   },
   {
     id: 'actions',
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: function ActionsCell({ row }) {
       const item = row.original;
+      const router = useRouter();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -127,13 +129,29 @@ export const columns: ColumnDef<Product>[] = [
           <DropdownMenuContent align="end" className="w-44">
             <DropdownMenuGroup>
               <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(item.id)}>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => {
+                  navigator.clipboard.writeText(item.id);
+                  toast.success('ID produk berhasil disalin');
+                }}
+              >
                 Salin ID produk
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuGroup>
-              <DropdownMenuItem>Lihat detail produk</DropdownMenuItem>
-              <DropdownMenuItem>Edit produk</DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => router.push(`/dashboard/farmer/products?detail=${item.id}`)}
+              >
+                Lihat detail produk
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => router.push(`/dashboard/farmer/products?edit=${item.id}`)}
+              >
+                Edit produk
+              </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -163,6 +181,24 @@ export function DataTableDemo({ className }: { className?: string }) {
     }));
   }, [analytics]);
 
+  const handleExport = React.useCallback(() => {
+    if (tableData.length === 0) {
+      toast.error('Tidak ada data untuk di-export');
+      return;
+    }
+    exportToCSV({
+      data: tableData,
+      columns: [
+        { header: 'ID Produk', accessor: (row) => row.id },
+        { header: 'Nama Produk', accessor: (row) => row.product },
+        { header: 'Terjual', accessor: (row) => row.sold },
+        { header: 'Pendapatan', accessor: (row) => formatCurrency(row.sales) },
+      ],
+      filename: 'produk_terlaris',
+    });
+    toast.success('Data produk terlaris berhasil di-export');
+  }, [tableData]);
+
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: tableData,
@@ -175,12 +211,12 @@ export function DataTableDemo({ className }: { className?: string }) {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
+    initialState: {
+      pagination: {
+        pageSize: 8,
+      },
     },
+    state: { sorting, columnFilters, columnVisibility, rowSelection },
   });
 
   if (isLoading) {
@@ -222,24 +258,28 @@ export function DataTableDemo({ className }: { className?: string }) {
   return (
     <Card className={cn('w-full', className)}>
       <CardHeader>
+        {/* Header: judul + tombol export */}
         <div className="flex items-center justify-between">
           <CardTitle>Produk Terlaris</CardTitle>
-          <Button>
+          <Button onClick={handleExport} className="cursor-pointer">
             <FolderUp className="mr-1.5 h-4 w-4" /> Export
           </Button>
         </div>
+
+        {/* Filter */}
         <div className="flex items-center pt-4">
           <Input
             placeholder="Cari produk..."
             value={(table.getColumn('product')?.getFilterValue() as string) ?? ''}
             onChange={(e) => table.getColumn('product')?.setFilterValue(e.target.value)}
-            className="rounded-sm max-w-sm"
+            className="rounded-sm max-w-full"
           />
         </div>
       </CardHeader>
 
       <CardContent>
-        <div className="overflow-hidden rounded-md">
+        {/* Table */}
+        <div className="overflow-hidden rounded-md border">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -267,7 +307,10 @@ export function DataTableDemo({ className }: { className?: string }) {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center text-muted-foreground"
+                  >
                     Tidak ada hasil.
                   </TableCell>
                 </TableRow>
@@ -276,6 +319,7 @@ export function DataTableDemo({ className }: { className?: string }) {
           </Table>
         </div>
 
+        {/* Pagination */}
         <div className="flex items-center justify-end space-x-2 py-4">
           <div className="flex-1 text-sm text-muted-foreground">
             {table.getFilteredRowModel().rows.length} produk ditemukan
@@ -286,6 +330,7 @@ export function DataTableDemo({ className }: { className?: string }) {
               size="sm"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
+              className="cursor-pointer"
             >
               Sebelumnya
             </Button>
@@ -294,6 +339,7 @@ export function DataTableDemo({ className }: { className?: string }) {
               size="sm"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
+              className="cursor-pointer"
             >
               Berikutnya
             </Button>

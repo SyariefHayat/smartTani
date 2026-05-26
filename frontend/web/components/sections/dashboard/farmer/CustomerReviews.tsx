@@ -8,6 +8,7 @@ import { getStoredAuthUser } from '@/lib/auth-storage';
 import { formatDistanceToNow } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useRouter } from 'next/navigation';
 
 const avatarColors = [
   { bg: 'bg-violet-100', text: 'text-violet-800' },
@@ -46,18 +47,42 @@ function StarRow({ rating }: { rating: number }) {
 const CustomerReviews = ({ className }: { className?: string }) => {
   const user = getStoredAuthUser();
   const farmerId = user?.id;
+  const router = useRouter();
 
-  const { data: summaryResponse, isLoading: summaryLoading } = useQuery({
+  const {
+    data: summaryResponse,
+    isLoading: summaryLoading,
+    isError: summaryError,
+  } = useQuery({
     queryKey: ['reviews-summary', farmerId],
     queryFn: () => marketplaceService.getReviewsSummary(farmerId!),
     enabled: !!farmerId,
   });
 
-  const { data: reviewsResponse, isLoading: reviewsLoading } = useQuery({
+  const {
+    data: reviewsResponse,
+    isLoading: reviewsLoading,
+    isError: reviewsError,
+  } = useQuery({
     queryKey: ['farmer-reviews', farmerId],
     queryFn: () => marketplaceService.getFarmerReviews(farmerId!, { limit: 3 }),
     enabled: !!farmerId,
   });
+
+  const isError = summaryError || reviewsError;
+
+  if (isError) {
+    return (
+      <Card
+        className={cn(
+          'w-full flex h-full min-h-[300px] items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 p-6 text-center text-sm font-medium',
+          className
+        )}
+      >
+        Gagal memuat data ulasan pelanggan
+      </Card>
+    );
+  }
 
   const summary = summaryResponse?.data;
   const reviews = reviewsResponse?.data || [];
@@ -182,7 +207,10 @@ const CustomerReviews = ({ className }: { className?: string }) => {
           )}
         </div>
 
-        <button className="w-full text-sm text-muted-foreground border rounded-md py-2 hover:bg-muted transition-colors">
+        <button
+          className="w-full text-sm text-muted-foreground border rounded-md py-2 hover:bg-muted transition-colors cursor-pointer"
+          onClick={() => router.push('/dashboard/farmer/reviews')}
+        >
           Lihat semua ulasan
         </button>
       </CardContent>

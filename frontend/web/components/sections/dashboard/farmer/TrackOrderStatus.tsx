@@ -22,7 +22,9 @@ import {
   MoreHorizontal,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -46,9 +48,12 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { orderService, Order as ApiOrder, OrderItem as ApiOrderItem } from '@/services/order';
+import { exportToCSV } from '@/lib/export-csv';
+import { cn } from '@/lib/utils';
 
 export type Order = {
   id: string;
+  originalId: string;
   customer: string;
   product: string;
   qty: number;
@@ -60,18 +65,32 @@ export type Order = {
 const statusConfig: Record<string, { label: string; className: string }> = {
   paid: { label: 'New Order', className: 'bg-blue-100 text-blue-700' },
   confirmed_seller: {
-    label: 'In Progress',
+    label: 'On Progress',
     className: 'bg-yellow-100 text-yellow-700',
   },
   shipped: {
-    label: 'In Progress',
+    label: 'On Progress',
     className: 'bg-yellow-100 text-yellow-700',
   },
   delivered: {
     label: 'Completed',
     className: 'bg-emerald-100 text-emerald-700',
   },
+  completed: {
+    label: 'Completed',
+    className: 'bg-emerald-100 text-emerald-700',
+  },
   cancelled: { label: 'Cancelled', className: 'bg-red-100 text-red-700' },
+};
+
+const columnLabels: Record<string, string> = {
+  id: 'ID Pesanan',
+  customer: 'Nama Pelanggan',
+  product: 'Produk',
+  qty: 'Jumlah Barang',
+  amount: 'Total Harga',
+  paymentMethod: 'Metode Pembayaran',
+  status: 'Status',
 };
 
 export const columns: ColumnDef<Order>[] = [
@@ -151,8 +170,9 @@ export const columns: ColumnDef<Order>[] = [
   {
     id: 'actions',
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: function OrderActionsCell({ row }) {
       const order = row.original;
+      const router = useRouter();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -164,13 +184,33 @@ export const columns: ColumnDef<Order>[] = [
           <DropdownMenuContent align="end" className="w-44">
             <DropdownMenuGroup>
               <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(order.id)}>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => {
+                  navigator.clipboard.writeText(order.originalId);
+                  toast.success('ID pesanan berhasil disalin');
+                }}
+              >
                 Salin ID pesanan
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuGroup>
-              <DropdownMenuItem>Lihat detail pesanan</DropdownMenuItem>
-              <DropdownMenuItem>Hubungi pelanggan</DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => router.push(`/dashboard/farmer/orders?detail=${order.originalId}`)}
+              >
+                Lihat detail pesanan
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => {
+                  toast.info(`Menghubungi ${order.customer}...`, {
+                    description: 'Fitur kontak pelanggan akan segera tersedia',
+                  });
+                }}
+              >
+                Hubungi pelanggan
+              </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -184,10 +224,15 @@ export function TrackOrderStatus() {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [activeStatusFilter, setActiveStatusFilter] = React.useState<string | null>(null);
 
-  const { data: apiResponse, isLoading } = useQuery({
+  const {
+    data: apiResponse,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['farmer-orders-track'],
-    queryFn: () => orderService.getOrders({ limit: 10 }),
+    queryFn: () => orderService.getOrders({ limit: 50 }),
   });
 
   const orders: Order[] = React.useMemo(() => {
@@ -195,6 +240,7 @@ export function TrackOrderStatus() {
 
     return apiResponse.data.orders.map((o: ApiOrder) => ({
       id: o.id.slice(-6).toUpperCase(),
+      originalId: o.id,
       customer: o.buyer?.full_name || 'Pembeli #' + o.buyer_id.slice(-4),
       product: o.items[0] ? 'Produk #' + o.items[0].product_id.slice(-4) : '-',
       qty: o.items.reduce((acc: number, item: ApiOrderItem) => acc + item.quantity, 0),
@@ -204,9 +250,17 @@ export function TrackOrderStatus() {
     }));
   }, [apiResponse]);
 
+  const filteredOrders = React.useMemo(() => {
+    if (!activeStatusFilter) return orders;
+    return orders.filter((o) => {
+      const mapped = statusConfig[o.status]?.label;
+      return mapped === activeStatusFilter;
+    });
+  }, [orders, activeStatusFilter]);
+
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
-    data: orders,
+    data: filteredOrders,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -216,6 +270,11 @@ export function TrackOrderStatus() {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
+    },
     state: {
       sorting,
       columnFilters,
@@ -235,100 +294,200 @@ export function TrackOrderStatus() {
       cancelled: rawOrders.filter((o: ApiOrder) => o.status === 'cancelled').length,
     };
 
+    const now = new Date();
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+
+    const thisWeekOrders = rawOrders.filter((o: ApiOrder) => {
+      const orderDate = new Date(o.created_at);
+      return orderDate >= oneWeekAgo && orderDate <= now;
+    });
+
+    const lastWeekOrders = rawOrders.filter((o: ApiOrder) => {
+      const orderDate = new Date(o.created_at);
+      return orderDate >= twoWeeksAgo && orderDate < oneWeekAgo;
+    });
+
+    const thisWeekCounts = {
+      paid: thisWeekOrders.filter((o: ApiOrder) => o.status === 'paid').length,
+      progress: thisWeekOrders.filter((o: ApiOrder) =>
+        ['confirmed_seller', 'shipped'].includes(o.status)
+      ).length,
+      delivered: thisWeekOrders.filter((o: ApiOrder) => o.status === 'delivered').length,
+      cancelled: thisWeekOrders.filter((o: ApiOrder) => o.status === 'cancelled').length,
+    };
+
+    const lastWeekCounts = {
+      paid: lastWeekOrders.filter((o: ApiOrder) => o.status === 'paid').length,
+      progress: lastWeekOrders.filter((o: ApiOrder) =>
+        ['confirmed_seller', 'shipped'].includes(o.status)
+      ).length,
+      delivered: lastWeekOrders.filter((o: ApiOrder) => o.status === 'delivered').length,
+      cancelled: lastWeekOrders.filter((o: ApiOrder) => o.status === 'cancelled').length,
+    };
+
+    const calculateChange = (current: number, previous: number) => {
+      if (previous === 0) {
+        return current > 0 ? 100 : 0;
+      }
+      const diff = current - previous;
+      const pct = (diff / previous) * 100;
+      return Math.round(pct * 10) / 10;
+    };
+
+    const changes = {
+      paid: calculateChange(thisWeekCounts.paid, lastWeekCounts.paid),
+      progress: calculateChange(thisWeekCounts.progress, lastWeekCounts.progress),
+      delivered: calculateChange(thisWeekCounts.delivered, lastWeekCounts.delivered),
+      cancelled: calculateChange(thisWeekCounts.cancelled, lastWeekCounts.cancelled),
+    };
+
     const total = rawOrders.length || 1;
 
     return [
       {
         label: 'New Order',
         value: counts.paid,
-        change: 0.5,
-        trend: 'up',
+        change: changes.paid,
+        trend: changes.paid >= 0 ? 'up' : 'down',
         progress: (counts.paid / total) * 100,
         barColor: '[&>div]:bg-blue-500',
       },
       {
         label: 'On Progress',
         value: counts.progress,
-        change: 0.3,
-        trend: 'down',
+        change: changes.progress,
+        trend: changes.progress >= 0 ? 'up' : 'down',
         progress: (counts.progress / total) * 100,
         barColor: '[&>div]:bg-emerald-500',
       },
       {
         label: 'Completed',
         value: counts.delivered,
-        change: 0.5,
-        trend: 'up',
+        change: changes.delivered,
+        trend: changes.delivered >= 0 ? 'up' : 'down',
         progress: (counts.delivered / total) * 100,
         barColor: '[&>div]:bg-green-400',
       },
       {
         label: 'Cancelled',
         value: counts.cancelled,
-        change: 0.5,
-        trend: 'down',
+        change: changes.cancelled,
+        trend: changes.cancelled >= 0 ? 'up' : 'down',
         progress: (counts.cancelled / total) * 100,
         barColor: '[&>div]:bg-orange-400',
       },
     ];
   }, [apiResponse]);
 
+  if (error) {
+    return (
+      <Card className="w-full flex h-80 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 p-6 text-center text-sm font-medium">
+        Gagal memuat data pelacakan status pesanan
+      </Card>
+    );
+  }
+
   return (
     <Card className="w-full">
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
           <div>
             <CardTitle>Lacak Status Pesanan</CardTitle>
             <CardDescription>Ringkasan status pesanan terbaru Anda</CardDescription>
           </div>
           <div className="flex items-center gap-2">
             <Link href="/dashboard/farmer/orders">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="cursor-pointer">
                 Lihat Semua
               </Button>
             </Link>
-            <Button size="sm">
+            <Button
+              size="sm"
+              className="cursor-pointer"
+              onClick={() => {
+                if (orders.length === 0) {
+                  toast.error('Tidak ada data pesanan untuk di-export');
+                  return;
+                }
+
+                const statusLabels: Record<string, string> = {
+                  paid: 'New Order',
+                  confirmed_seller: 'In Progress',
+                  shipped: 'Shipped',
+                  delivered: 'Completed',
+                  cancelled: 'Cancelled',
+                };
+
+                exportToCSV({
+                  data: orders,
+                  columns: [
+                    { header: 'ID', accessor: (row) => row.id },
+                    { header: 'Pelanggan', accessor: (row) => row.customer },
+                    { header: 'Produk', accessor: (row) => row.product },
+                    { header: 'Jumlah', accessor: (row) => row.qty },
+                    { header: 'Total (IDR)', accessor: (row) => row.amount },
+                    { header: 'Metode Pembayaran', accessor: (row) => row.paymentMethod },
+                    { header: 'Status', accessor: (row) => statusLabels[row.status] || row.status },
+                  ],
+                  filename: 'lacak_pesanan',
+                });
+                toast.success('Data pesanan berhasil di-export');
+              }}
+            >
               <FolderUp className="mr-1.5 h-4 w-4" /> Export
             </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-3 pt-2">
-          {stats.map(({ label, value, change, trend, progress, barColor }) => (
-            <div key={label} className="space-y-1.5">
-              <p className="text-2xl font-medium">{value}</p>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs text-muted-foreground">{label}</span>
-                {trend === 'up' ? (
-                  <ArrowUp className="h-3 w-3 text-emerald-500" />
-                ) : (
-                  <ArrowDown className="h-3 w-3 text-red-500" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2">
+          {stats.map(({ label, value, change, trend, progress, barColor }) => {
+            const isActive = activeStatusFilter === label;
+            return (
+              <button
+                key={label}
+                onClick={() => setActiveStatusFilter(isActive ? null : label)}
+                className={cn(
+                  'p-3 rounded-xl border text-left transition-all cursor-pointer select-none space-y-1.5 hover:bg-muted/40',
+                  isActive
+                    ? 'bg-muted border-slate-300 dark:border-slate-700 shadow-xs animate-pulse'
+                    : 'border-transparent bg-transparent'
                 )}
-                <span
-                  className={`text-xs font-medium ${trend === 'up' ? 'text-emerald-500' : 'text-red-500'}`}
-                >
-                  {change}%
-                </span>
-              </div>
-              <Progress value={progress} className={`h-1.5 ${barColor}`} />
-            </div>
-          ))}
+              >
+                <p className="text-2xl font-semibold leading-none tracking-tight">{value}</p>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-xs font-medium text-muted-foreground">{label}</span>
+                  {trend === 'up' ? (
+                    <ArrowUp className="h-3 w-3 text-emerald-500" />
+                  ) : (
+                    <ArrowDown className="h-3 w-3 text-red-500" />
+                  )}
+                  <span
+                    className={`text-xs font-medium ${trend === 'up' ? 'text-emerald-500' : 'text-red-500'}`}
+                  >
+                    {Math.abs(change)}%
+                  </span>
+                </div>
+                <Progress value={progress} className={`h-1.5 ${barColor}`} />
+              </button>
+            );
+          })}
         </div>
 
-        <div className="flex items-center pt-2">
+        <div className="flex items-center gap-3 pt-2">
           <Input
             placeholder="Cari pelanggan..."
             value={(table.getColumn('customer')?.getFilterValue() as string) ?? ''}
             onChange={(e) => table.getColumn('customer')?.setFilterValue(e.target.value)}
-            className="max-w-sm rounded-sm"
+            className="flex-1 sm:max-w-sm rounded-sm"
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
-                Columns <ChevronDown />
+              <Button variant="outline" className="ml-auto cursor-pointer">
+                Kolom <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuGroup>
                 {table
                   .getAllColumns()
@@ -336,11 +495,11 @@ export function TrackOrderStatus() {
                   .map((column) => (
                     <DropdownMenuCheckboxItem
                       key={column.id}
-                      className="capitalize"
+                      className="cursor-pointer"
                       checked={column.getIsVisible()}
                       onCheckedChange={(value) => column.toggleVisibility(!!value)}
                     >
-                      {column.id}
+                      {columnLabels[column.id] || column.id}
                     </DropdownMenuCheckboxItem>
                   ))}
               </DropdownMenuGroup>
@@ -399,6 +558,31 @@ export function TrackOrderStatus() {
               )}
             </TableBody>
           </Table>
+        </div>
+
+        {/* Pagination */}
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <div className="flex-1 text-sm text-muted-foreground">
+            {table.getFilteredRowModel().rows.length} pesanan ditemukan
+          </div>
+          <div className="space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              Sebelumnya
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              Berikutnya
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
