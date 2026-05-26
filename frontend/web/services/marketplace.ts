@@ -151,7 +151,7 @@ export const marketplaceService = {
   },
 
   deactivateProduct: async (id: string) => {
-    const response = await api.patch(`/products/${id}/deactivate`);
+    const response = await api.delete(`/products/${id}`);
     return response.data;
   },
 

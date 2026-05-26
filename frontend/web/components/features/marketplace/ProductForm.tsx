@@ -11,12 +11,12 @@ import { AxiosError } from 'axios';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import {
   Form,
   FormControl,
@@ -38,7 +38,16 @@ import {
 import { X, Upload, Loader2 } from 'lucide-react';
 
 const PRODUCT_UNITS = [
-  'kg', 'gram', 'liter', 'ml', 'ikat', 'karung', 'box', 'pcs', 'ton', 'kwintal'
+  'kg',
+  'gram',
+  'liter',
+  'ml',
+  'ikat',
+  'karung',
+  'box',
+  'pcs',
+  'ton',
+  'kwintal',
 ];
 
 const productSchema = z.object({
@@ -117,30 +126,35 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, product]);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const remainingSlots = 5 - existingImages.length - files.length;
-    if (remainingSlots <= 0) {
-      toast.error('Maksimal 5 foto per produk');
-      return;
-    }
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      const remainingSlots = 5 - existingImages.length - files.length;
+      if (remainingSlots <= 0) {
+        toast.error('Maksimal 5 foto per produk');
+        return;
+      }
 
-    const newFiles = acceptedFiles.slice(0, remainingSlots).map(file => Object.assign(file, {
-      preview: URL.createObjectURL(file)
-    }));
+      const newFiles = acceptedFiles.slice(0, remainingSlots).map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      );
 
-    setFiles(prev => [...prev, ...newFiles]);
-  }, [existingImages, files]);
+      setFiles((prev) => [...prev, ...newFiles]);
+    },
+    [existingImages, files]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.jpeg', '.jpg', '.png', '.webp']
+      'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
     },
     maxSize: 5242880, // 5MB
   });
 
   const removeFile = (index: number) => {
-    setFiles(prev => {
+    setFiles((prev) => {
       const newFiles = [...prev];
       URL.revokeObjectURL(newFiles[index].preview);
       newFiles.splice(index, 1);
@@ -149,7 +163,7 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
   };
 
   const removeExistingImage = (index: number) => {
-    setExistingImages(prev => prev.filter((_, i) => i !== index));
+    setExistingImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const createMutation = useMutation({
@@ -157,46 +171,53 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
     onSuccess: async (response) => {
       const newProduct = response.data;
       const productId = newProduct.id || newProduct._id;
-      
+
       if (files.length > 0) {
         try {
-          await Promise.all(files.map(file => marketplaceService.uploadImage(productId, file)));
+          await Promise.all(files.map((file) => marketplaceService.uploadImage(productId, file)));
         } catch {
           toast.error('Beberapa foto gagal diupload');
         }
       }
-      
+
       toast.success('Berhasil', { description: 'Produk berhasil dibuat.' });
       queryClient.invalidateQueries({ queryKey: ['my-products'] });
+      queryClient.invalidateQueries({ queryKey: ['farmer-products'] });
+      queryClient.invalidateQueries({ queryKey: ['farmer-products-all'] });
       onOpenChange(false);
     },
     onError: (error: unknown) => {
       const axiosError = error as AxiosError<{ error: { message: string } }>;
-      const message = axiosError.response?.data?.error?.message || 'Terjadi kesalahan saat membuat produk';
+      const message =
+        axiosError.response?.data?.error?.message || 'Terjadi kesalahan saat membuat produk';
       toast.error('Gagal', { description: message });
     },
     onSettled: () => setIsSubmitting(false),
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: ProductFormValues & { images: string[] }) => 
+    mutationFn: (data: ProductFormValues & { images: string[] }) =>
       marketplaceService.updateProduct(product?.id || product?._id || '', data),
     onSuccess: async () => {
       const productId = product?.id || product?._id;
       if (files.length > 0 && productId) {
         try {
-          await Promise.all(files.map(file => marketplaceService.uploadImage(productId, file)));
+          await Promise.all(files.map((file) => marketplaceService.uploadImage(productId, file)));
         } catch {
           toast.error('Beberapa foto baru gagal diupload');
         }
       }
       toast.success('Berhasil', { description: 'Produk berhasil diperbarui.' });
       queryClient.invalidateQueries({ queryKey: ['my-products'] });
+      queryClient.invalidateQueries({ queryKey: ['farmer-products'] });
+      queryClient.invalidateQueries({ queryKey: ['farmer-products-all'] });
+      queryClient.invalidateQueries({ queryKey: ['product-detail', productId] });
       onOpenChange(false);
     },
     onError: (error: unknown) => {
       const axiosError = error as AxiosError<{ error: { message: string } }>;
-      const message = axiosError.response?.data?.error?.message || 'Terjadi kesalahan saat memperbarui produk';
+      const message =
+        axiosError.response?.data?.error?.message || 'Terjadi kesalahan saat memperbarui produk';
       toast.error('Gagal', { description: message });
     },
     onSettled: () => setIsSubmitting(false),
@@ -212,14 +233,14 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto text-foreground">
-        <DialogHeader>
-          <DialogTitle>{product ? 'Edit Produk' : 'Tambah Produk Baru'}</DialogTitle>
-          <DialogDescription>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="right" className="sm:max-w-2xl overflow-y-auto text-foreground p-6">
+        <SheetHeader>
+          <SheetTitle>{product ? 'Edit Produk' : 'Tambah Produk Baru'}</SheetTitle>
+          <SheetDescription>
             Isi detail produk Anda di bawah ini. Maksimal 5 foto per produk.
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -236,7 +257,7 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="category"
@@ -294,11 +315,11 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
                   <FormItem>
                     <FormLabel>Harga per Satuan (Rp)</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="0" 
-                        {...field} 
-                        onChange={(e) => field.onChange(Number(e.target.value))} 
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
                       />
                     </FormControl>
                     <FormMessage />
@@ -313,11 +334,11 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
                   <FormItem>
                     <FormLabel>Stok</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="0" 
-                        {...field} 
-                        onChange={(e) => field.onChange(Number(e.target.value))} 
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
                       />
                     </FormControl>
                     <FormMessage />
@@ -332,11 +353,11 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
                   <FormItem>
                     <FormLabel>Minimal Order</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="1" 
-                        {...field} 
-                        onChange={(e) => field.onChange(Number(e.target.value))} 
+                      <Input
+                        type="number"
+                        placeholder="1"
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
                       />
                     </FormControl>
                     <FormMessage />
@@ -381,10 +402,10 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
                   <FormItem className="col-span-full">
                     <FormLabel>Deskripsi</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Jelaskan detail produk Anda (kualitas, cara penggunaan, dll)..." 
+                      <Textarea
+                        placeholder="Jelaskan detail produk Anda (kualitas, cara penggunaan, dll)..."
                         className="min-h-[120px]"
-                        {...field} 
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -395,11 +416,14 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
               {/* Multiple Image Upload with Preview */}
               <div className="col-span-full space-y-4">
                 <FormLabel>Foto Produk (Maks 5)</FormLabel>
-                
+
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                   {/* Existing Images */}
                   {existingImages.map((img, idx) => (
-                    <div key={`existing-${idx}`} className="relative aspect-square rounded-lg overflow-hidden border">
+                    <div
+                      key={`existing-${idx}`}
+                      className="relative w-full aspect-square rounded-lg overflow-hidden border"
+                    >
                       <Image src={img} alt="preview" fill className="object-cover" />
                       <button
                         type="button"
@@ -410,10 +434,13 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
                       </button>
                     </div>
                   ))}
-                  
+
                   {/* New File Previews */}
                   {files.map((file, idx) => (
-                    <div key={`new-${idx}`} className="relative aspect-square rounded-lg overflow-hidden border">
+                    <div
+                      key={`new-${idx}`}
+                      className="relative w-full aspect-square rounded-lg overflow-hidden border"
+                    >
                       <Image src={file.preview} alt="preview" fill className="object-cover" />
                       <button
                         type="button"
@@ -426,11 +453,13 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
                   ))}
 
                   {/* Dropzone Area */}
-                  {(existingImages.length + files.length) < 5 && (
+                  {existingImages.length + files.length < 5 && (
                     <div
                       {...getRootProps()}
-                      className={`aspect-square border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                        isDragActive ? 'border-green-500 bg-green-50' : 'border-gray-300 hover:border-green-500 hover:bg-gray-50'
+                      className={`w-full aspect-square border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors ${
+                        isDragActive
+                          ? 'border-green-500 bg-green-50'
+                          : 'border-gray-300 hover:border-green-500 hover:bg-gray-50'
                       }`}
                     >
                       <input {...getInputProps()} />
@@ -441,7 +470,9 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
                     </div>
                   )}
                 </div>
-                <p className="text-xs text-gray-500 italic">Format: JPG, PNG, WebP (Maks 5MB per foto).</p>
+                <p className="text-xs text-gray-500 italic">
+                  Format: JPG, PNG, WebP (Maks 5MB per foto).
+                </p>
               </div>
             </div>
 
@@ -449,20 +480,26 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Batal
               </Button>
-              <Button type="submit" className="bg-green-600 hover:bg-green-700 min-w-[120px]" disabled={isSubmitting}>
+              <Button
+                type="submit"
+                className="bg-green-600 hover:bg-green-700 min-w-[120px]"
+                disabled={isSubmitting}
+              >
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     Memproses...
                   </>
+                ) : product ? (
+                  'Simpan Perubahan'
                 ) : (
-                  product ? 'Simpan Perubahan' : 'Tambah Produk'
+                  'Tambah Produk'
                 )}
               </Button>
             </div>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }
