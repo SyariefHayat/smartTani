@@ -62,6 +62,7 @@ const productSchema = z.object({
     province: z.string().min(1, 'Provinsi wajib diisi'),
     city: z.string().min(1, 'Kota/Kabupaten wajib diisi'),
   }),
+  status: z.enum(['active', 'inactive', 'pending']).optional(),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -97,6 +98,7 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
         province: '',
         city: '',
       },
+      status: 'pending',
     },
   });
 
@@ -119,6 +121,7 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
             province: product?.location?.province || '',
             city: product?.location?.city || '',
           },
+          status: product?.status || 'pending',
         });
       }, 0);
       return () => clearTimeout(timer);
@@ -360,6 +363,29 @@ export function ProductForm({ product, categories, open, onOpenChange }: Product
                         onChange={(e) => field.onChange(Number(e.target.value))}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status Produk</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Pilih Status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="active">Aktif</SelectItem>
+                        <SelectItem value="pending">Draft</SelectItem>
+                        <SelectItem value="inactive">Nonaktif</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

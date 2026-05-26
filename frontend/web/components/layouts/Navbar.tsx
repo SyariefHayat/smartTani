@@ -205,7 +205,7 @@ const DrawerContent = ({
             </Button>
           </SheetClose>
           <SheetClose asChild>
-            <Button variant="accent" className="w-full gap-2" size="lg" asChild>
+            <Button variant="default" className="w-full gap-2" size="lg" asChild>
               <Link href="/register">
                 <UserPlus className="size-4" />
                 Daftar
@@ -429,7 +429,7 @@ export default function Navbar() {
                     </Link>
                   </Button>
                   <Button
-                    variant="accent"
+                    variant="default"
                     size="sm"
                     id="navbar-register"
                     className="gap-1.5 cursor-pointer rounded-md"
@@ -493,7 +493,7 @@ export default function Navbar() {
                     </Link>
                   </Button>
                   <Button
-                    variant="accent"
+                    variant="default"
                     size="sm"
                     className="gap-1 cursor-pointer h-8 px-3 text-xs font-medium"
                     asChild

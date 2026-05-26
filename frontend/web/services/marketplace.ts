@@ -1,5 +1,13 @@
 import api from '@/lib/api';
 
+export interface Brand {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  logo_url?: string;
+}
+
 export interface Category {
   id: string;
   name: string;
@@ -62,6 +70,11 @@ export interface GetProductsResponse {
 export interface GetCategoriesResponse {
   success: boolean;
   data: Category[];
+}
+
+export interface GetBrandsResponse {
+  success: boolean;
+  data: Brand[];
 }
 
 export interface GetProductResponse {
@@ -132,6 +145,22 @@ export const marketplaceService = {
 
   getProducts: async (params: GetProductsParams): Promise<GetProductsResponse> => {
     const response = await api.get('/products', { params });
+    // Transform backend's { success: true, data: Product[], meta: any }
+    // into frontend's expected { success: true, data: { products: Product[], pagination: ... } }
+    if (response.data && Array.isArray(response.data.data)) {
+      return {
+        success: response.data.success,
+        data: {
+          products: response.data.data,
+          pagination: {
+            total: response.data.meta?.total || 0,
+            page: response.data.meta?.page || 1,
+            limit: response.data.meta?.limit || 20,
+            pages: response.data.meta?.totalPages || 1,
+          },
+        },
+      };
+    }
     return response.data;
   },
 
@@ -168,6 +197,11 @@ export const marketplaceService = {
 
   getCategories: async (): Promise<GetCategoriesResponse> => {
     const response = await api.get('/categories');
+    return response.data;
+  },
+
+  getBrands: async (): Promise<GetBrandsResponse> => {
+    const response = await api.get('/brands');
     return response.data;
   },
 };

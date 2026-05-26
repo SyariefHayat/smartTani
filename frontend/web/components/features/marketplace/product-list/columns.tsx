@@ -4,6 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, Edit, Eye, MoreHorizontal, Star, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,11 +50,18 @@ export const getStatusBadge = (status: string) => {
           Stok Habis
         </span>
       );
-    case 'Closed For Sale':
+    case 'Nonaktif':
+      return (
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-2.5 py-0.5 text-xs font-semibold text-red-700">
+          <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+          Nonaktif
+        </span>
+      );
+    case 'Draft':
       return (
         <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-semibold text-slate-600">
           <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
-          Tutup Penjualan
+          Draft
         </span>
       );
     default:
@@ -73,9 +81,12 @@ export const columns: ColumnDef<Product>[] = [
       <div className="flex items-center gap-3 min-w-0">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-slate-100 bg-slate-50">
           {row.original.image && !row.original.image.includes('placeholder.jpg') ? (
-            <img
+            <Image
               src={row.original.image}
               alt={row.getValue('name')}
+              width={40}
+              height={40}
+              unoptimized
               className="h-full w-full object-cover transition-transform hover:scale-105"
             />
           ) : (

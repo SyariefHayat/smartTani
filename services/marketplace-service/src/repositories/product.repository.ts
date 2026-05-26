@@ -39,6 +39,7 @@ export class ProductRepository {
     page: number;
     limit: number;
     status?: string;
+    farmer_id?: string;
   }): Promise<{ products: IProduct[]; total: number }> {
     const {
       category,
@@ -50,11 +51,23 @@ export class ProductRepository {
       page,
       limit,
       status,
+      farmer_id,
     } = params;
 
     const skip = (page - 1) * limit;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const query: Record<string, any> = { status: status || 'active' };
+    const query: Record<string, any> = {};
+
+    if (farmer_id) {
+      query.farmer_id = farmer_id;
+      // When fetching for a specific farmer (dashboard), show all statuses unless explicitly filtered
+      if (status) {
+        query.status = status;
+      }
+    } else {
+      // Public marketplace: default to active products only
+      query.status = status || 'active';
+    }
 
     if (search) {
       query.$text = { $search: search };

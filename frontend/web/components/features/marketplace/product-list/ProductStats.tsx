@@ -46,16 +46,17 @@ export function ProductStats({ products }: ProductStatsProps) {
   ];
 
   return (
-    <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+    <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
       {stats.map((stat) => {
         const Icon = stat.icon;
         return (
-          <Card key={stat.title} className="min-w-0 shadow-none">
+          <Card key={stat.title} className="min-w-0">
             <CardHeader className="gap-1">
-              <CardDescription className="truncate text-xs uppercase tracking-wide">
-                {stat.title}
-              </CardDescription>
-              <CardTitle className="truncate text-xl font-semibold tabular-nums lg:text-2xl">
+              <CardDescription className="truncate text-xs">{stat.title}</CardDescription>
+              <CardTitle
+                className="truncate text-xl font-semibold tabular-nums lg:text-2xl"
+                title={String(stat.value)}
+              >
                 {stat.value}
               </CardTitle>
             </CardHeader>

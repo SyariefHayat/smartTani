@@ -1,14 +1,10 @@
 'use client';
 
 import { Control, Controller } from 'react-hook-form';
+import { useQuery } from '@tanstack/react-query';
+import { marketplaceService, Brand } from '@/services/marketplace';
 import { ProductFormValues } from './schema';
-import {
-  Field,
-  FieldLabel,
-  FieldError,
-  FieldLegend,
-  FieldSet,
-} from '@/components/ui/field';
+import { Field, FieldLabel, FieldError, FieldLegend, FieldSet } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -24,6 +20,19 @@ interface BasicInfoSectionProps {
 }
 
 export function BasicInfoSection({ control }: BasicInfoSectionProps) {
+  const { data: categoriesData, isLoading: isCategoriesLoading } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => marketplaceService.getCategories(),
+  });
+
+  const { data: brandsData, isLoading: isBrandsLoading } = useQuery({
+    queryKey: ['brands'],
+    queryFn: () => marketplaceService.getBrands(),
+  });
+
+  const categories = categoriesData?.data || [];
+  const brands = brandsData?.data || [];
+
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-semibold">Informasi Dasar Produk</h2>
@@ -64,10 +73,7 @@ export function BasicInfoSection({ control }: BasicInfoSectionProps) {
             control={control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel
-                  htmlFor={field.name}
-                  className="inline-flex items-center gap-1"
-                >
+                <FieldLabel htmlFor={field.name} className="inline-flex items-center gap-1">
                   SKU / Kode Produk <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Input
@@ -89,17 +95,10 @@ export function BasicInfoSection({ control }: BasicInfoSectionProps) {
             control={control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel
-                  htmlFor={field.name}
-                  className="inline-flex items-center gap-1"
-                >
+                <FieldLabel htmlFor={field.name} className="inline-flex items-center gap-1">
                   Kategori <span className="text-destructive">*</span>
                 </FieldLabel>
-                <Select
-                  name={field.name}
-                  value={field.value}
-                  onValueChange={field.onChange}
-                >
+                <Select name={field.name} value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger
                     id={field.name}
                     aria-invalid={fieldState.invalid}
@@ -108,9 +107,23 @@ export function BasicInfoSection({ control }: BasicInfoSectionProps) {
                     <SelectValue placeholder="Pilih kategori" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pupuk">Pupuk</SelectItem>
-                    <SelectItem value="benih">Benih</SelectItem>
-                    <SelectItem value="pestisida">Pestisida</SelectItem>
+                    {isCategoriesLoading ? (
+                      <SelectItem value="loading" disabled>
+                        Memuat kategori...
+                      </SelectItem>
+                    ) : categories.length > 0 ? (
+                      categories.map((cat) => (
+                        <SelectItem key={cat.slug} value={cat.slug}>
+                          {cat.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <>
+                        <SelectItem value="pupuk">Pupuk</SelectItem>
+                        <SelectItem value="benih">Benih</SelectItem>
+                        <SelectItem value="pestisida">Pestisida</SelectItem>
+                      </>
+                    )}
                   </SelectContent>
                 </Select>
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -124,11 +137,7 @@ export function BasicInfoSection({ control }: BasicInfoSectionProps) {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={field.name}>Merek</FieldLabel>
-                <Select
-                  name={field.name}
-                  value={field.value}
-                  onValueChange={field.onChange}
-                >
+                <Select name={field.name} value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger
                     id={field.name}
                     aria-invalid={fieldState.invalid}
@@ -137,8 +146,27 @@ export function BasicInfoSection({ control }: BasicInfoSectionProps) {
                     <SelectValue placeholder="Pilih merek" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="tani_makmur">Tani Makmur</SelectItem>
-                    <SelectItem value="hijau_subur">Hijau Subur</SelectItem>
+                    {isBrandsLoading ? (
+                      <SelectItem value="loading" disabled>
+                        Memuat merek...
+                      </SelectItem>
+                    ) : brands.length > 0 ? (
+                      brands.map((br: Brand) => (
+                        <SelectItem key={br.slug} value={br.slug}>
+                          {br.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <>
+                        <SelectItem value="petrokimia_gresik">Petrokimia Gresik</SelectItem>
+                        <SelectItem value="pupuk_kaltim">Pupuk Kaltim</SelectItem>
+                        <SelectItem value="syngenta">Syngenta</SelectItem>
+                        <SelectItem value="bayer_indonesia">Bayer Indonesia</SelectItem>
+                        <SelectItem value="pioneer_corteva">Pioneer (Corteva)</SelectItem>
+                        <SelectItem value="basf_indonesia">BASF Indonesia</SelectItem>
+                        <SelectItem value="bintang_tani">Bintang Tani</SelectItem>
+                      </>
+                    )}
                   </SelectContent>
                 </Select>
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -154,17 +182,10 @@ export function BasicInfoSection({ control }: BasicInfoSectionProps) {
             control={control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel
-                  htmlFor={field.name}
-                  className="inline-flex items-center gap-1"
-                >
+                <FieldLabel htmlFor={field.name} className="inline-flex items-center gap-1">
                   Satuan <span className="text-destructive">*</span>
                 </FieldLabel>
-                <Select
-                  name={field.name}
-                  value={field.value}
-                  onValueChange={field.onChange}
-                >
+                <Select name={field.name} value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger
                     id={field.name}
                     aria-invalid={fieldState.invalid}

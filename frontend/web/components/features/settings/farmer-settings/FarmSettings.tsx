@@ -60,6 +60,9 @@ export function FarmSettings() {
     },
   });
 
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const commodities = form.watch('commodities') || [];
+
   // Sync form with user data once fetched
   React.useEffect(() => {
     if (user) {
@@ -103,7 +106,7 @@ export function FarmSettings() {
     const current = form.getValues('commodities');
     form.setValue(
       'commodities',
-      current.filter((c) => c !== item),
+      current.filter((c: string) => c !== item),
       { shouldDirty: true }
     );
   };
@@ -225,7 +228,7 @@ export function FarmSettings() {
                 <div className="space-y-3">
                   <FormLabel>Komoditas Utama</FormLabel>
                   <div className="flex flex-wrap gap-2 mb-3">
-                    {form.watch('commodities').map((item) => (
+                    {commodities.map((item: string) => (
                       <Badge
                         key={item}
                         variant="secondary"

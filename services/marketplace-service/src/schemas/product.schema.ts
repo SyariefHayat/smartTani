@@ -14,6 +14,7 @@ export const CreateProductSchema = z.object({
     city: z.string().min(1, 'Kota/Kabupaten wajib diisi'),
   }),
   images: z.array(z.string().url()).optional().default([]),
+  status: z.enum(['active', 'inactive', 'pending']).optional().default('active'),
 });
 
 export type CreateProductInput = z.infer<typeof CreateProductSchema>;
@@ -31,6 +32,7 @@ export const GetProductsSchema = z.object({
     .optional()
     .transform((v) => (v ? parseFloat(v) : undefined)),
   search: z.string().optional(),
+  farmer_id: z.string().optional(),
   page: z
     .string()
     .optional()

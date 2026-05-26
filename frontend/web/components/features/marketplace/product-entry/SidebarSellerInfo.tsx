@@ -1,11 +1,7 @@
 'use client';
 
 import { Control, Controller } from 'react-hook-form';
-import {
-  Field,
-  FieldLabel,
-  FieldError,
-} from '@/components/ui/field';
+import { Field, FieldLabel, FieldError } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -15,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useAuthStore } from '@/stores/auth';
 import { ProductFormValues } from './schema';
 
 interface SidebarSellerInfoProps {
@@ -22,6 +19,9 @@ interface SidebarSellerInfoProps {
 }
 
 export function SidebarSellerInfo({ control }: SidebarSellerInfoProps) {
+  const user = useAuthStore((s) => s.user);
+  const sellerName = user?.full_name || 'PT. Tani Makmur Official';
+
   return (
     <div className="space-y-4">
       <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
@@ -32,11 +32,7 @@ export function SidebarSellerInfo({ control }: SidebarSellerInfoProps) {
           <Label className="inline-flex items-center gap-1 text-xs">
             Nama Toko <span className="text-destructive">*</span>
           </Label>
-          <Input
-            value="PT. Tani Makmur Official"
-            readOnly
-            className="h-9 bg-slate-50 border-slate-200"
-          />
+          <Input value={sellerName} readOnly className="h-9 bg-slate-50 border-slate-200" />
         </div>
 
         <Controller
@@ -47,16 +43,8 @@ export function SidebarSellerInfo({ control }: SidebarSellerInfoProps) {
               <FieldLabel className="text-xs" htmlFor={field.name}>
                 Jenis Penjual
               </FieldLabel>
-              <Select
-                name={field.name}
-                value={field.value}
-                onValueChange={field.onChange}
-              >
-                <SelectTrigger
-                  id={field.name}
-                  className="h-9"
-                  aria-invalid={fieldState.invalid}
-                >
+              <Select name={field.name} value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger id={field.name} className="h-9" aria-invalid={fieldState.invalid}>
                   <SelectValue placeholder="Pilih jenis" />
                 </SelectTrigger>
                 <SelectContent>
@@ -74,22 +62,11 @@ export function SidebarSellerInfo({ control }: SidebarSellerInfoProps) {
           control={control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel
-                className="inline-flex items-center gap-1 text-xs"
-                htmlFor={field.name}
-              >
+              <FieldLabel className="inline-flex items-center gap-1 text-xs" htmlFor={field.name}>
                 Lokasi Gudang <span className="text-destructive">*</span>
               </FieldLabel>
-              <Select
-                name={field.name}
-                value={field.value}
-                onValueChange={field.onChange}
-              >
-                <SelectTrigger
-                  id={field.name}
-                  className="h-9"
-                  aria-invalid={fieldState.invalid}
-                >
+              <Select name={field.name} value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger id={field.name} className="h-9" aria-invalid={fieldState.invalid}>
                   <SelectValue placeholder="Pilih lokasi" />
                 </SelectTrigger>
                 <SelectContent>

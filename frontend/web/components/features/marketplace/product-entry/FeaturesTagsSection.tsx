@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import { ProductFormValues } from './schema';
 
 interface FeaturesTagsSectionProps {
@@ -16,6 +17,32 @@ interface FeaturesTagsSectionProps {
 export function FeaturesTagsSection({ form }: FeaturesTagsSectionProps) {
   const [tags, setTags] = useState<string[]>(form.getValues('tags'));
   const [features, setFeatures] = useState<string[]>(form.getValues('features'));
+  const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
+  const [canDrag, setCanDrag] = useState(false);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIdx(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIdx === null || draggedIdx === index) return;
+
+    const reordered = [...features];
+    const draggedItem = reordered[draggedIdx];
+    reordered.splice(draggedIdx, 1);
+    reordered.splice(index, 0, draggedItem);
+
+    setDraggedIdx(index);
+    setFeatures(reordered);
+    form.setValue('features', reordered);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIdx(null);
+    setCanDrag(false);
+  };
 
   const handleAddFeature = () => {
     const newFeatures = [...features, ''];
@@ -73,8 +100,22 @@ export function FeaturesTagsSection({ form }: FeaturesTagsSectionProps) {
         </div>
         <div className="space-y-3">
           {features.map((feature, idx) => (
-            <div key={idx} className="flex items-center gap-2 group">
-              <div className="flex items-center justify-center w-6 h-6 bg-slate-100 rounded text-[10px] text-slate-400">
+            <div
+              key={idx}
+              draggable={canDrag}
+              onDragStart={(e) => handleDragStart(e, idx)}
+              onDragOver={(e) => handleDragOver(e, idx)}
+              onDragEnd={handleDragEnd}
+              className={cn(
+                'flex items-center gap-2 group transition-all duration-150',
+                draggedIdx === idx ? 'opacity-40 bg-slate-50' : ''
+              )}
+            >
+              <div
+                onMouseDown={() => setCanDrag(true)}
+                onMouseUp={() => setCanDrag(false)}
+                className="flex items-center justify-center w-6 h-6 bg-slate-100 rounded text-[10px] text-slate-400 cursor-grab active:cursor-grabbing select-none"
+              >
                 :::
               </div>
               <Input
@@ -99,11 +140,7 @@ export function FeaturesTagsSection({ form }: FeaturesTagsSectionProps) {
       <div className="space-y-4">
         <Label className="text-sm font-medium">Tag / Keyword</Label>
         <div className="space-y-3">
-          <Input
-            placeholder="Tambahkan tag"
-            className="h-9 text-sm"
-            onKeyDown={handleAddTag}
-          />
+          <Input placeholder="Tambahkan tag" className="h-9 text-sm" onKeyDown={handleAddTag} />
           <p className="text-[10px] text-muted-foreground italic">
             Tekan Enter untuk menambahkan tag
           </p>

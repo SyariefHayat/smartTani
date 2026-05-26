@@ -157,7 +157,9 @@ export function FarmerProductList() {
                   ? 'Out Of Stock'
                   : p.status === 'active'
                     ? 'Active'
-                    : 'Closed For Sale',
+                    : p.status === 'pending'
+                      ? 'Draft'
+                      : 'Nonaktif',
               image: p.images[0] || '/images/products/placeholder.jpg',
             };
 
@@ -190,21 +192,25 @@ export function FarmerProductList() {
     const rawProducts = data?.data?.products;
     if (!rawProducts) return [];
 
-    return rawProducts
-      .map((p) => ({
-        id: p._id,
-        name: p.title,
-        sku: p._id.slice(-6).toUpperCase(),
-        category: p.category,
-        price: p.price_per_unit,
-        stock: p.stock,
-        unit: p.unit,
-        rating: 4.5, // fallback as not in DB yet
-        status:
-          p.stock === 0 ? 'Out Of Stock' : p.status === 'active' ? 'Active' : 'Closed For Sale',
-        image: p.images[0] || '/images/products/placeholder.jpg',
-      }))
-      .filter((p) => p.status !== 'Closed For Sale');
+    return rawProducts.map((p) => ({
+      id: p._id,
+      name: p.title,
+      sku: p._id.slice(-6).toUpperCase(),
+      category: p.category,
+      price: p.price_per_unit,
+      stock: p.stock,
+      unit: p.unit,
+      rating: 4.5, // fallback as not in DB yet
+      status:
+        p.stock === 0
+          ? 'Out Of Stock'
+          : p.status === 'active'
+            ? 'Active'
+            : p.status === 'pending'
+              ? 'Draft'
+              : 'Nonaktif',
+      image: p.images[0] || '/images/products/placeholder.jpg',
+    }));
   }, [data]);
 
   // Table action handlers

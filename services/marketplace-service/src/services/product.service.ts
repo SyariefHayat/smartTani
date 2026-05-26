@@ -6,6 +6,7 @@ import {
   UpdateProductInput,
 } from '../schemas/product.schema';
 import productRepository from '../repositories/product.repository';
+import { IProduct } from '../models/product.model';
 import authServiceClient from '../lib/auth-client';
 import S3Manager from '../lib/s3';
 import RedisClient from '../lib/redis';
@@ -26,7 +27,7 @@ export class ProductService {
       ...input,
       farmer_id: farmerId,
       search_text: searchText,
-      status: 'active' as const,
+      status: input.status,
     };
 
     return productRepository.create(productData);
@@ -34,9 +35,17 @@ export class ProductService {
 
   async getProducts(params: GetProductsInput) {
     const cacheKey = `${this.CACHE_KEY}:${JSON.stringify(params)}`;
-    
+
     // Try to get from cache
-    const cached = await RedisClient.get<{ products: any[]; meta: any }>(cacheKey);
+    const cached = await RedisClient.get<{
+      products: IProduct[];
+      meta: {
+        page?: number;
+        limit?: number;
+        total: number;
+        totalPages: number;
+      };
+    }>(cacheKey);
     if (cached) {
       return cached;
     }
@@ -118,6 +127,9 @@ export class ProductService {
   }
 
   async deactivateProduct(userId: string, role: string, productId: string) {
+    // Invalidate cache
+    await RedisClient.del(this.CACHE_KEY + '*');
+
     const product = await productRepository.findById(productId);
     if (!product) {
       const error = new Error('Produk tidak ditemukan') as AppError;

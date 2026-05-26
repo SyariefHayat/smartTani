@@ -16,6 +16,25 @@ export const productSchema = z.object({
   storeName: z.string(),
   sellerType: z.string(),
   warehouseLocation: z.string(),
+  // Step 2: Detail & Spesifikasi
+  origin: z.string().min(1, 'Asal produk wajib diisi'),
+  shelfLife: z.string().min(1, 'Masa simpan wajib diisi'),
+  composition: z.string().optional(),
+  usageInstructions: z.string().min(10, 'Petunjuk penggunaan minimal 10 karakter'),
+  certification: z.string().optional(),
+  // Step 3: Harga & Stok
+  pricePerUnit: z
+    .number({ message: 'Harga wajib diisi' })
+    .positive('Harga harus lebih besar dari 0'),
+  stock: z.number({ message: 'Stok wajib diisi' }).min(0, 'Stok tidak boleh kurang dari 0'),
+  minStock: z
+    .number({ message: 'Stok minimum wajib diisi' })
+    .min(0, 'Stok minimum tidak boleh kurang dari 0'),
+  minOrder: z
+    .number({ message: 'Minimum pemesanan wajib diisi' })
+    .min(1, 'Minimum pemesanan minimal 1'),
+  // Step 4: Media Produk
+  images: z.array(z.string()).min(1, 'Minimal unggah 1 foto produk'),
 });
 
 export type ProductFormValues = z.infer<typeof productSchema>;

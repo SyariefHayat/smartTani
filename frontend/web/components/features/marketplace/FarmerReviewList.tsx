@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { MessageCircle, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -54,7 +55,7 @@ export function FarmerReviewList() {
       rating: r.rating,
       date: r.created_at,
       comment: r.comment,
-      status: 'unreplied', // Reply feature not implemented in backend yet
+      status: 'unreplied' as const, // Reply feature not implemented in backend yet
       reply: '',
     }))
     .filter((review) => {
