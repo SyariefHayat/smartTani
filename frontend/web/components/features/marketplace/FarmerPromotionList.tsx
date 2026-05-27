@@ -47,12 +47,17 @@ export function FarmerPromotionList() {
       if (!user?.id) return [];
       const data = await promotionService.getPromotions(user.id);
       // Map mock values for UI compatibility if needed
-      return data.map((p) => ({
-        ...p,
-        code: p.code || p.title.slice(0, 4).toUpperCase() + Math.floor(100 + Math.random() * 900),
-        usageCount: p.usageCount || Math.floor(Math.random() * 15),
-        limit: p.limit || 100,
-      }));
+      return data.map((p) => {
+        const uiPromo = p as unknown as UIPromotion;
+        return {
+          ...uiPromo,
+          code:
+            uiPromo.code ||
+            uiPromo.title.slice(0, 4).toUpperCase() + Math.floor(100 + Math.random() * 900),
+          usageCount: uiPromo.usageCount || Math.floor(Math.random() * 15),
+          limit: uiPromo.limit || 100,
+        };
+      });
     },
     enabled: !!user?.id,
   });

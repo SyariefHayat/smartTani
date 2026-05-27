@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { useForm, Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -50,7 +50,7 @@ export function FarmSettings() {
   const user = userResponse?.data;
 
   const form = useForm<FarmSettingsFormValues>({
-    resolver: zodResolver(farmSettingsSchema),
+    resolver: zodResolver(farmSettingsSchema) as unknown as Resolver<FarmSettingsFormValues>,
     defaultValues: {
       farm_name: '',
       farm_description: '',

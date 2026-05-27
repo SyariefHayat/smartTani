@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckCircle2, Flag, MoreVertical, Reply, Star } from 'lucide-react';
+import { Flag, MoreVertical, Reply, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -47,6 +46,7 @@ export function ReviewItem({ review }: ReviewItemProps) {
   const [currentReview, setCurrentReview] = useState(review);
 
   const handleSendReply = () => {
+    if (!replyText.trim()) return;
     // Mock submit
     setCurrentReview({
       ...currentReview,
@@ -58,140 +58,133 @@ export function ReviewItem({ review }: ReviewItemProps) {
   };
 
   return (
-    <Card className="border-none shadow-sm overflow-hidden bg-white rounded-xl">
-      <CardContent className="p-0">
-        <div className="p-5 flex flex-col md:flex-row gap-6">
-          {/* Left Column: User & Rating */}
-          <div className="w-full md:w-64 shrink-0 flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <Avatar className="h-10 w-10 border border-slate-100 shadow-sm">
-                <AvatarImage src={currentReview.customerAvatar} alt={currentReview.customerName} />
-                <AvatarFallback className="bg-slate-100 text-slate-600 text-xs font-bold">
-                  {getInitials(currentReview.customerName)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <span className="text-sm font-bold text-slate-900">
-                  {currentReview.customerName}
-                </span>
-                <span className="text-[10px] text-slate-500 font-medium">
-                  {new Date(currentReview.date).toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </span>
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <div className="flex gap-0.5">{renderStars(currentReview.rating)}</div>
-              <Badge
-                variant="secondary"
-                className="bg-slate-50 text-slate-600 border-none font-normal text-[10px] px-2"
-              >
-                Pembeli Terverifikasi
-              </Badge>
-            </div>
-          </div>
-
-          {/* Right Column: Content & Reply */}
-          <div className="flex-1 flex flex-col gap-3 min-w-0">
-            <div className="flex justify-between items-start gap-4">
-              <div>
-                <p className="text-xs font-medium text-slate-500 mb-1 border-b border-slate-100 pb-1 inline-block">
-                  Produk:{' '}
-                  <span className="text-green-700 font-semibold">{currentReview.productName}</span>
-                </p>
-                <p className="text-sm text-slate-700 leading-relaxed mt-1">
-                  &quot;{currentReview.comment}&quot;
-                </p>
-              </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 shrink-0 text-slate-400 hover:text-slate-600 rounded-full"
-                  >
-                    <MoreVertical className="w-4 h-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-40">
-                  <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
-                    <Flag className="w-4 h-4 mr-2" /> Laporkan Ulasan
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-
-            {/* Reply Section */}
-            {currentReview.status === 'replied' ? (
-              <div className="mt-2 bg-slate-50 border border-slate-100 rounded-lg p-4 relative">
-                <div className="absolute top-0 left-6 w-3 h-3 bg-slate-50 border-t border-l border-slate-100 -translate-y-1/2 rotate-45" />
-                <div className="flex items-center gap-2 mb-1">
-                  <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none px-1.5 py-0 text-[10px]">
-                    <CheckCircle2 className="w-3 h-3 mr-1" /> Dibalas
-                  </Badge>
-                  <span className="text-[10px] font-semibold text-slate-500">Penjual (Anda)</span>
-                </div>
-                <p className="text-xs text-slate-600 leading-relaxed mt-1.5">
-                  {currentReview.reply}
-                </p>
-              </div>
-            ) : (
-              <div className="mt-2">
-                {replying ? (
-                  <div className="space-y-3 bg-green-50/50 border border-green-100 rounded-lg p-4 relative">
-                    <div className="absolute top-0 left-6 w-3 h-3 bg-green-50/50 border-t border-l border-green-100 -translate-y-1/2 rotate-45" />
-                    <Textarea
-                      placeholder="Tulis balasan Anda di sini..."
-                      className="min-h-[80px] text-sm bg-white resize-none"
-                      value={replyText}
-                      onChange={(e) => setReplyText(e.target.value)}
-                      autoFocus
-                    />
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setReplying(false);
-                          setReplyText('');
-                        }}
-                        className="text-slate-500"
-                      >
-                        Batal
-                      </Button>
-                      <Button
-                        size="sm"
-                        className="bg-green-700 hover:bg-green-800 text-white"
-                        onClick={handleSendReply}
-                      >
-                        Kirim Balasan
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-amber-600 border-amber-200 bg-amber-50 hover:bg-amber-100 hover:text-amber-700 text-xs h-8 mt-1"
-                    onClick={() => {
-                      setReplying(true);
-                      setReplyText('');
-                    }}
-                  >
-                    <Reply className="w-3.5 h-3.5 mr-1.5" /> Balas Ulasan
-                  </Button>
-                )}
-              </div>
-            )}
+    <div className="py-5 flex flex-col md:flex-row gap-6 border-b border-slate-100 last:border-b-0">
+      {/* Left Column: User & Rating */}
+      <div className="w-full md:w-64 shrink-0 flex flex-col gap-3">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-10 w-10 border border-slate-100 shadow-sm">
+            <AvatarImage src={currentReview.customerAvatar} alt={currentReview.customerName} />
+            <AvatarFallback className="bg-slate-100 text-slate-600 text-xs font-bold">
+              {getInitials(currentReview.customerName)}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold text-slate-900 leading-snug">
+              {currentReview.customerName}
+            </span>
+            <span className="text-[10px] text-slate-400 font-medium">
+              {new Date(currentReview.date).toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+
+        <div className="space-y-1.5">
+          <div className="flex gap-0.5">{renderStars(currentReview.rating)}</div>
+          <Badge
+            variant="secondary"
+            className="bg-slate-50 text-slate-500 border-none font-normal text-[10px] px-2 py-0.5"
+          >
+            Pembeli Terverifikasi
+          </Badge>
+        </div>
+      </div>
+
+      {/* Right Column: Content & Reply */}
+      <div className="flex-1 flex flex-col gap-3 min-w-0">
+        <div className="flex justify-between items-start gap-4">
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-semibold text-slate-400 mb-1 border-b border-slate-100 pb-1 inline-block">
+              Produk:{' '}
+              <span className="text-slate-700 font-semibold">{currentReview.productName}</span>
+            </p>
+            <p className="text-sm text-slate-700 leading-relaxed mt-1 break-words">
+              &quot;{currentReview.comment}&quot;
+            </p>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 shrink-0 text-slate-400 hover:text-slate-600 rounded-full cursor-pointer"
+              >
+                <MoreVertical className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40 bg-white text-slate-900">
+              <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
+                <Flag className="w-4 h-4 mr-2" /> Laporkan Ulasan
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Reply Section */}
+        {currentReview.status === 'replied' ? (
+          <div className="mt-2 bg-slate-50 border border-slate-100 rounded-lg p-4 relative">
+            <div className="absolute top-0 left-6 w-3 h-3 bg-slate-50 border-t border-l border-slate-100 -translate-y-1/2 rotate-45" />
+            <div className="flex items-center gap-2 mb-1">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                Dibalas
+              </span>
+              <span className="text-[10px] font-semibold text-slate-500">Penjual (Anda)</span>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed mt-1.5 break-words">
+              {currentReview.reply}
+            </p>
+          </div>
+        ) : (
+          <div className="mt-2">
+            {replying ? (
+              <div className="space-y-3 bg-slate-50 border border-slate-100 rounded-lg p-4 relative">
+                <div className="absolute top-0 left-6 w-3 h-3 bg-slate-50 border-t border-l border-slate-100 -translate-y-1/2 rotate-45" />
+                <Textarea
+                  placeholder="Tulis balasan Anda di sini..."
+                  className="min-h-[80px] text-sm bg-white resize-none border-slate-200 focus-visible:ring-primary"
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value)}
+                  autoFocus
+                />
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setReplying(false);
+                      setReplyText('');
+                    }}
+                    className="text-slate-500 cursor-pointer"
+                  >
+                    Batal
+                  </Button>
+                  <Button size="sm" className="cursor-pointer" onClick={handleSendReply}>
+                    Kirim Balasan
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-slate-700 border-slate-200 bg-white hover:bg-slate-50 text-xs h-8 mt-1 cursor-pointer font-medium"
+                onClick={() => {
+                  setReplying(true);
+                  setReplyText('');
+                }}
+              >
+                <Reply className="w-3.5 h-3.5 mr-1.5" /> Balas Ulasan
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
