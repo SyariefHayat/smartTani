@@ -11,3 +11,9 @@ export interface Warehouse {
   lastUpdate: string;
   status: WarehouseStatus;
 }
+
+export interface WarehouseTableActions {
+  onViewDetail: (warehouse: Warehouse) => void;
+  onEdit: (warehouse: Warehouse) => void;
+  onDelete: (warehouse: Warehouse) => void;
+}
