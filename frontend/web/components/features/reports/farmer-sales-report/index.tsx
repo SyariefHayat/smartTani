@@ -123,7 +123,6 @@ export function FarmerSalesReport() {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [useDemo, setUseDemo] = React.useState(false);
 
   // 1. Fetch Farmer Analytics
   const {
@@ -138,7 +137,7 @@ export function FarmerSalesReport() {
       if (!user?.id) return null;
       return analyticsService.getFarmerAnalytics(user.id);
     },
-    enabled: !!user?.id && !useDemo,
+    enabled: !!user?.id,
   });
 
   // 2. Fetch Daily Revenue Chart Data
@@ -158,7 +157,7 @@ export function FarmerSalesReport() {
       };
       return analyticsService.getFarmerRevenueChart(user.id, params);
     },
-    enabled: !!user?.id && !useDemo,
+    enabled: !!user?.id,
   });
 
   // 3. Fetch Orders in date range
@@ -178,24 +177,25 @@ export function FarmerSalesReport() {
         limit: 100,
       });
     },
-    enabled: !!user?.id && !useDemo,
+    enabled: !!user?.id,
   });
+
+  const isQueryError = isAnalyticsError || isChartError || isOrdersError;
 
   // Fallback to local demo data automatically on any fetch error
   React.useEffect(() => {
-    if (isAnalyticsError || isChartError || isOrdersError) {
-      setUseDemo(true);
+    if (isQueryError) {
       toast.error('Layanan Laporan Penjualan offline. Menggunakan data demo lokal.', {
         description:
           'Layanan backend analytics tidak merespon. Menampilkan data simulasi transaksi agar Anda tetap dapat meninjau dashboard.',
         duration: 5000,
       });
     }
-  }, [isAnalyticsError, isChartError, isOrdersError]);
+  }, [isQueryError]);
 
   // 4. Map Orders to SalesReportItem
   const orders: SalesReportItem[] = React.useMemo(() => {
-    const rawOrders = useDemo ? MOCK_ORDERS : ordersResponse?.data?.orders || [];
+    const rawOrders = isQueryError ? MOCK_ORDERS : ordersResponse?.data?.orders || [];
     return rawOrders.map((o) => {
       const quantity = o.items.reduce((sum, item) => sum + Number(item.quantity), 0);
 
@@ -219,7 +219,7 @@ export function FarmerSalesReport() {
           : 'cancelled',
       };
     });
-  }, [ordersResponse, useDemo]);
+  }, [ordersResponse, isQueryError]);
 
   // 5. Compute aggregate metrics from real/mock data
   const summary: SalesReportSummary = React.useMemo(() => {
@@ -228,7 +228,7 @@ export function FarmerSalesReport() {
     const avgTransaction =
       completedOrders.length > 0 ? Math.round(totalSales / completedOrders.length) : 0;
     const itemsSold = completedOrders.reduce((sum, o) => sum + o.quantity, 0);
-    const growth = useDemo
+    const growth = isQueryError
       ? MOCK_ANALYTICS.revenue_change_percent
       : (farmerAnalytics?.revenue_change_percent ?? 0);
 
@@ -238,7 +238,7 @@ export function FarmerSalesReport() {
       avgTransaction,
       itemsSold,
     };
-  }, [orders, farmerAnalytics, useDemo]);
+  }, [orders, farmerAnalytics, isQueryError]);
 
   // 6. Map Chart Data with computed orders per day
   const dailyData: DailySalesData[] = React.useMemo(() => {
@@ -248,7 +248,7 @@ export function FarmerSalesReport() {
       ordersPerDay[day] = (ordersPerDay[day] || 0) + 1;
     });
 
-    const chartRaw = useDemo
+    const chartRaw = isQueryError
       ? MOCK_REVENUE_CHART
       : ((revenueChartData || []) as Array<{
           date: string;
@@ -261,7 +261,7 @@ export function FarmerSalesReport() {
       sales: item.pendapatan || 0,
       orders: ordersPerDay[item.date] || 0,
     }));
-  }, [revenueChartData, orders, useDemo]);
+  }, [revenueChartData, orders, isQueryError]);
 
   // 7. Setup React Table
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -285,7 +285,6 @@ export function FarmerSalesReport() {
   });
 
   const handleRetry = () => {
-    setUseDemo(false);
     refetchAnalytics();
     refetchChart();
     refetchOrders();
@@ -337,14 +336,14 @@ export function FarmerSalesReport() {
     toast.success('Laporan berhasil diekspor ke CSV');
   };
 
-  const isLoading = (isAnalyticsLoading || isChartLoading || isOrdersLoading) && !useDemo;
+  const isLoading = (isAnalyticsLoading || isChartLoading || isOrdersLoading) && !isQueryError;
   const isRefetching = isRefetchingAnalytics || isRefetchingChart || isRefetchingOrders;
 
   return (
     <DateRangeContext.Provider value={{ date, setDate }}>
       <div className="w-full text-slate-900">
         <div className="mx-auto flex w-full flex-col gap-6">
-          {useDemo && (
+          {isQueryError && (
             <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 font-semibold shadow-xs">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 animate-pulse" />

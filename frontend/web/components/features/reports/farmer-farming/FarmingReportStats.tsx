@@ -1,7 +1,8 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sprout, Ruler, Activity, TrendingUp } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { FarmingStats } from './types';
 
 interface FarmingReportStatsProps {
@@ -11,23 +12,21 @@ interface FarmingReportStatsProps {
 export function FarmingReportStats({ summary }: FarmingReportStatsProps) {
   const stats = [
     {
-      label: 'Luas Lahan Aktif',
+      title: 'Luas Lahan Aktif',
       value: `${summary.totalLandArea.toLocaleString('id-ID')} Ha`,
       description: 'Total luas wilayah lahan produktif',
       icon: Ruler,
-      color: 'text-green-600',
-      bgColor: 'bg-green-100',
+      colorClass: 'text-green-500',
     },
     {
-      label: 'Tanaman Berjalan',
+      title: 'Tanaman Berjalan',
       value: `${summary.activeCropCount} Jenis`,
       description: 'Komoditas aktif di lahan',
       icon: Sprout,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100',
+      colorClass: 'text-blue-500',
     },
     {
-      label: 'Skor Kesehatan Rata-rata',
+      title: 'Skor Kesehatan Rata-rata',
       value: `${summary.averageHealthScore}/100`,
       description:
         summary.averageHealthScore >= 85
@@ -38,35 +37,41 @@ export function FarmingReportStats({ summary }: FarmingReportStatsProps) {
               ? 'Kondisi Cukup'
               : 'Tidak ada data',
       icon: Activity,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100',
+      colorClass: 'text-purple-500',
     },
     {
-      label: 'Total Hasil Panen',
+      title: 'Total Hasil Panen',
       value: `${summary.projectedHarvestVal.toLocaleString('id-ID')} Unit`,
       description: 'Akumulasi volume panen',
       icon: TrendingUp,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100',
+      colorClass: 'text-amber-500',
     },
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat) => (
-        <Card key={stat.label} className="border-none shadow-sm">
-          <CardContent className="flex items-center gap-4 p-4">
-            <div className={`rounded-full p-2 ${stat.bgColor}`}>
-              <stat.icon className={`h-5 w-5 ${stat.color}`} />
-            </div>
-            <div>
-              <p className="text-xs font-medium text-muted-foreground">{stat.label}</p>
-              <h3 className="text-lg font-bold">{stat.value}</h3>
-              <p className="text-[10px] text-muted-foreground mt-0.5">{stat.description}</p>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+    <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+      {stats.map((stat) => {
+        const Icon = stat.icon;
+        return (
+          <Card key={stat.title} className="min-w-0">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs">{stat.title}</CardDescription>
+              <CardTitle
+                className="truncate text-xl font-semibold tabular-nums lg:text-2xl"
+                title={String(stat.value)}
+              >
+                {stat.value}
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium text-slate-600">
+                <Icon className={cn('size-4 shrink-0', stat.colorClass)} />
+                <span className="truncate">{stat.description}</span>
+              </div>
+            </CardFooter>
+          </Card>
+        );
+      })}
     </div>
   );
 }
