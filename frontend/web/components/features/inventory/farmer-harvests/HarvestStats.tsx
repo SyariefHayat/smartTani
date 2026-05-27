@@ -1,7 +1,8 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sprout, TrendingUp, Award, Leaf } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { FarmerHarvest } from './types';
 
 interface HarvestStatsProps {
@@ -15,50 +16,59 @@ export function HarvestStats({ harvests }: HarvestStatsProps) {
 
   const stats = [
     {
-      label: 'Total Catatan Panen',
+      title: 'Total Catatan Panen',
       value: harvests.length,
+      description: 'Total aktivitas panen',
       icon: Sprout,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100',
+      colorClass: 'text-blue-500',
     },
     {
-      label: 'Total Hasil Panen (kg)',
-      value: totalYield.toLocaleString('id-ID'),
+      title: 'Total Hasil Panen',
+      value: `${totalYield.toLocaleString('id-ID')} kg`,
+      description: 'Akumulasi tonase produksi',
       icon: TrendingUp,
-      color: 'text-green-600',
-      bgColor: 'bg-green-100',
+      colorClass: 'text-emerald-500',
     },
     {
-      label: 'Kualitas Baik (Grade A/B)',
-      value: goodQualityCount,
+      title: 'Kualitas Baik',
+      value: `${goodQualityCount} Record`,
+      description: 'Hasil panen Grade A/B',
       icon: Award,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100',
+      colorClass: 'text-amber-500',
     },
     {
-      label: 'Jenis Tanaman',
+      title: 'Jenis Komoditas',
       value: uniqueCrops,
+      description: 'Ragam varietas tanaman',
       icon: Leaf,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100',
+      colorClass: 'text-purple-500',
     },
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat) => (
-        <Card key={stat.label}>
-          <CardContent className="flex items-center gap-4 p-4">
-            <div className={`rounded-full p-2 ${stat.bgColor}`}>
-              <stat.icon className={`h-5 w-5 ${stat.color}`} />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
-              <h3 className="text-2xl font-bold">{stat.value}</h3>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+    <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+      {stats.map((stat) => {
+        const Icon = stat.icon;
+        return (
+          <Card key={stat.title} className="min-w-0">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs">{stat.title}</CardDescription>
+              <CardTitle
+                className="truncate text-xl font-semibold lg:text-2xl"
+                title={String(stat.value)}
+              >
+                {stat.value}
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium text-slate-600">
+                <Icon className={cn('size-4 shrink-0', stat.colorClass)} />
+                <span className="truncate">{stat.description}</span>
+              </div>
+            </CardFooter>
+          </Card>
+        );
+      })}
     </div>
   );
 }

@@ -15,8 +15,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { HarvestHeader } from './HarvestHeader';
 import { HarvestStats } from './HarvestStats';
-import { HarvestFilters } from './HarvestFilters';
-import { WarehouseTable } from '../farmer-warehouse/WarehouseTable';
+import { HarvestTable } from './HarvestTable';
 import { columns } from './columns';
 import { harvestService } from '@/services/harvest';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -27,11 +26,25 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { HarvestForm } from './HarvestForm';
+import { HarvestDetailDialog } from './HarvestDetailDialog';
 import { toast } from 'sonner';
-import { FarmerHarvest } from './types';
+import { FarmerHarvest, HarvestTableActions } from './types';
 import { RefreshCw } from 'lucide-react';
+import { exportToCSV } from '@/lib/export-csv';
+import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
 
 export function FarmerHarvestManagement() {
   const queryClient = useQueryClient();
@@ -40,8 +53,14 @@ export function FarmerHarvestManagement() {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  // Interactive Dialog States
+  const [createDialogOpen, setCreateDialogOpen] = React.useState(false);
+  const [detailHarvest, setDetailHarvest] = React.useState<FarmerHarvest | null>(null);
+  const [detailDialogOpen, setDetailDialogOpen] = React.useState(false);
   const [editingHarvest, setEditingHarvest] = React.useState<FarmerHarvest | null>(null);
-  const [deletingHarvestId, setDeletingHarvestId] = React.useState<string | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = React.useState(false);
+  const [deleteHarvest, setDeleteHarvest] = React.useState<FarmerHarvest | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
 
   const {
     data: harvests = [],
@@ -55,18 +74,69 @@ export function FarmerHarvestManagement() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => harvestService.deleteHarvest(id),
+    mutationFn: (harvestId: string) => harvestService.deleteHarvest(harvestId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['farmer-harvests'] });
       toast.success('Catatan panen berhasil dihapus');
-      setDeletingHarvestId(null);
+      setDeleteHarvest(null);
+      setDeleteDialogOpen(false);
     },
-    onError: (error: unknown) => {
-      const axiosError = error as { response?: { data?: { message?: string } } };
+    onError: (err: unknown) => {
+      const axiosError = err as { response?: { data?: { message?: string } } };
       const errMsg = axiosError.response?.data?.message || 'Gagal menghapus catatan panen';
       toast.error(errMsg);
     },
   });
+
+  // Export handler
+  const handleExport = React.useCallback(() => {
+    const qualityLabels: Record<string, string> = {
+      A: 'Grade A',
+      B: 'Grade B',
+      C: 'Grade C',
+    };
+
+    exportToCSV({
+      data: harvests,
+      columns: [
+        { header: 'ID Panen', accessor: (row) => row.id },
+        { header: 'Lahan', accessor: (row) => row.land?.name || 'Lahan Utama' },
+        { header: 'Komoditas', accessor: (row) => row.crop_name },
+        {
+          header: 'Tanggal Panen',
+          accessor: (row) => format(new Date(row.harvest_date), 'dd MMM yyyy', { locale: id }),
+        },
+        { header: 'Kuantitas', accessor: (row) => row.quantity },
+        { header: 'Satuan', accessor: (row) => row.unit },
+        {
+          header: 'Kualitas',
+          accessor: (row) => qualityLabels[row.quality_grade] || row.quality_grade,
+        },
+        { header: 'Catatan', accessor: (row) => row.notes || '-' },
+      ],
+      filename: 'daftar_hasil_panen',
+    });
+    toast.success('Daftar hasil panen berhasil diekspor');
+  }, [harvests]);
+
+  // Actions meta callbacks passed to react-table options
+  const tableActions: HarvestTableActions = React.useMemo(
+    () => ({
+      onViewDetail: (harvest) => {
+        setDetailHarvest(harvest);
+        setDetailDialogOpen(true);
+      },
+      onEdit: (harvest) => {
+        setEditingHarvest(harvest);
+        setEditDialogOpen(true);
+      },
+      onDelete: (harvest) => {
+        setDeleteHarvest(harvest);
+        setDeleteDialogOpen(true);
+      },
+    }),
+    []
+  );
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -80,15 +150,12 @@ export function FarmerHarvestManagement() {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    meta: tableActions,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
-    },
-    meta: {
-      onEdit: (harvest: FarmerHarvest) => setEditingHarvest(harvest),
-      onDelete: (id: string) => setDeletingHarvestId(id),
     },
   });
 
@@ -130,7 +197,7 @@ export function FarmerHarvestManagement() {
   return (
     <div className="w-full text-slate-900">
       <div className="mx-auto flex w-full flex-col gap-6">
-        <HarvestHeader />
+        <HarvestHeader onExport={handleExport} onAddHarvest={() => setCreateDialogOpen(true)} />
 
         {isLoading ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -142,24 +209,55 @@ export function FarmerHarvestManagement() {
           <HarvestStats harvests={harvests} />
         )}
 
-        <div className="space-y-4">
-          <HarvestFilters table={table} />
-          {isLoading ? (
-            <div className="space-y-3">
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-24 w-full" />
-              <Skeleton className="h-24 w-full" />
-            </div>
-          ) : (
-            <WarehouseTable table={table} columnsCount={columns.length} />
-          )}
-        </div>
+        {isLoading ? (
+          <div className="space-y-3">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+          </div>
+        ) : (
+          <HarvestTable table={table} columnsCount={columns.length} />
+        )}
       </div>
+
+      {/* View Details Dialog */}
+      <HarvestDetailDialog
+        harvest={detailHarvest}
+        open={detailDialogOpen}
+        onOpenChange={setDetailDialogOpen}
+        onEdit={() => {
+          setDetailDialogOpen(false);
+          setEditingHarvest(detailHarvest);
+          setEditDialogOpen(true);
+        }}
+      />
+
+      {/* Create Dialog */}
+      <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Catat Hasil Panen Baru</DialogTitle>
+            <DialogDescription>
+              Masukkan data hasil panen dari lahan tani Anda untuk pendataan dan pelaporan yang
+              rapi.
+            </DialogDescription>
+          </DialogHeader>
+          <HarvestForm
+            onSuccess={() => {
+              setCreateDialogOpen(false);
+              queryClient.invalidateQueries({ queryKey: ['farmer-harvests'] });
+            }}
+          />
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Dialog */}
       <Dialog
-        open={!!editingHarvest}
-        onOpenChange={(open: boolean) => !open && setEditingHarvest(null)}
+        open={editDialogOpen}
+        onOpenChange={(open) => {
+          setEditDialogOpen(open);
+          if (!open) setEditingHarvest(null);
+        }}
       >
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -167,38 +265,41 @@ export function FarmerHarvestManagement() {
             <DialogDescription>Perbarui data panen hasil tani Anda.</DialogDescription>
           </DialogHeader>
           {editingHarvest && (
-            <HarvestForm initialData={editingHarvest} onSuccess={() => setEditingHarvest(null)} />
+            <HarvestForm
+              initialData={editingHarvest}
+              onSuccess={() => {
+                setEditDialogOpen(false);
+                setEditingHarvest(null);
+                queryClient.invalidateQueries({ queryKey: ['farmer-harvests'] });
+              }}
+            />
           )}
         </DialogContent>
       </Dialog>
 
-      {/* Delete Alert Dialog */}
-      <Dialog
-        open={!!deletingHarvestId}
-        onOpenChange={(open: boolean) => !open && setDeletingHarvestId(null)}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Hapus Catatan Panen?</DialogTitle>
-            <DialogDescription>
-              Tindakan ini tidak dapat dibatalkan. Catatan hasil panen akan dihapus secara permanen
-              dari sistem.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex justify-end gap-3 pt-4">
-            <Button variant="outline" onClick={() => setDeletingHarvestId(null)}>
-              Batal
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => deletingHarvestId && deleteMutation.mutate(deletingHarvestId)}
+      {/* Delete Confirmation Alert Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hapus Catatan Panen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin menghapus catatan panen komoditas{' '}
+              <strong>{deleteHarvest?.crop_name}</strong> dari sistem? Tindakan ini akan menghapus
+              data secara permanen dari daftar panen Anda.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 text-white hover:bg-red-700 cursor-pointer"
+              onClick={() => deleteHarvest && deleteMutation.mutate(deleteHarvest.id)}
               disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isPending ? 'Menghapus...' : 'Ya, Hapus'}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+              {deleteMutation.isPending ? 'Menghapus...' : 'Hapus'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

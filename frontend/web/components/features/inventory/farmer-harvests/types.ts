@@ -17,3 +17,9 @@ export interface FarmerHarvest {
     name: string;
   };
 }
+
+export interface HarvestTableActions {
+  onViewDetail: (harvest: FarmerHarvest) => void;
+  onEdit: (harvest: FarmerHarvest) => void;
+  onDelete: (harvest: FarmerHarvest) => void;
+}
