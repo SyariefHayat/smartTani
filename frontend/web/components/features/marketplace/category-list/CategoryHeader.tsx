@@ -3,7 +3,12 @@
 import { Download, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export function CategoryHeader() {
+interface CategoryHeaderProps {
+  onExport?: () => void;
+  onAddCategory?: () => void;
+}
+
+export function CategoryHeader({ onExport, onAddCategory }: CategoryHeaderProps) {
   return (
     <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
       <div className="space-y-1">
@@ -13,11 +18,11 @@ export function CategoryHeader() {
         </p>
       </div>
       <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center lg:w-auto">
-        <Button variant="outline" className="bg-background">
-          <Download className="mr-2 h-4 w-4" /> Export
+        <Button variant="outline" className="w-full sm:w-auto cursor-pointer" onClick={onExport}>
+          <Download /> Export
         </Button>
-        <Button className="bg-green-700 text-white hover:bg-green-800">
-          <Plus className="mr-2 h-4 w-4" /> Tambah Kategori
+        <Button className="w-full sm:w-auto cursor-pointer" onClick={onAddCategory}>
+          <Plus /> Tambah Kategori
         </Button>
       </div>
     </div>

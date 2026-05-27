@@ -1,17 +1,9 @@
 'use client';
 
-import {
-  ChevronLeft,
-  ChevronRight,
-  Edit,
-  Eye,
-  Layers,
-  MoreVertical,
-  Trash2,
-} from 'lucide-react';
+import { Eye, Layers, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -20,171 +12,155 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { useRouter } from 'next/navigation';
 import { Category } from './types';
 
 interface CategoryTableProps {
   categories: Category[];
+  searchTerm: string;
+  setSearchTerm: (value: string) => void;
+  isLoading?: boolean;
 }
 
-export function CategoryTable({ categories }: CategoryTableProps) {
-  return (
-    <Card className="overflow-hidden rounded-xl shadow-sm">
-      <div className="border-b bg-slate-50/40 px-4 py-3">
-        <h2 className="text-sm font-semibold text-slate-900">Daftar Kategori</h2>
-        <p className="text-xs text-muted-foreground">
-          Menampilkan {categories.length} kategori berdasarkan pencarian aktif.
-        </p>
-      </div>
+export function CategoryTable({
+  categories,
+  searchTerm,
+  setSearchTerm,
+  isLoading,
+}: CategoryTableProps) {
+  const router = useRouter();
 
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader className="bg-slate-50/50">
-            <TableRow className="border-slate-100 hover:bg-transparent">
-              <TableHead className="w-[60px] text-center font-semibold text-slate-600">
-                No
-              </TableHead>
-              <TableHead className="font-semibold text-slate-600">Kategori</TableHead>
-              <TableHead className="font-semibold text-slate-600">Deskripsi</TableHead>
-              <TableHead className="font-semibold text-slate-600">Jumlah Produk</TableHead>
-              <TableHead className="font-semibold text-slate-600">Status</TableHead>
-              <TableHead className="w-[80px] text-right font-semibold text-slate-600">
-                Aksi
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {categories.length > 0 ? (
-              categories.map((cat, idx) => (
-                <TableRow
-                  key={cat.id}
-                  className="border-slate-50 transition-colors hover:bg-slate-50/30"
-                >
-                  <TableCell className="text-center font-medium text-slate-500">
-                    {idx + 1}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-100 bg-slate-100 text-xl shadow-sm">
-                        {cat.icon}
+  return (
+    <Card className="w-full bg-white">
+      <CardContent className="space-y-3">
+        {/* Filters integrated inside the container card */}
+        <div className="flex flex-col gap-3 md:flex-row md:items-center justify-between w-full pb-1 pt-4">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <Input
+              placeholder="Cari nama kategori atau deskripsi..."
+              className="h-9 rounded-md border-slate-200 bg-white pl-9 pr-4 text-sm text-slate-900"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="overflow-hidden rounded-md border border-slate-100">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[60px] text-center font-semibold">No</TableHead>
+                <TableHead className="font-semibold">Kategori</TableHead>
+                <TableHead className="font-semibold">Deskripsi</TableHead>
+                <TableHead className="font-semibold">Jumlah Produk</TableHead>
+                <TableHead className="font-semibold">Status</TableHead>
+                <TableHead className="w-[80px] text-right font-semibold">Aksi</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                // Beautiful in-table skeletons matching TrackOrderStatus and ProductTable
+                [...Array(5)].map((_, i) => (
+                  <TableRow key={i}>
+                    {Array.from({ length: 6 }).map((_, j) => (
+                      <TableCell key={j}>
+                        <div className="h-5 w-full animate-pulse bg-slate-100 rounded" />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : categories.length > 0 ? (
+                categories.map((cat, idx) => (
+                  <TableRow key={cat.id}>
+                    <TableCell className="text-center font-medium text-slate-500 text-sm">
+                      {idx + 1}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-100 bg-slate-105 text-xl shadow-sm bg-slate-50">
+                          {cat.icon}
+                        </div>
+                        <div className="min-w-0">
+                          <span className="truncate font-semibold text-slate-900 text-sm leading-snug">
+                            {cat.name}
+                          </span>
+                          <span className="font-mono text-[10px] text-slate-400 tracking-wider uppercase mt-0.5 block">
+                            slug: {cat.slug}
+                          </span>
+                        </div>
                       </div>
-                      <div className="min-w-0">
-                        <span className="font-bold text-slate-900">{cat.name}</span>
-                        <span className="mt-0.5 block text-[10px] font-mono text-slate-400">
-                          slug: {cat.slug}
+                    </TableCell>
+                    <TableCell className="max-w-[300px]">
+                      <p className="text-slate-600 text-sm font-medium line-clamp-2 leading-relaxed">
+                        {cat.description}
+                      </p>
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-slate-700 text-sm font-semibold">
+                        {cat.productCount}{' '}
+                        <span className="text-slate-400 font-normal text-xs ml-0.5">Produk</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {cat.status === 'active' ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                          Aktif
                         </span>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="max-w-[300px]">
-                    <p className="line-clamp-2 text-sm leading-relaxed text-slate-600">
-                      {cat.description}
-                    </p>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <div className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold text-slate-600">
-                        {cat.productCount}
-                      </div>
-                      <span className="text-xs text-slate-400">Produk</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {cat.status === 'active' ? (
-                      <Badge className="border-none bg-green-100 font-normal text-green-700 hover:bg-green-100">
-                        Aktif
-                      </Badge>
-                    ) : (
-                      <Badge
-                        variant="secondary"
-                        className="border-none bg-slate-100 font-normal text-slate-400"
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-semibold text-slate-600">
+                          <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                          Nonaktif
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="cursor-pointer text-slate-500 hover:text-slate-900"
+                        onClick={() =>
+                          router.push(
+                            `/dashboard/farmer/products?category=${encodeURIComponent(cat.name)}`
+                          )
+                        }
                       >
-                        Nonaktif
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-slate-400 hover:text-slate-600"
-                        >
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-40">
-                        <DropdownMenuItem className="cursor-pointer">
-                          <Eye className="mr-2 h-4 w-4" /> Lihat Produk
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer">
-                          <Edit className="mr-2 h-4 w-4" /> Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
-                          <Trash2 className="mr-2 h-4 w-4" /> Hapus
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                        <Eye className="mr-1.5 h-3.5 w-3.5" /> Lihat
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-64 text-center">
+                    <div className="flex flex-col items-center justify-center gap-2 text-slate-400">
+                      <Layers className="mb-2 h-12 w-12 opacity-20" />
+                      <p className="font-medium text-slate-500">Kategori tidak ditemukan</p>
+                      <p className="text-xs">Coba kata kunci lain atau reset pencarian</p>
+                    </div>
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={6} className="h-64 text-center">
-                  <div className="flex flex-col items-center justify-center gap-2 text-slate-400">
-                    <Layers className="mb-2 h-12 w-12 opacity-20" />
-                    <p className="font-medium text-slate-500">Kategori tidak ditemukan</p>
-                    <p className="text-xs">Coba kata kunci lain atau reset pencarian</p>
-                  </div>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              )}
+            </TableBody>
+          </Table>
+        </div>
 
-      <div className="flex flex-col gap-4 border-t bg-slate-50/30 p-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs text-slate-500">
-          Menampilkan{' '}
-          <span className="font-medium text-slate-900">1 - {categories.length}</span>{' '}
-          dari <span className="font-medium text-slate-900">{categories.length}</span>{' '}
-          kategori
-        </p>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8 border-slate-200 bg-background"
-            disabled
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <div className="flex items-center gap-1">
-            <Button
-              size="sm"
-              className="h-8 w-8 bg-green-700 p-0 text-white hover:bg-green-800"
-            >
-              1
+        {/* Pagination matching ProductTable style */}
+        <div className="flex items-center justify-between gap-4 pt-2">
+          <div className="text-sm text-muted-foreground">
+            {categories.length} kategori ditemukan
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" disabled>
+              Sebelumnya
+            </Button>
+            <Button variant="outline" size="sm" disabled>
+              Berikutnya
             </Button>
           </div>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8 border-slate-200 bg-background"
-            disabled
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
         </div>
-      </div>
+      </CardContent>
     </Card>
   );
 }
