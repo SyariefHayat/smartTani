@@ -16,11 +16,33 @@ import { SupplierHeader } from './SupplierHeader';
 import { SupplierStats } from './SupplierStats';
 import { SupplierTable } from './SupplierTable';
 import { columns } from './columns';
-import { Supplier } from './types';
+import { Supplier, SupplierTableActions } from './types';
 import { exportToCSV } from '@/lib/export-csv';
 import { toast } from 'sonner';
+import { SupplierForm } from './SupplierForm';
+import { SupplierDetailDialog } from './SupplierDetailDialog';
+import { useQuery } from '@tanstack/react-query';
+import { marketplaceService } from '@/services/marketplace';
 
-const MOCK_SUPPLIERS: Supplier[] = [
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+
+const INITIAL_SUPPLIERS: Supplier[] = [
   {
     id: 'SUP-001',
     name: 'Distributor Pupuk Nasional',
@@ -84,14 +106,33 @@ const MOCK_SUPPLIERS: Supplier[] = [
 ];
 
 export function FarmerSupplierList() {
+  const [suppliers, setSuppliers] = React.useState<Supplier[]>(INITIAL_SUPPLIERS);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  // Fetch dynamic categories
+  const { data: categoriesData } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => marketplaceService.getCategories(),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Interactive Dialog States
+
+  const [createDialogOpen, setCreateDialogOpen] = React.useState(false);
+  const [detailSupplier, setDetailSupplier] = React.useState<Supplier | null>(null);
+  const [detailDialogOpen, setDetailDialogOpen] = React.useState(false);
+  const [editSupplier, setEditSupplier] = React.useState<Supplier | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = React.useState(false);
+  const [deleteSupplier, setDeleteSupplier] = React.useState<Supplier | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+
+  // Export handler
   const handleExport = React.useCallback(() => {
     exportToCSV({
-      data: MOCK_SUPPLIERS,
+      data: suppliers,
       columns: [
         { header: 'ID Supplier', accessor: (row) => row.id },
         { header: 'Nama Supplier', accessor: (row) => row.name },
@@ -106,11 +147,30 @@ export function FarmerSupplierList() {
       filename: 'daftar_supplier',
     });
     toast.success('Daftar supplier berhasil diekspor');
-  }, []);
+  }, [suppliers]);
+
+  // Actions meta callbacks passed to useReactTable options
+  const tableActions: SupplierTableActions = React.useMemo(
+    () => ({
+      onViewDetail: (supplier) => {
+        setDetailSupplier(supplier);
+        setDetailDialogOpen(true);
+      },
+      onEdit: (supplier) => {
+        setEditSupplier(supplier);
+        setEditDialogOpen(true);
+      },
+      onDelete: (supplier) => {
+        setDeleteSupplier(supplier);
+        setDeleteDialogOpen(true);
+      },
+    }),
+    []
+  );
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
-    data: MOCK_SUPPLIERS,
+    data: suppliers,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -120,6 +180,7 @@ export function FarmerSupplierList() {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    meta: tableActions,
     state: {
       sorting,
       columnFilters,
@@ -128,16 +189,116 @@ export function FarmerSupplierList() {
     },
   });
 
+  // Create handler
+  const handleAddSupplier = (data: Omit<Supplier, 'id' | 'totalOrders' | 'lastOrderDate'>) => {
+    const newSupplier: Supplier = {
+      ...data,
+      id: `SUP-${String(Date.now()).slice(-4)}`,
+      totalOrders: 0,
+      lastOrderDate: new Date().toISOString(),
+    };
+    setSuppliers((prev) => [newSupplier, ...prev]);
+    setCreateDialogOpen(false);
+    toast.success(`Supplier ${data.name} berhasil ditambahkan`);
+  };
+
+  // Edit handler
+  const handleUpdateSupplier = (data: Omit<Supplier, 'id' | 'totalOrders' | 'lastOrderDate'>) => {
+    if (!editSupplier) return;
+    setSuppliers((prev) => prev.map((s) => (s.id === editSupplier.id ? { ...s, ...data } : s)));
+    setEditDialogOpen(false);
+    setEditSupplier(null);
+    toast.success(`Profil supplier ${data.name} berhasil diperbarui`);
+  };
+
+  // Delete handler
+  const handleDeleteSupplier = () => {
+    if (!deleteSupplier) return;
+    setSuppliers((prev) => prev.filter((s) => s.id !== deleteSupplier.id));
+    setDeleteDialogOpen(false);
+    setDeleteSupplier(null);
+    toast.success('Supplier berhasil dihapus');
+  };
+
   return (
     <div className="w-full text-slate-900">
       <div className="mx-auto flex w-full flex-col gap-4">
-        <SupplierHeader
-          onExport={handleExport}
-          onAddSupplier={() => toast.info('Fitur tambah supplier segera hadir!')}
-        />
-        <SupplierStats suppliers={MOCK_SUPPLIERS} />
+        <SupplierHeader onExport={handleExport} onAddSupplier={() => setCreateDialogOpen(true)} />
+        <SupplierStats suppliers={suppliers} />
         <SupplierTable table={table} columnsCount={columns.length} />
       </div>
+
+      {/* View Details Dialog */}
+      <SupplierDetailDialog
+        supplier={detailSupplier}
+        open={detailDialogOpen}
+        onOpenChange={setDetailDialogOpen}
+        onEdit={() => {
+          setDetailDialogOpen(false);
+          setEditSupplier(detailSupplier);
+          setEditDialogOpen(true);
+        }}
+      />
+
+      {/* Create Dialog */}
+      <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Tambah Supplier Baru</DialogTitle>
+            <DialogDescription>
+              Lengkapi formulir di bawah ini untuk menambahkan supplier baru ke daftar kemitraan
+              Anda.
+            </DialogDescription>
+          </DialogHeader>
+          <SupplierForm categories={categoriesData?.data || []} onSuccess={handleAddSupplier} />
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog
+        open={editDialogOpen}
+        onOpenChange={(open) => {
+          setEditDialogOpen(open);
+          if (!open) setEditSupplier(null);
+        }}
+      >
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Ubah Profil Supplier</DialogTitle>
+            <DialogDescription>Ubah data rincian profil supplier terpilih.</DialogDescription>
+          </DialogHeader>
+          {editSupplier && (
+            <SupplierForm
+              initialData={editSupplier}
+              categories={categoriesData?.data || []}
+              onSuccess={handleUpdateSupplier}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Alert Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hapus Supplier?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin menghapus <strong>{deleteSupplier?.name}</strong> dari daftar
+              supplier Anda? Tindakan ini akan menghapus data mereka secara permanen dari tampilan
+              saat ini.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 text-white hover:bg-red-700 cursor-pointer"
+              onClick={handleDeleteSupplier}
+            >
+              Hapus
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

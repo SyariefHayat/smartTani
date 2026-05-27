@@ -10,3 +10,9 @@ export interface Supplier {
   lastOrderDate: string;
   status: 'active' | 'inactive';
 }
+
+export interface SupplierTableActions {
+  onViewDetail: (supplier: Supplier) => void;
+  onEdit: (supplier: Supplier) => void;
+  onDelete: (supplier: Supplier) => void;
+}
