@@ -13,3 +13,8 @@ export interface ProductStock {
   status: StockStatus;
   pricePerUnit: number;
 }
+
+export interface StockTableActions {
+  onUpdateStock: (product: ProductStock) => void;
+  onSetMinStock: (product: ProductStock) => void;
+}

@@ -14,10 +14,9 @@ import {
 
 import { StockHeader } from './StockHeader';
 import { StockStats } from './StockStats';
-import { StockFilters } from './StockFilters';
 import { StockTable } from './StockTable';
 import { columns } from './columns';
-import { ProductStock, StockStatus } from './types';
+import { ProductStock, StockStatus, StockTableActions } from './types';
 import { useAuthStore } from '@/stores/auth';
 import { useFarmerProducts, useUpdateProduct } from '@/hooks/use-farmer-products';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -33,6 +32,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
+import { exportToCSV } from '@/lib/export-csv';
+import { toast } from 'sonner';
 
 export function FarmerStockManagement() {
   const user = useAuthStore((s) => s.user);
@@ -96,7 +97,10 @@ export function FarmerStockManagement() {
   const onConfirmUpdate = async () => {
     if (!selectedProduct) return;
     const value = parseInt(inputValue);
-    if (isNaN(value)) return;
+    if (isNaN(value) || value < 0) {
+      toast.error('Jumlah tidak valid');
+      return;
+    }
 
     const data = isUpdateStockOpen ? { stock: value } : { min_stock: value };
 
@@ -110,35 +114,64 @@ export function FarmerStockManagement() {
           setIsUpdateStockOpen(false);
           setIsSetMinStockOpen(false);
           setSelectedProduct(null);
+          toast.success(
+            isUpdateStockOpen
+              ? 'Jumlah stok berhasil diperbarui'
+              : 'Batas minimal stok berhasil diperbarui'
+          );
+          refetch();
+        },
+        onError: () => {
+          toast.error('Gagal memperbarui data stok');
         },
       }
     );
   };
 
+  // Export handler
+  const handleExport = React.useCallback(() => {
+    if (stocks.length === 0) {
+      toast.error('Tidak ada data stok untuk diekspor');
+      return;
+    }
+
+    const statusLabels: Record<string, string> = {
+      'In Stock': 'Tersedia',
+      'Low Stock': 'Menipis',
+      'Out of Stock': 'Habis',
+    };
+
+    exportToCSV({
+      data: stocks,
+      columns: [
+        { header: 'ID Produk', accessor: (row) => row.id },
+        { header: 'SKU', accessor: (row) => row.sku },
+        { header: 'Nama Produk', accessor: (row) => row.name },
+        { header: 'Kategori', accessor: (row) => row.category },
+        { header: 'Jumlah Stok', accessor: (row) => row.quantity },
+        { header: 'Satuan', accessor: (row) => row.unit },
+        { header: 'Minimal Stok', accessor: (row) => row.minStock },
+        { header: 'Lokasi Gudang', accessor: (row) => row.warehouse },
+        { header: 'Status Stok', accessor: (row) => statusLabels[row.status] || row.status },
+      ],
+      filename: 'daftar_stok_produk',
+    });
+    toast.success('Data persediaan berhasil diekspor');
+  }, [stocks]);
+
+  // Actions meta callbacks passed to react-table options
+  const tableActions: StockTableActions = React.useMemo(
+    () => ({
+      onUpdateStock: handleUpdateStock,
+      onSetMinStock: handleSetMinStock,
+    }),
+    []
+  );
+
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: stocks,
-    columns: columns.map((col) => {
-      if (col.id === 'actions') {
-        return {
-          ...col,
-          cell: (cellProps: unknown) => {
-            // Re-define action cell to pass handlers
-            const OriginalCell = col.cell as unknown as React.ComponentType<
-              Record<string, unknown>
-            >;
-            return (
-              <OriginalCell
-                {...(cellProps as Record<string, unknown>)}
-                onUpdateStock={handleUpdateStock}
-                onSetMinStock={handleSetMinStock}
-              />
-            );
-          },
-        };
-      }
-      return col;
-    }),
+    columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -147,6 +180,7 @@ export function FarmerStockManagement() {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    meta: tableActions,
     state: {
       sorting,
       columnFilters,
@@ -157,17 +191,17 @@ export function FarmerStockManagement() {
 
   if (isLoading) {
     return (
-      <div className="w-full space-y-6">
-        <Skeleton className="h-10 w-48" />
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="w-full text-slate-900 space-y-6">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-48 rounded" />
+          <Skeleton className="h-4 w-96 rounded" />
+        </div>
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-24 w-full" />
+            <Skeleton key={i} className="h-24 w-full rounded-xl" />
           ))}
         </div>
-        <div className="space-y-4">
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-[400px] w-full" />
-        </div>
+        <Skeleton className="h-[450px] w-full rounded-xl" />
       </div>
     );
   }
@@ -210,15 +244,12 @@ export function FarmerStockManagement() {
   return (
     <div className="w-full text-slate-900">
       <div className="mx-auto flex w-full flex-col gap-6">
-        <StockHeader />
+        <StockHeader onExport={handleExport} />
         <StockStats stocks={stocks} />
-        <div className="space-y-4">
-          <StockFilters table={table} />
-          <StockTable table={table} columnsCount={columns.length} />
-        </div>
+        <StockTable table={table} columnsCount={columns.length} />
       </div>
 
-      {/* Modals */}
+      {/* Update Modals */}
       <Dialog
         open={isUpdateStockOpen || isSetMinStockOpen}
         onOpenChange={(open) => {
@@ -229,27 +260,33 @@ export function FarmerStockManagement() {
           }
         }}
       >
-        <DialogContent>
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>{isUpdateStockOpen ? 'Update Stok' : 'Set Minimal Stok'}</DialogTitle>
-            <DialogDescription>
-              {selectedProduct?.name} ({selectedProduct?.sku})
+            <DialogTitle className="text-lg font-bold">
+              {isUpdateStockOpen ? 'Update Stok Persediaan' : 'Set Batas Minimal Stok'}
+            </DialogTitle>
+            <DialogDescription className="text-slate-500 mt-1">
+              Produk: <strong>{selectedProduct?.name}</strong> ({selectedProduct?.sku})
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="value">
-                {isUpdateStockOpen ? 'Jumlah Stok Baru' : 'Minimal Stok Baru'}
+              <Label htmlFor="value" className="text-sm font-semibold text-slate-700">
+                {isUpdateStockOpen ? 'Jumlah Stok Baru' : 'Batas Minimal Stok Baru'}
               </Label>
-              <Input
-                id="value"
-                type="number"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-              />
+              <div className="flex items-center gap-2">
+                <Input
+                  id="value"
+                  type="number"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  className="text-slate-900 font-semibold"
+                />
+                <span className="text-sm font-medium text-slate-500">{selectedProduct?.unit}</span>
+              </div>
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2 sm:gap-0">
             <Button
               variant="outline"
               onClick={() => {
@@ -257,10 +294,15 @@ export function FarmerStockManagement() {
                 setIsSetMinStockOpen(false);
                 setSelectedProduct(null);
               }}
+              className="cursor-pointer"
             >
               Batal
             </Button>
-            <Button onClick={onConfirmUpdate} disabled={updateMutation.isPending}>
+            <Button
+              onClick={onConfirmUpdate}
+              disabled={updateMutation.isPending}
+              className="cursor-pointer bg-slate-900 hover:bg-slate-800 text-white"
+            >
               {updateMutation.isPending ? 'Menyimpan...' : 'Simpan Perubahan'}
             </Button>
           </DialogFooter>

@@ -1,7 +1,8 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Package, AlertTriangle, TrendingDown, Layers } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { ProductStock } from './types';
 
 interface StockStatsProps {
@@ -15,54 +16,62 @@ export function StockStats({ stocks }: StockStatsProps) {
 
   const stats = [
     {
-      label: 'Total Item Stok',
+      title: 'Total Item Stok',
       value: stocks.length,
+      description: 'Semua komoditas terdaftar',
       icon: Layers,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100',
+      colorClass: 'text-blue-500',
     },
     {
-      label: 'Stok Menipis',
+      title: 'Stok Menipis',
       value: lowStockCount,
+      description: 'Mencapai batas minimum',
       icon: TrendingDown,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100',
+      colorClass: 'text-amber-500',
     },
     {
-      label: 'Habis / Kosong',
+      title: 'Habis / Kosong',
       value: outOfStockCount,
+      description: 'Stok kosong di gudang',
       icon: AlertTriangle,
-      color: 'text-red-600',
-      bgColor: 'bg-red-100',
+      colorClass: 'text-rose-500',
     },
     {
-      label: 'Estimasi Nilai Stok',
+      title: 'Estimasi Nilai Stok',
       value: new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
         maximumFractionDigits: 0,
       }).format(totalValue),
       icon: Package,
-      color: 'text-green-600',
-      bgColor: 'bg-green-100',
+      colorClass: 'text-emerald-500',
     },
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat) => (
-        <Card key={stat.label}>
-          <CardContent className="flex items-center gap-4 p-4">
-            <div className={`rounded-full p-2 ${stat.bgColor}`}>
-              <stat.icon className={`h-5 w-5 ${stat.color}`} />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
-              <h3 className="text-xl font-bold">{stat.value}</h3>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+    <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+      {stats.map((stat) => {
+        const Icon = stat.icon;
+        return (
+          <Card key={stat.title} className="min-w-0">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs">{stat.title}</CardDescription>
+              <CardTitle
+                className="truncate text-xl font-semibold lg:text-2xl"
+                title={String(stat.value)}
+              >
+                {stat.value}
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium text-slate-600">
+                <Icon className={cn('size-4 shrink-0', stat.colorClass)} />
+                <span className="truncate">{stat.description}</span>
+              </div>
+            </CardFooter>
+          </Card>
+        );
+      })}
     </div>
   );
 }
