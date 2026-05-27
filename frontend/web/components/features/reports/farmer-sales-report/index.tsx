@@ -21,15 +21,95 @@ import { format, subDays } from 'date-fns';
 import { SalesReportHeader } from './SalesReportHeader';
 import { SalesReportStats } from './SalesReportStats';
 import { SalesReportCharts } from './SalesReportCharts';
-import { WarehouseTable } from '../../inventory/farmer-warehouse/WarehouseTable';
+import { SalesReportTable } from './SalesReportTable';
 import { columns } from './columns';
 import { DailySalesData, SalesReportItem, SalesReportSummary } from './types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DateRangeContext } from '@/context/dateRange';
 import { DateRange } from 'react-day-picker';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, AlertTriangle } from 'lucide-react';
+
+// High-fidelity fallback simulated data if backend service is offline
+const MOCK_ANALYTICS = {
+  revenue_change_percent: 16.8,
+};
+
+const MOCK_REVENUE_CHART = [
+  { date: '2026-05-21', pendapatan: 9000000, pengeluaran: 0 },
+  { date: '2026-05-22', pendapatan: 9000000, pengeluaran: 0 },
+  { date: '2026-05-23', pendapatan: 0, pengeluaran: 0 },
+  { date: '2026-05-24', pendapatan: 5500000, pengeluaran: 0 },
+  { date: '2026-05-25', pendapatan: 10500000, pengeluaran: 0 },
+  { date: '2026-05-26', pendapatan: 6000000, pengeluaran: 0 },
+  { date: '2026-05-27', pendapatan: 4500000, pengeluaran: 0 },
+];
+
+const MOCK_ORDERS = [
+  {
+    id: 'ORD-10922',
+    created_at: '2026-05-27T10:00:00Z',
+    buyer_id: 'BUY-7711',
+    buyer: { full_name: 'Siti Aminah (Buyer Kelompok A)' },
+    items: [{ product_id: 'PROD-8812', price_per_unit: 25000, quantity: 180 }],
+    total_amount: 4500000,
+    status: 'completed',
+  },
+  {
+    id: 'ORD-10901',
+    created_at: '2026-05-26T14:30:00Z',
+    buyer_id: 'BUY-8812',
+    buyer: { full_name: 'Agus Setiawan (Koperasi Tani)' },
+    items: [{ product_id: 'PROD-7712', price_per_unit: 15000, quantity: 400 }],
+    total_amount: 6000000,
+    status: 'completed',
+  },
+  {
+    id: 'ORD-10885',
+    created_at: '2026-05-25T08:15:00Z',
+    buyer_id: 'BUY-5501',
+    buyer: { full_name: 'CV Segar Sentosa' },
+    items: [{ product_id: 'PROD-9912', price_per_unit: 35000, quantity: 300 }],
+    total_amount: 10500000,
+    status: 'completed',
+  },
+  {
+    id: 'ORD-10881',
+    created_at: '2026-05-24T11:00:00Z',
+    buyer_id: 'BUY-3392',
+    buyer: { full_name: 'Pak Budi Wahyono' },
+    items: [{ product_id: 'PROD-6611', price_per_unit: 22000, quantity: 250 }],
+    total_amount: 5500000,
+    status: 'completed',
+  },
+  {
+    id: 'ORD-10850',
+    created_at: '2026-05-23T09:30:00Z',
+    buyer_id: 'BUY-2201',
+    buyer: { full_name: 'Dewi Lestari' },
+    items: [{ product_id: 'PROD-5501', price_per_unit: 12000, quantity: 100 }],
+    total_amount: 1200000,
+    status: 'cancelled',
+  },
+  {
+    id: 'ORD-10812',
+    created_at: '2026-05-22T16:45:00Z',
+    buyer_id: 'BUY-9922',
+    buyer: { full_name: 'Katering Berkah Jaya' },
+    items: [{ product_id: 'PROD-4411', price_per_unit: 18000, quantity: 500 }],
+    total_amount: 9000000,
+    status: 'completed',
+  },
+  {
+    id: 'ORD-10799',
+    created_at: '2026-05-21T10:15:00Z',
+    buyer_id: 'BUY-1192',
+    buyer: { full_name: 'Supermarket Tani Makmur' },
+    items: [{ product_id: 'PROD-3301', price_per_unit: 45000, quantity: 200 }],
+    total_amount: 9000000,
+    status: 'completed',
+  },
+];
 
 export function FarmerSalesReport() {
   const user = useAuthStore((s) => s.user);
@@ -43,8 +123,9 @@ export function FarmerSalesReport() {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [useDemo, setUseDemo] = React.useState(false);
 
-  // 1. Fetch Farmer Analytics (for metrics growth percentage)
+  // 1. Fetch Farmer Analytics
   const {
     data: farmerAnalytics,
     isLoading: isAnalyticsLoading,
@@ -57,10 +138,10 @@ export function FarmerSalesReport() {
       if (!user?.id) return null;
       return analyticsService.getFarmerAnalytics(user.id);
     },
-    enabled: !!user?.id,
+    enabled: !!user?.id && !useDemo,
   });
 
-  // 2. Fetch Daily Revenue Chart Data based on chosen date range
+  // 2. Fetch Daily Revenue Chart Data
   const {
     data: revenueChartData,
     isLoading: isChartLoading,
@@ -77,7 +158,7 @@ export function FarmerSalesReport() {
       };
       return analyticsService.getFarmerRevenueChart(user.id, params);
     },
-    enabled: !!user?.id,
+    enabled: !!user?.id && !useDemo,
   });
 
   // 3. Fetch Orders in date range
@@ -94,15 +175,27 @@ export function FarmerSalesReport() {
       return orderService.getOrders({
         from_date: date?.from ? date.from.toISOString() : undefined,
         to_date: date?.to ? date.to.toISOString() : undefined,
-        limit: 100, // retrieve robust list of report records
+        limit: 100,
       });
     },
-    enabled: !!user?.id,
+    enabled: !!user?.id && !useDemo,
   });
 
-  // 4. Map Orders to SalesReportItem — MUST be before any early returns
+  // Fallback to local demo data automatically on any fetch error
+  React.useEffect(() => {
+    if (isAnalyticsError || isChartError || isOrdersError) {
+      setUseDemo(true);
+      toast.error('Layanan Laporan Penjualan offline. Menggunakan data demo lokal.', {
+        description:
+          'Layanan backend analytics tidak merespon. Menampilkan data simulasi transaksi agar Anda tetap dapat meninjau dashboard.',
+        duration: 5000,
+      });
+    }
+  }, [isAnalyticsError, isChartError, isOrdersError]);
+
+  // 4. Map Orders to SalesReportItem
   const orders: SalesReportItem[] = React.useMemo(() => {
-    const rawOrders = ordersResponse?.data?.orders || [];
+    const rawOrders = useDemo ? MOCK_ORDERS : ordersResponse?.data?.orders || [];
     return rawOrders.map((o) => {
       const quantity = o.items.reduce((sum, item) => sum + Number(item.quantity), 0);
 
@@ -126,16 +219,18 @@ export function FarmerSalesReport() {
           : 'cancelled',
       };
     });
-  }, [ordersResponse]);
+  }, [ordersResponse, useDemo]);
 
-  // 5. Compute aggregate metrics from real data
+  // 5. Compute aggregate metrics from real/mock data
   const summary: SalesReportSummary = React.useMemo(() => {
     const completedOrders = orders.filter((o) => o.status === 'completed');
     const totalSales = completedOrders.reduce((sum, o) => sum + o.total, 0);
     const avgTransaction =
       completedOrders.length > 0 ? Math.round(totalSales / completedOrders.length) : 0;
     const itemsSold = completedOrders.reduce((sum, o) => sum + o.quantity, 0);
-    const growth = farmerAnalytics?.revenue_change_percent ?? 0;
+    const growth = useDemo
+      ? MOCK_ANALYTICS.revenue_change_percent
+      : (farmerAnalytics?.revenue_change_percent ?? 0);
 
     return {
       totalSales,
@@ -143,9 +238,9 @@ export function FarmerSalesReport() {
       avgTransaction,
       itemsSold,
     };
-  }, [orders, farmerAnalytics]);
+  }, [orders, farmerAnalytics, useDemo]);
 
-  // 6. Map Chart Data with computed real orders per day
+  // 6. Map Chart Data with computed orders per day
   const dailyData: DailySalesData[] = React.useMemo(() => {
     const ordersPerDay: Record<string, number> = {};
     orders.forEach((o) => {
@@ -153,18 +248,20 @@ export function FarmerSalesReport() {
       ordersPerDay[day] = (ordersPerDay[day] || 0) + 1;
     });
 
-    const chartRaw = (revenueChartData || []) as Array<{
-      date: string;
-      pendapatan: number;
-      pengeluaran: number;
-    }>;
+    const chartRaw = useDemo
+      ? MOCK_REVENUE_CHART
+      : ((revenueChartData || []) as Array<{
+          date: string;
+          pendapatan: number;
+          pengeluaran: number;
+        }>);
 
     return chartRaw.map((item) => ({
       date: item.date,
       sales: item.pendapatan || 0,
       orders: ordersPerDay[item.date] || 0,
     }));
-  }, [revenueChartData, orders]);
+  }, [revenueChartData, orders, useDemo]);
 
   // 7. Setup React Table
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -187,48 +284,12 @@ export function FarmerSalesReport() {
     },
   });
 
-  // Error state — rendered after all hooks
-  if (isAnalyticsError || isChartError || isOrdersError) {
-    const handleRetry = () => {
-      refetchAnalytics();
-      refetchChart();
-      refetchOrders();
-    };
-    const isRefetching = isRefetchingAnalytics || isRefetchingChart || isRefetchingOrders;
-
-    return (
-      <div className="flex w-full h-[350px] flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 text-red-500 p-6 text-center text-sm font-medium shadow-xs">
-        <svg
-          className="w-10 h-10 mb-3 text-red-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-          />
-        </svg>
-        <p className="font-semibold text-base mb-1">Gagal Memuat Laporan Penjualan</p>
-        <p className="text-xs text-red-400 max-w-md mb-4">
-          Layanan/Service tidak merespon atau sedang tidak aktif. Harap periksa koneksi Anda atau
-          hubungi administrator.
-        </p>
-        <Button
-          variant="outline"
-          size="sm"
-          className="cursor-pointer border-red-200 text-red-500 hover:bg-red-100 hover:text-red-600"
-          onClick={handleRetry}
-          disabled={isRefetching}
-        >
-          <RefreshCw className={`mr-2 h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`} />
-          {isRefetching ? 'Mencoba ulang...' : 'Coba Lagi'}
-        </Button>
-      </div>
-    );
-  }
+  const handleRetry = () => {
+    setUseDemo(false);
+    refetchAnalytics();
+    refetchChart();
+    refetchOrders();
+  };
 
   // 8. Client-side CSV export trigger
   const handleExportCSV = () => {
@@ -276,12 +337,35 @@ export function FarmerSalesReport() {
     toast.success('Laporan berhasil diekspor ke CSV');
   };
 
-  const isLoading = isAnalyticsLoading || isChartLoading || isOrdersLoading;
+  const isLoading = (isAnalyticsLoading || isChartLoading || isOrdersLoading) && !useDemo;
+  const isRefetching = isRefetchingAnalytics || isRefetchingChart || isRefetchingOrders;
 
   return (
     <DateRangeContext.Provider value={{ date, setDate }}>
       <div className="w-full text-slate-900">
         <div className="mx-auto flex w-full flex-col gap-6">
+          {useDemo && (
+            <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 font-semibold shadow-xs">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 animate-pulse" />
+                <p>
+                  Mode Offline Simulasi: Koneksi ke server laporan penjualan terputus. Menampilkan
+                  data lokal demo agar Anda tetap dapat menjelajahi layout.
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 cursor-pointer border-amber-300 text-amber-800 bg-white hover:bg-amber-100 font-bold shrink-0 text-[10px]"
+                onClick={handleRetry}
+                disabled={isRefetching}
+              >
+                <RefreshCw className={`mr-1 h-3 w-3 ${isRefetching ? 'animate-spin' : ''}`} />
+                {isRefetching ? 'Hubungkan...' : 'Coba Hubungkan Kembali'}
+              </Button>
+            </div>
+          )}
+
           <SalesReportHeader onExportCSV={handleExportCSV} />
 
           {isLoading ? (
@@ -303,22 +387,15 @@ export function FarmerSalesReport() {
             <SalesReportCharts data={dailyData} />
           )}
 
-          <Card className="border-slate-200 shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-bold">Rincian Transaksi</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <div className="space-y-3">
-                  <Skeleton className="h-10 w-full" />
-                  <Skeleton className="h-20 w-full" />
-                  <Skeleton className="h-20 w-full" />
-                </div>
-              ) : (
-                <WarehouseTable table={table} columnsCount={columns.length} />
-              )}
-            </CardContent>
-          </Card>
+          {isLoading ? (
+            <div className="space-y-3">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-20 w-full" />
+            </div>
+          ) : (
+            <SalesReportTable table={table} columnsCount={columns.length} />
+          )}
         </div>
       </div>
     </DateRangeContext.Provider>
