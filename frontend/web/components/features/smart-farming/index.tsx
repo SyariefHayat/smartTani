@@ -1,115 +1,277 @@
 'use client';
 
 import * as React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Cpu, Wifi, Layers, Bot, Sparkles, Activity } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import {
+  Cpu,
+  Wifi,
+  Bot,
+  Sparkles,
+  Activity,
+  Brain,
+  ArrowRight,
+  Zap,
+  RefreshCw,
+  CheckCircle2,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+
+import { SmartFarmingHeader } from './SmartFarmingHeader';
+import { SensorOverview } from './SensorOverview';
+import { AutomationControl } from './AutomationControl';
+import { DeviceStatusList } from './DeviceStatusList';
+import { SensorData, AutomationTask, IoTDevice } from './types';
+
+const INITIAL_SENSORS: SensorData[] = [
+  {
+    id: 'SNS-001',
+    name: 'Sensor Kelembaban - Blok A1',
+    type: 'moisture',
+    value: 42,
+    unit: '%',
+    status: 'normal',
+    lastReading: new Date().toISOString(),
+  },
+  {
+    id: 'SNS-002',
+    name: 'Sensor Suhu - Lahan Utama',
+    type: 'temperature',
+    value: 28.5,
+    unit: '°C',
+    status: 'normal',
+    lastReading: new Date().toISOString(),
+  },
+  {
+    id: 'SNS-003',
+    name: 'Sensor pH Tanah - Blok B2',
+    type: 'ph',
+    value: 5.4,
+    unit: 'pH',
+    status: 'low',
+    lastReading: new Date().toISOString(),
+  },
+  {
+    id: 'SNS-004',
+    name: 'Sensor Intensitas Cahaya - Hidroponik',
+    type: 'light',
+    value: 85,
+    unit: 'kLux',
+    status: 'high',
+    lastReading: new Date().toISOString(),
+  },
+];
+
+const INITIAL_TASKS: AutomationTask[] = [
+  {
+    id: 'TSK-001',
+    name: 'Penyiraman Otomatis Blok A1',
+    type: 'irrigation',
+    isEnabled: true,
+    status: 'active',
+    config: 'Kelembaban < 45%',
+  },
+  {
+    id: 'TSK-002',
+    name: 'Pemupukan Otomatis Blok B2',
+    type: 'fertilizer',
+    isEnabled: false,
+    status: 'idle',
+    config: 'Setiap Senin 08:00',
+  },
+  {
+    id: 'TSK-003',
+    name: 'LED Grow Light Hidroponik',
+    type: 'lighting',
+    isEnabled: true,
+    status: 'scheduled',
+    config: 'Pukul 18:00 - 06:00',
+  },
+];
+
+const INITIAL_DEVICES: IoTDevice[] = [
+  {
+    id: 'DEV-8821',
+    name: 'IoT Smart Gateway Hub 01',
+    location: 'Gudang Utama',
+    status: 'online',
+    battery: 100,
+    signal: 95,
+  },
+  {
+    id: 'DEV-8822',
+    name: 'Node Sensor Kelembaban A1',
+    location: 'Lahan Cabai',
+    status: 'online',
+    battery: 82,
+    signal: 78,
+  },
+  {
+    id: 'DEV-8823',
+    name: 'Node Sensor pH & Temp B2',
+    location: 'Lahan Tomat',
+    status: 'online',
+    battery: 15,
+    signal: 62,
+  },
+  {
+    id: 'DEV-8824',
+    name: 'Smart Pump Valve Control',
+    location: 'Pompa Irigasi',
+    status: 'offline',
+    battery: 0,
+    signal: 0,
+  },
+];
 
 export function SmartFarmingManagement() {
+  const [sensors, setSensors] = React.useState<SensorData[]>(INITIAL_SENSORS);
+  const [tasks, setTasks] = React.useState<AutomationTask[]>(INITIAL_TASKS);
+  const [devices, setDevices] = React.useState<IoTDevice[]>(INITIAL_DEVICES);
+  const [isSyncing, setIsSyncing] = React.useState(false);
+
+  const handleRefresh = React.useCallback(() => {
+    setIsSyncing(true);
+    toast.promise(new Promise((resolve) => setTimeout(resolve, 1500)), {
+      loading: 'Menghubungkan ke Gateway IoT & Sinkronisasi sensor...',
+      success: () => {
+        setIsSyncing(false);
+        // Slightly randomize values for interactive feel
+        setSensors((prev) =>
+          prev.map((s) => {
+            let val = s.value;
+            if (s.type === 'moisture')
+              val = Math.min(100, Math.max(10, Math.round(val + (Math.random() - 0.5) * 4)));
+            if (s.type === 'temperature')
+              val = Math.round((val + (Math.random() - 0.5) * 1) * 10) / 10;
+            if (s.type === 'ph') val = Math.round((val + (Math.random() - 0.5) * 0.2) * 10) / 10;
+            return { ...s, value: val, lastReading: new Date().toISOString() };
+          })
+        );
+        return 'Data sensor berhasil disinkronkan';
+      },
+      error: 'Gagal sinkronisasi data IoT',
+    });
+  }, []);
+
+  const handleConfigure = () => {
+    toast.info('Halaman konfigurasi aturan otomatisasi sedang dipersiapkan.');
+  };
+
+  const handleAddDevice = () => {
+    toast.loading('Mencari perangkat IoT di jaringan terdekat...');
+    setTimeout(() => {
+      toast.dismiss();
+      toast.success('Ditemukan 1 perangkat baru: DEV-8825 (Smart Valve). Silakan hubungkan lahan.');
+    }, 2000);
+  };
+
   return (
     <div className="w-full text-slate-900 animate-in fade-in duration-500">
       <div className="mx-auto flex w-full flex-col gap-6">
-        {/* Header Section */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Smart Farming IoT</h1>
-            <p className="text-muted-foreground">
-              Integrasi teknologi Internet of Things (IoT) untuk pertanian presisi dan otomatisasi
-              lahan.
-            </p>
+        {/* Header Component */}
+        <SmartFarmingHeader
+          onRefresh={handleRefresh}
+          onConfigure={handleConfigure}
+          onAddDevice={handleAddDevice}
+        />
+
+        {/* Real-time Sensors Overview Grid */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold text-slate-700 tracking-wide uppercase flex items-center gap-1.5">
+              <Activity className="h-4 w-4 text-emerald-500" />
+              Sensor Lapangan Real-time
+            </h2>
+            {isSyncing && (
+              <span className="text-xs text-slate-400 flex items-center gap-1">
+                <RefreshCw className="h-3 w-3 animate-spin text-slate-400" />
+                Menghubungkan...
+              </span>
+            )}
           </div>
+          <SensorOverview sensors={sensors} />
         </div>
 
-        {/* Coming Soon Glowing Hero Card */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 p-8 md:p-12 text-white shadow-xl border border-slate-800">
-          {/* Decorative glowing blobs */}
-          <div className="absolute -right-16 -top-16 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl" />
-          <div className="absolute -bottom-16 -left-16 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
-
-          <div className="relative z-10 flex flex-col items-center text-center max-w-2xl mx-auto py-10">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400 border border-emerald-500/20 mb-6 animate-pulse">
-              <Sparkles className="h-3.5 w-3.5" />
-              Fitur Masa Depan (IoT)
-            </div>
-
-            <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-emerald-300">
-              Integrasi Sensor & Irigasi Otomatis
-            </h2>
-
-            <p className="text-base text-slate-300 mb-8 leading-relaxed">
-              Kami sedang merancang sistem integrasi Internet of Things (IoT) yang tangguh. Anda
-              akan dapat memantau tingkat kelembaban tanah, keasaman (pH), suhu lingkungan secara
-              langsung, dan mengontrol perangkat irigasi presisi secara otomatis dari satu dashboard
-              terpadu.
-            </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-lg shadow-emerald-950/30 transition-all duration-300 hover:shadow-emerald-600/30 hover:scale-[1.02]">
-                <Wifi className="mr-2 h-4 w-4" /> Hubungkan Perangkat IoT
-              </Button>
-              <div className="flex items-center gap-2 text-xs font-mono text-emerald-400">
-                <Activity className="h-4 w-4 text-emerald-400" /> Rilis Direncanakan: Q3 2026
+        {/* AI Recommendations Panel */}
+        <Card className="border border-slate-200 bg-linear-to-br from-emerald-950 via-slate-900 to-slate-950 text-white shadow-lg overflow-hidden relative">
+          <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                <Bot className="h-4.5 w-4.5" />
+              </div>
+              <div>
+                <CardTitle className="text-base font-bold text-slate-100 flex items-center gap-1.5">
+                  Asisten AI SmartTani
+                  <span className="text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    Analis
+                  </span>
+                </CardTitle>
+                <CardDescription className="text-xs text-slate-400 mt-0.5">
+                  Rekomendasi tindakan cerdas berdasarkan sensor & tren lahan Anda.
+                </CardDescription>
               </div>
             </div>
-          </div>
+          </CardHeader>
+          <CardContent className="space-y-3 pt-1">
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="p-3.5 rounded-xl border border-slate-800 bg-slate-900/60 flex items-start gap-2.5">
+                <CheckCircle2 className="h-4.5 w-4.5 text-emerald-400 shrink-0 mt-0.5" />
+                <div className="text-xs">
+                  <p className="font-bold text-emerald-400">Status Kelembaban Lahan Blok A1</p>
+                  <p className="text-slate-300 mt-1 leading-relaxed">
+                    Kadar air tanah (42%) tergolong stabil tapi mendekati batas kritis (40%). Sistem
+                    irigasi otomatis dijadwalkan aktif pukul 17:00 jika tidak terjadi hujan harian.
+                  </p>
+                </div>
+              </div>
+              <div className="p-3.5 rounded-xl border border-slate-800 bg-slate-900/60 flex items-start gap-2.5">
+                <Activity className="h-4.5 w-4.5 text-amber-400 shrink-0 mt-0.5" />
+                <div className="text-xs">
+                  <p className="font-bold text-amber-400">pH Tanah Kurang Optimal Blok B2</p>
+                  <p className="text-slate-300 mt-1 leading-relaxed">
+                    Tingkat keasaman tanah rendah (5.4 pH). AI merekomendasikan penambahan dolomit
+                    sebanyak 150g per tanaman pada siklus pemupukan fosfat berikutnya untuk
+                    menormalkan nutrisi.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 2-Column Controls Layout */}
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Automation Control Panel */}
+          <AutomationControl tasks={tasks} />
+
+          {/* Connected IoT Devices List */}
+          <DeviceStatusList devices={devices} />
         </div>
 
-        {/* Upcoming Features Grid */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold text-slate-800">
-            Teknologi Pintar yang Sedang Dipersiapkan:
-          </h3>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                title: 'Sensor Tanah Realtime',
-                desc: 'Pantau kelembaban, pH tanah, suhu harian, dan kandungan hara secara presisi langsung dari sensor fisik di lahan.',
-                icon: Cpu,
-                color: 'text-emerald-500',
-                bgColor: 'bg-emerald-500/10',
-                borderColor: 'border-emerald-500/20',
-              },
-              {
-                title: 'Otomatisasi Pompa Air',
-                desc: 'Atur sistem irigasi pintar yang menyala otomatis jika kelembaban tanah berada di bawah ambang batas optimal tanaman.',
-                icon: Wifi,
-                color: 'text-blue-500',
-                bgColor: 'bg-blue-500/10',
-                borderColor: 'border-blue-500/20',
-              },
-              {
-                title: 'Pemetaan Lahan IoT',
-                desc: 'Visualisasikan denah blok lahan pertanian Anda dengan indikator kondisi tanaman termal terintegrasi sensor.',
-                icon: Layers,
-                color: 'text-purple-500',
-                bgColor: 'bg-purple-500/10',
-                borderColor: 'border-purple-500/20',
-              },
-              {
-                title: 'Asisten AI SmartTani',
-                desc: 'AI akan menganalisis tren data sensor harian untuk memberikan rekomendasi pemupukan dan penanggulangan hama.',
-                icon: Bot,
-                color: 'text-amber-500',
-                bgColor: 'bg-amber-500/10',
-                borderColor: 'border-amber-500/20',
-              },
-            ].map((feat) => (
-              <Card
-                key={feat.title}
-                className={`border ${feat.borderColor} bg-white transition-all duration-300 hover:shadow-md hover:-translate-y-0.5`}
-              >
-                <CardContent className="p-6">
-                  <div
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center ${feat.bgColor} mb-4`}
-                  >
-                    <feat.icon className={`h-5 w-5 ${feat.color}`} />
-                  </div>
-                  <h4 className="text-sm font-bold text-slate-800 mb-1">{feat.title}</h4>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{feat.desc}</p>
-                </CardContent>
-              </Card>
-            ))}
+        {/* Coming Soon Q3 Banner */}
+        <div className="relative overflow-hidden rounded-xl bg-slate-50 border border-slate-200 p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="p-3 rounded-full bg-emerald-50 text-emerald-600 shrink-0">
+              <Sparkles className="h-5 w-5 animate-pulse" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-slate-800">
+                Pembaruan Integrasi IoT Lanjutan (Q3 2026)
+              </p>
+              <p className="text-xs text-slate-500 mt-0.5 max-w-xl leading-relaxed">
+                Nantikan integrasi drone pemantau lahan, sensor NPK tanah realtime, dan asisten
+                suara otomatisasi. Kami sedang menguji hardware di laboratorium riset SmartTani.
+              </p>
+            </div>
           </div>
+          <Button
+            variant="outline"
+            className="border-slate-200 text-xs font-semibold shrink-0 cursor-pointer hover:bg-slate-100"
+          >
+            Daftar Uji Coba Beta <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+          </Button>
         </div>
       </div>
     </div>
