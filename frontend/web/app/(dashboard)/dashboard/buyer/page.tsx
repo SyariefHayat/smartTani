@@ -429,7 +429,8 @@ export default function BuyerDashboardOverview() {
               </div>
             ) : (
               <div className="space-y-3">
-                {activeOrders.map((order: (typeof MOCK_RECENT_ORDERS)[0]) => {
+                {(activeOrders as unknown[]).map((rawOrder) => {
+                  const order = rawOrder as (typeof MOCK_RECENT_ORDERS)[0];
                   const productTitle = order.items?.[0]?.product?.title || 'Produk Kategori Tani';
                   const isCompleted = order.status === 'completed';
                   const isShipped = order.status === 'shipped';

@@ -95,6 +95,35 @@ export interface BuyerFinance {
   };
 }
 
+export interface InvestorAnalytics {
+  total_invested: number;
+  projected_return: number;
+  actual_return: number;
+  active_investments_count: number;
+  completed_investments_count: number;
+  avg_roi_percent: number;
+  monthly_trend: { month: string; invested: number; returns: number }[];
+}
+
+export interface InvestorFinance {
+  total_invested: number;
+  projected_return: number;
+  actual_return: number;
+  transactions: {
+    id: string;
+    date: string;
+    type: 'investment' | 'return' | 'fee';
+    proposal_title: string;
+    amount: number;
+    status: string;
+  }[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+  };
+}
+
 export const analyticsService = {
   getOverview: async (): Promise<OverviewMetrics> => {
     const response = await api.get('/analytics/overview');
@@ -155,6 +184,27 @@ export const analyticsService = {
     params?: { page?: number; limit?: number }
   ): Promise<BuyerFinance> => {
     const response = await api.get(`/analytics/buyer/${id}/finance`, { params });
+    return response.data.data;
+  },
+
+  getInvestorAnalytics: async (id: string): Promise<InvestorAnalytics> => {
+    const response = await api.get(`/analytics/investor/${id}`);
+    return response.data.data;
+  },
+
+  getInvestorROIChart: async (
+    id: string,
+    params?: { months?: number }
+  ): Promise<{ month: string; invested: number; return: number }[]> => {
+    const response = await api.get(`/analytics/investor/${id}/roi-chart`, { params });
+    return response.data.data;
+  },
+
+  getInvestorFinance: async (
+    id: string,
+    params?: { page?: number; limit?: number }
+  ): Promise<InvestorFinance> => {
+    const response = await api.get(`/analytics/investor/${id}/finance`, { params });
     return response.data.data;
   },
 };

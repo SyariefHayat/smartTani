@@ -9,7 +9,7 @@ export function getRoleHomePath(role?: string | null): string {
     case 'buyer':
       return '/dashboard/buyer';
     case 'investor':
-      return '/portfolio';
+      return '/dashboard/investor';
     case 'logistik':
       return '/shipments';
     case 'distributor':

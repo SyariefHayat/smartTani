@@ -33,7 +33,7 @@ export function ProposalCard({ proposal }: ProposalCardProps) {
           {proposal.title}
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="flex-1 pb-4">
         {/* Progress Bar */}
         <div className="mb-4">
@@ -42,8 +42,8 @@ export function ProposalCard({ proposal }: ProposalCardProps) {
             <span className="font-bold text-green-600">{raisedPercent}%</span>
           </div>
           <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-green-600 transition-all duration-500" 
+            <div
+              className="h-full bg-green-600 transition-all duration-500"
               style={{ width: `${raisedPercent}%` }}
             />
           </div>
@@ -63,27 +63,21 @@ export function ProposalCard({ proposal }: ProposalCardProps) {
               <TrendingUp className="w-3 h-3 mr-1" />
               PROYEKSI ROI
             </div>
-            <p className="text-sm font-bold text-green-700">
-              {proposal.projected_roi_percent}%
-            </p>
+            <p className="text-sm font-bold text-green-700">{proposal.projected_roi_percent}%</p>
           </div>
           <div className="bg-gray-50 p-2 rounded-lg border border-gray-100">
             <div className="flex items-center text-[10px] text-gray-500 mb-1">
               <Calendar className="w-3 h-3 mr-1" />
               DURASI
             </div>
-            <p className="text-sm font-bold text-gray-900">
-              {proposal.duration_days} Hari
-            </p>
+            <p className="text-sm font-bold text-gray-900">{proposal.duration_days} Hari</p>
           </div>
         </div>
       </CardContent>
 
       <CardFooter className="pt-0">
-        <Link href={`/invest/${proposal.id}`} className="w-full">
-          <Button className="w-full bg-green-600 hover:bg-green-700 font-bold">
-            Lihat Detail
-          </Button>
+        <Link href={`/dashboard/investor/proposals/${proposal.id}`} className="w-full">
+          <Button className="w-full bg-green-600 hover:bg-green-700 font-bold">Lihat Detail</Button>
         </Link>
       </CardFooter>
     </Card>

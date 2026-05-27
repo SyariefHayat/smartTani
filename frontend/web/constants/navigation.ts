@@ -226,25 +226,45 @@ export const BUYER_DASHBOARD_NAV = [
 
 export const INVESTOR_DASHBOARD_NAV = [
   {
-    title: 'Portfolio',
+    title: 'Overview',
     url: '/dashboard/investor',
-    icon: TrendingUp,
+    icon: Home,
     isActive: true,
   },
   {
-    title: 'Investasi',
-    url: '#',
-    icon: Package,
-    items: [
-      { title: 'Proyek Aktif', url: '/dashboard/investor/active-projects' },
-      { title: 'Riwayat Investasi', url: '/dashboard/investor/history' },
-      { title: 'Jelajahi Proyek', url: '/investments' },
-    ],
+    title: 'Portofolio Saya',
+    url: '/dashboard/investor/portfolio',
+    icon: TrendingUp,
+  },
+  {
+    title: 'Cari Proposal',
+    url: '/dashboard/investor/proposals',
+    icon: Sprout,
+  },
+  {
+    title: 'Analytics',
+    url: '/dashboard/investor/analytics',
+    icon: BarChart3,
   },
   {
     title: 'Laporan',
     url: '/dashboard/investor/reports',
     icon: Newspaper,
+  },
+  {
+    title: 'Riwayat Transaksi',
+    url: '/dashboard/investor/transactions',
+    icon: Wallet,
+  },
+  {
+    title: 'Notifikasi',
+    url: '/dashboard/investor/notifications',
+    icon: Bell,
+  },
+  {
+    title: 'Pengaturan',
+    url: '/dashboard/investor/settings',
+    icon: Settings,
   },
 ];
 
