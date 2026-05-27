@@ -16,3 +16,10 @@ export type Promotion = {
   usageCount?: number;
   limit?: number;
 };
+
+export interface PromotionTableActions {
+  onViewDetail: (promo: Promotion) => void;
+  onEdit: (promo: Promotion) => void;
+  onToggleStatus: (promo: Promotion) => void;
+  onDelete: (promo: Promotion) => void;
+}

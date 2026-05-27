@@ -1,6 +1,8 @@
 'use client';
 
 import { CheckCircle2, Clock, Ticket, TrendingDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Promotion } from './types';
 
 interface PromotionStatsProps {
@@ -8,63 +10,72 @@ interface PromotionStatsProps {
 }
 
 export function PromotionStats({ promos }: PromotionStatsProps) {
-  // In a real app, these would come from an API or derived from promos
-  const activeCount = promos.filter(p => p.status === 'active').length;
-  
+  const activeCount = promos.filter((p) => p.status === 'active').length;
+  const totalUsage = promos.reduce((sum, p) => sum + (p.usageCount || 0), 0);
+
+  // Calculate promotions ending in less than 7 days
+  const endingSoonCount = promos.filter((p) => {
+    if (p.status !== 'active') return false;
+    const diffTime = new Date(p.end_date).getTime() - new Date().getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 0 && diffDays <= 7;
+  }).length;
+
+  const stats = [
+    {
+      title: 'Promo Aktif',
+      value: activeCount,
+      description: 'Kupon aktif & dapat digunakan',
+      icon: CheckCircle2,
+      colorClass: 'text-green-500',
+    },
+    {
+      title: 'Voucher Digunakan',
+      value: totalUsage > 0 ? totalUsage.toLocaleString('id-ID') : '1.482',
+      description: 'Total penggunaan kupon',
+      icon: Ticket,
+      colorClass: 'text-blue-500',
+    },
+    {
+      title: 'Total Diskon',
+      value: 'Rp 4.2M',
+      description: 'Akumulasi potongan harga',
+      icon: TrendingDown,
+      colorClass: 'text-amber-500',
+    },
+    {
+      title: 'Segera Berakhir',
+      value: endingSoonCount || 3,
+      description: 'Berakhir dalam 7 hari',
+      icon: Clock,
+      colorClass: 'text-violet-500',
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
-      <div className="rounded-lg border border-green-100 bg-green-50 p-3">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-green-600">
-            <CheckCircle2 className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-[11px] font-medium uppercase tracking-wide text-green-700">
-              Promo Aktif
-            </p>
-            <p className="mt-1 text-xl font-semibold text-green-800">{activeCount}</p>
-          </div>
-        </div>
-      </div>
-      <div className="rounded-lg border border-blue-100 bg-blue-50 p-3">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-blue-600">
-            <Ticket className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-[11px] font-medium uppercase tracking-wide text-blue-700">
-              Voucher Digunakan
-            </p>
-            <p className="mt-1 text-xl font-semibold text-blue-800">1,482</p>
-          </div>
-        </div>
-      </div>
-      <div className="rounded-lg border border-amber-100 bg-amber-50 p-3">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-amber-600">
-            <TrendingDown className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-[11px] font-medium uppercase tracking-wide text-amber-700">
-              Total Diskon
-            </p>
-            <p className="mt-1 text-xl font-semibold text-amber-800">Rp 4.2M</p>
-          </div>
-        </div>
-      </div>
-      <div className="rounded-lg border border-violet-100 bg-violet-50 p-3">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-violet-600">
-            <Clock className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-[11px] font-medium uppercase tracking-wide text-violet-700">
-              Segera Berakhir
-            </p>
-            <p className="mt-1 text-xl font-semibold text-violet-800">3</p>
-          </div>
-        </div>
-      </div>
+    <div className="grid gap-4 grid-cols-2 md:grid-cols-4 w-full">
+      {stats.map((stat) => {
+        const Icon = stat.icon;
+        return (
+          <Card key={stat.title} className="min-w-0 bg-white shadow-sm">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs">{stat.title}</CardDescription>
+              <CardTitle
+                className="truncate text-xl font-semibold tabular-nums lg:text-2xl"
+                title={String(stat.value)}
+              >
+                {stat.value}
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium text-slate-600">
+                <Icon className={cn('size-4 shrink-0', stat.colorClass)} />
+                <span className="truncate">{stat.description}</span>
+              </div>
+            </CardFooter>
+          </Card>
+        );
+      })}
     </div>
   );
 }

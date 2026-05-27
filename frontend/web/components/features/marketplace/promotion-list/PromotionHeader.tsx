@@ -3,18 +3,22 @@
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export function PromotionHeader() {
+interface PromotionHeaderProps {
+  onAddPromo?: () => void;
+}
+
+export function PromotionHeader({ onAddPromo }: PromotionHeaderProps) {
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-        <div className="space-y-1">
-          <h1 className="text-xl font-bold tracking-tight lg:text-2xl">Promo & Diskon</h1>
-          <p className="text-sm text-muted-foreground">
-            Kelola kampanye pemasaran dan kupon diskon Anda.
-          </p>
-        </div>
-        <Button className="w-full bg-green-700 text-white hover:bg-green-800 sm:w-auto">
-          <Plus className="mr-2 h-4 w-4" /> Buat Promo Baru
+    <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+      <div className="space-y-1">
+        <h1 className="text-xl font-bold tracking-tight lg:text-2xl">Promo & Diskon</h1>
+        <p className="text-sm text-muted-foreground">
+          Kelola kampanye pemasaran dan kupon diskon Anda.
+        </p>
+      </div>
+      <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center lg:w-auto">
+        <Button className="w-full sm:w-auto cursor-pointer" onClick={onAddPromo}>
+          <Plus /> Buat Promo Baru
         </Button>
       </div>
     </div>
