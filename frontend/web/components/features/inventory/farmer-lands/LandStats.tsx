@@ -1,7 +1,8 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Map, Sprout, Tractor, LayoutDashboard } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { FarmerLand } from './types';
 
 interface LandStatsProps {
@@ -15,55 +16,59 @@ export function LandStats({ lands }: LandStatsProps) {
 
   const stats = [
     {
-      label: 'Total Lahan',
+      title: 'Total Lahan',
       value: lands.length,
+      description: 'Aset bidang lahan terdata',
       icon: LayoutDashboard,
-      color: 'text-slate-600',
-      bgColor: 'bg-slate-50',
+      colorClass: 'text-slate-500',
     },
     {
-      label: 'Total Luas',
+      title: 'Total Luas',
       value: `${totalArea.toFixed(2)} Ha`,
+      description: 'Akumulasi luas wilayah lahan',
       icon: Map,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
+      colorClass: 'text-blue-500',
     },
     {
-      label: 'Lahan Aktif',
+      title: 'Lahan Aktif',
       value: activeCount,
+      description: 'Lahan dalam masa budidaya',
       icon: Tractor,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
+      colorClass: 'text-emerald-500',
     },
     {
-      label: 'Variasi Komoditas',
+      title: 'Variasi Komoditas',
       value: uniqueCrops,
+      description: 'Jenis variasi tanaman aktif',
       icon: Sprout,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-50',
+      colorClass: 'text-amber-500',
     },
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat) => (
-        <Card
-          key={stat.label}
-          className="border-slate-200 shadow-sm transition-all hover:shadow-md"
-        >
-          <CardContent className="flex items-center gap-4 p-5">
-            <div className={`rounded-xl p-3 ${stat.bgColor}`}>
-              <stat.icon className={`h-6 w-6 ${stat.color}`} />
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                {stat.label}
-              </p>
-              <h3 className="text-2xl font-bold text-slate-900">{stat.value}</h3>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+    <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+      {stats.map((stat) => {
+        const Icon = stat.icon;
+        return (
+          <Card key={stat.title} className="min-w-0">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs">{stat.title}</CardDescription>
+              <CardTitle
+                className="truncate text-xl font-semibold lg:text-2xl"
+                title={String(stat.value)}
+              >
+                {stat.value}
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium text-slate-600">
+                <Icon className={cn('size-4 shrink-0', stat.colorClass)} />
+                <span className="truncate">{stat.description}</span>
+              </div>
+            </CardFooter>
+          </Card>
+        );
+      })}
     </div>
   );
 }

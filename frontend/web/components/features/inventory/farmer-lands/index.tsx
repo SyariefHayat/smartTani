@@ -15,8 +15,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { LandHeader } from './LandHeader';
 import { LandStats } from './LandStats';
-import { LandFilters } from './LandFilters';
-import { WarehouseTable } from '../farmer-warehouse/WarehouseTable';
+import { LandTable } from './LandTable';
 import { columns } from './columns';
 import { landService } from '@/services/land';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -38,10 +37,12 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { LandForm } from './LandForm';
+import { LandDetailDialog } from './LandDetailDialog';
 import { toast } from 'sonner';
 import { FarmerLand } from './types';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
+import { exportToCSV } from '@/lib/export-csv';
 
 export function FarmerLandManagement() {
   const queryClient = useQueryClient();
@@ -50,6 +51,10 @@ export function FarmerLandManagement() {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  // Interactive Dialog States
+  const [createDialogOpen, setCreateDialogOpen] = React.useState(false);
+  const [detailLand, setDetailLand] = React.useState<FarmerLand | null>(null);
+  const [detailDialogOpen, setDetailDialogOpen] = React.useState(false);
   const [editingLand, setEditingLand] = React.useState<FarmerLand | null>(null);
   const [deletingLandId, setDeletingLandId] = React.useState<string | null>(null);
 
@@ -76,6 +81,50 @@ export function FarmerLandManagement() {
     },
   });
 
+  // Export handler
+  const handleExport = React.useCallback(() => {
+    if (lands.length === 0) {
+      toast.error('Tidak ada data lahan untuk diekspor');
+      return;
+    }
+
+    const statusLabels: Record<string, string> = {
+      active: 'Aktif',
+      fallow: 'Bera/Kosong',
+      rented: 'Disewakan',
+    };
+
+    exportToCSV({
+      data: lands,
+      columns: [
+        { header: 'ID Lahan', accessor: (row) => row.id },
+        { header: 'Nama Lahan', accessor: (row) => row.name },
+        { header: 'Luas Lahan (Ha)', accessor: (row) => row.area_ha },
+        { header: 'Provinsi', accessor: (row) => row.location_province },
+        { header: 'Kota/Kabupaten', accessor: (row) => row.location_city },
+        { header: 'Kecamatan', accessor: (row) => row.location_district },
+        { header: 'Tipe Tanah', accessor: (row) => row.soil_type || '' },
+        { header: 'Komoditas Tanaman', accessor: (row) => row.current_crop || '' },
+        { header: 'Status Lahan', accessor: (row) => statusLabels[row.status] || row.status },
+      ],
+      filename: 'daftar_lahan_pertanian',
+    });
+    toast.success('Data lahan berhasil diekspor');
+  }, [lands]);
+
+  // Actions meta callbacks passed to useReactTable options
+  const tableActions = React.useMemo(
+    () => ({
+      onViewDetail: (land: FarmerLand) => {
+        setDetailLand(land);
+        setDetailDialogOpen(true);
+      },
+      onEdit: (land: FarmerLand) => setEditingLand(land),
+      onDelete: (id: string) => setDeletingLandId(id),
+    }),
+    []
+  );
+
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: lands as FarmerLand[],
@@ -88,15 +137,12 @@ export function FarmerLandManagement() {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    meta: tableActions,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
-    },
-    meta: {
-      onEdit: (land: FarmerLand) => setEditingLand(land),
-      onDelete: (id: string) => setDeletingLandId(id),
     },
   });
 
@@ -138,31 +184,50 @@ export function FarmerLandManagement() {
   return (
     <div className="w-full text-slate-900">
       <div className="mx-auto flex w-full flex-col gap-6">
-        <LandHeader />
+        <LandHeader onExport={handleExport} onAddLand={() => setCreateDialogOpen(true)} />
 
         {isLoading ? (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
             {[1, 2, 3, 4].map((i) => (
-              <Skeleton key={i} className="h-28 w-full rounded-2xl" />
+              <Skeleton key={i} className="h-24 w-full rounded-xl" />
             ))}
           </div>
         ) : (
           <LandStats lands={lands} />
         )}
 
-        <div className="space-y-4">
-          <LandFilters table={table} />
-          {isLoading ? (
-            <div className="space-y-3">
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-24 w-full" />
-              <Skeleton className="h-24 w-full" />
-            </div>
-          ) : (
-            <WarehouseTable table={table} columnsCount={columns.length} />
-          )}
-        </div>
+        {isLoading ? (
+          <div className="w-full space-y-3">
+            <Skeleton className="h-[450px] w-full rounded-xl" />
+          </div>
+        ) : (
+          <LandTable table={table} columnsCount={columns.length} />
+        )}
       </div>
+
+      {/* View Details Dialog */}
+      <LandDetailDialog
+        land={detailLand}
+        open={detailDialogOpen}
+        onOpenChange={setDetailDialogOpen}
+        onEdit={() => {
+          setDetailDialogOpen(false);
+          setEditingLand(detailLand);
+        }}
+      />
+
+      {/* Create Dialog */}
+      <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Tambah Data Lahan Baru</DialogTitle>
+            <DialogDescription>
+              Masukkan informasi detail aset lahan tani Anda untuk pendataan yang akurat.
+            </DialogDescription>
+          </DialogHeader>
+          <LandForm onSuccess={() => setCreateDialogOpen(false)} />
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Dialog */}
       <Dialog open={!!editingLand} onOpenChange={(open) => !open && setEditingLand(null)}>
@@ -191,10 +256,10 @@ export function FarmerLandManagement() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deletingLandId && deleteMutation.mutate(deletingLandId)}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="bg-red-650 text-white hover:bg-red-700 cursor-pointer"
               disabled={deleteMutation.isPending}
             >
               {deleteMutation.isPending ? 'Menghapus...' : 'Ya, Hapus'}
