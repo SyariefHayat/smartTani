@@ -1,60 +1,104 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
 import { ShoppingBag, Clock, PackageCheck, CheckCircle2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { FarmerOrder } from './types';
 
 interface OrderStatsProps {
   orders: FarmerOrder[];
+  isLoading?: boolean;
 }
 
-export function OrderStats({ orders }: OrderStatsProps) {
+export function OrderStats({ orders, isLoading }: OrderStatsProps) {
+  if (isLoading) {
+    return (
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, idx) => (
+          <Card key={idx} className="min-w-0">
+            <CardHeader className="gap-1">
+              <Skeleton className="h-3.5 w-24" />
+              <Skeleton className="h-7 w-14" />
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full items-center gap-1">
+                <Skeleton className="h-4 w-4 rounded-full shrink-0" />
+                <Skeleton className="h-3.5 w-32" />
+              </div>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
+  const totalCount = orders.length;
+  const pendingCount = orders.filter(
+    (o) => o.status === 'paid' || o.status === 'pending_payment'
+  ).length;
+  const processingCount = orders.filter((o) =>
+    ['confirmed', 'confirmed_seller', 'processing', 'shipped'].includes(o.status)
+  ).length;
+  const completedCount = orders.filter(
+    (o) => o.status === 'completed' || o.status === 'delivered'
+  ).length;
+
   const stats = [
     {
-      label: 'Total Pesanan',
-      value: orders.length,
+      title: 'Total Pesanan',
+      value: totalCount,
+      description: 'Semua pesanan masuk',
       icon: ShoppingBag,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100',
+      colorClass: 'text-blue-500',
     },
     {
-      label: 'Perlu Konfirmasi',
-      value: orders.filter((o) => o.status === 'paid').length,
+      title: 'Perlu Konfirmasi',
+      value: pendingCount,
+      description: 'Menunggu persetujuan Anda',
       icon: Clock,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100',
+      colorClass: 'text-amber-500',
     },
     {
-      label: 'Dalam Proses',
-      value: orders.filter((o) => ['confirmed', 'processing'].includes(o.status)).length,
+      title: 'Dalam Proses',
+      value: processingCount,
+      description: 'Pesanan sedang diproses',
       icon: PackageCheck,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100',
+      colorClass: 'text-violet-500',
     },
     {
-      label: 'Selesai',
-      value: orders.filter((o) => o.status === 'completed').length,
+      title: 'Selesai',
+      value: completedCount,
+      description: 'Transaksi diselesaikan',
       icon: CheckCircle2,
-      color: 'text-green-600',
-      bgColor: 'bg-green-100',
+      colorClass: 'text-green-500',
     },
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat) => (
-        <Card key={stat.label}>
-          <CardContent className="flex items-center gap-4 p-4">
-            <div className={`rounded-full p-2 ${stat.bgColor}`}>
-              <stat.icon className={`h-5 w-5 ${stat.color}`} />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
-              <h3 className="text-2xl font-bold">{stat.value}</h3>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+    <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+      {stats.map((stat) => {
+        const Icon = stat.icon;
+        return (
+          <Card key={stat.title} className="min-w-0">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs">{stat.title}</CardDescription>
+              <CardTitle
+                className="truncate text-xl font-semibold tabular-nums lg:text-2xl"
+                title={String(stat.value)}
+              >
+                {stat.value}
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium text-slate-600">
+                <Icon className={cn('size-4 shrink-0', stat.colorClass)} />
+                <span className="truncate">{stat.description}</span>
+              </div>
+            </CardFooter>
+          </Card>
+        );
+      })}
     </div>
   );
 }
