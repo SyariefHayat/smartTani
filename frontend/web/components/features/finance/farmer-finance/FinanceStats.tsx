@@ -1,7 +1,8 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Wallet, TrendingUp, Clock, ArrowDownToLine } from 'lucide-react';
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Wallet, TrendingUp, Clock, Percent, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { FinanceSummary } from './types';
 
 interface FinanceStatsProps {
@@ -9,52 +10,65 @@ interface FinanceStatsProps {
 }
 
 export function FinanceStats({ summary }: FinanceStatsProps) {
+  const isPositiveGrowth = summary.earningsChangePercent >= 0;
+
   const stats = [
     {
-      label: 'Saldo Saat Ini',
+      title: 'Saldo Saat Ini',
       value: `Rp ${summary.currentBalance.toLocaleString('id-ID')}`,
+      description: 'Saldo yang siap untuk ditarik',
       icon: Wallet,
-      color: 'text-green-600',
-      bgColor: 'bg-green-100',
+      colorClass: 'text-emerald-500',
     },
     {
-      label: 'Total Penghasilan',
+      title: 'Total Penghasilan',
       value: `Rp ${summary.totalEarnings.toLocaleString('id-ID')}`,
+      description: 'Akumulasi seluruh pendapatan',
       icon: TrendingUp,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100',
+      colorClass: 'text-blue-500',
     },
     {
-      label: 'Saldo Tertunda',
+      title: 'Saldo Tertunda',
       value: `Rp ${summary.pendingBalance.toLocaleString('id-ID')}`,
+      description: 'Transaksi dalam proses kliring',
       icon: Clock,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100',
+      colorClass: 'text-amber-500',
     },
     {
-      label: 'Pertumbuhan (Bulan Ini)',
-      value: `${summary.earningsChangePercent >= 0 ? '+' : ''}${summary.earningsChangePercent}%`,
-      icon: ArrowDownToLine,
-      color: summary.earningsChangePercent >= 0 ? 'text-green-600' : 'text-rose-600',
-      bgColor: summary.earningsChangePercent >= 0 ? 'bg-green-100' : 'bg-rose-100',
+      title: 'Pertumbuhan Bulan Ini',
+      value: `${isPositiveGrowth ? '+' : ''}${summary.earningsChangePercent}%`,
+      description: isPositiveGrowth
+        ? 'Peningkatan dibanding bln lalu'
+        : 'Penurunan dibanding bln lalu',
+      icon: isPositiveGrowth ? ArrowUpRight : ArrowDownRight,
+      colorClass: isPositiveGrowth ? 'text-emerald-500' : 'text-rose-500',
     },
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat) => (
-        <Card key={stat.label}>
-          <CardContent className="flex items-center gap-4 p-4">
-            <div className={`rounded-full p-2 ${stat.bgColor}`}>
-              <stat.icon className={`h-5 w-5 ${stat.color}`} />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
-              <h3 className="text-2xl font-bold">{stat.value}</h3>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+    <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+      {stats.map((stat) => {
+        const Icon = stat.icon;
+        return (
+          <Card key={stat.title} className="min-w-0">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs">{stat.title}</CardDescription>
+              <CardTitle
+                className="truncate text-xl font-bold lg:text-2xl text-slate-800"
+                title={String(stat.value)}
+              >
+                {stat.value}
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium text-slate-500">
+                <Icon className={cn('size-4 shrink-0', stat.colorClass)} />
+                <span className="truncate text-xs">{stat.description}</span>
+              </div>
+            </CardFooter>
+          </Card>
+        );
+      })}
     </div>
   );
 }
