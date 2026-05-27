@@ -1,7 +1,8 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowUpRight, ArrowDownLeft, Wallet, ReceiptText } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface TransactionStatsProps {
   currentBalance: number;
@@ -22,52 +23,63 @@ export function TransactionStats({
     }).format(amount);
   };
 
+  const platformFee = totalEarnings - currentBalance;
+
   const stats = [
     {
-      label: 'Total Pemasukan',
+      title: 'Total Pemasukan',
       value: formatCurrency(totalEarnings),
+      description: 'Pendapatan kotor penjualan',
       icon: ArrowUpRight,
-      color: 'text-green-600',
-      bgColor: 'bg-green-100',
+      colorClass: 'text-emerald-500',
     },
     {
-      label: 'Platform Fee (2%)',
-      value: formatCurrency(totalEarnings - currentBalance),
+      title: 'Biaya Platform (2%)',
+      value: formatCurrency(platformFee >= 0 ? platformFee : 0),
+      description: 'Potongan administrasi layanan',
       icon: ArrowDownLeft,
-      color: 'text-red-600',
-      bgColor: 'bg-red-100',
+      colorClass: 'text-rose-500',
     },
     {
-      label: 'Saldo Tersedia',
+      title: 'Saldo Tersedia',
       value: formatCurrency(currentBalance),
+      description: 'Saldo bersih siap ditarik',
       icon: Wallet,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100',
+      colorClass: 'text-blue-500',
     },
     {
-      label: 'Jumlah Transaksi',
-      value: totalTransactions,
+      title: 'Volume Transaksi',
+      value: `${totalTransactions} Record`,
+      description: 'Aktivitas transaksi tercatat',
       icon: ReceiptText,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100',
+      colorClass: 'text-purple-500',
     },
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat) => (
-        <Card key={stat.label} className="border-none shadow-sm">
-          <CardContent className="flex items-center gap-4 p-4">
-            <div className={`rounded-full p-2 ${stat.bgColor}`}>
-              <stat.icon className={`h-5 w-5 ${stat.color}`} />
-            </div>
-            <div>
-              <p className="text-xs font-medium text-muted-foreground">{stat.label}</p>
-              <h3 className="text-lg font-bold">{stat.value}</h3>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+    <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+      {stats.map((stat) => {
+        const Icon = stat.icon;
+        return (
+          <Card key={stat.title} className="min-w-0 border border-slate-200 bg-white">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs">{stat.title}</CardDescription>
+              <CardTitle
+                className="truncate text-xl font-bold lg:text-2xl text-slate-800"
+                title={String(stat.value)}
+              >
+                {stat.value}
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium text-slate-500">
+                <Icon className={cn('size-4 shrink-0', stat.colorClass)} />
+                <span className="truncate text-xs">{stat.description}</span>
+              </div>
+            </CardFooter>
+          </Card>
+        );
+      })}
     </div>
   );
 }

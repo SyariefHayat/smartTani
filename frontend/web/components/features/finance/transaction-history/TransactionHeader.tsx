@@ -3,23 +3,38 @@
 import { Button } from '@/components/ui/button';
 import { Download, FileText } from 'lucide-react';
 
-export function TransactionHeader() {
+interface TransactionHeaderProps {
+  onExportCSV?: () => void;
+  onPrintReport?: () => void;
+}
+
+export function TransactionHeader({ onExportCSV, onPrintReport }: TransactionHeaderProps) {
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Riwayat Transaksi</h1>
-        <p className="text-muted-foreground">
-          Pantau semua arus kas masuk dan keluar dari aktivitas pertanian Anda.
+        <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-slate-900">
+          Riwayat Transaksi
+        </h1>
+        <p className="text-sm text-slate-500 mt-1">
+          Pantau semua arus kas masuk dan keluar dari aktivitas pertanian Anda secara rinci.
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm">
-          <FileText className="mr-2 h-4 w-4" />
+        <Button
+          variant="outline"
+          onClick={onPrintReport}
+          className="cursor-pointer text-xs font-semibold"
+        >
+          <FileText className="mr-1.5 h-3.5 w-3.5 text-slate-500" />
           Cetak Laporan
         </Button>
-        <Button variant="outline" size="sm">
-          <Download className="mr-2 h-4 w-4" />
-          Export CSV
+        <Button
+          variant="outline"
+          onClick={onExportCSV}
+          className="cursor-pointer text-xs font-semibold"
+        >
+          <Download className="mr-1.5 h-3.5 w-3.5 text-slate-500" />
+          Ekspor CSV
         </Button>
       </div>
     </div>
