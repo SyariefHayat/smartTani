@@ -21,6 +21,7 @@ import {
   DISTRIBUTOR_DASHBOARD_NAV,
   MITRA_BISNIS_DASHBOARD_NAV,
   ADMIN_PERUSAHAAN_DASHBOARD_NAV,
+  BUYER_DASHBOARD_NAV,
 } from '@/constants/navigation';
 import { getStoredAuthUser, type StoredUser } from '@/lib/auth-storage';
 import { NavMain } from './nav-main';
@@ -33,6 +34,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     switch (user?.role) {
       case 'petani':
         return FARMER_DASHBOARD_NAV;
+      case 'buyer':
+        return BUYER_DASHBOARD_NAV;
       case 'investor':
         return INVESTOR_DASHBOARD_NAV;
       case 'distributor':
@@ -44,7 +47,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       case 'academy':
         return ACADEMY_DASHBOARD_NAV;
       default:
-        return FARMER_DASHBOARD_NAV;
+        return BUYER_DASHBOARD_NAV;
     }
   };
 

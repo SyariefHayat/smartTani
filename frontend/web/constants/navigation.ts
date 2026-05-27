@@ -19,6 +19,10 @@ import {
   Wallet,
   BarChart3,
   Settings,
+  Heart,
+  MapPin,
+  Star,
+  Bell,
 } from 'lucide-react';
 
 export const HEADER_NAV: NavItem[] = [
@@ -152,6 +156,70 @@ export const FARMER_DASHBOARD_NAV = [
   {
     title: 'Pengaturan',
     url: '/dashboard/farmer/settings',
+    icon: Settings,
+  },
+];
+
+export const BUYER_DASHBOARD_NAV = [
+  {
+    title: 'Overview',
+    url: '/dashboard/buyer',
+    icon: Home,
+    isActive: true,
+  },
+  {
+    title: 'Pesanan Saya',
+    url: '#',
+    icon: ShoppingCart,
+    items: [
+      {
+        title: 'Daftar Pesanan',
+        url: '/dashboard/buyer/orders',
+      },
+      {
+        title: 'Riwayat Pesanan',
+        url: '/dashboard/buyer/orders/history',
+      },
+    ],
+  },
+  {
+    title: 'Pengeluaran',
+    url: '#',
+    icon: Wallet,
+    items: [
+      {
+        title: 'Riwayat Belanja',
+        url: '/dashboard/buyer/finance',
+      },
+      {
+        title: 'Riwayat Transaksi',
+        url: '/dashboard/buyer/finance/history',
+      },
+    ],
+  },
+  {
+    title: 'Wishlist',
+    url: '/dashboard/buyer/wishlist',
+    icon: Heart,
+  },
+  {
+    title: 'Alamat Tersimpan',
+    url: '/dashboard/buyer/addresses',
+    icon: MapPin,
+  },
+  {
+    title: 'Ulasan Saya',
+    url: '/dashboard/buyer/reviews',
+    icon: Star,
+  },
+  {
+    title: 'Notifikasi',
+    url: '/dashboard/buyer/notifications',
+    icon: Bell,
+  },
+  {
+    title: 'Pengaturan',
+    url: '/dashboard/buyer/settings',
     icon: Settings,
   },
 ];

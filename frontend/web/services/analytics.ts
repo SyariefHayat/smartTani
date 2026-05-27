@@ -60,6 +60,41 @@ export interface FarmerFinance {
   };
 }
 
+export interface BuyerAnalytics {
+  total_spending: number;
+  active_orders: number;
+  total_products_bought: number;
+  total_reviews_given: number;
+  monthly_spending: number;
+  spending_change_percent: number;
+  top_products: {
+    product_id: string;
+    title: string;
+    image: string;
+    buy_count: number;
+  }[];
+}
+
+export interface BuyerFinance {
+  total_spending: number;
+  monthly_spending: number;
+  avg_per_order: number;
+  spending_change_percent: number;
+  transactions: {
+    id: string;
+    date: string;
+    order_id: string;
+    amount: number;
+    status: string;
+    items_summary: string;
+  }[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+  };
+}
+
 export const analyticsService = {
   getOverview: async (): Promise<OverviewMetrics> => {
     const response = await api.get('/analytics/overview');
@@ -99,6 +134,27 @@ export const analyticsService = {
     params?: { page?: number; limit?: number }
   ): Promise<FarmerFinance> => {
     const response = await api.get(`/analytics/farmer/${id}/finance`, { params });
+    return response.data.data;
+  },
+
+  getBuyerAnalytics: async (id: string): Promise<BuyerAnalytics> => {
+    const response = await api.get(`/analytics/buyer/${id}`);
+    return response.data.data;
+  },
+
+  getBuyerSpendingChart: async (
+    id: string,
+    params?: { from_date?: string; to_date?: string }
+  ): Promise<Record<string, unknown>[]> => {
+    const response = await api.get(`/analytics/buyer/${id}/spending-chart`, { params });
+    return response.data.data;
+  },
+
+  getBuyerFinance: async (
+    id: string,
+    params?: { page?: number; limit?: number }
+  ): Promise<BuyerFinance> => {
+    const response = await api.get(`/analytics/buyer/${id}/finance`, { params });
     return response.data.data;
   },
 };

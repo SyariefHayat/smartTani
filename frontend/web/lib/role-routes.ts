@@ -1,10 +1,4 @@
-export type AppRole =
-  | 'admin'
-  | 'petani'
-  | 'buyer'
-  | 'investor'
-  | 'logistik'
-  | 'distributor';
+export type AppRole = 'admin' | 'petani' | 'buyer' | 'investor' | 'logistik' | 'distributor';
 
 export function getRoleHomePath(role?: string | null): string {
   switch (role) {
@@ -13,7 +7,7 @@ export function getRoleHomePath(role?: string | null): string {
     case 'petani':
       return '/dashboard/farmer';
     case 'buyer':
-      return '/orders';
+      return '/dashboard/buyer';
     case 'investor':
       return '/portfolio';
     case 'logistik':
