@@ -9,7 +9,7 @@ interface HarvestStatsProps {
 }
 
 export function HarvestStats({ harvests }: HarvestStatsProps) {
-  const totalYield = harvests.reduce((acc, h) => acc + (h.quantity || 0), 0);
+  const totalYield = harvests.reduce((acc, h) => acc + Number(h.quantity || 0), 0);
   const goodQualityCount = harvests.filter((h) => ['A', 'B'].includes(h.quality_grade)).length;
   const uniqueCrops = new Set(harvests.map((h) => h.crop_name)).size;
 

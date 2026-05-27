@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -39,7 +40,8 @@ export function FarmerCategoryList() {
     data: categoriesData,
     isLoading: isLoadingCategories,
     isError: isErrorCategories,
-    error: errorCategories,
+    refetch: refetchCategories,
+    isRefetching: isRefetchingCategories,
   } = useQuery({
     queryKey: ['categories'],
     queryFn: () => marketplaceService.getCategories(),
@@ -49,22 +51,15 @@ export function FarmerCategoryList() {
     data: productsData,
     isLoading: isLoadingProducts,
     isError: isErrorProducts,
-    error: errorProducts,
+    refetch: refetchProducts,
+    isRefetching: isRefetchingProducts,
   } = useQuery({
     queryKey: ['farmer-products-all', user?.id],
     queryFn: () => marketplaceService.getProducts({ farmer_id: user?.id, limit: 1000 }),
     enabled: !!user?.id,
   });
 
-  useEffect(() => {
-    if (isErrorCategories || isErrorProducts) {
-      const err = errorCategories || errorProducts;
-      toast.error(
-        'Gagal memuat data: ' + (err instanceof Error ? err.message : 'Terjadi kesalahan')
-      );
-    }
-  }, [isErrorCategories, isErrorProducts, errorCategories, errorProducts]);
-
+  // Hooks must be called before any early returns
   const categories: UICategory[] = useMemo(() => {
     if (!categoriesData?.data) return [];
 
@@ -92,6 +87,48 @@ export function FarmerCategoryList() {
         cat.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [categories, searchTerm]);
+
+  // Error state - rendered after all hooks
+  if (isErrorCategories || isErrorProducts) {
+    const handleRetry = () => {
+      refetchCategories();
+      refetchProducts();
+    };
+    const isRefetching = isRefetchingCategories || isRefetchingProducts;
+
+    return (
+      <div className="flex w-full h-[350px] flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 text-red-500 p-6 text-center text-sm font-medium shadow-xs">
+        <svg
+          className="w-10 h-10 mb-3 text-red-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          />
+        </svg>
+        <p className="font-semibold text-base mb-1">Gagal Memuat Kategori & Produk</p>
+        <p className="text-xs text-red-400 max-w-md mb-4">
+          Layanan/Service tidak merespon atau sedang tidak aktif. Harap periksa koneksi Anda atau
+          hubungi administrator.
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          className="cursor-pointer border-red-200 text-red-500 hover:bg-red-100 hover:text-red-600"
+          onClick={handleRetry}
+          disabled={isRefetching}
+        >
+          <RefreshCw className={`mr-2 h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`} />
+          {isRefetching ? 'Mencoba ulang...' : 'Coba Lagi'}
+        </Button>
+      </div>
+    );
+  }
 
   const handleExport = () => {
     if (categories.length === 0) {

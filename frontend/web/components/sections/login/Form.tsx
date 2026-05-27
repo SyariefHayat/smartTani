@@ -10,13 +10,10 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { showToast } from '@/lib/toast';
-
-interface RegisteredUser {
-  email: string;
-  password?: string;
-  name: string;
-  role: string;
-}
+import { authService } from '@/services/auth';
+import { useAuthStore } from '@/stores/auth';
+import { COOKIE_KEYS, setCookie } from '@/lib/cookies';
+import { getRoleHomePath } from '@/lib/role-routes';
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
   const router = useRouter();
@@ -24,72 +21,42 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulasi loading
-    setTimeout(() => {
-      // Mock credentials
-      const mockAccounts: Record<string, { name: string; role: string; password?: string }> = {
-        'petani@smarttani.id': { name: 'Bapak Budi', role: 'petani', password: 'password123' },
-        'investor@smarttani.id': { name: 'Ibu Siska', role: 'investor', password: 'password123' },
-        'distributor@smarttani.id': {
-          name: 'Pak Jaka',
-          role: 'distributor',
-          password: 'password123',
-        },
-        'mitra@smarttani.id': {
-          name: 'PT Agro Maju',
-          role: 'mitra_bisnis',
-          password: 'password123',
-        },
-        'admin@smarttani.id': {
-          name: 'Super Admin',
-          role: 'admin_perusahaan',
-          password: 'password123',
-        },
-        'academy@smarttani.id': { name: 'Admin Akademi', role: 'academy', password: 'password123' },
-      };
+    try {
+      const response = await authService.login({ email, password });
 
-      // Check mock accounts first
-      let userData = mockAccounts[email];
+      if (response.success && response.data) {
+        const { user, accessToken, refreshToken } = response.data;
 
-      // If not in mock, check localStorage for registered users
-      if (!userData) {
-        const registeredUsersRaw = localStorage.getItem('smarttani-registered-users');
-        if (registeredUsersRaw) {
-          const registeredUsers = JSON.parse(registeredUsersRaw) as RegisteredUser[];
-          const user = registeredUsers.find((u) => u.email === email && u.password === password);
-          if (user) {
-            userData = { name: user.name, role: user.role };
-          }
-        }
-      }
+        // Set Zustand Persisted Store
+        useAuthStore.getState().setAuth(user, accessToken, refreshToken);
 
-      if (userData && (userData.password === password || !userData.password)) {
-        const mockUser = {
-          name: userData.name,
-          email: email,
-          role: userData.role,
-        };
+        // Set Browser Cookies for middleware parsing
+        setCookie(COOKIE_KEYS.ACCESS_TOKEN, accessToken);
+        setCookie(COOKIE_KEYS.REFRESH_TOKEN, refreshToken);
+        setCookie(COOKIE_KEYS.USER_ROLE, user.role);
 
-        localStorage.setItem('smarttani-auth', JSON.stringify(mockUser));
-        window.dispatchEvent(new Event('storage'));
+        showToast(`Login Berhasil! Selamat datang ${user.full_name || user.email}.`, 'success');
 
-        showToast(`Login Berhasil! Selamat datang ${userData.name}.`, 'success');
-
-        const dashboardPath =
-          userData.role === 'petani'
-            ? '/dashboard/farmer'
-            : `/dashboard/${userData.role.replace('_', '-')}`;
-
+        const dashboardPath = getRoleHomePath(user.role);
         router.push(dashboardPath);
       } else {
-        showToast('Email atau password salah.', 'error');
+        showToast('Terjadi kesalahan saat masuk.', 'error');
       }
+    } catch (err) {
+      const error = err as {
+        response?: { data?: { error?: { message?: string } } };
+        message?: string;
+      };
+      const errorMessage =
+        error.response?.data?.error?.message || error.message || 'Email atau password salah.';
+      showToast(errorMessage, 'error');
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (

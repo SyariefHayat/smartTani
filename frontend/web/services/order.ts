@@ -53,11 +53,11 @@ export interface GetOrdersResponse {
   success: boolean;
   data: {
     orders: Order[];
-    pagination: {
+    meta: {
       total: number;
       page: number;
       limit: number;
-      pages: number;
+      totalPages: number;
     };
   };
 }

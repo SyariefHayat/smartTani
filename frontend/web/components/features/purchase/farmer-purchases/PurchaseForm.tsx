@@ -40,7 +40,8 @@ interface PurchaseFormProps {
 export function PurchaseForm({ initialData, onSuccess }: PurchaseFormProps) {
   const queryClient = useQueryClient();
   const form = useForm<PurchaseFormValues>({
-    resolver: zodResolver(purchaseSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(purchaseSchema) as any,
     defaultValues: {
       supplier_name: initialData?.supplier_name || '',
       item_name: initialData?.item_name || '',

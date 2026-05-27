@@ -20,7 +20,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { authService } from '@/services/auth';
-import { useAuthStore } from '@/stores/auth';
 
 const changePasswordSchema = z
   .object({
@@ -35,9 +34,10 @@ const changePasswordSchema = z
 
 type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;
 
+import { logout } from '@/lib/auth';
+
 export function SecuritySettings() {
   const router = useRouter();
-  const logout = useAuthStore((state) => state.logout);
 
   const form = useForm<ChangePasswordFormValues>({
     resolver: zodResolver(changePasswordSchema),

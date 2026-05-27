@@ -1,4 +1,4 @@
-import { PrismaClient, Order, Prisma } from '@prisma/client';
+import { PrismaClient, Order, OrderItem, Prisma } from '@prisma/client';
 import prisma from '../lib/prisma';
 
 export class OrderRepository {
@@ -8,13 +8,13 @@ export class OrderRepository {
     this.prisma = prisma;
   }
 
-  async findById(id: string): Promise<(Order & { items: any[] }) | null> {
+  async findById(id: string): Promise<(Order & { items: OrderItem[] }) | null> {
     return this.prisma.order.findUnique({
       where: { id },
       include: {
         items: true,
       },
-    }) as Promise<(Order & { items: any[] }) | null>;
+    }) as Promise<(Order & { items: OrderItem[] }) | null>;
   }
 
   async findAll(params: {
@@ -25,9 +25,11 @@ export class OrderRepository {
     to_date?: string;
     page: number;
     limit: number;
-  }): Promise<{ orders: any[]; total: number }> {
+  }): Promise<{ orders: (Order & { items: OrderItem[] })[]; total: number }> {
     const { userId, role, status, from_date, to_date, page, limit } = params;
-    const skip = (page - 1) * limit;
+    const pageNum = Number(page) || 1;
+    const limitNum = Number(limit) || 10;
+    const skip = (pageNum - 1) * limitNum;
 
     const where: Prisma.OrderWhereInput = {};
 
@@ -47,7 +49,13 @@ export class OrderRepository {
 
     // Filter by Status
     if (status) {
-      where.status = status;
+      if (status.includes(',')) {
+        where.status = {
+          in: status.split(',').map((s) => s.trim()),
+        };
+      } else {
+        where.status = status;
+      }
     }
 
     // Filter by Date Range
@@ -67,7 +75,7 @@ export class OrderRepository {
           created_at: 'desc',
         },
         skip,
-        take: limit,
+        take: limitNum,
       }),
       this.prisma.order.count({ where }),
     ]);
@@ -75,7 +83,7 @@ export class OrderRepository {
     return { orders, total };
   }
 
-  async updateStatus(id: string, status: string): Promise<any> {
+  async updateStatus(id: string, status: string): Promise<Order & { items: OrderItem[] }> {
     return this.prisma.order.update({
       where: { id },
       data: { status },
@@ -85,7 +93,7 @@ export class OrderRepository {
     });
   }
 
-  async completeOrder(id: string): Promise<any> {
+  async completeOrder(id: string): Promise<Order & { items: OrderItem[] }> {
     return this.prisma.order.update({
       where: { id },
       data: {
@@ -98,7 +106,7 @@ export class OrderRepository {
     });
   }
 
-  async requestRefund(id: string, reason: string): Promise<any> {
+  async requestRefund(id: string, reason: string): Promise<Order & { items: OrderItem[] }> {
     return this.prisma.order.update({
       where: { id },
       data: {

@@ -28,6 +28,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DateRangeContext } from '@/context/dateRange';
 import { DateRange } from 'react-day-picker';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 
 export function FarmerSalesReport() {
   const user = useAuthStore((s) => s.user);
@@ -43,7 +45,13 @@ export function FarmerSalesReport() {
   const [rowSelection, setRowSelection] = React.useState({});
 
   // 1. Fetch Farmer Analytics (for metrics growth percentage)
-  const { data: farmerAnalytics, isLoading: isAnalyticsLoading } = useQuery({
+  const {
+    data: farmerAnalytics,
+    isLoading: isAnalyticsLoading,
+    isError: isAnalyticsError,
+    refetch: refetchAnalytics,
+    isRefetching: isRefetchingAnalytics,
+  } = useQuery({
     queryKey: ['farmer-analytics', user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
@@ -53,7 +61,13 @@ export function FarmerSalesReport() {
   });
 
   // 2. Fetch Daily Revenue Chart Data based on chosen date range
-  const { data: revenueChartData, isLoading: isChartLoading } = useQuery({
+  const {
+    data: revenueChartData,
+    isLoading: isChartLoading,
+    isError: isChartError,
+    refetch: refetchChart,
+    isRefetching: isRefetchingChart,
+  } = useQuery({
     queryKey: ['farmer-revenue-chart', user?.id, date?.from, date?.to],
     queryFn: async () => {
       if (!user?.id) return null;
@@ -70,7 +84,9 @@ export function FarmerSalesReport() {
   const {
     data: ordersResponse,
     isLoading: isOrdersLoading,
-    error: ordersError,
+    isError: isOrdersError,
+    refetch: refetchOrders,
+    isRefetching: isRefetchingOrders,
   } = useQuery({
     queryKey: ['farmer-report-orders', user?.id, date?.from, date?.to],
     queryFn: async () => {
@@ -84,24 +100,18 @@ export function FarmerSalesReport() {
     enabled: !!user?.id,
   });
 
-  React.useEffect(() => {
-    if (ordersError) {
-      toast.error('Gagal mengambil data laporan penjualan');
-    }
-  }, [ordersError]);
-
-  // 4. Map Orders to SalesReportItem
+  // 4. Map Orders to SalesReportItem — MUST be before any early returns
   const orders: SalesReportItem[] = React.useMemo(() => {
     const rawOrders = ordersResponse?.data?.orders || [];
     return rawOrders.map((o) => {
-      const quantity = o.items.reduce((sum, item) => sum + item.quantity, 0);
+      const quantity = o.items.reduce((sum, item) => sum + Number(item.quantity), 0);
 
       const productName =
         o.items.length > 0
           ? `Produk #${o.items[0].product_id.slice(-4)}${o.items.length > 1 ? ` (+${o.items.length - 1} lainnya)` : ''}`
           : 'Tidak ada produk';
 
-      const unitPrice = o.items.length > 0 ? o.items[0].price_per_unit : 0;
+      const unitPrice = o.items.length > 0 ? Number(o.items[0].price_per_unit) : 0;
 
       return {
         id: o.id,
@@ -110,7 +120,7 @@ export function FarmerSalesReport() {
         productName,
         quantity,
         price: unitPrice,
-        total: o.total_amount,
+        total: Number(o.total_amount),
         status: ['completed', 'delivered', 'paid', 'confirmed_seller', 'shipped'].includes(o.status)
           ? 'completed'
           : 'cancelled',
@@ -176,6 +186,49 @@ export function FarmerSalesReport() {
       rowSelection,
     },
   });
+
+  // Error state — rendered after all hooks
+  if (isAnalyticsError || isChartError || isOrdersError) {
+    const handleRetry = () => {
+      refetchAnalytics();
+      refetchChart();
+      refetchOrders();
+    };
+    const isRefetching = isRefetchingAnalytics || isRefetchingChart || isRefetchingOrders;
+
+    return (
+      <div className="flex w-full h-[350px] flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 text-red-500 p-6 text-center text-sm font-medium shadow-xs">
+        <svg
+          className="w-10 h-10 mb-3 text-red-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          />
+        </svg>
+        <p className="font-semibold text-base mb-1">Gagal Memuat Laporan Penjualan</p>
+        <p className="text-xs text-red-400 max-w-md mb-4">
+          Layanan/Service tidak merespon atau sedang tidak aktif. Harap periksa koneksi Anda atau
+          hubungi administrator.
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          className="cursor-pointer border-red-200 text-red-500 hover:bg-red-100 hover:text-red-600"
+          onClick={handleRetry}
+          disabled={isRefetching}
+        >
+          <RefreshCw className={`mr-2 h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`} />
+          {isRefetching ? 'Mencoba ulang...' : 'Coba Lagi'}
+        </Button>
+      </div>
+    );
+  }
 
   // 8. Client-side CSV export trigger
   const handleExportCSV = () => {

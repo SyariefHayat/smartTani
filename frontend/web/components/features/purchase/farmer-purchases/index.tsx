@@ -20,6 +20,8 @@ import { PurchaseTable } from './PurchaseTable';
 import { columns } from './columns';
 import { purchaseService } from '@/services/purchase';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 
 export function FarmerPurchaseList() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -31,6 +33,8 @@ export function FarmerPurchaseList() {
     data: purchases = [],
     isLoading,
     error,
+    refetch,
+    isRefetching,
   } = useQuery({
     queryKey: ['farmer-purchases'],
     queryFn: () => purchaseService.getPurchases(),
@@ -58,14 +62,35 @@ export function FarmerPurchaseList() {
 
   if (error) {
     return (
-      <div className="flex h-64 flex-col items-center justify-center gap-4 text-center">
-        <p className="text-destructive font-medium">Gagal mengambil data pengeluaran</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="text-sm text-green-600 hover:underline font-medium"
+      <div className="flex w-full h-[350px] flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 text-red-500 p-6 text-center text-sm font-medium shadow-xs">
+        <svg
+          className="w-10 h-10 mb-3 text-red-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
         >
-          Coba lagi
-        </button>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          />
+        </svg>
+        <p className="font-semibold text-base mb-1">Gagal Memuat Data Pengeluaran</p>
+        <p className="text-xs text-red-400 max-w-md mb-4">
+          Layanan/Service tidak merespon atau sedang tidak aktif. Harap periksa koneksi Anda atau
+          hubungi administrator.
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          className="cursor-pointer border-red-200 text-red-500 hover:bg-red-100 hover:text-red-600"
+          onClick={() => refetch()}
+          disabled={isRefetching}
+        >
+          <RefreshCw className={`mr-2 h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`} />
+          {isRefetching ? 'Mencoba ulang...' : 'Coba Lagi'}
+        </Button>
       </div>
     );
   }

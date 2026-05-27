@@ -3,7 +3,14 @@ import type { NextRequest } from 'next/server';
 import { COOKIE_KEYS } from './lib/cookies';
 import { getRoleHomePath } from './lib/role-routes';
 
-const protectedPaths = ['/admin', '/dashboard', '/proposals', '/orders', '/portfolio', '/shipments'];
+const protectedPaths = [
+  '/admin',
+  '/dashboard',
+  '/proposals',
+  '/orders',
+  '/portfolio',
+  '/shipments',
+];
 const guestPaths = ['/login', '/register'];
 
 export function proxy(request: NextRequest) {
@@ -36,7 +43,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };

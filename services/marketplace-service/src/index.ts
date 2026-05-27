@@ -10,6 +10,7 @@ import RedisClient from './lib/redis';
 import MessageBroker from './lib/broker';
 import { connectMongoDB } from './lib/mongoose';
 import { seedCategories } from './scripts/seed-categories';
+import { seedBrands } from './scripts/seed-brands';
 
 // Initialize Sentry
 if (env.SENTRY_DSN) {
@@ -27,6 +28,7 @@ import { getHealth } from './controllers/health.controller';
 import categoryRoutes from './routes/category.routes';
 import productRoutes from './routes/product.routes';
 import promotionRoutes from './routes/promotion.routes';
+import brandRoutes from './routes/brand.routes';
 
 export const app = express();
 
@@ -41,6 +43,7 @@ app.get('/health', getHealth);
 app.use('/categories', categoryRoutes);
 app.use('/products', productRoutes);
 app.use('/promotions', promotionRoutes);
+app.use('/brands', brandRoutes);
 
 // Sentry Error Handler
 if (env.SENTRY_DSN) {
@@ -62,6 +65,9 @@ export const bootstrap = async () => {
 
     // Seed categories
     await seedCategories();
+
+    // Seed brands
+    await seedBrands();
 
     if (process.env.NODE_ENV !== 'test') {
       app.listen(env.PORT, () => {

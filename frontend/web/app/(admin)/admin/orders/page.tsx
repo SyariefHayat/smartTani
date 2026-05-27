@@ -36,7 +36,7 @@ export default function AdminOrdersPage() {
       };
       const response = await orderService.getOrders(params);
       setOrders(response.data.orders);
-      setMeta({ totalPages: response.data.pagination.pages });
+      setMeta({ totalPages: response.data.meta.totalPages });
     } catch (error) {
       console.error('Failed to fetch orders:', error);
       toast.error('Gagal memuat data order');

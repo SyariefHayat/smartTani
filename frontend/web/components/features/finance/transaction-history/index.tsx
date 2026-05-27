@@ -116,7 +116,6 @@ export function TransactionHistoryManagement() {
           <TransactionStats
             currentBalance={data?.current_balance || 0}
             totalEarnings={data?.total_earnings || 0}
-            pendingBalance={data?.pending_balance || 0}
             totalTransactions={data?.meta?.total || 0}
           />
         )}

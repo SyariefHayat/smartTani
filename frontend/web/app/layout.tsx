@@ -3,6 +3,8 @@ import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { Providers } from '@/components/shared/Providers';
+import { Toaster } from '@/components/ui/sonner';
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -28,7 +30,10 @@ export default function RootLayout({
   return (
     <html lang="id" className={cn('h-full', plusJakartaSans.variable)}>
       <body className="min-h-full flex flex-col font-sans antialiased">
-        <TooltipProvider>{children}</TooltipProvider>
+        <TooltipProvider>
+          <Toaster position="top-right" />
+          <Providers>{children}</Providers>
+        </TooltipProvider>
       </body>
     </html>
   );

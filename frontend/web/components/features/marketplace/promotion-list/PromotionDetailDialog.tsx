@@ -4,7 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -12,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, Ticket, Percent, Tag, Calendar, UserCheck, PlayCircle } from 'lucide-react';
+import { Loader2, Percent, Tag, Calendar, UserCheck, PlayCircle } from 'lucide-react';
 
 import { marketplaceService } from '@/services/marketplace';
 import { Promotion } from './types';

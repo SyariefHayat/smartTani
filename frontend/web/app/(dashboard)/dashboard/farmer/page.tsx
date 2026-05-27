@@ -12,7 +12,7 @@ import { DatePickerWithRange } from '@/components/sections/dashboard/farmer/Date
 import { TrackOrderStatus } from '@/components/sections/dashboard/farmer/TrackOrderStatus';
 import { DateRangeContext } from '@/context/dateRange';
 import { DateRange } from 'react-day-picker';
-import { addDays, subDays } from 'date-fns';
+import { subDays } from 'date-fns';
 import { getStoredAuthUser } from '@/lib/auth-storage';
 import { useFarmerAnalytics } from '@/hooks/use-farmer-analytics';
 import { exportToCSV } from '@/lib/export-csv';

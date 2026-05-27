@@ -7,9 +7,9 @@ import CourseEnroll from '@/components/sections/academy/CourseEnroll';
 import RelatedCourses from '@/components/sections/academy/RelatedCourses';
 
 interface CourseDetailPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export function generateStaticParams() {

@@ -1,6 +1,5 @@
 import { useAuthStore } from '@/stores/auth';
-import Cookies from 'js-cookie';
-import { COOKIE_KEYS } from '@/lib/cookies';
+import { COOKIE_KEYS, removeCookie } from '@/lib/cookies';
 
 /**
  * Hook or helper to check authentication status.
@@ -16,11 +15,11 @@ export const getUserRole = () => {
 
 export const logout = () => {
   useAuthStore.getState().clearAuth();
-  
+
   // Clear cookies
-  Cookies.remove(COOKIE_KEYS.ACCESS_TOKEN);
-  Cookies.remove(COOKIE_KEYS.REFRESH_TOKEN);
-  Cookies.remove(COOKIE_KEYS.USER_ROLE);
+  removeCookie(COOKIE_KEYS.ACCESS_TOKEN);
+  removeCookie(COOKIE_KEYS.REFRESH_TOKEN);
+  removeCookie(COOKIE_KEYS.USER_ROLE);
 
   if (typeof window !== 'undefined') {
     window.location.href = '/login';

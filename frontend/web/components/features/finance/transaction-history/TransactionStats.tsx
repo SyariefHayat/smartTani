@@ -2,19 +2,16 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowUpRight, ArrowDownLeft, Wallet, ReceiptText } from 'lucide-react';
-import { Transaction } from './types';
 
 interface TransactionStatsProps {
   currentBalance: number;
   totalEarnings: number;
-  pendingBalance: number;
   totalTransactions: number;
 }
 
 export function TransactionStats({
   currentBalance,
   totalEarnings,
-  pendingBalance,
   totalTransactions,
 }: TransactionStatsProps) {
   const formatCurrency = (amount: number) => {

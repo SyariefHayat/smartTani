@@ -29,11 +29,15 @@ export interface FarmerAnalytics {
   total_revenue: number;
   total_orders: number;
   total_products: number;
+  total_customers: number;
   pending_orders: number;
   monthly_revenue: number;
   prev_month_revenue: number;
   revenue_change_percent: number;
   top_products: Record<string, unknown>[];
+  orders_change_percent: number;
+  products_change_percent: number;
+  customers_change_percent: number;
 }
 
 export interface FarmerFinance {

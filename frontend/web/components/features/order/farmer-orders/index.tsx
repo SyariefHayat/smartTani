@@ -99,16 +99,19 @@ export function FarmerIncomingOrderList() {
               id: o.id.slice(-6).toUpperCase(),
               customerName: o.buyer?.full_name || 'Pembeli #' + o.buyer_id.slice(-4),
               date: o.created_at,
-              totalAmount: o.total_amount,
+              totalAmount: Number(o.total_amount),
               paymentMethod: o.payment_url ? 'Online Payment' : 'Manual',
               status: o.status as OrderStatus,
               items: o.items.map((item) => ({
                 id: item.id,
                 name: 'Produk #' + item.product_id.slice(-4),
-                quantity: item.quantity,
-                price: item.price_per_unit,
+                quantity: Number(item.quantity),
+                price: Number(item.price_per_unit),
                 image: '',
               })),
+              platformFee: Number(o.platform_fee || 0),
+              shippingCost: Number(o.shipping_cost || 0),
+              shippingAddress: o.shipping_address,
             };
 
             setDetailOrder(uiOrder);
@@ -136,16 +139,19 @@ export function FarmerIncomingOrderList() {
       id: o.id.slice(-6).toUpperCase(),
       customerName: o.buyer?.full_name || 'Pembeli #' + o.buyer_id.slice(-4),
       date: o.created_at,
-      totalAmount: o.total_amount,
+      totalAmount: Number(o.total_amount),
       paymentMethod: o.payment_url ? 'Online Payment' : 'Manual',
       status: o.status as OrderStatus,
       items: o.items.map((item) => ({
         id: item.id,
         name: 'Produk #' + item.product_id.slice(-4),
-        quantity: item.quantity,
-        price: item.price_per_unit,
+        quantity: Number(item.quantity),
+        price: Number(item.price_per_unit),
         image: '',
       })),
+      platformFee: Number(o.platform_fee || 0),
+      shippingCost: Number(o.shipping_cost || 0),
+      shippingAddress: o.shipping_address,
     }));
   }, [data]);
 

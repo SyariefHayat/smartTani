@@ -25,6 +25,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import * as React from 'react';
+import { printInvoice } from '@/lib/print-invoice';
 
 const OrderActionCell = ({ order }: { order: FarmerOrder }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -174,10 +175,17 @@ const OrderActionCell = ({ order }: { order: FarmerOrder }) => {
               </span>
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2 sm:gap-0">
             <Button
               variant="outline"
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto text-green-600 border-green-200 hover:bg-green-50 cursor-pointer"
+              onClick={() => printInvoice(order)}
+            >
+              Cetak Invoice
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto cursor-pointer"
               onClick={() => setIsDetailOpen(false)}
             >
               Tutup

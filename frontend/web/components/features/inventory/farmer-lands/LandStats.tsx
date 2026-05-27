@@ -9,7 +9,7 @@ interface LandStatsProps {
 }
 
 export function LandStats({ lands }: LandStatsProps) {
-  const totalArea = lands.reduce((acc, l) => acc + (l.area_ha || 0), 0);
+  const totalArea = lands.reduce((acc, l) => acc + Number(l.area_ha || 0), 0);
   const activeCount = lands.filter((l) => l.status === 'active').length;
   const uniqueCrops = new Set(lands.map((l) => l.current_crop).filter(Boolean)).size;
 

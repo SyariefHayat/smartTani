@@ -82,7 +82,7 @@ class FarmerAnalyticsRepository {
         orderBy: {
           _sum: { quantity: 'desc' },
         },
-        take: 5,
+        take: 16,
       }),
     ]);
 
@@ -105,8 +105,7 @@ class FarmerAnalyticsRepository {
 
     const monthly = Number(monthlyRevenue._sum.subtotal || 0);
     const prev = Number(prevMonthRevenue._sum.subtotal || 0);
-    const revenue_change_percent =
-      prev === 0 ? (monthly > 0 ? 100 : 0) : ((monthly - prev) / prev) * 100;
+    const revenue_change_percent = prev === 0 ? 0 : ((monthly - prev) / prev) * 100;
 
     return {
       total_revenue: Number(totalRevenue._sum.subtotal || 0),
@@ -139,7 +138,8 @@ class FarmerAnalyticsRepository {
       SELECT 
         DATE_TRUNC('day', o.created_at) as date,
         SUM(oi.subtotal)::float as pendapatan,
-        (SUM(oi.subtotal) * 0.02)::float as pengeluaran
+        (SUM(oi.subtotal) * 0.02)::float as pengeluaran,
+        SUM(oi.quantity)::integer as quantity
       FROM order_items oi
       JOIN orders o ON oi.order_id = o.id
       ${whereClause}
@@ -148,12 +148,16 @@ class FarmerAnalyticsRepository {
     `;
 
     const result =
-      await prisma.$queryRaw<Array<{ date: Date; pendapatan: number; pengeluaran: number }>>(query);
+      await prisma.$queryRaw<
+        Array<{ date: Date; pendapatan: number; pengeluaran: number; quantity: number }>
+      >(query);
 
     return result.map((r) => ({
       date: r.date.toISOString().split('T')[0],
-      pendapatan: r.pendapatan,
+      penjualan: r.pendapatan, // gross sales
+      pendapatan: r.pendapatan - r.pengeluaran, // net income
       pengeluaran: r.pengeluaran,
+      produk: Number(r.quantity || 0), // total quantity of products sold
     }));
   }
 

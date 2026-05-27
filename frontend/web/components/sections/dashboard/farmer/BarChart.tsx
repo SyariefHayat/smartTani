@@ -37,7 +37,7 @@ interface CustomTooltipProps {
 const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     const value = payload[0].value !== undefined ? payload[0].value : 0;
-    const dateFormatted = new Date(label).toLocaleDateString('id-ID', {
+    const dateFormatted = new Date(label || '').toLocaleDateString('id-ID', {
       weekday: 'long',
       day: 'numeric',
       month: 'long',

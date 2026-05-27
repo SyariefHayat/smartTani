@@ -4,7 +4,6 @@ import * as React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { landService } from '@/services/land';
 import { harvestService } from '@/services/harvest';
-import { toast } from 'sonner';
 import { subMonths, format, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 import { id } from 'date-fns/locale';
 
@@ -14,13 +13,17 @@ import { FarmingTrendsChart } from './FarmingTrendsChart';
 import { LandDistributionChart } from './LandDistributionChart';
 import { RecentFarmingReports } from './RecentFarmingReports';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 
 export function FarmingReportsManagement() {
   // 1. Fetch Lands
   const {
     data: lands = [],
     isLoading: isLandsLoading,
-    error: landsError,
+    isError: isLandsError,
+    refetch: refetchLands,
+    isRefetching: isRefetchingLands,
   } = useQuery({
     queryKey: ['lands'],
     queryFn: async () => landService.getLands(),
@@ -30,29 +33,18 @@ export function FarmingReportsManagement() {
   const {
     data: harvests = [],
     isLoading: isHarvestsLoading,
-    error: harvestsError,
+    isError: isHarvestsError,
+    refetch: refetchHarvests,
+    isRefetching: isRefetchingHarvests,
   } = useQuery({
     queryKey: ['harvests'],
     queryFn: async () => harvestService.getHarvests(),
   });
 
-  // Error notifications
-  React.useEffect(() => {
-    if (landsError) {
-      toast.error('Gagal mengambil data lahan');
-    }
-  }, [landsError]);
-
-  React.useEffect(() => {
-    if (harvestsError) {
-      toast.error('Gagal mengambil data hasil panen');
-    }
-  }, [harvestsError]);
-
-  // 3. Compute Stats Summary
+  // 3. Compute Stats Summary — MUST be before any early returns
   const summary = React.useMemo(() => {
     const activeLands = lands.filter((l) => l.status === 'active');
-    const totalLandArea = activeLands.reduce((sum, l) => sum + l.area_ha, 0);
+    const totalLandArea = activeLands.reduce((sum, l) => sum + Number(l.area_ha || 0), 0);
 
     const activeCropsSet = new Set(activeLands.map((l) => l.current_crop).filter(Boolean));
     const activeCropCount = activeCropsSet.size;
@@ -67,7 +59,7 @@ export function FarmingReportsManagement() {
         ? Math.round(qualityScores.reduce((sum, s) => sum + s, 0) / qualityScores.length)
         : 0;
 
-    const totalHarvestVal = harvests.reduce((sum, h) => sum + h.quantity, 0);
+    const totalHarvestVal = harvests.reduce((sum, h) => sum + Number(h.quantity || 0), 0);
 
     return {
       totalLandArea,
@@ -94,7 +86,7 @@ export function FarmingReportsManagement() {
         return isWithinInterval(hDate, { start: m.start, end: m.end });
       });
 
-      const monthlyYield = monthlyHarvests.reduce((sum, h) => sum + h.quantity, 0);
+      const monthlyYield = monthlyHarvests.reduce((sum, h) => sum + Number(h.quantity || 0), 0);
 
       const scores = monthlyHarvests.map((h) => {
         if (h.quality_grade === 'A') return 95;
@@ -115,12 +107,12 @@ export function FarmingReportsManagement() {
   // 5. Compute Land Area Distribution
   const distribution = React.useMemo(() => {
     const activeLands = lands.filter((l) => l.status === 'active');
-    const totalArea = activeLands.reduce((sum, l) => sum + l.area_ha, 0);
+    const totalArea = activeLands.reduce((sum, l) => sum + Number(l.area_ha || 0), 0);
 
     const cropAreaMap: Record<string, number> = {};
     activeLands.forEach((l) => {
       const crop = l.current_crop || 'Istirahat / Fallow';
-      cropAreaMap[crop] = (cropAreaMap[crop] || 0) + l.area_ha;
+      cropAreaMap[crop] = (cropAreaMap[crop] || 0) + Number(l.area_ha || 0);
     });
 
     const colors = [
@@ -140,6 +132,48 @@ export function FarmingReportsManagement() {
       };
     });
   }, [lands]);
+
+  // Error state — rendered after all hooks
+  if (isLandsError || isHarvestsError) {
+    const handleRetry = () => {
+      refetchLands();
+      refetchHarvests();
+    };
+    const isRefetching = isRefetchingLands || isRefetchingHarvests;
+
+    return (
+      <div className="flex w-full h-[350px] flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 text-red-500 p-6 text-center text-sm font-medium shadow-xs">
+        <svg
+          className="w-10 h-10 mb-3 text-red-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          />
+        </svg>
+        <p className="font-semibold text-base mb-1">Gagal Memuat Laporan Tani</p>
+        <p className="text-xs text-red-400 max-w-md mb-4">
+          Layanan/Service tidak merespon atau sedang tidak aktif. Harap periksa koneksi Anda atau
+          hubungi administrator.
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          className="cursor-pointer border-red-200 text-red-500 hover:bg-red-100 hover:text-red-600"
+          onClick={handleRetry}
+          disabled={isRefetching}
+        >
+          <RefreshCw className={`mr-2 h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`} />
+          {isRefetching ? 'Mencoba ulang...' : 'Coba Lagi'}
+        </Button>
+      </div>
+    );
+  }
 
   const isLoading = isLandsLoading || isHarvestsLoading;
 

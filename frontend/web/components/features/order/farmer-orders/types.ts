@@ -28,4 +28,7 @@ export interface FarmerOrder {
   paymentMethod: string;
   status: OrderStatus;
   items: OrderItem[];
+  platformFee?: number;
+  shippingCost?: number;
+  shippingAddress?: Record<string, unknown>;
 }

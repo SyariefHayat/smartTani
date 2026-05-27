@@ -49,7 +49,8 @@ interface LandFormProps {
 export function LandForm({ initialData, onSuccess }: LandFormProps) {
   const queryClient = useQueryClient();
   const form = useForm<LandFormValues>({
-    resolver: zodResolver(landSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(landSchema) as any,
     defaultValues: {
       name: initialData?.name || '',
       location_province: initialData?.location_province || '',

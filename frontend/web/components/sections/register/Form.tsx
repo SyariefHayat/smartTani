@@ -42,6 +42,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { showToast } from '@/lib/toast';
+import { authService } from '@/services/auth';
 
 const roleImages: Record<string, string> = {
   petani: '/images/register/farmer.webp',
@@ -103,34 +104,54 @@ function RegisterFormContent() {
     const fullName = formData.get('fullName') as string;
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
+    const confirmPassword = formData.get('confirmPassword') as string;
 
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    // Client-side validations
+    if (password.length < 8) {
+      showToast('Kata sandi harus minimal 8 karakter.', 'error');
+      setLoading(false);
+      return;
+    }
 
-    const newUser = {
-      name: fullName,
-      email: email,
-      role: selectedRole,
-      password: password, // For mock login purposes
-    };
+    if (password !== confirmPassword) {
+      showToast('Konfirmasi kata sandi tidak cocok.', 'error');
+      setLoading(false);
+      return;
+    }
 
-    // Get existing users or empty array
-    const existingUsersRaw = localStorage.getItem('smarttani-registered-users');
-    const existingUsers = existingUsersRaw
-      ? (JSON.parse(existingUsersRaw) as {
-          email: string;
-          name: string;
-          role: string;
-          password?: string;
-        }[])
-      : [];
+    // Role mapping: frontend role choices to supported backend enum values
+    let apiRole = selectedRole;
+    if (selectedRole === 'mitra_bisnis') {
+      apiRole = 'buyer';
+    } else if (selectedRole === 'admin_perusahaan') {
+      apiRole = 'admin';
+    } else if (selectedRole === 'academy') {
+      apiRole = 'buyer';
+    }
 
-    // Add new user
-    existingUsers.push(newUser);
-    localStorage.setItem('smarttani-registered-users', JSON.stringify(existingUsers));
+    try {
+      await authService.register({
+        email,
+        password,
+        full_name: fullName,
+        role: apiRole,
+      });
 
-    showToast('Pendaftaran berhasil! Silakan masuk dengan akun Anda.', 'success');
-    router.push('/login?registered=true');
+      showToast('Pendaftaran berhasil! Silakan masuk dengan akun Anda.', 'success');
+      router.push('/login?registered=true');
+    } catch (err) {
+      const error = err as {
+        response?: { data?: { error?: { message?: string } } };
+        message?: string;
+      };
+      const errorMessage =
+        error.response?.data?.error?.message ||
+        error.message ||
+        'Pendaftaran gagal. Silakan coba lagi.';
+      showToast(errorMessage, 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getRoleSpecificFields = () => {

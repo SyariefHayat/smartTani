@@ -9,7 +9,7 @@ interface PurchaseStatsProps {
 }
 
 export function PurchaseStats({ purchases }: PurchaseStatsProps) {
-  const totalExpenditure = purchases.reduce((acc, p) => acc + p.total_cost, 0);
+  const totalExpenditure = purchases.reduce((acc, p) => acc + Number(p.total_cost || 0), 0);
   const formattedTotal = new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR',
