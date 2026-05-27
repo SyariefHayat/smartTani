@@ -14,10 +14,11 @@ import {
 
 import { SupplierHeader } from './SupplierHeader';
 import { SupplierStats } from './SupplierStats';
-import { SupplierFilters } from './SupplierFilters';
-import { PurchaseTable } from '../farmer-purchases/PurchaseTable'; // Reuse Table UI
+import { SupplierTable } from './SupplierTable';
 import { columns } from './columns';
 import { Supplier } from './types';
+import { exportToCSV } from '@/lib/export-csv';
+import { toast } from 'sonner';
 
 const MOCK_SUPPLIERS: Supplier[] = [
   {
@@ -88,6 +89,25 @@ export function FarmerSupplierList() {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const handleExport = React.useCallback(() => {
+    exportToCSV({
+      data: MOCK_SUPPLIERS,
+      columns: [
+        { header: 'ID Supplier', accessor: (row) => row.id },
+        { header: 'Nama Supplier', accessor: (row) => row.name },
+        { header: 'Kategori', accessor: (row) => row.category },
+        { header: 'Kontak Person', accessor: (row) => row.contactPerson },
+        { header: 'Telepon', accessor: (row) => row.phone },
+        { header: 'Email', accessor: (row) => row.email },
+        { header: 'Lokasi', accessor: (row) => row.location },
+        { header: 'Total Order', accessor: (row) => row.totalOrders },
+        { header: 'Status', accessor: (row) => (row.status === 'active' ? 'Aktif' : 'Nonaktif') },
+      ],
+      filename: 'daftar_supplier',
+    });
+    toast.success('Daftar supplier berhasil diekspor');
+  }, []);
+
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: MOCK_SUPPLIERS,
@@ -110,13 +130,13 @@ export function FarmerSupplierList() {
 
   return (
     <div className="w-full text-slate-900">
-      <div className="mx-auto flex w-full flex-col gap-6">
-        <SupplierHeader />
+      <div className="mx-auto flex w-full flex-col gap-4">
+        <SupplierHeader
+          onExport={handleExport}
+          onAddSupplier={() => toast.info('Fitur tambah supplier segera hadir!')}
+        />
         <SupplierStats suppliers={MOCK_SUPPLIERS} />
-        <div className="space-y-4">
-          <SupplierFilters table={table} />
-          <PurchaseTable table={table} columnsCount={columns.length} />
-        </div>
+        <SupplierTable table={table} columnsCount={columns.length} />
       </div>
     </div>
   );
