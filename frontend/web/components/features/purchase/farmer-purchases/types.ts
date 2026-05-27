@@ -23,3 +23,9 @@ export interface CreatePurchaseInput {
   notes?: string;
   receipt_url?: string;
 }
+
+export interface PurchaseTableActions {
+  onViewDetail: (record: PurchaseRecord) => void;
+  onEdit: (record: PurchaseRecord) => void;
+  onDelete: (record: PurchaseRecord) => void;
+}

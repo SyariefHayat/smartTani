@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { PurchaseRecord } from './types';
+import { PurchaseRecord, PurchaseTableActions } from './types';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
@@ -65,8 +65,9 @@ export const columns: ColumnDef<PurchaseRecord>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => {
+    cell: function ActionsCell({ row, table }) {
       const purchase = row.original;
+      const meta = table.options.meta as PurchaseTableActions | undefined;
 
       return (
         <div className="flex items-center justify-end gap-2">
@@ -74,7 +75,7 @@ export const columns: ColumnDef<PurchaseRecord>[] = [
             <Button
               variant="outline"
               size="sm"
-              className="h-8 w-8 p-0"
+              className="h-8 w-8 p-0 cursor-pointer"
               onClick={() => window.open(purchase.receipt_url, '_blank')}
             >
               <FileText className="h-4 w-4 text-blue-600" />
@@ -82,23 +83,32 @@ export const columns: ColumnDef<PurchaseRecord>[] = [
           )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
+              <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
+                <span className="sr-only">Buka menu</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-              <DropdownMenuItem className="cursor-pointer">
-                <Eye className="mr-2 h-4 w-4" />
+              <DropdownMenuItem
+                className="cursor-pointer text-sm"
+                onClick={() => meta?.onViewDetail(purchase)}
+              >
+                <Eye className="mr-2 h-4 w-4 text-slate-500" />
                 Lihat Detail
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                <Edit className="mr-2 h-4 w-4" />
+              <DropdownMenuItem
+                className="cursor-pointer text-sm"
+                onClick={() => meta?.onEdit(purchase)}
+              >
+                <Edit className="mr-2 h-4 w-4 text-slate-500" />
                 Ubah Data
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
+              <DropdownMenuItem
+                className="cursor-pointer text-destructive focus:text-destructive text-sm"
+                onClick={() => meta?.onDelete(purchase)}
+              >
                 <Trash2 className="mr-2 h-4 w-4" />
                 Hapus
               </DropdownMenuItem>

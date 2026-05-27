@@ -1,3 +1,5 @@
+import { ShippingAddress } from '@/services/order';
+
 export type OrderStatus =
   | 'pending_payment'
   | 'paid'
@@ -30,5 +32,5 @@ export interface FarmerOrder {
   items: OrderItem[];
   platformFee?: number;
   shippingCost?: number;
-  shippingAddress?: Record<string, unknown>;
+  shippingAddress?: ShippingAddress;
 }
