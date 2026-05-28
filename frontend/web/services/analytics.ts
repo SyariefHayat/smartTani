@@ -207,6 +207,16 @@ export const analyticsService = {
     const response = await api.get(`/analytics/investor/${id}/finance`, { params });
     return response.data.data;
   },
+
+  getPlatformAnalytics: async (): Promise<Record<string, unknown>> => {
+    const response = await api.get('/analytics/platform');
+    return response.data.data;
+  },
+
+  getPlatformRevenue: async (): Promise<Record<string, unknown>> => {
+    const response = await api.get('/analytics/platform/revenue');
+    return response.data.data;
+  },
 };
 
 export const farmerAnalyticsService = analyticsService;

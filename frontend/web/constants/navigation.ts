@@ -517,6 +517,123 @@ export const SISWA_DASHBOARD_NAV = [
   },
 ];
 
+export const INSTRUKTUR_DASHBOARD_NAV = [
+  {
+    title: 'Overview',
+    url: '/dashboard/instruktur',
+    icon: Home,
+    isActive: true,
+  },
+  {
+    title: 'Kursus Saya',
+    url: '/dashboard/instruktur/courses',
+    icon: GraduationCap,
+  },
+  {
+    title: 'Semua Peserta',
+    url: '/dashboard/instruktur/students',
+    icon: ClipboardList,
+  },
+  {
+    title: 'Analisis',
+    url: '/dashboard/instruktur/analytics',
+    icon: BarChart3,
+  },
+  {
+    title: 'Pendapatan',
+    url: '/dashboard/instruktur/earnings',
+    icon: Wallet,
+  },
+  {
+    title: 'Notifikasi',
+    url: '/dashboard/instruktur/notifications',
+    icon: Bell,
+  },
+  {
+    title: 'Pengaturan',
+    url: '/dashboard/instruktur/settings',
+    icon: Settings,
+  },
+];
+
+export const ADMIN_DASHBOARD_NAV = [
+  {
+    title: 'Overview',
+    url: '/admin',
+    icon: Home,
+    isActive: true,
+  },
+  {
+    title: 'Kelola User',
+    url: '/admin/users',
+    icon: User,
+  },
+  {
+    title: 'Kelola Produk',
+    url: '/admin/products',
+    icon: Store,
+  },
+  {
+    title: 'Kelola Order',
+    url: '/admin/orders',
+    icon: ShoppingCart,
+  },
+  {
+    title: 'Kelola Proposal',
+    url: '/admin/proposals',
+    icon: ClipboardList,
+  },
+  {
+    title: 'Kelola Pengiriman',
+    url: '/admin/shipments',
+    icon: Truck,
+  },
+  {
+    title: 'Kelola Investasi',
+    url: '/admin/investments',
+    icon: TrendingUp,
+  },
+  {
+    title: 'Kelola Kursus',
+    url: '/admin/courses',
+    icon: GraduationCap,
+  },
+  {
+    title: 'Moderasi Review',
+    url: '/admin/reviews',
+    icon: Star,
+  },
+  {
+    title: 'Keuangan',
+    url: '#',
+    icon: Wallet,
+    items: [
+      { title: 'Overview Keuangan', url: '/admin/finance' },
+      { title: 'Riwayat Transaksi', url: '/admin/finance/transactions' },
+    ],
+  },
+  {
+    title: 'Analytics Platform',
+    url: '/admin/analytics',
+    icon: BarChart3,
+  },
+  {
+    title: 'Audit Log',
+    url: '/admin/audit-log',
+    icon: Newspaper,
+  },
+  {
+    title: 'Notifikasi',
+    url: '/admin/notifications',
+    icon: Bell,
+  },
+  {
+    title: 'Pengaturan',
+    url: '/admin/settings',
+    icon: Settings,
+  },
+];
+
 export const SECONDARY_NAV = [
   {
     title: 'Profil',

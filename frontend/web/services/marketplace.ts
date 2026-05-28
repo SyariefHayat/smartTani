@@ -184,6 +184,14 @@ export const marketplaceService = {
     return response.data;
   },
 
+  updateProductStatus: async (
+    id: string,
+    status: 'active' | 'inactive' | 'pending'
+  ): Promise<{ success: boolean; data: Product }> => {
+    const response = await api.patch(`/products/${id}/status`, { status });
+    return response.data;
+  },
+
   uploadImage: async (id: string, file: File) => {
     const formData = new FormData();
     formData.append('image', file);

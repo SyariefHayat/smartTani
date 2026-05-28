@@ -41,8 +41,18 @@ export const userService = {
     return response.data.data;
   },
 
-  updateStatus: async (id: string, status: 'active' | 'suspended' | 'pending_verification'): Promise<User> => {
+  updateStatus: async (
+    id: string,
+    status: 'active' | 'suspended' | 'pending_verification'
+  ): Promise<User> => {
     const response = await api.patch(`/auth/users/${id}/status`, { status });
+    return response.data.data;
+  },
+
+  getUserById: async (
+    id: string
+  ): Promise<User & { phone?: string; avatar?: string; last_login?: string }> => {
+    const response = await api.get(`/auth/users/${id}`);
     return response.data.data;
   },
 };

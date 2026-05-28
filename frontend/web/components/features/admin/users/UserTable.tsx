@@ -13,7 +13,8 @@ import { Button } from '@/components/ui/button';
 import { User } from '@/services/user';
 import { formatDate } from 'date-fns';
 import { id } from 'date-fns/locale';
-import { CheckCircle, ShieldAlert } from 'lucide-react';
+import { CheckCircle, ShieldAlert, Eye } from 'lucide-react';
+import Link from 'next/link';
 
 interface UserTableProps {
   users: User[];
@@ -114,11 +115,20 @@ export function UserTable({ users, loading, onVerify, onSuspend, onActivate }: U
                   {formatDate(new Date(user.created_at), 'dd MMM yyyy', { locale: id })}
                 </TableCell>
                 <TableCell className="text-right space-x-2">
+                  <Link href={`/admin/users/${user.id}`} passHref legacyBehavior>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-slate-600 border-slate-200 hover:bg-slate-50 gap-1 cursor-pointer"
+                    >
+                      <Eye className="h-3.5 w-3.5" /> Detail
+                    </Button>
+                  </Link>
                   {user.status === 'pending_verification' && user.role === 'petani' && (
                     <Button
                       variant="outline"
                       size="sm"
-                      className="text-green-600 border-green-200 hover:bg-green-50"
+                      className="text-green-600 border-green-200 hover:bg-green-50 cursor-pointer"
                       onClick={() => onVerify(user.id)}
                     >
                       <CheckCircle className="h-4 w-4 mr-1" /> Verifikasi
@@ -128,7 +138,7 @@ export function UserTable({ users, loading, onVerify, onSuspend, onActivate }: U
                     <Button
                       variant="outline"
                       size="sm"
-                      className="text-red-600 border-red-200 hover:bg-red-50"
+                      className="text-red-600 border-red-200 hover:bg-red-50 cursor-pointer"
                       onClick={() => onSuspend(user.id)}
                     >
                       <ShieldAlert className="h-4 w-4 mr-1" /> Suspend
@@ -138,7 +148,7 @@ export function UserTable({ users, loading, onVerify, onSuspend, onActivate }: U
                     <Button
                       variant="outline"
                       size="sm"
-                      className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                      className="text-blue-600 border-blue-200 hover:bg-blue-50 cursor-pointer"
                       onClick={() => onActivate(user.id)}
                     >
                       <CheckCircle className="h-4 w-4 mr-1" /> Aktifkan

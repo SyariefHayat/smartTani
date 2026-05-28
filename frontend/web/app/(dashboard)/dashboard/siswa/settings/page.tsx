@@ -1,0 +1,450 @@
+'use client';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+import * as React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { getStoredAuthUser } from '@/lib/auth-storage';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
+import { toast } from 'sonner';
+import {
+  User,
+  ShieldAlert,
+  Sprout,
+  Save,
+  KeyRound,
+  Lock,
+  Mail,
+  Phone,
+  Bookmark,
+} from 'lucide-react';
+
+// Form Validation Schemas
+const profileSchema = z.object({
+  name: z.string().min(3, { message: 'Nama lengkap minimal 3 karakter.' }),
+  email: z.string().email({ message: 'Alamat email tidak valid.' }),
+  phone: z.string().min(10, { message: 'Nomor telepon minimal 10 digit.' }),
+  bio: z.string().max(200, { message: 'Bio maksimal 200 karakter.' }).optional(),
+});
+
+const securitySchema = z
+  .object({
+    currentPassword: z.string().min(6, { message: 'Kata sandi saat ini minimal 6 karakter.' }),
+    newPassword: z.string().min(6, { message: 'Kata sandi baru minimal 6 karakter.' }),
+    confirmPassword: z.string().min(6, { message: 'Konfirmasi kata sandi minimal 6 karakter.' }),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'Konfirmasi kata sandi tidak cocok.',
+    path: ['confirmPassword'],
+  });
+
+type ProfileFormData = z.infer<typeof profileSchema>;
+type SecurityFormData = z.infer<typeof securitySchema>;
+
+const INTEREST_CATEGORIES = [
+  { id: 'budidaya', label: 'Budidaya Hidroponik & Organik' },
+  { id: 'agrotech', label: 'Agroteknologi & IoT Pertanian' },
+  { id: 'bisnis', label: 'Manajemen Keuangan & Agribisnis' },
+  { id: 'ekspor', label: 'Logistik & Perdagangan Ekspor' },
+  { id: 'hama', label: 'Proteksi Tanaman & Organisme Pengganggu' },
+];
+
+export default function StudentSettingsPage() {
+  const user = getStoredAuthUser();
+
+  // Load profile from localStorage or default
+  const [profileData, setProfileData] = React.useState<ProfileFormData>({
+    name: user?.name || 'Siswa SiTani',
+    email: user?.email || 'siswa@smarttani.com',
+    phone: '081234567890',
+    bio: 'Saya tertarik mempelajari pertanian pintar (smart farming) dan pemanfaatan IoT untuk irigasi hemat air.',
+  });
+
+  const [interests, setInterests] = React.useState<string[]>(['budidaya', 'agrotech']);
+
+  // Profile Form Hook
+  const {
+    register: registerProfile,
+    handleSubmit: handleProfileSubmit,
+    formState: { errors: profileErrors, isSubmitting: isProfileSubmitting },
+  } = useForm<ProfileFormData>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: profileData,
+  });
+
+  // Security Form Hook
+  const {
+    register: registerSecurity,
+    handleSubmit: handleSecuritySubmit,
+    reset: resetSecurity,
+    formState: { errors: securityErrors, isSubmitting: isSecuritySubmitting },
+  } = useForm<SecurityFormData>({
+    resolver: zodResolver(securitySchema),
+  });
+
+  const onProfileSave = (data: ProfileFormData) => {
+    // Save to localStorage simulation
+    setProfileData(data);
+    localStorage.setItem(`profile-${user?.id}`, JSON.stringify(data));
+
+    // Attempt update auth store name if applicable
+    try {
+      const authKey = 'auth-storage';
+      const stored = localStorage.getItem(authKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.state && parsed.state.user) {
+          parsed.state.user.name = data.name;
+          parsed.state.user.email = data.email;
+          localStorage.setItem(authKey, JSON.stringify(parsed));
+        }
+      }
+    } catch {
+      // Ignore
+    }
+
+    toast.success('Profil Anda berhasil diperbarui!');
+  };
+
+  const onInterestsSave = () => {
+    localStorage.setItem(`interests-${user?.id}`, JSON.stringify(interests));
+    toast.success('Minat belajar berhasil disimpan!');
+  };
+
+  const onSecuritySave = (_data: SecurityFormData) => {
+    // Simulate API update
+    setTimeout(() => {
+      resetSecurity();
+      toast.success('Kata sandi berhasil diperbarui!');
+    }, 800);
+  };
+
+  const toggleInterest = (id: string) => {
+    setInterests((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  return (
+    <div className="w-full space-y-6 text-slate-900 pb-12">
+      {/* Header */}
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-800">Pengaturan Akun ⚙️</h1>
+        <p className="text-xs font-semibold text-slate-500">
+          Kelola profil publik, preferensi minat belajar, dan keamanan akun Anda.
+        </p>
+      </div>
+
+      <Tabs defaultValue="profile" className="w-full space-y-6">
+        <TabsList className="bg-slate-100 rounded-xl p-1 max-w-fit flex flex-wrap gap-1">
+          <TabsTrigger
+            value="profile"
+            className="rounded-lg text-xs font-bold px-4 py-1.5 data-[state=active]:bg-white data-[state=active]:shadow-sm flex items-center gap-1.5"
+          >
+            <User className="h-3.5 w-3.5 text-slate-500" />
+            Profil Saya
+          </TabsTrigger>
+          <TabsTrigger
+            value="interests"
+            className="rounded-lg text-xs font-bold px-4 py-1.5 data-[state=active]:bg-white data-[state=active]:shadow-sm flex items-center gap-1.5"
+          >
+            <Sprout className="h-3.5 w-3.5 text-slate-500" />
+            Minat Belajar
+          </TabsTrigger>
+          <TabsTrigger
+            value="security"
+            className="rounded-lg text-xs font-bold px-4 py-1.5 data-[state=active]:bg-white data-[state=active]:shadow-sm flex items-center gap-1.5"
+          >
+            <KeyRound className="h-3.5 w-3.5 text-slate-500" />
+            Keamanan
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Tab 1: Profile Settings */}
+        <TabsContent value="profile" className="mt-0">
+          <form onSubmit={handleProfileSubmit(onProfileSave)} className="max-w-2xl">
+            <Card className="border-slate-200 bg-white rounded-2xl shadow-sm">
+              <CardHeader className="pb-4 border-b border-slate-100">
+                <CardTitle className="text-sm font-bold text-slate-800">
+                  Data Diri & Profil
+                </CardTitle>
+                <CardDescription className="text-[11px] font-semibold text-slate-400 mt-0.5">
+                  Informasi ini digunakan untuk penerbitan sertifikat kelulusan sah Anda.
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="p-6 space-y-4">
+                {/* Name */}
+                <div className="space-y-1.5">
+                  <label htmlFor="name" className="text-xs font-bold text-slate-700">
+                    Nama Lengkap (Sesuai Sertifikat)
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input
+                      id="name"
+                      placeholder="Masukkan nama lengkap Anda..."
+                      {...registerProfile('name')}
+                      className="pl-10 bg-white border-slate-200 text-xs font-medium focus:ring-green-500 rounded-xl"
+                    />
+                  </div>
+                  {profileErrors.name && (
+                    <p className="text-[10px] font-bold text-red-500 mt-1">
+                      {profileErrors.name.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {/* Email */}
+                  <div className="space-y-1.5">
+                    <label htmlFor="email" className="text-xs font-bold text-slate-700">
+                      Alamat Email
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <Input
+                        id="email"
+                        placeholder="nama@email.com"
+                        {...registerProfile('email')}
+                        className="pl-10 bg-white border-slate-200 text-xs font-medium focus:ring-green-500 rounded-xl"
+                      />
+                    </div>
+                    {profileErrors.email && (
+                      <p className="text-[10px] font-bold text-red-500 mt-1">
+                        {profileErrors.email.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Phone */}
+                  <div className="space-y-1.5">
+                    <label htmlFor="phone" className="text-xs font-bold text-slate-700">
+                      Nomor WhatsApp
+                    </label>
+                    <div className="relative">
+                      <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <Input
+                        id="phone"
+                        placeholder="08xxxxxxxxxx"
+                        {...registerProfile('phone')}
+                        className="pl-10 bg-white border-slate-200 text-xs font-medium focus:ring-green-500 rounded-xl"
+                      />
+                    </div>
+                    {profileErrors.phone && (
+                      <p className="text-[10px] font-bold text-red-500 mt-1">
+                        {profileErrors.phone.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Bio */}
+                <div className="space-y-1.5">
+                  <label htmlFor="bio" className="text-xs font-bold text-slate-700">
+                    Biografi Singkat
+                  </label>
+                  <Textarea
+                    id="bio"
+                    rows={4}
+                    placeholder="Ceritakan sedikit tentang ketertarikan Anda di bidang pertanian..."
+                    {...registerProfile('bio')}
+                    className="bg-white border-slate-200 text-xs font-medium focus:ring-green-500 rounded-xl resize-none"
+                  />
+                  <div className="flex items-center justify-between text-[9px] font-semibold text-slate-400">
+                    <span>Maksimal 200 karakter.</span>
+                    {profileErrors.bio && (
+                      <span className="text-red-500 font-bold">{profileErrors.bio.message}</span>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+
+              <CardFooter className="bg-slate-50/50 border-t border-slate-100 p-4 flex justify-end">
+                <Button
+                  type="submit"
+                  disabled={isProfileSubmitting}
+                  className="bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-xl shadow-sm gap-1.5"
+                >
+                  <Save className="h-3.5 w-3.5" />
+                  Simpan Perubahan
+                </Button>
+              </CardFooter>
+            </Card>
+          </form>
+        </TabsContent>
+
+        {/* Tab 2: Interests Selection */}
+        <TabsContent value="interests" className="mt-0">
+          <Card className="max-w-2xl border-slate-200 bg-white rounded-2xl shadow-sm">
+            <CardHeader className="pb-4 border-b border-slate-100">
+              <CardTitle className="text-sm font-bold text-slate-800">
+                Topik Pembelajaran Favorit
+              </CardTitle>
+              <CardDescription className="text-[11px] font-semibold text-slate-400 mt-0.5">
+                Rekomendasi kelas di katalog dan halaman utama disesuaikan berdasarkan minat Anda.
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="p-6 space-y-4">
+              <div className="space-y-3">
+                {INTEREST_CATEGORIES.map((cat) => {
+                  const isChecked = interests.includes(cat.id);
+                  return (
+                    <div
+                      key={cat.id}
+                      onClick={() => toggleInterest(cat.id)}
+                      className={`flex items-start gap-3.5 p-3.5 rounded-xl border transition-all duration-300 cursor-pointer select-none ${
+                        isChecked
+                          ? 'border-green-600 bg-green-50/20'
+                          : 'border-slate-100 bg-white hover:bg-slate-50'
+                      }`}
+                    >
+                      <Checkbox
+                        id={cat.id}
+                        checked={isChecked}
+                        onCheckedChange={() => {}} // toggling handled on parent click
+                        className="mt-0.5 border-slate-300 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
+                      />
+                      <div className="space-y-0.5">
+                        <label
+                          htmlFor={cat.id}
+                          className="text-xs font-bold text-slate-800 cursor-pointer"
+                        >
+                          {cat.label}
+                        </label>
+                        <p className="text-[10px] font-semibold text-slate-400">
+                          Mendapatkan update modul, kuis terhubung, dan info webinar terkait.
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+
+            <CardFooter className="bg-slate-50/50 border-t border-slate-100 p-4 flex justify-end">
+              <Button
+                onClick={onInterestsSave}
+                className="bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-xl shadow-sm gap-1.5"
+              >
+                <Bookmark className="h-3.5 w-3.5" />
+                Simpan Minat
+              </Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+
+        {/* Tab 3: Security & Password */}
+        <TabsContent value="security" className="mt-0">
+          <form onSubmit={handleSecuritySubmit(onSecuritySave)} className="max-w-2xl">
+            <Card className="border-slate-200 bg-white rounded-2xl shadow-sm">
+              <CardHeader className="pb-4 border-b border-slate-100">
+                <CardTitle className="text-sm font-bold text-slate-800">
+                  Kata Sandi & Kredensial
+                </CardTitle>
+                <CardDescription className="text-[11px] font-semibold text-slate-400 mt-0.5">
+                  Demi keamanan akun, pastikan Anda menggunakan kata sandi yang unik dan kuat.
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="p-6 space-y-4">
+                {/* Current Password */}
+                <div className="space-y-1.5">
+                  <label htmlFor="currentPassword" className="text-xs font-bold text-slate-700">
+                    Kata Sandi Saat Ini
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input
+                      id="currentPassword"
+                      type="password"
+                      placeholder="••••••••"
+                      {...registerSecurity('currentPassword')}
+                      className="pl-10 bg-white border-slate-200 text-xs font-medium focus:ring-green-500 rounded-xl"
+                    />
+                  </div>
+                  {securityErrors.currentPassword && (
+                    <p className="text-[10px] font-bold text-red-500 mt-1">
+                      {securityErrors.currentPassword.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {/* New Password */}
+                  <div className="space-y-1.5">
+                    <label htmlFor="newPassword" className="text-xs font-bold text-slate-700">
+                      Kata Sandi Baru
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <Input
+                        id="newPassword"
+                        type="password"
+                        placeholder="Minimal 6 karakter"
+                        {...registerSecurity('newPassword')}
+                        className="pl-10 bg-white border-slate-200 text-xs font-medium focus:ring-green-500 rounded-xl"
+                      />
+                    </div>
+                    {securityErrors.newPassword && (
+                      <p className="text-[10px] font-bold text-red-500 mt-1">
+                        {securityErrors.newPassword.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Confirm Password */}
+                  <div className="space-y-1.5">
+                    <label htmlFor="confirmPassword" className="text-xs font-bold text-slate-700">
+                      Konfirmasi Kata Sandi Baru
+                    </label>
+                    <div className="relative">
+                      <ShieldAlert className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        placeholder="Ulangi kata sandi baru"
+                        {...registerSecurity('confirmPassword')}
+                        className="pl-10 bg-white border-slate-200 text-xs font-medium focus:ring-green-500 rounded-xl"
+                      />
+                    </div>
+                    {securityErrors.confirmPassword && (
+                      <p className="text-[10px] font-bold text-red-500 mt-1">
+                        {securityErrors.confirmPassword.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+
+              <CardFooter className="bg-slate-50/50 border-t border-slate-100 p-4 flex justify-end">
+                <Button
+                  type="submit"
+                  disabled={isSecuritySubmitting}
+                  className="bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-xl shadow-sm gap-1.5"
+                >
+                  <Lock className="h-3.5 w-3.5" />
+                  Perbarui Kata Sandi
+                </Button>
+              </CardFooter>
+            </Card>
+          </form>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}

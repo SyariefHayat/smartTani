@@ -5,7 +5,8 @@ export type AppRole =
   | 'investor'
   | 'logistik'
   | 'distributor'
-  | 'siswa';
+  | 'siswa'
+  | 'instruktur';
 
 export function getRoleHomePath(role?: string | null): string {
   switch (role) {
@@ -23,6 +24,8 @@ export function getRoleHomePath(role?: string | null): string {
       return '/dashboard/distributor';
     case 'siswa':
       return '/dashboard/siswa';
+    case 'instruktur':
+      return '/dashboard/instruktur';
     default:
       return '/marketplace';
   }
