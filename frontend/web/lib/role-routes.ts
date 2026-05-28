@@ -11,7 +11,7 @@ export function getRoleHomePath(role?: string | null): string {
     case 'investor':
       return '/dashboard/investor';
     case 'logistik':
-      return '/shipments';
+      return '/dashboard/logistik';
     case 'distributor':
       return '/marketplace';
     default:

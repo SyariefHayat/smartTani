@@ -136,7 +136,11 @@ export function ShipmentTable({ shipments, loading, onUpdateStatus }: ShipmentTa
                   </TableCell>
                   <TableCell>{getStatusBadge(shipment.status)}</TableCell>
                   <TableCell>
-                    {formatDate(new Date(shipment.updatedAt), 'dd MMM yyyy HH:mm', { locale: id })}
+                    {formatDate(
+                      new Date(shipment.updatedAt || shipment.updated_at),
+                      'dd MMM yyyy HH:mm',
+                      { locale: id }
+                    )}
                   </TableCell>
                   <TableCell className="text-right">
                     {shipment.status === 'pending_pickup' && (

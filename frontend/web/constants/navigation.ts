@@ -268,6 +268,50 @@ export const INVESTOR_DASHBOARD_NAV = [
   },
 ];
 
+export const LOGISTICS_DASHBOARD_NAV = [
+  {
+    title: 'Overview',
+    url: '/dashboard/logistik',
+    icon: Home,
+    isActive: true,
+  },
+  {
+    title: 'Semua Pengiriman',
+    url: '/dashboard/logistik/shipments',
+    icon: Truck,
+  },
+  {
+    title: 'Menunggu Pickup',
+    url: '/dashboard/logistik/shipments/pending',
+    icon: ClipboardList,
+  },
+  {
+    title: 'Dalam Perjalanan',
+    url: '/dashboard/logistik/shipments/active',
+    icon: Package,
+  },
+  {
+    title: 'Riwayat Pengiriman',
+    url: '/dashboard/logistik/history',
+    icon: Newspaper,
+  },
+  {
+    title: 'Performa Kurir',
+    url: '/dashboard/logistik/performance',
+    icon: BarChart3,
+  },
+  {
+    title: 'Notifikasi',
+    url: '/dashboard/logistik/notifications',
+    icon: Bell,
+  },
+  {
+    title: 'Pengaturan',
+    url: '/dashboard/logistik/settings',
+    icon: Settings,
+  },
+];
+
 export const DISTRIBUTOR_DASHBOARD_NAV = [
   {
     title: 'Ringkasan Bisnis',

@@ -22,6 +22,7 @@ import {
   MITRA_BISNIS_DASHBOARD_NAV,
   ADMIN_PERUSAHAAN_DASHBOARD_NAV,
   BUYER_DASHBOARD_NAV,
+  LOGISTICS_DASHBOARD_NAV,
 } from '@/constants/navigation';
 import { getStoredAuthUser, type StoredUser } from '@/lib/auth-storage';
 import { NavMain } from './nav-main';
@@ -38,6 +39,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         return BUYER_DASHBOARD_NAV;
       case 'investor':
         return INVESTOR_DASHBOARD_NAV;
+      case 'logistik':
+        return LOGISTICS_DASHBOARD_NAV;
       case 'distributor':
         return DISTRIBUTOR_DASHBOARD_NAV;
       case 'mitra_bisnis':
