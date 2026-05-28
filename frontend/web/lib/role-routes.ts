@@ -13,7 +13,7 @@ export function getRoleHomePath(role?: string | null): string {
     case 'logistik':
       return '/dashboard/logistik';
     case 'distributor':
-      return '/marketplace';
+      return '/dashboard/distributor';
     default:
       return '/marketplace';
   }

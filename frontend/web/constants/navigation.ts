@@ -314,38 +314,58 @@ export const LOGISTICS_DASHBOARD_NAV = [
 
 export const DISTRIBUTOR_DASHBOARD_NAV = [
   {
-    title: 'Ringkasan Bisnis',
+    title: 'Overview',
     url: '/dashboard/distributor',
     icon: Home,
     isActive: true,
   },
   {
-    title: 'Inventaris',
-    url: '#',
-    icon: Package,
+    title: 'Pesanan Saya',
+    url: '/dashboard/distributor/orders',
+    icon: ShoppingCart,
     items: [
-      { title: 'Stok Produk', url: '/dashboard/distributor/inventory' },
-      { title: 'Manajemen Harga', url: '/dashboard/distributor/pricing' },
-      { title: 'Produk Baru', url: '/dashboard/distributor/products/new' },
+      { title: 'Daftar Pesanan', url: '/dashboard/distributor/orders' },
+      { title: 'Riwayat Pesanan', url: '/dashboard/distributor/orders/history' },
     ],
   },
   {
-    title: 'Penjualan',
-    url: '#',
+    title: 'Katalog B2B',
+    url: '/dashboard/distributor/catalog',
     icon: Store,
+  },
+  {
+    title: 'Mitra Petani',
+    url: '/dashboard/distributor/suppliers',
+    icon: Handshake,
+  },
+  {
+    title: 'Stok Distribusi',
+    url: '/dashboard/distributor/inventory',
+    icon: Boxes,
+  },
+  {
+    title: 'Keuangan',
+    url: '/dashboard/distributor/finance',
+    icon: Wallet,
     items: [
-      { title: 'Pesanan Baru', url: '/dashboard/distributor/orders' },
-      {
-        title: 'Riwayat Penjualan',
-        url: '/dashboard/distributor/sales-history',
-      },
-      { title: 'Pelanggan', url: '/dashboard/distributor/customers' },
+      { title: 'Ringkasan Modal', url: '/dashboard/distributor/finance' },
+      { title: 'Daftar Invoice', url: '/dashboard/distributor/finance/invoices' },
     ],
   },
   {
-    title: 'Logistik',
-    url: '/dashboard/distributor/logistics',
-    icon: Truck,
+    title: 'Analisis Bisnis',
+    url: '/dashboard/distributor/analytics',
+    icon: BarChart3,
+  },
+  {
+    title: 'Notifikasi',
+    url: '/dashboard/distributor/notifications',
+    icon: Bell,
+  },
+  {
+    title: 'Pengaturan Bisnis',
+    url: '/dashboard/distributor/settings',
+    icon: Settings,
   },
 ];
 
