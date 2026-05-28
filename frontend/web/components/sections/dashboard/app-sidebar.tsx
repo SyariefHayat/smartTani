@@ -23,6 +23,7 @@ import {
   ADMIN_PERUSAHAAN_DASHBOARD_NAV,
   BUYER_DASHBOARD_NAV,
   LOGISTICS_DASHBOARD_NAV,
+  SISWA_DASHBOARD_NAV,
 } from '@/constants/navigation';
 import { getStoredAuthUser, type StoredUser } from '@/lib/auth-storage';
 import { NavMain } from './nav-main';
@@ -49,6 +50,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         return ADMIN_PERUSAHAAN_DASHBOARD_NAV;
       case 'academy':
         return ACADEMY_DASHBOARD_NAV;
+      case 'siswa':
+        return SISWA_DASHBOARD_NAV;
       default:
         return BUYER_DASHBOARD_NAV;
     }

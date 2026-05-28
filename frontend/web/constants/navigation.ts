@@ -23,6 +23,7 @@ import {
   MapPin,
   Star,
   Bell,
+  Award,
 } from 'lucide-react';
 
 export const HEADER_NAV: NavItem[] = [
@@ -469,6 +470,50 @@ export const ACADEMY_DASHBOARD_NAV = [
       { title: 'Jadwal Webinar', url: '/dashboard/academy/webinars' },
       { title: 'Workshop', url: '/dashboard/academy/workshops' },
     ],
+  },
+];
+
+export const SISWA_DASHBOARD_NAV = [
+  {
+    title: 'Overview Belajar',
+    url: '/dashboard/siswa',
+    icon: Home,
+    isActive: true,
+  },
+  {
+    title: 'Katalog Kursus',
+    url: '/dashboard/siswa/courses',
+    icon: GraduationCap,
+  },
+  {
+    title: 'Kursus Saya',
+    url: '/dashboard/siswa/my-courses',
+    icon: ClipboardList,
+  },
+  {
+    title: 'Sertifikat Saya',
+    url: '/dashboard/siswa/certificates',
+    icon: Award,
+  },
+  {
+    title: 'Webinar & Event',
+    url: '/dashboard/siswa/webinars',
+    icon: Activity,
+  },
+  {
+    title: 'Jalur Belajar',
+    url: '/dashboard/siswa/learning-paths',
+    icon: TrendingUp,
+  },
+  {
+    title: 'Notifikasi',
+    url: '/dashboard/siswa/notifications',
+    icon: Bell,
+  },
+  {
+    title: 'Pengaturan',
+    url: '/dashboard/siswa/settings',
+    icon: Settings,
   },
 ];
 
