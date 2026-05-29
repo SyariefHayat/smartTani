@@ -80,7 +80,7 @@ export function CheckoutSummary({
           </div>
         </CardContent>
         <CardFooter>
-          <Button 
+          <Button
             type="submit"
             className="w-full bg-green-600 hover:bg-green-700 h-12 text-lg font-bold"
             disabled={isSubmitting}

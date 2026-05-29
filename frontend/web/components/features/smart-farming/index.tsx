@@ -3,19 +3,18 @@
 import * as React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import {
-  Cpu,
-  Wifi,
   Bot,
   Sparkles,
   Activity,
-  Brain,
   ArrowRight,
-  Zap,
   RefreshCw,
   CheckCircle2,
+  AlertTriangle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { useQuery } from '@tanstack/react-query';
+import { landService } from '@/services/land';
 
 import { SmartFarmingHeader } from './SmartFarmingHeader';
 import { SensorOverview } from './SensorOverview';
@@ -126,9 +125,98 @@ const INITIAL_DEVICES: IoTDevice[] = [
 
 export function SmartFarmingManagement() {
   const [sensors, setSensors] = React.useState<SensorData[]>(INITIAL_SENSORS);
-  const [tasks, setTasks] = React.useState<AutomationTask[]>(INITIAL_TASKS);
+  const [tasks] = React.useState<AutomationTask[]>(INITIAL_TASKS);
   const [devices, setDevices] = React.useState<IoTDevice[]>(INITIAL_DEVICES);
   const [isSyncing, setIsSyncing] = React.useState(false);
+
+  // Fetch land data directly from database via API as health proxy and dynamic data-source
+  const {
+    data: lands = [],
+    error: errorLands,
+    refetch,
+    isRefetching,
+  } = useQuery({
+    queryKey: ['farmer-lands-for-smartfarming'],
+    queryFn: () => landService.getLands(),
+  });
+
+  const isOffline = !!errorLands;
+
+  React.useEffect(() => {
+    if (isOffline) {
+      toast.error('Layanan smart farming offline. Menggunakan data demo lokal.');
+    }
+  }, [isOffline]);
+
+  // Generate dynamic sensor readings based on database lands when online
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isOffline || !lands || lands.length === 0) {
+        setSensors(INITIAL_SENSORS);
+        setDevices(INITIAL_DEVICES);
+        return;
+      }
+
+      const sens: SensorData[] = [];
+      lands.forEach((land, idx) => {
+        sens.push({
+          id: `SNS-L${idx + 1}-1`,
+          name: `Sensor Kelembaban - ${land.name}`,
+          type: 'moisture',
+          value: 40 + Math.round(Math.random() * 20),
+          unit: '%',
+          status: 'normal',
+          lastReading: new Date().toISOString(),
+        });
+        sens.push({
+          id: `SNS-L${idx + 1}-2`,
+          name: `Sensor pH Tanah - ${land.name}`,
+          type: 'ph',
+          value: 5.5 + Math.round(Math.random() * 1.5 * 10) / 10,
+          unit: 'pH',
+          status: 'normal',
+          lastReading: new Date().toISOString(),
+        });
+      });
+
+      setSensors(sens.length > 0 ? sens : INITIAL_SENSORS);
+
+      const devList: IoTDevice[] = [
+        {
+          id: 'DEV-GW01',
+          name: 'IoT Smart Gateway Hub 01',
+          location: 'Gudang Utama',
+          status: 'online',
+          battery: 100,
+          signal: 95,
+        },
+      ];
+
+      lands.forEach((land, idx) => {
+        devList.push({
+          id: `DEV-NODE-L${idx + 1}`,
+          name: `Node Sensor ${land.name}`,
+          location: land.name,
+          status: 'online',
+          battery: Math.max(10, 100 - idx * 12 - Math.round(Math.random() * 5)),
+          signal: Math.max(50, 90 - idx * 8 - Math.round(Math.random() * 5)),
+        });
+      });
+
+      devList.push({
+        id: 'DEV-PMP01',
+        name: 'Smart Pump Valve Control',
+        location: 'Pompa Irigasi',
+        status: 'offline',
+        battery: 0,
+        signal: 0,
+      });
+
+      setDevices(devList);
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [lands, isOffline]);
 
   const handleRefresh = React.useCallback(() => {
     setIsSyncing(true);
@@ -148,11 +236,12 @@ export function SmartFarmingManagement() {
             return { ...s, value: val, lastReading: new Date().toISOString() };
           })
         );
+        refetch();
         return 'Data sensor berhasil disinkronkan';
       },
       error: 'Gagal sinkronisasi data IoT',
     });
-  }, []);
+  }, [refetch]);
 
   const handleConfigure = () => {
     toast.info('Halaman konfigurasi aturan otomatisasi sedang dipersiapkan.');
@@ -175,6 +264,26 @@ export function SmartFarmingManagement() {
           onConfigure={handleConfigure}
           onAddDevice={handleAddDevice}
         />
+
+        {isOffline && (
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
+              <p>
+                Layanan IoT Offline: Gagal sinkronisasi data teraktual. Menggunakan data demo lokal.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
+              onClick={() => refetch()}
+              disabled={isRefetching}
+            >
+              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
+            </Button>
+          </div>
+        )}
 
         {/* Real-time Sensors Overview Grid */}
         <div className="space-y-3">

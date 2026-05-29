@@ -45,6 +45,10 @@ export function FinanceTable<TData>({
 }: FinanceTableProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
+  const { pageIndex, pageSize } = table.getState().pagination;
+  const fromRow = totalTransactions === 0 ? 0 : pageIndex * pageSize + 1;
+  const toRow = Math.min((pageIndex + 1) * pageSize, totalTransactions);
+
   return (
     <Card className="w-full border border-slate-200 bg-white">
       <CardContent className="space-y-3 pt-4">
@@ -154,16 +158,27 @@ export function FinanceTable<TData>({
 
         {/* Table Pagination Controls */}
         <div className="flex items-center justify-between gap-4 pt-2">
-          <div className="text-xs font-semibold text-slate-500">
-            Total {totalTransactions} transaksi
+          <div className="text-xs text-muted-foreground">
+            {totalTransactions === 0 ? (
+              '0 transaksi ditemukan'
+            ) : (
+              <>
+                Menampilkan{' '}
+                <span className="font-semibold text-slate-900">
+                  {fromRow}–{toRow}
+                </span>{' '}
+                dari <span className="font-semibold text-slate-900">{totalTransactions}</span>{' '}
+                transaksi
+              </>
+            )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <Button
               variant="outline"
               size="sm"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="cursor-pointer text-xs font-semibold"
+              className="cursor-pointer text-slate-700 bg-white border-slate-200 text-xs font-semibold hover:bg-slate-50 h-8"
             >
               Sebelumnya
             </Button>
@@ -172,7 +187,7 @@ export function FinanceTable<TData>({
               size="sm"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
-              className="cursor-pointer text-xs font-semibold"
+              className="cursor-pointer text-slate-700 bg-white border-slate-200 text-xs font-semibold hover:bg-slate-50 h-8"
             >
               Berikutnya
             </Button>

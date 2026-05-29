@@ -20,7 +20,11 @@ export default function FarmerOrderDetailPage() {
   const orderId = params.id as string;
   const queryClient = useQueryClient();
 
-  const { data: orderData, isLoading: isOrderLoading, isError: isOrderError } = useQuery({
+  const {
+    data: orderData,
+    isLoading: isOrderLoading,
+    isError: isOrderError,
+  } = useQuery({
     queryKey: ['farmer-order', orderId],
     queryFn: () => orderService.getOrderById(orderId),
   });
@@ -76,8 +80,8 @@ export default function FarmerOrderDetailPage() {
 
   return (
     <div className="space-y-6">
-      <Link 
-        href="/dashboard/orders" 
+      <Link
+        href="/dashboard/orders"
         className="inline-flex items-center text-sm text-gray-500 hover:text-green-600 transition-colors"
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
@@ -91,11 +95,12 @@ export default function FarmerOrderDetailPage() {
             <OrderStatusBadge status={order.status} />
           </div>
           <p className="text-sm text-gray-500">
-            Diterima pada {format(new Date(order.created_at), 'dd MMMM yyyy, HH:mm', { locale: localeId })}
+            Diterima pada{' '}
+            {format(new Date(order.created_at), 'dd MMMM yyyy, HH:mm', { locale: localeId })}
           </p>
         </div>
         {showConfirmButton && (
-          <Button 
+          <Button
             className="bg-green-600 hover:bg-green-700"
             onClick={() => confirmOrderMutation.mutate()}
             disabled={confirmOrderMutation.isPending}
@@ -154,7 +159,8 @@ export default function FarmerOrderDetailPage() {
                 <p className="text-sm text-gray-600">{shippingAddress.phone_number}</p>
               </div>
               <div className="text-sm text-gray-600 leading-relaxed">
-                {shippingAddress.full_address}<br />
+                {shippingAddress.full_address}
+                <br />
                 {shippingAddress.city}, {shippingAddress.province}, {shippingAddress.postal_code}
               </div>
               {order.notes && (

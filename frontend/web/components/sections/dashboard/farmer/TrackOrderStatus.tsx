@@ -225,6 +225,10 @@ export function TrackOrderStatus() {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [activeStatusFilter, setActiveStatusFilter] = React.useState<string | null>(null);
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
   const {
     data: apiResponse,
@@ -270,18 +274,23 @@ export function TrackOrderStatus() {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    initialState: {
-      pagination: {
-        pageSize: 10,
-      },
-    },
+    onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination,
     },
   });
+
+  React.useEffect(() => {
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+  }, [activeStatusFilter, columnFilters]);
+
+  const totalRows = table.getFilteredRowModel().rows.length;
+  const fromRow = totalRows === 0 ? 0 : pagination.pageIndex * pagination.pageSize + 1;
+  const toRow = Math.min((pagination.pageIndex + 1) * pagination.pageSize, totalRows);
 
   const stats = React.useMemo(() => {
     const rawOrders = apiResponse?.data?.orders || [];
@@ -561,24 +570,38 @@ export function TrackOrderStatus() {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredRowModel().rows.length} pesanan ditemukan
+        <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100 mt-4">
+          <div className="text-sm text-muted-foreground">
+            {isLoading ? (
+              <div className="h-4 w-48 animate-pulse bg-slate-100 rounded inline-block" />
+            ) : totalRows === 0 ? (
+              '0 pesanan ditemukan'
+            ) : (
+              <>
+                Menampilkan{' '}
+                <span className="font-semibold text-slate-900">
+                  {fromRow}–{toRow}
+                </span>{' '}
+                dari <span className="font-semibold text-slate-900">{totalRows}</span> pesanan
+              </>
+            )}
           </div>
-          <div className="space-x-2">
+          <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
+              className="cursor-pointer text-slate-700 bg-white"
               onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
+              disabled={isLoading || !table.getCanPreviousPage()}
             >
               Sebelumnya
             </Button>
             <Button
               variant="outline"
               size="sm"
+              className="cursor-pointer text-slate-700 bg-white"
               onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
+              disabled={isLoading || !table.getCanNextPage()}
             >
               Berikutnya
             </Button>

@@ -16,16 +16,16 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  Loader2, 
-  Save, 
-  Send, 
-  Info, 
+import {
+  Loader2,
+  Save,
+  Send,
+  Info,
   AlertCircle,
   FileUp,
   MapPin,
   TrendingUp,
-  Calendar
+  Calendar,
 } from 'lucide-react';
 
 const proposalFormSchema = z.object({
@@ -81,7 +81,7 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
   });
 
   const handleAction = (type: 'draft' | 'submit') => {
-    // For draft we might want to bypass validation, but for Q1 
+    // For draft we might want to bypass validation, but for Q1
     // let's just use the same validation or a relaxed one.
     // The requirement says "Petani bisa buat dan submit".
     form.handleSubmit((values) => onSubmit(values, type))();
@@ -107,7 +107,10 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
                   <FormItem>
                     <FormLabel>Judul Proposal</FormLabel>
                     <FormControl>
-                      <Input placeholder="Contoh: Budidaya Padi Organik Cianjur Tahap 1" {...field} />
+                      <Input
+                        placeholder="Contoh: Budidaya Padi Organik Cianjur Tahap 1"
+                        {...field}
+                      />
                     </FormControl>
                     <FormDescription>Gunakan judul yang menarik bagi investor</FormDescription>
                     <FormMessage />
@@ -139,7 +142,11 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
                           type="number"
                           step="0.1"
                           {...field}
-                          value={typeof field.value === 'number' || typeof field.value === 'string' ? field.value : ''}
+                          value={
+                            typeof field.value === 'number' || typeof field.value === 'string'
+                              ? field.value
+                              : ''
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -236,7 +243,11 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
                         <Input
                           type="number"
                           {...field}
-                          value={typeof field.value === 'number' || typeof field.value === 'string' ? field.value : ''}
+                          value={
+                            typeof field.value === 'number' || typeof field.value === 'string'
+                              ? field.value
+                              : ''
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -254,7 +265,11 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
                           type="number"
                           step="0.1"
                           {...field}
-                          value={typeof field.value === 'number' || typeof field.value === 'string' ? field.value : ''}
+                          value={
+                            typeof field.value === 'number' || typeof field.value === 'string'
+                              ? field.value
+                              : ''
+                          }
                         />
                       </FormControl>
                       <FormDescription>Estimasi bagi hasil untuk investor</FormDescription>
@@ -274,7 +289,11 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
                         <Input
                           type="number"
                           {...field}
-                          value={typeof field.value === 'number' || typeof field.value === 'string' ? field.value : ''}
+                          value={
+                            typeof field.value === 'number' || typeof field.value === 'string'
+                              ? field.value
+                              : ''
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -314,10 +333,10 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
                   <FormItem>
                     <FormLabel>Deskripsi Proyek</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Jelaskan secara mendalam tentang proyek Anda..." 
+                      <Textarea
+                        placeholder="Jelaskan secara mendalam tentang proyek Anda..."
                         className="min-h-[150px]"
-                        {...field} 
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -331,9 +350,9 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
                   <FormItem>
                     <FormLabel>Penggunaan Dana</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Rincian alokasi dana (bibit, pupuk, tenaga kerja, dll)..." 
-                        {...field} 
+                      <Textarea
+                        placeholder="Rincian alokasi dana (bibit, pupuk, tenaga kerja, dll)..."
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -347,9 +366,9 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
                   <FormItem>
                     <FormLabel>Analisis Risiko</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Apa saja risiko yang mungkin terjadi dan mitigasinya?" 
-                        {...field} 
+                      <Textarea
+                        placeholder="Apa saja risiko yang mungkin terjadi dan mitigasinya?"
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -371,7 +390,9 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
               <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center bg-gray-50">
                 <FileUp className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                 <p className="text-sm text-gray-600">Klik untuk upload atau drag & drop file PDF</p>
-                <p className="text-xs text-gray-400 mt-1">Sertifikat tanah, izin usaha, atau profil kelompok tani</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  Sertifikat tanah, izin usaha, atau profil kelompok tani
+                </p>
                 <Button variant="outline" size="sm" className="mt-4" type="button">
                   Pilih File
                 </Button>
@@ -391,13 +412,14 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
               <div className="bg-white p-3 rounded-lg border border-yellow-200 flex gap-3">
                 <AlertCircle className="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" />
                 <p className="text-xs text-yellow-800 leading-relaxed">
-                  Setelah disubmit, proposal akan direview oleh Admin dalam 1-3 hari kerja sebelum dibuka untuk pendanaan.
+                  Setelah disubmit, proposal akan direview oleh Admin dalam 1-3 hari kerja sebelum
+                  dibuka untuk pendanaan.
                 </p>
               </div>
-              
-              <Button 
+
+              <Button
                 type="button"
-                variant="outline" 
+                variant="outline"
                 className="w-full h-11 border-green-600 text-green-700 hover:bg-green-50"
                 onClick={() => handleAction('draft')}
                 disabled={isSubmitting}
@@ -405,7 +427,7 @@ export function ProposalForm({ onSubmit, isSubmitting, defaultValues }: Proposal
                 <Save className="w-4 h-4 mr-2" />
                 Simpan Draft
               </Button>
-              <Button 
+              <Button
                 type="button"
                 className="w-full h-11 bg-green-600 hover:bg-green-700 font-bold"
                 onClick={() => handleAction('submit')}

@@ -6,9 +6,9 @@ import InvestmentForm from '@/components/sections/investments/InvestmentForm';
 import RelatedInvestments from '@/components/sections/investments/RelatedInvestments';
 
 interface InvestasiDetailPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export function generateStaticParams() {

@@ -69,8 +69,15 @@ export default function FarmerProductsPage() {
   const getStatusBadge = (product: Product) => {
     if (product.status === 'inactive') return <Badge variant="secondary">Nonaktif</Badge>;
     if (product.stock <= 0) return <Badge variant="destructive">Habis</Badge>;
-    if (product.status === 'pending') return <Badge variant="outline" className="text-orange-500 border-orange-500">Pending</Badge>;
-    return <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none">Aktif</Badge>;
+    if (product.status === 'pending')
+      return (
+        <Badge variant="outline" className="text-orange-500 border-orange-500">
+          Pending
+        </Badge>
+      );
+    return (
+      <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none">Aktif</Badge>
+    );
   };
 
   return (
@@ -102,12 +109,24 @@ export default function FarmerProductsPage() {
             {isLoading ? (
               [...Array(5)].map((_, i) => (
                 <TableRow key={i}>
-                  <TableCell><Skeleton className="h-10 w-40" /></TableCell>
-                  <TableCell><Skeleton className="h-6 w-20" /></TableCell>
-                  <TableCell><Skeleton className="h-6 w-24" /></TableCell>
-                  <TableCell><Skeleton className="h-6 w-12" /></TableCell>
-                  <TableCell><Skeleton className="h-6 w-16" /></TableCell>
-                  <TableCell><Skeleton className="h-8 w-8 ml-auto" /></TableCell>
+                  <TableCell>
+                    <Skeleton className="h-10 w-40" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-6 w-20" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-6 w-24" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-6 w-12" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-6 w-16" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-8 w-8 ml-auto" />
+                  </TableCell>
                 </TableRow>
               ))
             ) : products.length === 0 ? (
@@ -123,7 +142,9 @@ export default function FarmerProductsPage() {
                   <TableCell className="font-medium">{product.title}</TableCell>
                   <TableCell>{product.category}</TableCell>
                   <TableCell>Rp {product.price_per_unit.toLocaleString('id-ID')}</TableCell>
-                  <TableCell>{product.stock} {product.unit}</TableCell>
+                  <TableCell>
+                    {product.stock} {product.unit}
+                  </TableCell>
                   <TableCell>{getStatusBadge(product)}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
@@ -139,7 +160,7 @@ export default function FarmerProductsPage() {
                           Edit
                         </DropdownMenuItem>
                         {product.status === 'active' ? (
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             className="text-red-600 focus:text-red-600"
                             onClick={() => deactivateMutation.mutate(product.id || product._id)}
                           >
@@ -162,9 +183,9 @@ export default function FarmerProductsPage() {
         </Table>
       </div>
 
-      <ProductForm 
-        open={isFormOpen} 
-        onOpenChange={setIsFormOpen} 
+      <ProductForm
+        open={isFormOpen}
+        onOpenChange={setIsFormOpen}
         product={selectedProduct}
         categories={categories}
       />

@@ -13,13 +13,19 @@ export default function CreateProposalPage() {
   const router = useRouter();
 
   const createMutation = useMutation({
-    mutationFn: async ({ values, action }: { values: ProposalFormValues; action: 'draft' | 'submit' }) => {
+    mutationFn: async ({
+      values,
+      action,
+    }: {
+      values: ProposalFormValues;
+      action: 'draft' | 'submit';
+    }) => {
       // 1. Create the proposal (backend defaults status to 'draft')
       const response = await investmentService.createProposal({
         ...values,
         harvest_date_estimated: new Date(values.harvest_date_estimated).toISOString(),
       });
-      
+
       const proposalId = response.data.id;
 
       // 2. If action is 'submit', call submit endpoint
@@ -32,8 +38,8 @@ export default function CreateProposalPage() {
     onSuccess: (_, variables) => {
       const isSubmit = variables.action === 'submit';
       toast.success(isSubmit ? 'Proposal Disubmit' : 'Draft Disimpan', {
-        description: isSubmit 
-          ? 'Proposal Anda telah dikirim ke admin untuk direview.' 
+        description: isSubmit
+          ? 'Proposal Anda telah dikirim ke admin untuk direview.'
           : 'Proposal Anda telah disimpan sebagai draft.',
       });
       router.push('/dashboard/proposals');
@@ -51,8 +57,8 @@ export default function CreateProposalPage() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <Link 
-        href="/dashboard/proposals" 
+      <Link
+        href="/dashboard/proposals"
         className="inline-flex items-center text-sm text-gray-500 hover:text-green-600 mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
@@ -61,13 +67,12 @@ export default function CreateProposalPage() {
 
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Buat Proposal Investasi</h1>
-        <p className="text-gray-500 mt-1">Lengkapi data proyek pertanian Anda untuk mendapatkan pendanaan.</p>
+        <p className="text-gray-500 mt-1">
+          Lengkapi data proyek pertanian Anda untuk mendapatkan pendanaan.
+        </p>
       </div>
 
-      <ProposalForm 
-        onSubmit={handleSubmit} 
-        isSubmitting={createMutation.isPending} 
-      />
+      <ProposalForm onSubmit={handleSubmit} isSubmitting={createMutation.isPending} />
     </div>
   );
 }

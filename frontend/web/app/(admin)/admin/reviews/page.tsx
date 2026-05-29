@@ -146,6 +146,12 @@ export default function AdminReviewsModerationPage() {
     },
   });
 
+  const totalPages = React.useMemo(() => {
+    if (!data || !data.meta) return 1;
+    const meta = data.meta as any;
+    return meta.totalPages ?? Math.ceil(meta.total / meta.limit) ?? 1;
+  }, [data]);
+
   // Calculate quick stats from all items in database
   const stats = React.useMemo(() => {
     const stored = JSON.parse(
@@ -478,7 +484,7 @@ export default function AdminReviewsModerationPage() {
       </Card>
 
       {/* Pagination component */}
-      {data && data.meta.totalPages > 1 && (
+      {data && totalPages > 1 && (
         <div className="mt-4 flex justify-center">
           <Pagination>
             <PaginationContent>
@@ -492,7 +498,7 @@ export default function AdminReviewsModerationPage() {
                   className={page <= 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
                 />
               </PaginationItem>
-              {[...Array(data.meta.totalPages)].map((_, i) => (
+              {[...Array(totalPages)].map((_, i) => (
                 <PaginationItem key={i}>
                   <PaginationLink
                     href="#"
@@ -512,10 +518,10 @@ export default function AdminReviewsModerationPage() {
                   href="#"
                   onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
-                    if (page < data.meta.totalPages) setPage(page + 1);
+                    if (page < totalPages) setPage(page + 1);
                   }}
                   className={
-                    page >= data.meta.totalPages
+                    page >= totalPages
                       ? 'pointer-events-none opacity-50'
                       : 'cursor-pointer'
                   }

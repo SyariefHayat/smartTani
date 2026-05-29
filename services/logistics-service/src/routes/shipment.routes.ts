@@ -15,10 +15,7 @@ router.get(
   shipmentController.getShipments
 );
 
-router.get(
-  '/:order_id',
-  shipmentController.trackShipment
-);
+router.get('/:order_id', shipmentController.trackShipment);
 
 router.patch(
   '/:order_id/pickup',

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Eye, Layers, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -29,6 +30,22 @@ export function CategoryTable({
   isLoading,
 }: CategoryTableProps) {
   const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  const totalRows = categories.length;
+  const totalPages = Math.ceil(totalRows / pageSize);
+  const fromRow = totalRows === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const toRow = Math.min(currentPage * pageSize, totalRows);
+
+  const paginatedCategories = categories.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   return (
     <Card className="w-full bg-white">
@@ -70,11 +87,11 @@ export function CategoryTable({
                     ))}
                   </TableRow>
                 ))
-              ) : categories.length > 0 ? (
-                categories.map((cat, idx) => (
+              ) : paginatedCategories.length > 0 ? (
+                paginatedCategories.map((cat, idx) => (
                   <TableRow key={cat.id}>
                     <TableCell className="text-center font-medium text-slate-500 text-sm">
-                      {idx + 1}
+                      {(currentPage - 1) * pageSize + idx + 1}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -147,15 +164,39 @@ export function CategoryTable({
         </div>
 
         {/* Pagination matching ProductTable style */}
-        <div className="flex items-center justify-between gap-4 pt-2">
+        <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100">
           <div className="text-sm text-muted-foreground">
-            {categories.length} kategori ditemukan
+            {isLoading ? (
+              <div className="h-4 w-48 animate-pulse bg-slate-100 rounded inline-block" />
+            ) : totalRows === 0 ? (
+              '0 kategori ditemukan'
+            ) : (
+              <>
+                Menampilkan{' '}
+                <span className="font-semibold text-slate-900">
+                  {fromRow}–{toRow}
+                </span>{' '}
+                dari <span className="font-semibold text-slate-900">{totalRows}</span> kategori
+              </>
+            )}
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" disabled>
+            <Button
+              variant="outline"
+              size="sm"
+              className="cursor-pointer text-slate-700 bg-white"
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={isLoading || currentPage === 1}
+            >
               Sebelumnya
             </Button>
-            <Button variant="outline" size="sm" disabled>
+            <Button
+              variant="outline"
+              size="sm"
+              className="cursor-pointer text-slate-700 bg-white"
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={isLoading || currentPage === totalPages || totalPages === 0}
+            >
               Berikutnya
             </Button>
           </div>

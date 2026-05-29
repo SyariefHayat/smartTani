@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   Select,
@@ -6,22 +6,17 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 
 interface UserFilterProps {
-  role: string
-  status: string
-  onRoleChange: (value: string) => void
-  onStatusChange: (value: string) => void
+  role: string;
+  status: string;
+  onRoleChange: (value: string) => void;
+  onStatusChange: (value: string) => void;
 }
 
-export function UserFilter({
-  role,
-  status,
-  onRoleChange,
-  onStatusChange,
-}: UserFilterProps) {
+export function UserFilter({ role, status, onRoleChange, onStatusChange }: UserFilterProps) {
   return (
     <div className="flex flex-wrap gap-4 items-end mb-6">
       <div className="space-y-1.5">
@@ -56,5 +51,5 @@ export function UserFilter({
         </Select>
       </div>
     </div>
-  )
+  );
 }

@@ -9,7 +9,10 @@ describe('Template Engine', () => {
     if (!fs.existsSync(path.join(__dirname, 'templates'))) {
       fs.mkdirSync(path.join(__dirname, 'templates'), { recursive: true });
     }
-    fs.writeFileSync(testTemplatePath, '<html><body>Hello {{name}}! Your code is {{code}}.</body></html>');
+    fs.writeFileSync(
+      testTemplatePath,
+      '<html><body>Hello {{name}}! Your code is {{code}}.</body></html>'
+    );
   });
 
   afterAll(() => {

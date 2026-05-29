@@ -23,7 +23,15 @@ export interface Proposal {
   use_of_funds: string;
   risk_notes: string;
   supporting_docs: string[];
-  status: 'pending' | 'submitted' | 'approved' | 'rejected' | 'open_for_funding' | 'funded' | 'completed' | 'closed';
+  status:
+    | 'pending'
+    | 'submitted'
+    | 'approved'
+    | 'rejected'
+    | 'open_for_funding'
+    | 'funded'
+    | 'completed'
+    | 'closed';
   created_at: string;
   updated_at: string;
 }
@@ -119,7 +127,10 @@ export const investmentService = {
     return response.data;
   },
 
-  updateProposal: async (id: string, data: Partial<CreateProposalInput>): Promise<GetProposalResponse> => {
+  updateProposal: async (
+    id: string,
+    data: Partial<CreateProposalInput>
+  ): Promise<GetProposalResponse> => {
     const response = await api.patch(`/proposals/${id}`, data);
     return response.data;
   },

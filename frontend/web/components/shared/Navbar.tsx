@@ -24,9 +24,9 @@ export function Navbar() {
             Investasi
           </Link>
           {user?.role === 'investor' && (
-              <Link href="/portfolio" className="text-sm font-medium hover:text-green-600">
-                Portofolio
-              </Link>
+            <Link href="/portfolio" className="text-sm font-medium hover:text-green-600">
+              Portofolio
+            </Link>
           )}
           {user ? (
             <>
@@ -41,10 +41,14 @@ export function Navbar() {
           ) : (
             <>
               <Link href="/login">
-                <Button variant="ghost" size="sm">Login</Button>
+                <Button variant="ghost" size="sm">
+                  Login
+                </Button>
               </Link>
               <Link href="/register">
-                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">Daftar</Button>
+                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">
+                  Daftar
+                </Button>
               </Link>
             </>
           )}

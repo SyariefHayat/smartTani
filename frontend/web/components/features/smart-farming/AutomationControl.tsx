@@ -91,10 +91,7 @@ export function AutomationControl({ tasks }: AutomationControlProps) {
             </div>
           </div>
         ))}
-        <Button
-          className="w-full bg-slate-900 text-white hover:bg-slate-800 text-xs font-semibold cursor-pointer h-9 mt-1"
-          variant="outline"
-        >
+        <Button className="w-full bg-slate-900 text-white hover:bg-slate-800 text-xs font-semibold cursor-pointer h-9 mt-1">
           Konfigurasi Semua Jadwal
         </Button>
       </CardContent>

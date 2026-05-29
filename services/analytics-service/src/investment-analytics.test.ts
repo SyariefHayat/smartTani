@@ -21,7 +21,7 @@ describe('GET /analytics/investments', () => {
       total_disbursed: 50000000,
       active_proposals: 5,
       completed_proposals: 2,
-      average_roi: 12.5
+      average_roi: 12.5,
     };
 
     (investmentAnalyticsService.getInvestmentAnalytics as jest.Mock).mockResolvedValue(mockData);

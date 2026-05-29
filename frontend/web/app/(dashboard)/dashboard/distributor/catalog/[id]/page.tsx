@@ -56,8 +56,9 @@ const MOCK_PRODUCT_DETAIL = {
   },
 };
 
-export default function DistributorProductDetailPage({ params }: { params: { id: string } }) {
-  const productId = params.id || 'prod-001';
+export default function DistributorProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = React.use(params);
+  const productId = resolvedParams.id || 'prod-001';
   const router = useRouter();
   const [isOffline, setIsOffline] = React.useState(false);
   const [quantity, setQuantity] = React.useState(0);

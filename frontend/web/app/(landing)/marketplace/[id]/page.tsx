@@ -8,9 +8,9 @@ import ProductTabs from '@/components/sections/marketplace/ProductTabs';
 import RelatedProducts from '@/components/sections/marketplace/RelatedProducts';
 
 interface MarketplaceDetailPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export function generateStaticParams() {

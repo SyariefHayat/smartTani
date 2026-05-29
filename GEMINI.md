@@ -12,9 +12,9 @@ SmartTani is an **agricultural platform** connecting farmers, buyers, investors,
 | Buyer              | `buyer`       | `/dashboard/buyer`       | Purchases products, tracks orders      |
 | Investor           | `investor`    | `/dashboard/investor`    | Invests in farming proposals           |
 | Distributor        | `distributor` | `/dashboard/distributor` | Bulk B2B purchases, inventory tracking |
-| Logistik (Courier) | `logistik`    | `/dashboard/logistik`    | Shipment pickup, transit, delivery     |
-| Siswa (Student)    | `siswa`       | `/dashboard/siswa`       | Enrolls in academy courses             |
-| Instruktur         | `instruktur`  | `/dashboard/instruktur`  | Creates & manages academy courses      |
+| Logistik (Courier) | `logistik`    | `/dashboard/logistic`    | Shipment pickup, transit, delivery     |
+| Siswa (Student)    | `siswa`       | `/dashboard/student`     | Enrolls in academy courses             |
+| Instruktur         | `instruktur`  | `/dashboard/instructor`  | Creates & manages academy courses      |
 | Admin              | `admin`       | `/admin`                 | Platform-wide oversight                |
 
 ---
@@ -32,7 +32,7 @@ SmartTani is an **agricultural platform** connecting farmers, buyers, investors,
 - **Forms:** React Hook Form + Zod v4
 - **Charts:** Recharts v3
 - **Icons:** Lucide React
-- **Toasts:** Sonner
+- **Toasts:** Sonner shadcn/ui
 
 ### Backend (`services/`)
 
@@ -239,6 +239,57 @@ Setiap role dashboard menggunakan layout file di `app/(dashboard)/dashboard/[rol
 - **Feature components (API-integrated):** `components/features/[domain]/ComponentName.tsx`
 - **UI primitives:** `components/ui/` (shadcn, jangan edit)
 
+### Dashboard UI & Statistics Standard (Standar UI & Statistik Dashboard)
+
+Semua dashboard role lainnya (Buyer, Investor, Distributor, Logistik, Siswa, Instruktur, Admin) wajib mengimplementasikan struktur visual halaman overview/home dan metrik/KPI yang seragam dengan **Farmer Dashboard (`SectionCard.tsx`)**:
+
+1. **Layout Grid Statistik:** Gunakan `grid gap-4 grid-cols-2 md:grid-cols-4` untuk baris metrik agar responsif dan konsisten secara visual.
+2. **Struktur & Tipografi Card (shadcn):**
+   - Gunakan komponen `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `CardFooter` dari `@/components/ui/card`.
+   - Judul metrik ditempatkan di `<CardDescription className="truncate text-xs font-semibold text-slate-500 uppercase tracking-wider">`.
+   - Nilai metrik ditempatkan di `<CardTitle className="truncate text-xl font-semibold tabular-nums lg:text-2xl text-slate-800">`.
+   - Informasi tambahan/footer diletakkan di `<CardFooter className="flex-col items-start gap-1.5 text-sm">`.
+3. **Indikator Perbandingan Tren:**
+   - Bila data perbandingan dengan bulan lalu/periode sebelumnya tersedia: gunakan persentase tren dengan ikon `ArrowUp` (warna `text-green-500` jika naik) atau `ArrowDown` (warna `text-red-500` jika turun) dalam font medium.
+   - Bila tidak ada data perbandingan: tampilkan teks pembantu/deskripsi menggunakan kelas warna abu-abu standar `text-muted-foreground` atau `text-slate-500`.
+
+### Error Handling & Service Offline Standard (Standar Penanganan Error & Layanan Offline)
+
+Setiap kali backend service terputus (offline), mengalami error server (500/503), atau REST API mengembalikan respons gagal (`isError` dari TanStack React Query bernilai `true`), dashboard HARUS mematuhi standar penanganan error berikut secara ketat demi keamanan, kestabilan, dan kenyamanan pengguna:
+
+1. **Tampilan Visual Merah yang Konsisten (Red Alert Card/Banner):**
+   - JANGAN menampilkan warning banner berwarna kuning/oranye/amber, abu-abu polos, atau teks unstyled. Gunakan desain error box merah bergaris putus-putus seperti pada Farmer Dashboard:
+     ```tsx
+     <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+       Gagal memuat data statistik / Koneksi ke server [Nama Layanan] terputus
+     </div>
+     ```
+   - Untuk banner notifikasi yang lebih informatif (jika memiliki tombol Retry):
+     ```tsx
+     <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
+       <div className="flex items-center gap-2">
+         <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
+         <p>
+           Layanan [Nama Layanan] Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
+         </p>
+       </div>
+       <Button
+         variant="outline"
+         size="sm"
+         className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px]"
+         onClick={handleRetry}
+       >
+         Coba Hubungkan Kembali
+       </Button>
+     </div>
+     ```
+2. **Safe Fallback ke Data Demo Lokal:**
+   - Aplikasi tidak boleh hancur atau memunculkan halaman kosong (white screen). Selalu definisikan data simulasi (local mock data) yang terstruktur di dalam komponen dashboard sebagai cadangan.
+   - Pemicuan error visual merah harus dibarengi dengan notifikasi push/toast `sonner` (`toast.error('Layanan sedang offline. Menggunakan data demo lokal.')`), namun halaman web tetap ter-render rapi memakai fallback data tersebut.
+3. **Standar Keamanan Koneksi & API:**
+   - JANGAN perbolehkan endpoint/routing dashboard melakukan request API tanpa melewati middleware autentikasi (`authenticate` & `authorize`).
+   - Setiap interaksi data state yang sensitif harus divalidasi menggunakan Zod schema di sisi frontend dan backend secara sinkron.
+
 ### Form Pattern
 
 ```typescript
@@ -377,7 +428,10 @@ Events yang PERLU DITAMBAH:
 - ✅ Gunakan `lucide-react` icons
 - ✅ Semua dashboard pages harus `'use client'`
 - ✅ Role guard di setiap dashboard page
-- ✅ Referensi farmer dashboard untuk pattern
+- ✅ Referensi farmer dashboard untuk pattern utama (baik data flow, layout, maupun styling)
+- ✅ **Statistik Dashboards Lain:** Samakan style UI visual metrik/KPI dengan gaya `SectionCard` Farmer Dashboard (Card shadcn, typography, layout grid `cols-2 md:cols-4`, indikator perbandingan tren hijau/merah).
+- ✅ **Standardisasi Penanganan Error:** Wajib menampilkan container/banner visual merah konsisten (`bg-red-50 text-red-500 border-red-200`) dari Farmer Dashboard jika ada backend service offline/mati atau query gagal.
+- ✅ **Fallback Data yang Aman:** Integrasikan data simulasi (local mock data) berkualitas tinggi sebagai fallback otomatis sehingga layout dashboard tetap ter-render rapi dan interaktif saat offline.
 
 ### DON'T:
 
@@ -388,6 +442,8 @@ Events yang PERLU DITAMBAH:
 - ❌ JANGAN skip loading skeleton — UX wajib
 - ❌ JANGAN buat backend endpoint tanpa auth middleware
 - ❌ JANGAN langsung panggil API tanpa service layer
+- ❌ **JANGAN pakai style error warning oranye/kuning/amber/abu-abu** ketika service down total; selalu gunakan standarisasi warna merah cerah (`red-50`/`red-200`/`red-500`) seperti Farmer Dashboard.
+- ❌ **JANGAN keluar dari konteks PRD & Microtasks** yang ada di folder `docs/` — selesaikan tugas secara modular dan tertib sesuai panduan.
 
 ---
 

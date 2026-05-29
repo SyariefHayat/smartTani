@@ -19,7 +19,7 @@ describe('GET /analytics/orders', () => {
   it('should return 200 and order analytics data for admin', async () => {
     const mockData = [
       { date: '2026-05-01', volume: 10, value: 5000000 },
-      { date: '2026-05-02', volume: 15, value: 7500000 }
+      { date: '2026-05-02', volume: 15, value: 7500000 },
     ];
 
     (orderAnalyticsService.getOrderAnalytics as jest.Mock).mockResolvedValue(mockData);

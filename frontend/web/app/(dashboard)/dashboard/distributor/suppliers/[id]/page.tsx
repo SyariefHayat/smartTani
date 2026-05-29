@@ -75,8 +75,9 @@ const MOCK_SUPPLIER_TRANSACTIONS = [
   },
 ];
 
-export default function DistributorSupplierDetailPage({ params }: { params: { id: string } }) {
-  const farmerId = params.id || 'farmer-1';
+export default function DistributorSupplierDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = React.use(params);
+  const farmerId = resolvedParams.id || 'farmer-1';
   const [isOffline, setIsOffline] = React.useState(false);
 
   // Fetch supplier

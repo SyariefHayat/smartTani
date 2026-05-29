@@ -16,10 +16,15 @@ class ProposalController {
 
   async getProposals(req: Request, res: Response, next: NextFunction) {
     try {
-      const user = (req as AppRequest).user as { id: string; role: string; email?: string; full_name?: string };
+      const user = (req as AppRequest).user as {
+        id: string;
+        role: string;
+        email?: string;
+        full_name?: string;
+      };
       // Type assertion is safe here because of validation middleware
-      const query = req.query as any; 
-      
+      const query = req.query as any;
+
       const result = await proposalService.getProposals(query, user);
       return res.status(200).json(successResponse(result.data, result.meta));
     } catch (error) {
@@ -29,9 +34,14 @@ class ProposalController {
 
   async getProposalById(req: Request, res: Response, next: NextFunction) {
     try {
-      const user = (req as AppRequest).user as { id: string; role: string; email?: string; full_name?: string };
+      const user = (req as AppRequest).user as {
+        id: string;
+        role: string;
+        email?: string;
+        full_name?: string;
+      };
       const id = req.params.id as string;
-      
+
       const proposal = await proposalService.getProposalById(id, user);
       return res.status(200).json(successResponse(proposal));
     } catch (error) {
@@ -41,9 +51,14 @@ class ProposalController {
 
   async updateProposal(req: Request, res: Response, next: NextFunction) {
     try {
-      const user = (req as AppRequest).user as { id: string; role: string; email?: string; full_name?: string };
+      const user = (req as AppRequest).user as {
+        id: string;
+        role: string;
+        email?: string;
+        full_name?: string;
+      };
       const id = req.params.id as string;
-      
+
       const proposal = await proposalService.updateProposal(id, user.id, req.body);
       return res.status(200).json(successResponse(proposal));
     } catch (error) {
@@ -53,9 +68,14 @@ class ProposalController {
 
   async submitProposal(req: Request, res: Response, next: NextFunction) {
     try {
-      const user = (req as AppRequest).user as { id: string; role: string; email?: string; full_name?: string };
+      const user = (req as AppRequest).user as {
+        id: string;
+        role: string;
+        email?: string;
+        full_name?: string;
+      };
       const id = req.params.id as string;
-      
+
       const proposal = await proposalService.submitProposal(id, user.id);
       return res.status(200).json(successResponse(proposal));
     } catch (error) {
@@ -66,7 +86,7 @@ class ProposalController {
   async approveProposal(req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.params.id as string;
-      
+
       const proposal = await proposalService.approveProposal(id);
       return res.status(200).json(successResponse(proposal));
     } catch (error) {

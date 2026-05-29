@@ -15,7 +15,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, AlertTriangle } from 'lucide-react';
 
 import { useAuthStore } from '@/stores/auth';
 import { orderService } from '@/services/order';
@@ -132,8 +132,62 @@ export function FarmerIncomingOrderList() {
     }
   }, []);
 
+  const mockOrders = React.useMemo(
+    () => [
+      {
+        id: 'ORDER-101',
+        customerName: 'Ahmad Fauzi',
+        date: new Date().toISOString(),
+        totalAmount: 150000,
+        paymentMethod: 'Online Payment',
+        status: 'paid' as OrderStatus,
+        items: [{ id: 'item-1', name: 'Pupuk Cair Super', quantity: 2, price: 75000, image: '' }],
+        platformFee: 2000,
+        shippingCost: 15000,
+        shippingAddress: {
+          recipient_name: 'Ahmad Fauzi',
+          phone_number: '081234567890',
+          full_address: 'Jl. Pemuda No. 45',
+          city: 'Lamongan',
+          province: 'Jawa Timur',
+          postal_code: '62211',
+        },
+      },
+      {
+        id: 'ORDER-102',
+        customerName: 'Siti Aminah',
+        date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        totalAmount: 85000,
+        paymentMethod: 'Manual',
+        status: 'pending_payment' as OrderStatus,
+        items: [
+          { id: 'item-2', name: 'Benih Padi Unggul 5kg', quantity: 1, price: 85000, image: '' },
+        ],
+        platformFee: 2000,
+        shippingCost: 10000,
+        shippingAddress: {
+          recipient_name: 'Siti Aminah',
+          phone_number: '082123456789',
+          full_address: 'Dusun Makmur RT 02/RW 03',
+          city: 'Gresik',
+          province: 'Jawa Timur',
+          postal_code: '61112',
+        },
+      },
+    ],
+    []
+  );
+
+  React.useEffect(() => {
+    if (isError) {
+      toast.error('Layanan pesanan sedang offline. Menggunakan data demo lokal.');
+    }
+  }, [isError]);
+
   const orders: FarmerOrder[] = React.useMemo(() => {
-    if (!data?.data?.orders) return [];
+    if (isError || !data?.data?.orders || data.data.orders.length === 0) {
+      return mockOrders;
+    }
 
     return data.data.orders.map((o) => ({
       id: o.id.slice(-6).toUpperCase(),
@@ -153,7 +207,7 @@ export function FarmerIncomingOrderList() {
       shippingCost: Number(o.shipping_cost || 0),
       shippingAddress: o.shipping_address,
     }));
-  }, [data]);
+  }, [data, isError, mockOrders]);
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -246,50 +300,36 @@ export function FarmerIncomingOrderList() {
     <div className="w-full text-slate-900">
       <div className="mx-auto flex w-full flex-col gap-6">
         <OrderHeader onExport={handleExport} />
-        {isError ? (
-          <div className="flex w-full h-[350px] flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 text-red-500 p-6 text-center text-sm font-medium shadow-xs">
-            <svg
-              className="w-10 h-10 mb-3 text-red-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
-            <p className="font-semibold text-base mb-1">Gagal Memuat Data Pesanan</p>
-            <p className="text-xs text-red-400 max-w-md mb-4">
-              Layanan order-service tidak merespon atau sedang tidak aktif. Harap periksa koneksi
-              Anda atau hubungi administrator.
-            </p>
+
+        {isError && (
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
+              <p>
+                Layanan Pesanan Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
+              </p>
+            </div>
             <Button
               variant="outline"
               size="sm"
-              className="cursor-pointer border-red-200 text-red-500 hover:bg-red-100 hover:text-red-600"
+              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
               onClick={handleRetry}
               disabled={isRefetching}
             >
-              <RefreshCw className={`mr-2 h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`} />
-              {isRefetching ? 'Mencoba ulang...' : 'Coba Lagi'}
+              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
             </Button>
           </div>
-        ) : (
-          <>
-            <OrderStats orders={orders} isLoading={isLoading} />
-            <div className="space-y-4">
-              <OrderTable
-                table={table}
-                columnsCount={columns.length}
-                pagination={data?.data?.meta}
-                isLoading={isLoading}
-              />
-            </div>
-          </>
         )}
+
+        <OrderStats orders={orders} isLoading={isLoading} />
+        <div className="space-y-4">
+          <OrderTable
+            table={table}
+            columnsCount={columns.length}
+            pagination={isError ? undefined : data?.data?.meta}
+            isLoading={isLoading}
+          />
+        </div>
       </div>
 
       {/* Global Order Detail Dialog for redirected queries */}

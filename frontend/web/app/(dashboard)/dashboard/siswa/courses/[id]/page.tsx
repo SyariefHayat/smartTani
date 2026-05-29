@@ -138,8 +138,9 @@ const MOCK_REVIEWS = {
   ],
 };
 
-export default function StudentCourseDetailPage({ params }: { params: { id: string } }) {
-  const courseId = params.id || 'course-001';
+export default function StudentCourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = React.use(params);
+  const courseId = resolvedParams.id || 'course-001';
   const router = useRouter();
   const queryClient = useQueryClient();
   const user = getStoredAuthUser();

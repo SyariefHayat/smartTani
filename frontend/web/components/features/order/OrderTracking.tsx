@@ -38,7 +38,9 @@ export function OrderTracking({ history }: OrderTrackingProps) {
 
         return (
           <div key={index} className="relative flex items-start gap-6">
-            <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-4 border-white ${isLatest ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-400'}`}>
+            <div
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-4 border-white ${isLatest ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-400'}`}
+            >
               <Icon className="h-5 w-5" />
             </div>
             <div className="flex flex-col pt-1">

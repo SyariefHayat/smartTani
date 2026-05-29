@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { type DateRange } from "react-day-picker";
+import * as React from 'react';
+import { type DateRange } from 'react-day-picker';
 
 type DateRangeContextType = {
   date: DateRange | undefined;

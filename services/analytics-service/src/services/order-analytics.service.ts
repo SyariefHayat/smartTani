@@ -21,10 +21,10 @@ class OrderAnalyticsService {
     const data = await orderAnalyticsRepository.getOrderVolumeAndValue(query);
 
     // 3. Transform data
-    const transformed = data.map(row => ({
+    const transformed = data.map((row) => ({
       date: row.date.toISOString().split('T')[0],
       volume: row.volume,
-      value: row.value
+      value: row.value,
     }));
 
     // 4. Save to cache

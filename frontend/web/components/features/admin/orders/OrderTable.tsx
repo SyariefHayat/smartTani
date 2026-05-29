@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   Table,
@@ -7,46 +7,60 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Order } from '@/services/order'
-import { formatCurrency } from '@/lib/utils'
-import { formatDate } from 'date-fns'
-import { id } from 'date-fns/locale'
-import { Eye } from 'lucide-react'
-import Link from 'next/link'
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Order } from '@/services/order';
+import { formatCurrency } from '@/lib/utils';
+import { formatDate } from 'date-fns';
+import { id } from 'date-fns/locale';
+import { Eye } from 'lucide-react';
+import Link from 'next/link';
 
 interface OrderTableProps {
-  orders: Order[]
-  loading: boolean
+  orders: Order[];
+  loading: boolean;
 }
 
 export function OrderTable({ orders, loading }: OrderTableProps) {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending_payment':
-        return <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">Menunggu Pembayaran</Badge>
+        return (
+          <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">
+            Menunggu Pembayaran
+          </Badge>
+        );
       case 'paid':
-        return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">Sudah Dibayar</Badge>
+        return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">Sudah Dibayar</Badge>;
       case 'confirmed_seller':
-        return <Badge className="bg-indigo-100 text-indigo-700 hover:bg-indigo-100">Dikonfirmasi Penjual</Badge>
+        return (
+          <Badge className="bg-indigo-100 text-indigo-700 hover:bg-indigo-100">
+            Dikonfirmasi Penjual
+          </Badge>
+        );
       case 'processing':
-        return <Badge className="bg-sky-100 text-sky-700 hover:bg-sky-100">Diproses</Badge>
+        return <Badge className="bg-sky-100 text-sky-700 hover:bg-sky-100">Diproses</Badge>;
       case 'shipped':
-        return <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-100">Dikirim</Badge>
+        return <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-100">Dikirim</Badge>;
       case 'delivered':
-        return <Badge className="bg-green-100 text-green-700 hover:bg-green-100">Diterima</Badge>
+        return <Badge className="bg-green-100 text-green-700 hover:bg-green-100">Diterima</Badge>;
       case 'completed':
-        return <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">Selesai</Badge>
+        return (
+          <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">Selesai</Badge>
+        );
       case 'cancelled':
-        return <Badge className="bg-red-100 text-red-700 hover:bg-red-100">Dibatalkan</Badge>
+        return <Badge className="bg-red-100 text-red-700 hover:bg-red-100">Dibatalkan</Badge>;
       case 'refund_requested':
-        return <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100">Permintaan Refund</Badge>
+        return (
+          <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100">
+            Permintaan Refund
+          </Badge>
+        );
       default:
-        return <Badge variant="outline">{status}</Badge>
+        return <Badge variant="outline">{status}</Badge>;
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -75,7 +89,7 @@ export function OrderTable({ orders, loading }: OrderTableProps) {
           </TableBody>
         </Table>
       </div>
-    )
+    );
   }
 
   return (
@@ -101,7 +115,9 @@ export function OrderTable({ orders, loading }: OrderTableProps) {
           ) : (
             orders.map((order) => (
               <TableRow key={order.id}>
-                <TableCell className="font-mono text-xs uppercase">{order.id.split('-')[0]}...</TableCell>
+                <TableCell className="font-mono text-xs uppercase">
+                  {order.id.split('-')[0]}...
+                </TableCell>
                 <TableCell className="text-xs">{order.buyer_id}</TableCell>
                 <TableCell>{formatCurrency(order.total_amount)}</TableCell>
                 <TableCell>{getStatusBadge(order.status)}</TableCell>
@@ -121,5 +137,5 @@ export function OrderTable({ orders, loading }: OrderTableProps) {
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }

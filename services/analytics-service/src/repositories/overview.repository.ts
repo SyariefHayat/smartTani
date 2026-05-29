@@ -13,54 +13,54 @@ class OverviewRepository {
       disbursedInvestment,
       orderBreakdown,
       pendingUsers,
-      pendingProposals
+      pendingProposals,
     ] = await Promise.all([
       // Total GMV (sum total_amount dari order status completed + delivered)
       prisma.order.aggregate({
         _sum: { total_amount: true },
-        where: { status: { in: ['completed', 'delivered'] } }
+        where: { status: { in: ['completed', 'delivered'] } },
       }),
 
       // Total GMV hari ini
       prisma.order.aggregate({
         _sum: { total_amount: true },
-        where: { 
+        where: {
           status: { in: ['completed', 'delivered'] },
-          created_at: { gte: today }
-        }
+          created_at: { gte: today },
+        },
       }),
 
       // Total user aktif
       prisma.user.count({
-        where: { status: 'active' }
+        where: { status: 'active' },
       }),
 
       // Total order hari ini
       prisma.order.count({
-        where: { created_at: { gte: today } }
+        where: { created_at: { gte: today } },
       }),
 
       // Total dana investasi tersalurkan (sum amount dari investments status active + completed)
       prisma.investment.aggregate({
         _sum: { amount: true },
-        where: { status: { in: ['paid', 'completed'] } } // Based on prisma schema status values
+        where: { status: { in: ['paid', 'completed'] } }, // Based on prisma schema status values
       }),
 
       // Breakdown order per status
       prisma.order.groupBy({
         by: ['status'],
-        _count: { id: true }
+        _count: { id: true },
       }),
 
       // Pending users
       prisma.user.count({
-        where: { status: 'pending_verification' }
+        where: { status: 'pending_verification' },
       }),
 
       // Pending proposals
       prisma.proposal.count({
-        where: { status: 'pending' }
-      })
+        where: { status: 'pending' },
+      }),
     ]);
 
     return {
@@ -74,7 +74,7 @@ class OverviewRepository {
         return acc;
       }, {}),
       pending_users: pendingUsers,
-      pending_proposals: pendingProposals
+      pending_proposals: pendingProposals,
     };
   }
 }

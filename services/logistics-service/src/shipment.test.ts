@@ -29,7 +29,9 @@ describe('GET /shipments', () => {
 
   it('should return shipments for logistik', async () => {
     (shipmentService.getShipments as jest.Mock).mockResolvedValue({
-      data: [{ id: 'ship-1', order_id: 'order-1', logistic_id: 'logistik-1', status: 'pending_pickup' }],
+      data: [
+        { id: 'ship-1', order_id: 'order-1', logistic_id: 'logistik-1', status: 'pending_pickup' },
+      ],
       meta: { total: 1, page: 1, limit: 20, total_pages: 1 },
     });
 
@@ -68,8 +70,12 @@ describe('GET /shipments/:order_id', () => {
       order_id: 'order-123',
       status: 'pending_pickup',
       status_history: [
-        { status: 'pending_pickup', notes: 'Waiting for pickup', timestamp: new Date('2026-05-14T10:00:00Z') }
-      ]
+        {
+          status: 'pending_pickup',
+          notes: 'Waiting for pickup',
+          timestamp: new Date('2026-05-14T10:00:00Z'),
+        },
+      ],
     };
 
     (shipmentService.getShipmentByOrderId as jest.Mock).mockResolvedValue(mockShipment);
@@ -86,7 +92,7 @@ describe('GET /shipments/:order_id', () => {
     (shipmentService.getShipmentByOrderId as jest.Mock).mockRejectedValue({
       statusCode: 404,
       code: 'NOT_FOUND',
-      message: 'Shipment tidak ditemukan'
+      message: 'Shipment tidak ditemukan',
     });
 
     const res = await request(app).get('/shipments/non-existent');
@@ -105,7 +111,7 @@ describe('PATCH /shipments/:order_id/pickup', () => {
     (shipmentService.pickupShipment as jest.Mock).mockResolvedValue({
       order_id: 'order-123',
       status: 'picked_up',
-      picked_up_at: new Date()
+      picked_up_at: new Date(),
     });
 
     const res = await request(app)
@@ -122,7 +128,7 @@ describe('PATCH /shipments/:order_id/pickup', () => {
     (shipmentService.pickupShipment as jest.Mock).mockRejectedValue({
       statusCode: 403,
       code: 'FORBIDDEN',
-      message: 'Anda tidak memiliki akses ke shipment ini'
+      message: 'Anda tidak memiliki akses ke shipment ini',
     });
 
     const res = await request(app)
@@ -142,7 +148,7 @@ describe('PATCH /shipments/:order_id/transit', () => {
   it('should update status to in_transit and return 200', async () => {
     (shipmentService.transitShipment as jest.Mock).mockResolvedValue({
       order_id: 'order-123',
-      status: 'in_transit'
+      status: 'in_transit',
     });
 
     const res = await request(app)
@@ -160,7 +166,7 @@ describe('PATCH /shipments/:order_id/transit', () => {
     (shipmentService.transitShipment as jest.Mock).mockRejectedValue({
       statusCode: 400,
       code: 'LOGISTICS_002',
-      message: 'Shipment harus sudah diambil (picked_up) sebelum dikirim'
+      message: 'Shipment harus sudah diambil (picked_up) sebelum dikirim',
     });
 
     const res = await request(app)
@@ -181,7 +187,7 @@ describe('PATCH /shipments/:order_id/deliver', () => {
     (shipmentService.deliverShipment as jest.Mock).mockResolvedValue({
       order_id: 'order-123',
       status: 'delivered',
-      delivered_at: new Date()
+      delivered_at: new Date(),
     });
 
     const res = await request(app)
@@ -198,7 +204,7 @@ describe('PATCH /shipments/:order_id/deliver', () => {
     (shipmentService.deliverShipment as jest.Mock).mockRejectedValue({
       statusCode: 400,
       code: 'LOGISTICS_003',
-      message: 'Shipment harus dalam status in_transit sebelum delivered'
+      message: 'Shipment harus dalam status in_transit sebelum delivered',
     });
 
     const res = await request(app)

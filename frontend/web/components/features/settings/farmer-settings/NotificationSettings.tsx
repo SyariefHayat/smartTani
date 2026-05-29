@@ -7,27 +7,15 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Mail, Smartphone, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/stores/auth';
 
 export function NotificationSettings() {
-  const [preferences, setPreferences] = React.useState({
-    email_new_order: true,
-    email_payment: true,
-    push_notification: true,
-  });
+  const { notificationPreferences, updateNotificationPreferences } = useAuthStore();
+  const [preferences, setPreferences] = React.useState(notificationPreferences);
 
-  // Load preferences from localStorage on component mount
   React.useEffect(() => {
-    try {
-      const stored = localStorage.getItem('smarttani_notification_preferences');
-      if (stored) {
-        setTimeout(() => {
-          setPreferences(JSON.parse(stored));
-        }, 0);
-      }
-    } catch (e) {
-      console.error('Failed to load notification preferences from localStorage', e);
-    }
-  }, []);
+    setPreferences(notificationPreferences);
+  }, [notificationPreferences]);
 
   const handleToggle = (key: keyof typeof preferences, checked: boolean) => {
     setPreferences((prev) => ({
@@ -37,13 +25,8 @@ export function NotificationSettings() {
   };
 
   const handleSave = () => {
-    try {
-      localStorage.setItem('smarttani_notification_preferences', JSON.stringify(preferences));
-      toast.success('Preferensi notifikasi berhasil disimpan');
-    } catch (e) {
-      console.error('Failed to save notification preferences', e);
-      toast.error('Gagal menyimpan preferensi notifikasi');
-    }
+    updateNotificationPreferences(preferences);
+    toast.success('Preferensi notifikasi berhasil disimpan');
   };
 
   return (
@@ -56,14 +39,14 @@ export function NotificationSettings() {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50/50 hover:bg-slate-50 transition-colors">
+          <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50/50 hover:bg-slate-50 transition-colors border-slate-100">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-md bg-blue-50 text-blue-600">
                 <Mail className="h-5 w-5" />
               </div>
               <div>
                 <Label className="text-sm font-bold cursor-pointer">Email Order Baru</Label>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-slate-500">
                   Terima notifikasi email setiap kali ada pesanan baru untuk produk pertanian Anda.
                 </p>
               </div>
@@ -74,16 +57,15 @@ export function NotificationSettings() {
             />
           </div>
 
-          <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50/50 hover:bg-slate-50 transition-colors">
+          <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50/50 hover:bg-slate-50 transition-colors border-slate-100">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-md bg-indigo-50 text-indigo-600">
                 <CreditCard className="h-5 w-5" />
               </div>
               <div>
                 <Label className="text-sm font-bold cursor-pointer">Email Pembayaran</Label>
-                <p className="text-xs text-muted-foreground">
-                  Terima notifikasi email ketika pembayaran dari pembeli telah berhasil
-                  dikonfirmasi.
+                <p className="text-xs text-slate-500">
+                  Terima notifikasi email ketika pembayaran dari pembeli telah berhasil konfirmasi.
                 </p>
               </div>
             </div>
@@ -93,14 +75,14 @@ export function NotificationSettings() {
             />
           </div>
 
-          <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50/50 hover:bg-slate-50 transition-colors">
+          <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50/50 hover:bg-slate-50 transition-colors border-slate-100">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-md bg-green-50 text-green-600">
                 <Smartphone className="h-5 w-5" />
               </div>
               <div>
                 <Label className="text-sm font-bold cursor-pointer">Push Notification</Label>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-slate-500">
                   Terima notifikasi instan langsung di peramban (browser) atau perangkat Anda.
                 </p>
               </div>
@@ -112,9 +94,9 @@ export function NotificationSettings() {
           </div>
         </div>
 
-        <div className="flex justify-end pt-4 border-t">
+        <div className="flex justify-end pt-4 border-t border-slate-100">
           <Button
-            className="bg-green-600 text-white hover:bg-green-700 font-medium"
+            className="cursor-pointer bg-green-600 text-white hover:bg-green-700 font-semibold text-xs h-9 shadow-2xs"
             onClick={handleSave}
           >
             Simpan Pengaturan

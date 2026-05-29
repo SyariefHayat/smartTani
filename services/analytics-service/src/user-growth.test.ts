@@ -19,7 +19,7 @@ describe('GET /analytics/users', () => {
   it('should return 200 and user growth data for admin', async () => {
     const mockData = [
       { date: '2026-05-01', petani: 5, buyer: 10 },
-      { date: '2026-05-02', petani: 7, buyer: 15 }
+      { date: '2026-05-02', petani: 7, buyer: 15 },
     ];
 
     (userAnalyticsService.getUserGrowth as jest.Mock).mockResolvedValue(mockData);

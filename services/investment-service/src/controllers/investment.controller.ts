@@ -31,7 +31,10 @@ class InvestmentController {
       const { id } = req.params;
       const { actualReturnPercent } = req.body;
 
-      const investment = await investmentService.completeInvestment(id as string, actualReturnPercent);
+      const investment = await investmentService.completeInvestment(
+        id as string,
+        actualReturnPercent
+      );
       return res.status(200).json(successResponse(investment));
     } catch (error) {
       next(error);

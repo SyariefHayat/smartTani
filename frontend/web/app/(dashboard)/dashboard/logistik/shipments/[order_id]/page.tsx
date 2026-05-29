@@ -145,8 +145,9 @@ const MOCK_SHIPMENT_DETAILS: Record<string, IShipment> = {
   },
 };
 
-export default function LogisticsShipmentDetailPage({ params }: { params: { order_id: string } }) {
-  const orderId = params.order_id;
+export default function LogisticsShipmentDetailPage({ params }: { params: Promise<{ order_id: string }> }) {
+  const resolvedParams = React.use(params);
+  const orderId = resolvedParams.order_id;
   const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [actionNotes, setActionNotes] = React.useState('');

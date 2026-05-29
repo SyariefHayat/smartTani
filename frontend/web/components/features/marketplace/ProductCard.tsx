@@ -46,17 +46,21 @@ export function ProductCard({ product }: ProductCardProps) {
         </p>
         <div className="flex items-center gap-1 text-gray-500 text-sm mt-2">
           <MapPin className="w-4 h-4" />
-          <span className="line-clamp-1">{product.location.city}, {product.location.province}</span>
+          <span className="line-clamp-1">
+            {product.location.city}, {product.location.province}
+          </span>
         </div>
         <div className="flex items-center gap-1 text-gray-500 text-sm mt-1">
           <Package className="w-4 h-4" />
-          <span>Stok: {product.stock} {product.unit}</span>
+          <span>
+            Stok: {product.stock} {product.unit}
+          </span>
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">
         <Link href={`/marketplace/${productId}`} className="w-full">
-          <Button 
-            className="w-full bg-green-600 hover:bg-green-700 text-white" 
+          <Button
+            className="w-full bg-green-600 hover:bg-green-700 text-white"
             disabled={isOutOfStock}
           >
             Lihat Detail

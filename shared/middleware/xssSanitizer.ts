@@ -17,7 +17,7 @@ const sanitizeObject = (obj: any): any => {
   }
 
   if (Array.isArray(obj)) {
-    return obj.map(item => sanitizeObject(item));
+    return obj.map((item) => sanitizeObject(item));
   }
 
   const sanitized: any = {};

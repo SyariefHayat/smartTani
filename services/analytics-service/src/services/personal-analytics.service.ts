@@ -41,8 +41,8 @@ class PersonalAnalyticsService {
   }
 
   async getFarmerFinance(farmerId: string, query: { page?: number; limit?: number }) {
-    const page = query.page || 1;
-    const limit = query.limit || 20;
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 20;
     const cacheKey = `analytics:farmer:${farmerId}:finance:${page}:${limit}`;
 
     const cachedData = await RedisClient.get(cacheKey);

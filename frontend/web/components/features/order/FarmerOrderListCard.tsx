@@ -53,8 +53,8 @@ export function FarmerOrderListCard({ order, onConfirm, isConfirming }: FarmerOr
 
           <div className="flex items-end gap-2">
             {showConfirmButton && (
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 className="bg-green-600 hover:bg-green-700"
                 onClick={(e) => {
                   e.preventDefault();

@@ -27,13 +27,14 @@ export function InvestmentForm({ proposal }: InvestmentFormProps) {
   const projectedReturn = amount * (1 + proposal.projected_roi_percent / 100);
 
   const investMutation = useMutation({
-    mutationFn: () => investmentService.createInvestment({
-      proposalId: proposal.id,
-      amount: amount
-    }),
+    mutationFn: () =>
+      investmentService.createInvestment({
+        proposalId: proposal.id,
+        amount: amount,
+      }),
     onSuccess: () => {
-      toast.success('Investasi Berhasil', { 
-        description: `Anda telah berinvestasi sebesar Rp ${amount.toLocaleString('id-ID')}` 
+      toast.success('Investasi Berhasil', {
+        description: `Anda telah berinvestasi sebesar Rp ${amount.toLocaleString('id-ID')}`,
       });
       queryClient.invalidateQueries({ queryKey: ['proposal', proposal.id] });
       queryClient.invalidateQueries({ queryKey: ['proposals'] });
@@ -42,19 +43,23 @@ export function InvestmentForm({ proposal }: InvestmentFormProps) {
       const axiosError = error as AxiosError<{ error: { message: string } }>;
       const message = axiosError.response?.data?.error?.message || 'Gagal melakukan investasi';
       toast.error('Gagal', { description: message });
-    }
+    },
   });
 
   const handleInvest = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (amount < minInvestment) {
-      toast.error('Gagal', { description: `Minimal investasi adalah Rp ${minInvestment.toLocaleString('id-ID')}` });
+      toast.error('Gagal', {
+        description: `Minimal investasi adalah Rp ${minInvestment.toLocaleString('id-ID')}`,
+      });
       return;
     }
 
     if (amount > remainingFunding) {
-      toast.error('Gagal', { description: `Jumlah investasi melebihi sisa kebutuhan dana (Rp ${remainingFunding.toLocaleString('id-ID')})` });
+      toast.error('Gagal', {
+        description: `Jumlah investasi melebihi sisa kebutuhan dana (Rp ${remainingFunding.toLocaleString('id-ID')})`,
+      });
       return;
     }
 
@@ -69,9 +74,13 @@ export function InvestmentForm({ proposal }: InvestmentFormProps) {
       <form onSubmit={handleInvest}>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="amount" className="text-gray-600">Jumlah Investasi (Rp)</Label>
+            <Label htmlFor="amount" className="text-gray-600">
+              Jumlah Investasi (Rp)
+            </Label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">Rp</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-bold">
+                Rp
+              </span>
               <Input
                 id="amount"
                 type="number"
@@ -92,7 +101,9 @@ export function InvestmentForm({ proposal }: InvestmentFormProps) {
           <div className="space-y-3 pt-4 border-t border-green-100">
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Estimasi Pengembalian</span>
-              <span className="font-bold text-green-700">Rp {projectedReturn.toLocaleString('id-ID')}</span>
+              <span className="font-bold text-green-700">
+                Rp {projectedReturn.toLocaleString('id-ID')}
+              </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Estimasi Keuntungan</span>
@@ -106,19 +117,19 @@ export function InvestmentForm({ proposal }: InvestmentFormProps) {
           <div className="bg-white/80 p-3 rounded-lg border border-green-100 space-y-2">
             <div className="flex items-start gap-2 text-xs text-gray-600">
               <ShieldCheck className="w-4 h-4 text-green-600 mt-0.5 shrink-0" />
-              <span>Dana Anda dikelola secara transparan oleh petani dan diawasi oleh SmartTani.</span>
+              <span>
+                Dana Anda dikelola secara transparan oleh petani dan diawasi oleh SmartTani.
+              </span>
             </div>
           </div>
         </CardContent>
         <CardFooter>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full h-12 bg-green-600 hover:bg-green-700 font-bold text-lg"
             disabled={investMutation.isPending || remainingFunding <= 0}
           >
-            {investMutation.isPending ? (
-              <Loader2 className="w-5 h-5 animate-spin mr-2" />
-            ) : null}
+            {investMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
             {remainingFunding <= 0 ? 'Pendanaan Selesai' : 'Danai Sekarang'}
           </Button>
         </CardFooter>

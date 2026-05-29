@@ -85,7 +85,7 @@ class InvestmentRepository {
       });
 
       // Update proposal status if all its investments are completed
-      // For MVP, we might just update the proposal status to completed 
+      // For MVP, we might just update the proposal status to completed
       // when the first investment is completed or handle it specifically.
       // Q1 PRD says: Update proposal status ke completed
       await tx.proposal.update({
@@ -119,8 +119,14 @@ class InvestmentRepository {
     });
 
     const totalInvested = investments.reduce((sum, inv) => sum + Number(inv.amount), 0);
-    const totalProjectedReturn = investments.reduce((sum, inv) => sum + Number(inv.projected_return), 0);
-    const totalActualReturn = investments.reduce((sum, inv) => sum + (inv.actual_return ? Number(inv.actual_return) : 0), 0);
+    const totalProjectedReturn = investments.reduce(
+      (sum, inv) => sum + Number(inv.projected_return),
+      0
+    );
+    const totalActualReturn = investments.reduce(
+      (sum, inv) => sum + (inv.actual_return ? Number(inv.actual_return) : 0),
+      0
+    );
 
     return {
       investments,

@@ -26,7 +26,7 @@ export function CartItemCard({ item, onUpdateQuantity, onRemove, isUpdating }: C
             </div>
           )}
         </div>
-        
+
         <div className="flex-1 flex flex-col justify-between">
           <div className="flex justify-between items-start">
             <div>
@@ -41,9 +41,9 @@ export function CartItemCard({ item, onUpdateQuantity, onRemove, isUpdating }: C
                 </p>
               )}
             </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               className="text-gray-400 hover:text-red-500 -mt-1 -mr-2"
               onClick={() => onRemove(item.productId)}
               disabled={isUpdating}
@@ -53,22 +53,18 @@ export function CartItemCard({ item, onUpdateQuantity, onRemove, isUpdating }: C
           </div>
 
           <div className="flex justify-between items-end">
-            <p className="font-bold text-green-600">
-              Rp {item.subtotal.toLocaleString('id-ID')}
-            </p>
-            
+            <p className="font-bold text-green-600">Rp {item.subtotal.toLocaleString('id-ID')}</p>
+
             <div className="flex items-center border rounded-lg overflow-hidden">
-              <button 
+              <button
                 className="p-1 hover:bg-gray-100 disabled:opacity-30"
                 onClick={() => onUpdateQuantity(item.productId, item.quantity - 1)}
                 disabled={item.quantity <= 1 || isUpdating}
               >
                 <Minus className="w-4 h-4" />
               </button>
-              <span className="w-10 text-center text-sm font-medium">
-                {item.quantity}
-              </span>
-              <button 
+              <span className="w-10 text-center text-sm font-medium">{item.quantity}</span>
+              <button
                 className="p-1 hover:bg-gray-100 disabled:opacity-30"
                 onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)}
                 disabled={isUpdating}

@@ -41,7 +41,7 @@ import { HarvestForm } from './HarvestForm';
 import { HarvestDetailDialog } from './HarvestDetailDialog';
 import { toast } from 'sonner';
 import { FarmerHarvest, HarvestTableActions } from './types';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, AlertTriangle } from 'lucide-react';
 import { exportToCSV } from '@/lib/export-csv';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -73,6 +73,55 @@ export function FarmerHarvestManagement() {
     queryFn: () => harvestService.getHarvests(),
   });
 
+  const isOffline = !!error;
+
+  React.useEffect(() => {
+    if (isOffline) {
+      toast.error('Layanan panen sedang offline. Menggunakan data demo lokal.');
+    }
+  }, [isOffline]);
+
+  const mockHarvests = React.useMemo<FarmerHarvest[]>(
+    () => [
+      {
+        id: 'mock-har-1',
+        farmer_id: 'mock-farmer',
+        land_id: 'mock-land-1',
+        crop_name: 'Padi Pandanwangi',
+        quantity: 1200,
+        unit: 'kg',
+        harvest_date: new Date().toISOString(),
+        quality_grade: 'A' as const,
+        notes: 'Hasil panen melimpah, kualitas bulir padi sangat baik.',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        land: { id: 'mock-land-1', name: 'Lahan Sawah Barat' },
+      },
+      {
+        id: 'mock-har-2',
+        farmer_id: 'mock-farmer',
+        land_id: 'mock-land-2',
+        crop_name: 'Jagung Hibrida',
+        quantity: 850,
+        unit: 'kg',
+        harvest_date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        quality_grade: 'B' as const,
+        notes: 'Beberapa jagung terkena ulat tipis, namun secara umum bagus.',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        land: { id: 'mock-land-2', name: 'Lahan Jagung Lereng' },
+      },
+    ],
+    []
+  );
+
+  const displayedHarvests = React.useMemo(() => {
+    if (isOffline || !harvests || harvests.length === 0) {
+      return mockHarvests;
+    }
+    return harvests;
+  }, [harvests, isOffline, mockHarvests]);
+
   const deleteMutation = useMutation({
     mutationFn: (harvestId: string) => harvestService.deleteHarvest(harvestId),
     onSuccess: () => {
@@ -97,7 +146,7 @@ export function FarmerHarvestManagement() {
     };
 
     exportToCSV({
-      data: harvests,
+      data: displayedHarvests,
       columns: [
         { header: 'ID Panen', accessor: (row) => row.id },
         { header: 'Lahan', accessor: (row) => row.land?.name || 'Lahan Utama' },
@@ -117,7 +166,7 @@ export function FarmerHarvestManagement() {
       filename: 'daftar_hasil_panen',
     });
     toast.success('Daftar hasil panen berhasil diekspor');
-  }, [harvests]);
+  }, [displayedHarvests]);
 
   // Actions meta callbacks passed to react-table options
   const tableActions: HarvestTableActions = React.useMemo(
@@ -140,7 +189,7 @@ export function FarmerHarvestManagement() {
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
-    data: harvests as FarmerHarvest[],
+    data: displayedHarvests as FarmerHarvest[],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -157,47 +206,41 @@ export function FarmerHarvestManagement() {
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
+    },
   });
 
-  if (error) {
-    return (
-      <div className="flex w-full h-[350px] flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 text-red-500 p-6 text-center text-sm font-medium shadow-xs">
-        <svg
-          className="w-10 h-10 mb-3 text-red-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-          />
-        </svg>
-        <p className="font-semibold text-base mb-1">Gagal Memuat Catatan Panen</p>
-        <p className="text-xs text-red-400 max-w-md mb-4">
-          Layanan/Service tidak merespon atau sedang tidak aktif. Harap periksa koneksi Anda atau
-          hubungi administrator.
-        </p>
-        <Button
-          variant="outline"
-          size="sm"
-          className="cursor-pointer border-red-200 text-red-500 hover:bg-red-100 hover:text-red-600"
-          onClick={() => refetch()}
-          disabled={isRefetching}
-        >
-          <RefreshCw className={`mr-2 h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`} />
-          {isRefetching ? 'Mencoba ulang...' : 'Coba Lagi'}
-        </Button>
-      </div>
-    );
-  }
+  React.useEffect(() => {
+    table.setPageIndex(0);
+  }, [columnFilters]);
 
   return (
     <div className="w-full text-slate-900">
       <div className="mx-auto flex w-full flex-col gap-6">
         <HarvestHeader onExport={handleExport} onAddHarvest={() => setCreateDialogOpen(true)} />
+
+        {isOffline && (
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
+              <p>
+                Layanan Panen Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
+              onClick={() => refetch()}
+              disabled={isRefetching}
+            >
+              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
+            </Button>
+          </div>
+        )}
 
         {isLoading ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -206,18 +249,10 @@ export function FarmerHarvestManagement() {
             ))}
           </div>
         ) : (
-          <HarvestStats harvests={harvests} />
+          <HarvestStats harvests={displayedHarvests} />
         )}
 
-        {isLoading ? (
-          <div className="space-y-3">
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-24 w-full" />
-          </div>
-        ) : (
-          <HarvestTable table={table} columnsCount={columns.length} />
-        )}
+        <HarvestTable table={table} columnsCount={columns.length} isLoading={isLoading} />
       </div>
 
       {/* View Details Dialog */}

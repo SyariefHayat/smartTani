@@ -36,7 +36,7 @@ class ProposalService {
   async updateProposal(id: string, userId: string, data: Partial<CreateProposalInput>) {
     // Cannot use findById because it has RBAC for reading. We just want raw DB object.
     const proposal = await proposalRepository.findById(id, { id: userId, role: 'petani' });
-    
+
     if (!proposal) {
       const error: any = new Error('Proposal tidak ditemukan atau Anda tidak memiliki akses');
       error.statusCode = 404;
@@ -56,7 +56,7 @@ class ProposalService {
 
   async submitProposal(id: string, userId: string) {
     const proposal = await proposalRepository.findById(id, { id: userId, role: 'petani' });
-    
+
     if (!proposal) {
       const error: any = new Error('Proposal tidak ditemukan atau Anda tidak memiliki akses');
       error.statusCode = 404;
@@ -94,7 +94,7 @@ class ProposalService {
   async approveProposal(id: string) {
     // Role is admin so it bypasses ownership checks
     const proposal = await proposalRepository.findById(id, { id: 'system', role: 'admin' });
-    
+
     if (!proposal) {
       const error: any = new Error('Proposal tidak ditemukan');
       error.statusCode = 404;

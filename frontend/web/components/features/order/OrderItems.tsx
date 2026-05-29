@@ -24,7 +24,9 @@ export function OrderItems({ items }: OrderItemsProps) {
             </div>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-gray-900">Produk ID: {item.product_id.slice(0, 8)}</p>
+            <p className="text-sm font-semibold text-gray-900">
+              Produk ID: {item.product_id.slice(0, 8)}
+            </p>
             <p className="text-xs text-gray-500">
               {item.quantity} x Rp {Number(item.price_per_unit).toLocaleString('id-ID')}
             </p>

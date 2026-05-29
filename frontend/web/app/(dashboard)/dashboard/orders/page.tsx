@@ -14,11 +14,16 @@ export default function FarmerOrdersPage() {
   const [status, setStatus] = useState<string>('all');
   const queryClient = useQueryClient();
 
-  const { data: ordersData, isLoading, isError } = useQuery({
+  const {
+    data: ordersData,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ['farmer-orders', status],
-    queryFn: () => orderService.getOrders({ 
-      status: status === 'all' ? undefined : status 
-    }),
+    queryFn: () =>
+      orderService.getOrders({
+        status: status === 'all' ? undefined : status,
+      }),
   });
 
   const confirmOrderMutation = useMutation({
@@ -72,15 +77,16 @@ export default function FarmerOrdersPage() {
           </div>
           <h2 className="text-xl font-bold text-gray-900">Belum Ada Order</h2>
           <p className="text-gray-500 mt-2 max-w-sm mx-auto">
-            Belum ada pesanan masuk untuk produk Anda. Pastikan produk Anda dalam status aktif dan stok mencukupi.
+            Belum ada pesanan masuk untuk produk Anda. Pastikan produk Anda dalam status aktif dan
+            stok mencukupi.
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">
           {orders.map((order) => (
-            <FarmerOrderListCard 
-              key={order.id} 
-              order={order} 
+            <FarmerOrderListCard
+              key={order.id}
+              order={order}
               onConfirm={(id) => confirmOrderMutation.mutate(id)}
               isConfirming={confirmOrderMutation.isPending}
             />

@@ -25,7 +25,7 @@ export function HarvestHeader({ onExport, onAddHarvest }: HarvestHeaderProps) {
         </Button>
         <Button
           onClick={onAddHarvest}
-          className="cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white font-semibold"
+          className="cursor-pointer bg-slate-900 hover:bg-slate-800 text-white font-semibold"
         >
           <Plus className="mr-2 h-4 w-4" /> Catat Hasil Panen
         </Button>

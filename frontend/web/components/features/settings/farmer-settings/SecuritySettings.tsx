@@ -95,7 +95,12 @@ export function SecuritySettings() {
                   <FormControl>
                     <div className="relative">
                       <Lock className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-                      <Input type="password" placeholder="••••••••" className="pl-9" {...field} />
+                      <Input
+                        type="password"
+                        placeholder="••••••••"
+                        className="pl-9 bg-white border-slate-200"
+                        {...field}
+                      />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -113,7 +118,12 @@ export function SecuritySettings() {
                     <FormControl>
                       <div className="relative">
                         <Lock className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-                        <Input type="password" placeholder="••••••••" className="pl-9" {...field} />
+                        <Input
+                          type="password"
+                          placeholder="••••••••"
+                          className="pl-9 bg-white border-slate-200"
+                          {...field}
+                        />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -130,7 +140,12 @@ export function SecuritySettings() {
                     <FormControl>
                       <div className="relative">
                         <Lock className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-                        <Input type="password" placeholder="••••••••" className="pl-9" {...field} />
+                        <Input
+                          type="password"
+                          placeholder="••••••••"
+                          className="pl-9 bg-white border-slate-200"
+                          {...field}
+                        />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -142,7 +157,7 @@ export function SecuritySettings() {
             <div className="pt-2">
               <Button
                 type="submit"
-                className="bg-green-700 hover:bg-green-800 text-white w-full sm:w-auto"
+                className="cursor-pointer bg-green-600 hover:bg-green-700 text-white font-semibold text-xs h-9 px-4 w-full sm:w-auto shadow-2xs"
                 disabled={mutation.isPending}
               >
                 {mutation.isPending ? (

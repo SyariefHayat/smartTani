@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { UserCheck, FileText, ArrowRight } from 'lucide-react'
-import Link from 'next/link'
-import { OverviewMetrics } from '@/services/analytics'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { UserCheck, FileText, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+import { OverviewMetrics } from '@/services/analytics';
 
 interface QuickActionsProps {
-  metrics?: OverviewMetrics
-  loading?: boolean
+  metrics?: OverviewMetrics;
+  loading?: boolean;
 }
 
 export function QuickActions({ metrics, loading }: QuickActionsProps) {
@@ -59,5 +59,5 @@ export function QuickActions({ metrics, loading }: QuickActionsProps) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

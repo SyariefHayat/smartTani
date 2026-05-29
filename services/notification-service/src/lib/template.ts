@@ -7,7 +7,7 @@ import path from 'path';
  */
 export const renderTemplate = (templateName: string, variables: Record<string, any>): string => {
   const templatePath = path.join(__dirname, '../templates', `${templateName}.html`);
-  
+
   if (!fs.existsSync(templatePath)) {
     throw new Error(`Template ${templateName} not found at ${templatePath}`);
   }

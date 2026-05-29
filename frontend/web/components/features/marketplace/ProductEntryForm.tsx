@@ -1,8 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { AlertTriangle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -30,6 +33,25 @@ export function ProductEntryForm() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSavingDraft, setIsSavingDraft] = useState(false);
+
+  const queryClient = useQueryClient();
+  const { isError: isMarketplaceOffline } = useQuery({
+    queryKey: ['categories-health'],
+    queryFn: () => marketplaceService.getCategories(),
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (isMarketplaceOffline) {
+      toast.error('Layanan marketplace sedang offline. Menggunakan data demo lokal.');
+    }
+  }, [isMarketplaceOffline]);
+
+  const handleRetry = () => {
+    queryClient.invalidateQueries({ queryKey: ['categories'] });
+    queryClient.invalidateQueries({ queryKey: ['brands'] });
+    queryClient.invalidateQueries({ queryKey: ['categories-health'] });
+  };
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -185,6 +207,26 @@ export function ProductEntryForm() {
       <div className="mx-auto flex w-full flex-col gap-4">
         <EntryHeader />
         <EntryStepper currentStep={currentStep} />
+
+        {isMarketplaceOffline && (
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
+              <p>
+                Layanan Marketplace Offline: Gagal memuat data teraktual. Menggunakan data demo
+                lokal.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
+              onClick={handleRetry}
+            >
+              Coba Hubungkan Kembali
+            </Button>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 gap-4 xl:items-stretch xl:grid-cols-[minmax(0,1.65fr)_minmax(320px,0.85fr)]">
           {/* Main Content */}

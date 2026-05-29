@@ -43,6 +43,7 @@ export function StockStats({ stocks }: StockStatsProps) {
         currency: 'IDR',
         maximumFractionDigits: 0,
       }).format(totalValue),
+      description: 'Total valuasi persediaan',
       icon: Package,
       colorClass: 'text-emerald-500',
     },

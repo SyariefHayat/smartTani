@@ -52,7 +52,8 @@ describe('Investment Flow Integration', () => {
       projected_roi_percent: 15,
       duration_days: 120,
       harvest_date_estimated: '2026-10-15T00:00:00.000Z',
-      description: 'Deskripsi proposal yang sangat panjang untuk memenuhi validasi minimal 20 karakter.',
+      description:
+        'Deskripsi proposal yang sangat panjang untuk memenuhi validasi minimal 20 karakter.',
       use_of_funds: 'Penggunaan dana untuk bibit dan pupuk berkualitas tinggi.',
       risk_notes: 'Catatan risiko terkait cuaca dan hama.',
     };

@@ -16,11 +16,13 @@ export class HarvestService {
       throw error;
     }
 
+    const { land_id, ...harvestData } = input;
+
     return harvestRepository.create({
-      ...input,
+      ...harvestData,
       harvest_date: new Date(input.harvest_date),
       user: { connect: { id: farmerId } },
-      land: { connect: { id: input.land_id } },
+      land: { connect: { id: land_id } },
     });
   }
 

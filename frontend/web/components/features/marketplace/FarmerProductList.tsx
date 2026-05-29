@@ -133,6 +133,10 @@ export function FarmerProductList() {
   }, [isError, error]);
 
   React.useEffect(() => {
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+  }, [columnFilters]);
+
+  React.useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const detailId = params.get('detail');

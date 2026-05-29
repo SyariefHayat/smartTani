@@ -1,7 +1,13 @@
 import { Router } from 'express';
 import proposalController from '../controllers/proposal.controller';
 import { validate, validateQuery, validateParams } from '../../../../shared/middleware/validate';
-import { CreateProposalSchema, GetProposalsQuerySchema, ProposalIdSchema, UpdateProposalSchema, RejectProposalSchema } from '../schemas/proposal.schema';
+import {
+  CreateProposalSchema,
+  GetProposalsQuerySchema,
+  ProposalIdSchema,
+  UpdateProposalSchema,
+  RejectProposalSchema,
+} from '../schemas/proposal.schema';
 import { gatewayAuthMiddleware } from '../middleware/auth.middleware';
 import { authorize } from '../middleware/authorize.middleware';
 

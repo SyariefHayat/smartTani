@@ -177,7 +177,9 @@ describe('PATCH /proposals/:id', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
-    expect(proposalRepository.update).toHaveBeenCalledWith('123e4567-e89b-12d3-a456-426614174000', { title: 'Updated Title' });
+    expect(proposalRepository.update).toHaveBeenCalledWith('123e4567-e89b-12d3-a456-426614174000', {
+      title: 'Updated Title',
+    });
   });
 
   it('should return 400 if proposal is already submitted', async () => {
@@ -239,7 +241,9 @@ describe('POST /proposals/:id/submit', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
-    expect(proposalRepository.update).toHaveBeenCalledWith('123e4567-e89b-12d3-a456-426614174000', { status: 'submitted' });
+    expect(proposalRepository.update).toHaveBeenCalledWith('123e4567-e89b-12d3-a456-426614174000', {
+      status: 'submitted',
+    });
     expect(MessageBroker.publish).toHaveBeenCalledWith(
       'smarttani.events',
       'proposal.submitted',
@@ -293,11 +297,17 @@ describe('POST /proposals/:id/approve', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
-    expect(proposalRepository.update).toHaveBeenCalledWith('123e4567-e89b-12d3-a456-426614174000', expect.objectContaining({ status: 'open_for_funding' }));
+    expect(proposalRepository.update).toHaveBeenCalledWith(
+      '123e4567-e89b-12d3-a456-426614174000',
+      expect.objectContaining({ status: 'open_for_funding' })
+    );
     expect(MessageBroker.publish).toHaveBeenCalledWith(
       'smarttani.events',
       'proposal.approved',
-      expect.objectContaining({ id: '123e4567-e89b-12d3-a456-426614174000', status: 'open_for_funding' })
+      expect.objectContaining({
+        id: '123e4567-e89b-12d3-a456-426614174000',
+        status: 'open_for_funding',
+      })
     );
   });
 
@@ -360,7 +370,10 @@ describe('POST /proposals/:id/reject', () => {
     expect(res.body.success).toBe(true);
     expect(proposalRepository.update).toHaveBeenCalledWith(
       '123e4567-e89b-12d3-a456-426614174000',
-      expect.objectContaining({ status: 'rejected', admin_notes: 'Lahan terlalu kecil untuk proposal ini' })
+      expect.objectContaining({
+        status: 'rejected',
+        admin_notes: 'Lahan terlalu kecil untuk proposal ini',
+      })
     );
     expect(MessageBroker.publish).toHaveBeenCalledWith(
       'smarttani.events',

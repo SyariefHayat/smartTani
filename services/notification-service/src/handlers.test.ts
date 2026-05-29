@@ -40,39 +40,45 @@ describe('Notification Event Handlers', () => {
       id: 'user-1',
       email: 'test@example.com',
       full_name: 'Test User',
-      verification_token: 'token-123'
+      verification_token: 'token-123',
     };
 
     await handlers.handleUserRegistered(payload);
 
-    expect(emailService.send).toHaveBeenCalledWith(expect.objectContaining({
-      to: 'test@example.com',
-      subject: expect.stringContaining('Selamat Datang'),
-    }));
+    expect(emailService.send).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: 'test@example.com',
+        subject: expect.stringContaining('Selamat Datang'),
+      })
+    );
   });
 
   it('handleOrderPaid should send email and push to farmer', async () => {
     const payload = {
       order_id: 'order-1',
       total_amount: 500000,
-      farmer_id: 'farmer-1'
+      farmer_id: 'farmer-1',
     };
 
     (userClient.getUser as jest.Mock).mockResolvedValue({
       id: 'farmer-1',
       email: 'farmer@example.com',
-      full_name: 'Farmer Joe'
+      full_name: 'Farmer Joe',
     });
 
     await handlers.handleOrderPaid(payload);
 
     expect(userClient.getUser).toHaveBeenCalledWith('farmer-1');
-    expect(emailService.send).toHaveBeenCalledWith(expect.objectContaining({
-      to: 'farmer@example.com',
-    }));
-    expect(pushService.sendToUser).toHaveBeenCalledWith(expect.objectContaining({
-      userId: 'farmer-1',
-      title: expect.stringContaining('Berhasil'),
-    }));
+    expect(emailService.send).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: 'farmer@example.com',
+      })
+    );
+    expect(pushService.sendToUser).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'farmer-1',
+        title: expect.stringContaining('Berhasil'),
+      })
+    );
   });
 });

@@ -5,7 +5,7 @@ import { errorResponse } from '../../../../shared/utils/response';
 
 export const loginRateLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 5, // Limit each IP to 5 login requests per windowMs
+  max: process.env.NODE_ENV === 'development' ? 100 : 5, // Limit each IP to 5 login requests per windowMs, 100 in dev
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   store: new RedisStore({

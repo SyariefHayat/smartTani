@@ -27,7 +27,9 @@ class InvestmentService {
     // 3. Validate minimum investment amount
     const minAmount = env.MIN_INVESTMENT_AMOUNT;
     if (amount < minAmount) {
-      const error: any = new Error(`Jumlah investasi minimal Rp ${minAmount.toLocaleString('id-ID')}`);
+      const error: any = new Error(
+        `Jumlah investasi minimal Rp ${minAmount.toLocaleString('id-ID')}`
+      );
       error.statusCode = 422;
       error.code = 'INVESTMENT_002';
       throw error;
@@ -39,7 +41,9 @@ class InvestmentService {
     const remaining = fundingNeeded - fundingRaised;
 
     if (amount > remaining) {
-      const error: any = new Error(`Jumlah investasi melebihi sisa kebutuhan dana (Rp ${remaining.toLocaleString('id-ID')})`);
+      const error: any = new Error(
+        `Jumlah investasi melebihi sisa kebutuhan dana (Rp ${remaining.toLocaleString('id-ID')})`
+      );
       error.statusCode = 422;
       error.code = 'INVESTMENT_003';
       throw error;

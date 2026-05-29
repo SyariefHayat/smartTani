@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import {
   Calendar,
   Edit,
@@ -55,6 +56,19 @@ export function PromotionTable({
   actions,
   isLoading,
 }: PromotionTableProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, activeTab]);
+
+  const totalRows = promos.length;
+  const totalPages = Math.ceil(totalRows / pageSize);
+  const fromRow = totalRows === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const toRow = Math.min(currentPage * pageSize, totalRows);
+
+  const paginatedPromos = promos.slice((currentPage - 1) * pageSize, currentPage * pageSize);
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
@@ -192,8 +206,8 @@ export function PromotionTable({
                     </TableCell>
                   </TableRow>
                 ))
-              ) : promos.length > 0 ? (
-                promos.map((promo) => (
+              ) : paginatedPromos.length > 0 ? (
+                paginatedPromos.map((promo) => (
                   <TableRow
                     key={promo._id}
                     className="border-slate-50 transition-colors hover:bg-slate-50/30"
@@ -345,15 +359,39 @@ export function PromotionTable({
         </div>
 
         {/* Pagination matching ProductTable style */}
-        <div className="flex items-center justify-between gap-4 pt-2">
+        <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100">
           <div className="text-sm text-muted-foreground">
-            {isLoading ? 'Memuat...' : `${promos.length} promo ditemukan`}
+            {isLoading ? (
+              <div className="h-4 w-48 animate-pulse bg-slate-100 rounded inline-block" />
+            ) : totalRows === 0 ? (
+              '0 promo ditemukan'
+            ) : (
+              <>
+                Menampilkan{' '}
+                <span className="font-semibold text-slate-900">
+                  {fromRow}–{toRow}
+                </span>{' '}
+                dari <span className="font-semibold text-slate-900">{totalRows}</span> promo
+              </>
+            )}
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" disabled>
+            <Button
+              variant="outline"
+              size="sm"
+              className="cursor-pointer text-slate-700 bg-white"
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={isLoading || currentPage === 1}
+            >
               Sebelumnya
             </Button>
-            <Button variant="outline" size="sm" disabled>
+            <Button
+              variant="outline"
+              size="sm"
+              className="cursor-pointer text-slate-700 bg-white"
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={isLoading || currentPage === totalPages || totalPages === 0}
+            >
               Berikutnya
             </Button>
           </div>

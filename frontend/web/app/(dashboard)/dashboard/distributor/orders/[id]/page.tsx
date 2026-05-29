@@ -112,8 +112,9 @@ const MOCK_ORDER_DETAIL: OrderDetail = {
   shipping_cost: 170000,
 };
 
-export default function DistributorOrderDetailPage({ params }: { params: { order_id: string } }) {
-  const orderId = params.order_id || 'ORD-98822';
+export default function DistributorOrderDetailPage({ params }: { params: Promise<{ order_id: string }> }) {
+  const resolvedParams = React.use(params);
+  const orderId = resolvedParams.order_id || 'ORD-98822';
   const queryClient = useQueryClient();
   const [isOffline, setIsOffline] = React.useState(false);
 

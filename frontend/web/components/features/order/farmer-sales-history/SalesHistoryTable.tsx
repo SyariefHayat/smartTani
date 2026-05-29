@@ -111,14 +111,14 @@ export function SalesHistoryTable<TData>({
             {isLoading ? (
               <Skeleton className="h-4 w-48 bg-slate-100" />
             ) : totalRows === 0 ? (
-              '0 transaksi ditemukan'
+              '0 pesanan ditemukan'
             ) : (
               <>
                 Menampilkan{' '}
                 <span className="font-semibold text-slate-900">
                   {fromRow}–{toRow}
                 </span>{' '}
-                dari <span className="font-semibold text-slate-900">{totalRows}</span> transaksi
+                dari <span className="font-semibold text-slate-900">{totalRows}</span> pesanan
               </>
             )}
           </div>

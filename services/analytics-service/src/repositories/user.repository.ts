@@ -2,7 +2,11 @@ import prisma from '../lib/prisma';
 import { Prisma } from '@prisma/client';
 
 class UserRepository {
-  async getUserGrowth(params: { from_date?: string; to_date?: string; granularity: 'day' | 'week' | 'month' }) {
+  async getUserGrowth(params: {
+    from_date?: string;
+    to_date?: string;
+    granularity: 'day' | 'week' | 'month';
+  }) {
     const { from_date, to_date, granularity } = params;
 
     let dateTrunc: string;
@@ -26,9 +30,8 @@ class UserRepository {
       conditions.push(Prisma.sql`created_at <= ${to_date}::timestamptz`);
     }
 
-    const whereClause = conditions.length > 0 
-      ? Prisma.sql`WHERE ${Prisma.join(conditions, ' AND ')}` 
-      : Prisma.empty;
+    const whereClause =
+      conditions.length > 0 ? Prisma.sql`WHERE ${Prisma.join(conditions, ' AND ')}` : Prisma.empty;
 
     const query = Prisma.sql`
       SELECT 
@@ -41,7 +44,8 @@ class UserRepository {
       ORDER BY date ASC, role ASC
     `;
 
-    const result = await prisma.$queryRaw<Array<{ date: Date; role: string; count: number }>>(query);
+    const result =
+      await prisma.$queryRaw<Array<{ date: Date; role: string; count: number }>>(query);
 
     return result;
   }

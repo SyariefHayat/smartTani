@@ -20,19 +20,20 @@ export function SalesReportHeader({ onExportCSV, isExporting }: SalesReportHeade
       </div>
       <div className="flex flex-wrap items-center gap-2">
         <DatePickerWithRange />
-        <Button variant="outline" size="icon" title="Cetak Laporan">
-          <Printer className="h-4 w-4" />
-        </Button>
-        <Button variant="outline">
-          <FileDown className="mr-2 h-4 w-4" />
+        <Button
+          variant="outline"
+          className="cursor-pointer text-xs font-semibold text-slate-700 bg-white border-slate-200 hover:bg-slate-50"
+          onClick={() => typeof window !== 'undefined' && window.print()}
+        >
+          <FileDown className="mr-1.5 h-3.5 w-3.5 text-slate-500" />
           PDF
         </Button>
         <Button
-          className="bg-green-600 hover:bg-green-700"
+          className="cursor-pointer bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs"
           onClick={onExportCSV}
           disabled={isExporting}
         >
-          <Download className="mr-2 h-4 w-4" />
+          <Download className="mr-1.5 h-3.5 w-3.5" />
           {isExporting ? 'Mengekspor...' : 'Export CSV'}
         </Button>
       </div>

@@ -25,7 +25,7 @@ class ShipmentController {
     try {
       const { order_id } = req.params;
       const shipment = await shipmentService.getShipmentByOrderId(order_id as string);
-      
+
       return res.status(200).json(successResponse(shipment));
     } catch (error) {
       next(error);

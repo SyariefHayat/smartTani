@@ -3,12 +3,7 @@
 import { Control, Controller } from 'react-hook-form';
 import { Circle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import {
-  Field,
-  FieldLabel,
-  FieldDescription,
-  FieldError,
-} from '@/components/ui/field';
+import { Field, FieldLabel, FieldDescription, FieldError } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -35,29 +30,16 @@ export function SidebarStatus({ control }: SidebarStatusProps) {
           control={control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel
-                className="inline-flex items-center gap-1 text-xs"
-                htmlFor={field.name}
-              >
+              <FieldLabel className="inline-flex items-center gap-1 text-xs" htmlFor={field.name}>
                 Status <span className="text-destructive">*</span>
               </FieldLabel>
-              <Select
-                name={field.name}
-                value={field.value}
-                onValueChange={field.onChange}
-              >
-                <SelectTrigger
-                  id={field.name}
-                  className="h-9"
-                  aria-invalid={fieldState.invalid}
-                >
+              <Select name={field.name} value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger id={field.name} className="h-9" aria-invalid={fieldState.invalid}>
                   <div className="flex items-center gap-2 text-slate-900">
                     <Circle
                       className={cn(
                         'w-2 h-2 fill-current',
-                        field.value === 'published'
-                          ? 'text-green-500'
-                          : 'text-yellow-400'
+                        field.value === 'published' ? 'text-green-500' : 'text-yellow-400'
                       )}
                     />
                     <SelectValue placeholder="Pilih status" />

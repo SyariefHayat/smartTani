@@ -23,7 +23,7 @@ describe('GET /analytics/overview', () => {
       active_users: 50,
       today_orders: 5,
       disbursed_investment: 20000000,
-      order_breakdown: { completed: 10, pending: 2 }
+      order_breakdown: { completed: 10, pending: 2 },
     };
 
     (overviewService.getOverview as jest.Mock).mockResolvedValue(mockData);

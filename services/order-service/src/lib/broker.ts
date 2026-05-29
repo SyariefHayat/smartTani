@@ -64,7 +64,11 @@ class MessageBroker {
     this.channel.publish(exchange, routingKey, content, { persistent: true });
   }
 
-  public static async bindQueue(queue: string, exchange: string, routingKey: string): Promise<void> {
+  public static async bindQueue(
+    queue: string,
+    exchange: string,
+    routingKey: string
+  ): Promise<void> {
     if (!this.channel) await this.connect();
     await this.channel.assertQueue(queue, { durable: true });
     await this.channel.bindQueue(queue, exchange, routingKey);

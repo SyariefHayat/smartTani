@@ -56,7 +56,7 @@ describe('ProposalService', () => {
     it('should call findAll with correct arguments', async () => {
       const mockUser = { id: 'user-1', role: 'admin' };
       const mockQuery = { status: 'draft', category: 'Jagung', page: 2, limit: 10 };
-      
+
       const mockResult = { data: [], meta: { total: 0, page: 2, limit: 10, total_pages: 0 } };
       (proposalRepository.findAll as jest.Mock).mockResolvedValue(mockResult);
 
@@ -90,7 +90,9 @@ describe('ProposalService', () => {
 
       (proposalRepository.findById as jest.Mock).mockResolvedValue(null);
 
-      await expect(proposalService.getProposalById(mockId, mockUser)).rejects.toThrow('Proposal tidak ditemukan atau Anda tidak memiliki akses');
+      await expect(proposalService.getProposalById(mockId, mockUser)).rejects.toThrow(
+        'Proposal tidak ditemukan atau Anda tidak memiliki akses'
+      );
     });
   });
 
@@ -106,7 +108,10 @@ describe('ProposalService', () => {
 
       const result = await proposalService.updateProposal(mockId, mockUserId, mockData);
 
-      expect(proposalRepository.findById).toHaveBeenCalledWith(mockId, { id: mockUserId, role: 'petani' });
+      expect(proposalRepository.findById).toHaveBeenCalledWith(mockId, {
+        id: mockUserId,
+        role: 'petani',
+      });
       expect(proposalRepository.update).toHaveBeenCalledWith(mockId, mockData);
       expect(result.title).toBe('New Title');
     });
@@ -119,7 +124,9 @@ describe('ProposalService', () => {
 
       (proposalRepository.findById as jest.Mock).mockResolvedValue(mockProposal);
 
-      await expect(proposalService.updateProposal(mockId, mockUserId, mockData)).rejects.toThrow('Hanya proposal dengan status draft yang dapat diedit');
+      await expect(proposalService.updateProposal(mockId, mockUserId, mockData)).rejects.toThrow(
+        'Hanya proposal dengan status draft yang dapat diedit'
+      );
       expect(proposalRepository.update).not.toHaveBeenCalled();
     });
 
@@ -130,7 +137,9 @@ describe('ProposalService', () => {
 
       (proposalRepository.findById as jest.Mock).mockResolvedValue(null);
 
-      await expect(proposalService.updateProposal(mockId, mockUserId, mockData)).rejects.toThrow('Proposal tidak ditemukan atau Anda tidak memiliki akses');
+      await expect(proposalService.updateProposal(mockId, mockUserId, mockData)).rejects.toThrow(
+        'Proposal tidak ditemukan atau Anda tidak memiliki akses'
+      );
       expect(proposalRepository.update).not.toHaveBeenCalled();
     });
   });
@@ -163,7 +172,9 @@ describe('ProposalService', () => {
 
       (proposalRepository.findById as jest.Mock).mockResolvedValue(mockProposal);
 
-      await expect(proposalService.submitProposal(mockId, mockUserId)).rejects.toThrow('Hanya proposal dengan status draft yang dapat disubmit');
+      await expect(proposalService.submitProposal(mockId, mockUserId)).rejects.toThrow(
+        'Hanya proposal dengan status draft yang dapat disubmit'
+      );
       expect(proposalRepository.update).not.toHaveBeenCalled();
       expect(MessageBroker.publish).not.toHaveBeenCalled();
     });
@@ -174,7 +185,9 @@ describe('ProposalService', () => {
 
       (proposalRepository.findById as jest.Mock).mockResolvedValue(null);
 
-      await expect(proposalService.submitProposal(mockId, mockUserId)).rejects.toThrow('Proposal tidak ditemukan atau Anda tidak memiliki akses');
+      await expect(proposalService.submitProposal(mockId, mockUserId)).rejects.toThrow(
+        'Proposal tidak ditemukan atau Anda tidak memiliki akses'
+      );
       expect(proposalRepository.update).not.toHaveBeenCalled();
     });
   });
@@ -190,8 +203,14 @@ describe('ProposalService', () => {
 
       const result = await proposalService.approveProposal(mockId);
 
-      expect(proposalRepository.findById).toHaveBeenCalledWith(mockId, { id: 'system', role: 'admin' });
-      expect(proposalRepository.update).toHaveBeenCalledWith(mockId, expect.objectContaining({ status: 'open_for_funding' }));
+      expect(proposalRepository.findById).toHaveBeenCalledWith(mockId, {
+        id: 'system',
+        role: 'admin',
+      });
+      expect(proposalRepository.update).toHaveBeenCalledWith(
+        mockId,
+        expect.objectContaining({ status: 'open_for_funding' })
+      );
       expect(MessageBroker.publish).toHaveBeenCalledWith(
         'smarttani.events',
         'proposal.approved',
@@ -206,7 +225,9 @@ describe('ProposalService', () => {
 
       (proposalRepository.findById as jest.Mock).mockResolvedValue(mockProposal);
 
-      await expect(proposalService.approveProposal(mockId)).rejects.toThrow('Hanya proposal dengan status submitted yang dapat disetujui');
+      await expect(proposalService.approveProposal(mockId)).rejects.toThrow(
+        'Hanya proposal dengan status submitted yang dapat disetujui'
+      );
       expect(proposalRepository.update).not.toHaveBeenCalled();
       expect(MessageBroker.publish).not.toHaveBeenCalled();
     });
@@ -216,7 +237,9 @@ describe('ProposalService', () => {
 
       (proposalRepository.findById as jest.Mock).mockResolvedValue(null);
 
-      await expect(proposalService.approveProposal(mockId)).rejects.toThrow('Proposal tidak ditemukan');
+      await expect(proposalService.approveProposal(mockId)).rejects.toThrow(
+        'Proposal tidak ditemukan'
+      );
       expect(proposalRepository.update).not.toHaveBeenCalled();
     });
   });
@@ -233,7 +256,10 @@ describe('ProposalService', () => {
 
       const result = await proposalService.rejectProposal(mockId, mockReason);
 
-      expect(proposalRepository.update).toHaveBeenCalledWith(mockId, expect.objectContaining({ status: 'rejected', admin_notes: mockReason }));
+      expect(proposalRepository.update).toHaveBeenCalledWith(
+        mockId,
+        expect.objectContaining({ status: 'rejected', admin_notes: mockReason })
+      );
       expect(MessageBroker.publish).toHaveBeenCalledWith(
         'smarttani.events',
         'proposal.rejected',
@@ -248,7 +274,9 @@ describe('ProposalService', () => {
 
       (proposalRepository.findById as jest.Mock).mockResolvedValue(mockProposal);
 
-      await expect(proposalService.rejectProposal(mockId, 'Alasan penolakan yang valid')).rejects.toThrow('Hanya proposal dengan status submitted yang dapat ditolak');
+      await expect(
+        proposalService.rejectProposal(mockId, 'Alasan penolakan yang valid')
+      ).rejects.toThrow('Hanya proposal dengan status submitted yang dapat ditolak');
       expect(proposalRepository.update).not.toHaveBeenCalled();
       expect(MessageBroker.publish).not.toHaveBeenCalled();
     });
@@ -258,7 +286,9 @@ describe('ProposalService', () => {
 
       (proposalRepository.findById as jest.Mock).mockResolvedValue(null);
 
-      await expect(proposalService.rejectProposal(mockId, 'Alasan penolakan yang valid')).rejects.toThrow('Proposal tidak ditemukan');
+      await expect(
+        proposalService.rejectProposal(mockId, 'Alasan penolakan yang valid')
+      ).rejects.toThrow('Proposal tidak ditemukan');
       expect(proposalRepository.update).not.toHaveBeenCalled();
     });
   });

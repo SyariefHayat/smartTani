@@ -35,9 +35,7 @@ export function OrderListCard({ order }: OrderListCardProps) {
                 Pesanan #{order.id.slice(0, 8)}
               </p>
               <p className="text-xs text-gray-500 mt-1">
-                {otherItemsCount > 0 
-                  ? `Berisi ${order.items.length} produk`
-                  : 'Berisi 1 produk'}
+                {otherItemsCount > 0 ? `Berisi ${order.items.length} produk` : 'Berisi 1 produk'}
               </p>
             </div>
             <div className="text-right">

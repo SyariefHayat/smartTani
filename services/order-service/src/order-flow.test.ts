@@ -84,10 +84,10 @@ describe('Order Flow Integration Tests', () => {
         .set('X-User-Id', 'buyer-1')
         .set('X-User-Role', 'buyer')
         .send({
-          shippingAddress: { 
-            province: 'Jawa Barat', 
-            city: 'Bandung', 
-            full_address: 'Jl. Merdeka No. 123, Bandung' 
+          shippingAddress: {
+            province: 'Jawa Barat',
+            city: 'Bandung',
+            full_address: 'Jl. Merdeka No. 123, Bandung',
           },
           notes: 'Test order',
         });
@@ -101,9 +101,7 @@ describe('Order Flow Integration Tests', () => {
         status: 'pending_payment',
         buyer_id: 'buyer-1',
         total_amount: 117000,
-        items: [
-          { product_id: 'p1', quantity: 2, price_per_unit: 50000 }
-        ],
+        items: [{ product_id: 'p1', quantity: 2, price_per_unit: 50000 }],
       });
       (prisma.order.update as jest.Mock).mockResolvedValue({
         id: mockOrderId,
@@ -181,10 +179,10 @@ describe('Order Flow Integration Tests', () => {
         .set('X-User-Id', 'buyer-1')
         .set('X-User-Role', 'buyer')
         .send({
-          shippingAddress: { 
-            province: 'Jawa Barat', 
-            city: 'Bandung', 
-            full_address: 'Jl. Merdeka No. 123, Bandung' 
+          shippingAddress: {
+            province: 'Jawa Barat',
+            city: 'Bandung',
+            full_address: 'Jl. Merdeka No. 123, Bandung',
           },
         });
 
@@ -243,7 +241,16 @@ describe('Order Flow Integration Tests', () => {
 
     it('should schedule cancellation job and auto cancel after 15 minutes', async () => {
       (cartService.getCart as jest.Mock).mockResolvedValue({
-        items: [{ isAvailable: true, productId: 'p1', quantity: 1, farmerId: 'f1', price_per_unit: 50000, subtotal: 50000 }],
+        items: [
+          {
+            isAvailable: true,
+            productId: 'p1',
+            quantity: 1,
+            farmerId: 'f1',
+            price_per_unit: 50000,
+            subtotal: 50000,
+          },
+        ],
         total: 50000,
       });
       (marketplaceClient.reduceStock as jest.Mock).mockResolvedValue(true);
@@ -269,10 +276,10 @@ describe('Order Flow Integration Tests', () => {
         .set('X-User-Id', 'buyer-1')
         .set('X-User-Role', 'buyer')
         .send({
-          shippingAddress: { 
-            province: 'Jawa Barat', 
-            city: 'Bandung', 
-            full_address: 'Jl. Merdeka No. 123, Bandung' 
+          shippingAddress: {
+            province: 'Jawa Barat',
+            city: 'Bandung',
+            full_address: 'Jl. Merdeka No. 123, Bandung',
           },
         });
 
@@ -293,9 +300,12 @@ describe('Order Flow Integration Tests', () => {
 
       // Verify worker cancelled the order
       expect(orderRepository.findById).toHaveBeenCalledWith('123e4567-e89b-12d3-a456-426614174000');
-      expect(orderRepository.updateStatus).toHaveBeenCalledWith('123e4567-e89b-12d3-a456-426614174000', 'cancelled');
+      expect(orderRepository.updateStatus).toHaveBeenCalledWith(
+        '123e4567-e89b-12d3-a456-426614174000',
+        'cancelled'
+      );
       expect(marketplaceClient.restoreStock).toHaveBeenCalledWith([
-        { productId: 'p1', quantity: 1 }
+        { productId: 'p1', quantity: 1 },
       ]);
     });
   });

@@ -30,7 +30,7 @@ describe('Email Service', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSendMail = jest.fn();
-    
+
     // Inject the mock transporter into the singleton instance
     (emailService as any).transporter = {
       sendMail: mockSendMail,

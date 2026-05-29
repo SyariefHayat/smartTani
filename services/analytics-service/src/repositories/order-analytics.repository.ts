@@ -2,7 +2,11 @@ import prisma from '../lib/prisma';
 import { Prisma } from '@prisma/client';
 
 class OrderAnalyticsRepository {
-  async getOrderVolumeAndValue(params: { from_date?: string; to_date?: string; granularity: 'day' | 'week' | 'month' }) {
+  async getOrderVolumeAndValue(params: {
+    from_date?: string;
+    to_date?: string;
+    granularity: 'day' | 'week' | 'month';
+  }) {
     const { from_date, to_date, granularity } = params;
 
     let dateTrunc: string;
@@ -41,7 +45,8 @@ class OrderAnalyticsRepository {
       ORDER BY date ASC
     `;
 
-    const result = await prisma.$queryRaw<Array<{ date: Date; volume: number; value: number }>>(query);
+    const result =
+      await prisma.$queryRaw<Array<{ date: Date; volume: number; value: number }>>(query);
 
     return result;
   }

@@ -21,6 +21,10 @@ import { exportToCSV } from '@/lib/export-csv';
 import { toast } from 'sonner';
 import { WarehouseForm } from './WarehouseForm';
 import { WarehouseDetailDialog } from './WarehouseDetailDialog';
+import { useAuthStore } from '@/stores/auth';
+import { useFarmerProducts } from '@/hooks/use-farmer-products';
+import { AlertTriangle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 import {
   Dialog,
@@ -100,6 +104,71 @@ export function FarmerWarehouseManagement() {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const user = useAuthStore((s) => s.user);
+  const {
+    data: response,
+    isLoading,
+    error,
+    refetch,
+    isRefetching,
+  } = useFarmerProducts(user?.id, { limit: 100 });
+
+  const isOffline = !!error;
+
+  React.useEffect(() => {
+    if (isOffline) {
+      toast.error('Layanan gudang offline. Menggunakan data demo lokal.');
+    }
+  }, [isOffline]);
+
+  // Aggregate dynamically from actual database products when online
+  const mergedWarehouses = React.useMemo(() => {
+    if (isOffline || !response?.data?.products || response.data.products.length === 0) {
+      return warehouses;
+    }
+
+    const products = response.data.products;
+
+    return warehouses.map((warehouse) => {
+      const cityKeyword = warehouse.location.split(',')[0].trim().toLowerCase();
+
+      const warehouseProducts = products.filter(
+        (p) => p.location?.city?.toLowerCase().trim() === cityKeyword
+      );
+
+      const totalItems = warehouseProducts.length;
+
+      // Calculate occupied capacity proportionally based on total stock quantity
+      const totalStock = warehouseProducts.reduce((acc, p) => acc + (p.stock || 0), 0);
+      const capacity =
+        totalStock > 0 ? Math.min(Math.round((totalStock / 500) * 100), 100) : warehouse.capacity;
+
+      const lastUpdate =
+        warehouseProducts.length > 0
+          ? warehouseProducts.reduce(
+              (latest, current) =>
+                new Date(current.updatedAt) > new Date(latest) ? current.updatedAt : latest,
+              warehouseProducts[0].updatedAt
+            )
+          : warehouse.lastUpdate;
+
+      const status =
+        capacity >= 100
+          ? ('full' as const)
+          : warehouseProducts.length === 0
+            ? ('maintenance' as const)
+            : ('active' as const);
+
+      return {
+        ...warehouse,
+        totalItems,
+        capacity,
+        lastUpdate,
+        status,
+      };
+    });
+  }, [warehouses, response, isOffline]);
+
   // Interactive Dialog States
   const [createDialogOpen, setCreateDialogOpen] = React.useState(false);
   const [detailWarehouse, setDetailWarehouse] = React.useState<Warehouse | null>(null);
@@ -119,7 +188,7 @@ export function FarmerWarehouseManagement() {
     };
 
     exportToCSV({
-      data: warehouses,
+      data: mergedWarehouses,
       columns: [
         { header: 'ID Gudang', accessor: (row) => row.id },
         { header: 'Nama Gudang', accessor: (row) => row.name },
@@ -132,7 +201,7 @@ export function FarmerWarehouseManagement() {
       filename: 'daftar_gudang_penyimpanan',
     });
     toast.success('Daftar gudang berhasil diekspor');
-  }, [warehouses]);
+  }, [mergedWarehouses]);
 
   // Actions meta callbacks passed to react-table options
   const tableActions: WarehouseTableActions = React.useMemo(
@@ -155,7 +224,7 @@ export function FarmerWarehouseManagement() {
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
-    data: warehouses,
+    data: mergedWarehouses,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -172,7 +241,16 @@ export function FarmerWarehouseManagement() {
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
+    },
   });
+
+  React.useEffect(() => {
+    table.setPageIndex(0);
+  }, [columnFilters]);
 
   // Create handler
   const handleAddWarehouse = (data: Omit<Warehouse, 'id' | 'totalItems' | 'lastUpdate'>) => {
@@ -213,8 +291,29 @@ export function FarmerWarehouseManagement() {
     <div className="w-full text-slate-900">
       <div className="mx-auto flex w-full flex-col gap-6">
         <WarehouseHeader onExport={handleExport} onAddWarehouse={() => setCreateDialogOpen(true)} />
-        <WarehouseStats warehouses={warehouses} />
-        <WarehouseTable table={table} columnsCount={columns.length} />
+
+        {isOffline && (
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
+              <p>
+                Layanan Gudang Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
+              onClick={() => refetch()}
+              disabled={isRefetching}
+            >
+              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
+            </Button>
+          </div>
+        )}
+
+        <WarehouseStats warehouses={mergedWarehouses} />
+        <WarehouseTable table={table} columnsCount={columns.length} isLoading={isLoading} />
       </div>
 
       {/* View Details Dialog */}

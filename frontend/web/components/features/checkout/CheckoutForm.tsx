@@ -2,13 +2,7 @@
 
 import { UseFormReturn } from 'react-hook-form';
 import * as z from 'zod';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -108,10 +102,10 @@ export function CheckoutForm({ form }: CheckoutFormProps) {
               <FormItem>
                 <FormLabel>Alamat Lengkap</FormLabel>
                 <FormControl>
-                  <Textarea 
-                    placeholder="Nama jalan, nomor rumah, RT/RW, kelurahan, kecamatan" 
+                  <Textarea
+                    placeholder="Nama jalan, nomor rumah, RT/RW, kelurahan, kecamatan"
                     className="resize-none"
-                    {...field} 
+                    {...field}
                   />
                 </FormControl>
                 <FormMessage />
@@ -145,10 +139,10 @@ export function CheckoutForm({ form }: CheckoutFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Textarea 
-                    placeholder="Titipkan ke satpam, atau instruksi lainnya..." 
+                  <Textarea
+                    placeholder="Titipkan ke satpam, atau instruksi lainnya..."
                     className="resize-none"
-                    {...field} 
+                    {...field}
                   />
                 </FormControl>
                 <FormMessage />

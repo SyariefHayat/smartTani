@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, AlertTriangle } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -59,9 +59,70 @@ export function FarmerCategoryList() {
     enabled: !!user?.id,
   });
 
+  const mockCategories = useMemo(
+    () => [
+      {
+        id: 'mock-1',
+        name: 'Pupuk',
+        slug: 'pupuk',
+        description: 'Kategori untuk pupuk organik dan non-organik berkualitas tinggi.',
+        productCount: 12,
+        status: 'active',
+        icon: '🌱',
+      },
+      {
+        id: 'mock-2',
+        name: 'Benih',
+        slug: 'benih',
+        description: 'Kategori untuk benih tanaman unggul dan bersertifikat.',
+        productCount: 8,
+        status: 'active',
+        icon: '🌾',
+      },
+      {
+        id: 'mock-3',
+        name: 'Pestisida',
+        slug: 'pestisida',
+        description: 'Kategori untuk pembasmi hama dan pelindung tanaman pangan.',
+        productCount: 15,
+        status: 'active',
+        icon: '🧪',
+      },
+      {
+        id: 'mock-4',
+        name: 'Alat Pertanian',
+        slug: 'alat-pertanian',
+        description: 'Kategori untuk peralatan perkebunan dan pertanian modern.',
+        productCount: 5,
+        status: 'active',
+        icon: '🛠️',
+      },
+      {
+        id: 'mock-5',
+        name: 'Sistem Irigasi',
+        slug: 'sistem-irigasi',
+        description: 'Kategori untuk peralatan pengairan dan penyiraman tanaman.',
+        productCount: 3,
+        status: 'active',
+        icon: '💧',
+      },
+    ],
+    []
+  );
+
+  const isOffline = isErrorCategories || isErrorProducts;
+
+  useEffect(() => {
+    if (isOffline) {
+      toast.error('Layanan kategori sedang offline. Menggunakan data demo lokal.');
+    }
+  }, [isOffline]);
+
   // Hooks must be called before any early returns
   const categories: UICategory[] = useMemo(() => {
-    if (!categoriesData?.data) return [];
+    if (isOffline || !categoriesData?.data) {
+      return mockCategories;
+    }
 
     const products = productsData?.data?.products || [];
 
@@ -78,7 +139,7 @@ export function FarmerCategoryList() {
         icon: '📦', // default icon as not provided by API
       };
     });
-  }, [categoriesData, productsData]);
+  }, [categoriesData, productsData, isOffline, mockCategories]);
 
   const filteredCategories = useMemo(() => {
     return categories.filter(
@@ -87,48 +148,6 @@ export function FarmerCategoryList() {
         cat.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [categories, searchTerm]);
-
-  // Error state - rendered after all hooks
-  if (isErrorCategories || isErrorProducts) {
-    const handleRetry = () => {
-      refetchCategories();
-      refetchProducts();
-    };
-    const isRefetching = isRefetchingCategories || isRefetchingProducts;
-
-    return (
-      <div className="flex w-full h-[350px] flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 text-red-500 p-6 text-center text-sm font-medium shadow-xs">
-        <svg
-          className="w-10 h-10 mb-3 text-red-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-          />
-        </svg>
-        <p className="font-semibold text-base mb-1">Gagal Memuat Kategori & Produk</p>
-        <p className="text-xs text-red-400 max-w-md mb-4">
-          Layanan/Service tidak merespon atau sedang tidak aktif. Harap periksa koneksi Anda atau
-          hubungi administrator.
-        </p>
-        <Button
-          variant="outline"
-          size="sm"
-          className="cursor-pointer border-red-200 text-red-500 hover:bg-red-100 hover:text-red-600"
-          onClick={handleRetry}
-          disabled={isRefetching}
-        >
-          <RefreshCw className={`mr-2 h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`} />
-          {isRefetching ? 'Mencoba ulang...' : 'Coba Lagi'}
-        </Button>
-      </div>
-    );
-  }
 
   const handleExport = () => {
     if (categories.length === 0) {
@@ -174,10 +193,36 @@ export function FarmerCategoryList() {
   };
   const isLoading = isLoadingCategories || isLoadingProducts;
 
+  const handleRetry = () => {
+    refetchCategories();
+    refetchProducts();
+  };
+  const isRefetching = isRefetchingCategories || isRefetchingProducts;
+
   return (
     <div className="w-full text-slate-900">
       <div className="mx-auto flex w-full flex-col gap-4">
         <CategoryHeader onExport={handleExport} onAddCategory={() => setProposeOpen(true)} />
+
+        {isOffline && (
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
+              <p>
+                Layanan Kategori Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
+              onClick={handleRetry}
+              disabled={isRefetching}
+            >
+              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
+            </Button>
+          </div>
+        )}
 
         <CategoryStats categories={categories} />
 

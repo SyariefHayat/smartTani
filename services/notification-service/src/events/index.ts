@@ -1,6 +1,10 @@
 import { logger } from '../../../../shared/utils/logger';
 import MessageBroker from '../lib/broker';
-import { BROKER_EXCHANGES, BROKER_QUEUES, BROKER_ROUTING_KEYS } from '../../../../shared/constants/broker';
+import {
+  BROKER_EXCHANGES,
+  BROKER_QUEUES,
+  BROKER_ROUTING_KEYS,
+} from '../../../../shared/constants/broker';
 import * as handlers from './handlers';
 
 export const initEvents = async () => {
@@ -32,9 +36,9 @@ export const initEvents = async () => {
     // Single subscription for the notification queue with routing key awareness
     await MessageBroker.subscribe(queue, async (payload: any, routingKey: string) => {
       logger.info(`🔔 Received event: ${routingKey}`);
-      
+
       const handler = handlerMap[routingKey];
-      
+
       if (handler) {
         try {
           await handler(payload);

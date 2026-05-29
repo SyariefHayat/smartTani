@@ -31,7 +31,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, AlertTriangle } from 'lucide-react';
 import { exportToCSV } from '@/lib/export-csv';
 import { toast } from 'sonner';
 
@@ -57,8 +57,63 @@ export function FarmerStockManagement() {
   const [isSetMinStockOpen, setIsSetMinStockOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState<string>('');
 
+  const isOffline = !!error;
+
+  React.useEffect(() => {
+    if (isOffline) {
+      toast.error('Layanan persediaan sedang offline. Menggunakan data demo lokal.');
+    }
+  }, [isOffline]);
+
+  const mockStocks = React.useMemo<ProductStock[]>(
+    () => [
+      {
+        id: 'mock-stock-1',
+        name: 'Pupuk Organik Cair',
+        sku: 'PPK-OC01',
+        category: 'Pupuk',
+        quantity: 45,
+        unit: 'botol',
+        warehouse: 'Surabaya',
+        minStock: 10,
+        lastUpdated: new Date().toISOString(),
+        status: 'In Stock' as StockStatus,
+        pricePerUnit: 45000,
+      },
+      {
+        id: 'mock-stock-2',
+        name: 'Benih Padi Pandanwangi 5kg',
+        sku: 'BNH-PW02',
+        category: 'Benih',
+        quantity: 4,
+        unit: 'karung',
+        warehouse: 'Lamongan',
+        minStock: 15,
+        lastUpdated: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'Low Stock' as StockStatus,
+        pricePerUnit: 120000,
+      },
+      {
+        id: 'mock-stock-3',
+        name: 'Pestisida Hama Wereng 1L',
+        sku: 'PST-WR03',
+        category: 'Pestisida',
+        quantity: 0,
+        unit: 'botol',
+        warehouse: 'Malang',
+        minStock: 5,
+        lastUpdated: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'Out of Stock' as StockStatus,
+        pricePerUnit: 85000,
+      },
+    ],
+    []
+  );
+
   const stocks: ProductStock[] = React.useMemo(() => {
-    if (!response?.data?.products) return [];
+    if (isOffline || !response?.data?.products || response.data.products.length === 0) {
+      return mockStocks;
+    }
     return response.data.products.map((p) => {
       const quantity = p.stock || 0;
       const minStock = p.min_stock || 10;
@@ -73,14 +128,14 @@ export function FarmerStockManagement() {
         category: p.category,
         quantity,
         unit: p.unit,
-        warehouse: p.location.city,
+        warehouse: p.location?.city || 'Gudang Utama',
         minStock,
         lastUpdated: p.updatedAt,
         status,
         pricePerUnit: p.price_per_unit,
       };
     });
-  }, [response]);
+  }, [response, isOffline, mockStocks]);
 
   const handleUpdateStock = (product: ProductStock) => {
     setSelectedProduct(product);
@@ -187,66 +242,58 @@ export function FarmerStockManagement() {
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
+    },
   });
 
-  if (isLoading) {
-    return (
-      <div className="w-full text-slate-900 space-y-6">
-        <div className="space-y-2">
-          <Skeleton className="h-8 w-48 rounded" />
-          <Skeleton className="h-4 w-96 rounded" />
-        </div>
-        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-24 w-full rounded-xl" />
-          ))}
-        </div>
-        <Skeleton className="h-[450px] w-full rounded-xl" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex w-full h-[350px] flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 text-red-500 p-6 text-center text-sm font-medium shadow-xs">
-        <svg
-          className="w-10 h-10 mb-3 text-red-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-          />
-        </svg>
-        <p className="font-semibold text-base mb-1">Gagal Memuat Data Inventori</p>
-        <p className="text-xs text-red-400 max-w-md mb-4">
-          Layanan/Service tidak merespon atau sedang tidak aktif. Harap periksa koneksi Anda atau
-          hubungi administrator.
-        </p>
-        <Button
-          variant="outline"
-          size="sm"
-          className="cursor-pointer border-red-200 text-red-500 hover:bg-red-100 hover:text-red-600"
-          onClick={() => refetch()}
-          disabled={isRefetching}
-        >
-          <RefreshCw className={`mr-2 h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`} />
-          {isRefetching ? 'Mencoba ulang...' : 'Coba Lagi'}
-        </Button>
-      </div>
-    );
-  }
+  React.useEffect(() => {
+    table.setPageIndex(0);
+  }, [columnFilters]);
 
   return (
     <div className="w-full text-slate-900">
       <div className="mx-auto flex w-full flex-col gap-6">
         <StockHeader onExport={handleExport} />
-        <StockStats stocks={stocks} />
-        <StockTable table={table} columnsCount={columns.length} />
+
+        {isOffline && (
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
+              <p>
+                Layanan Persediaan Offline: Gagal memuat data teraktual. Menggunakan data demo
+                lokal.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
+              onClick={() => refetch()}
+              disabled={isRefetching}
+            >
+              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
+            </Button>
+          </div>
+        )}
+
+        {isLoading ? (
+          <div className="w-full text-slate-900 space-y-6">
+            <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-24 w-full rounded-xl" />
+              ))}
+            </div>
+            <Skeleton className="h-[450px] w-full rounded-xl" />
+          </div>
+        ) : (
+          <>
+            <StockStats stocks={stocks} />
+            <StockTable table={table} columnsCount={columns.length} isLoading={isLoading} />
+          </>
+        )}
       </div>
 
       {/* Update Modals */}

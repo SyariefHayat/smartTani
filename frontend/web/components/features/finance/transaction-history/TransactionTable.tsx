@@ -17,11 +17,17 @@ import { TransactionFilters } from './TransactionFilters';
 interface TransactionTableProps<TData> {
   table: ReactTable<TData>;
   columnsCount: number;
+  totalTransactions?: number;
 }
 
-export function TransactionTable<TData>({ table, columnsCount }: TransactionTableProps<TData>) {
-  const displayedCount = table.getRowModel().rows.length;
-  const filteredCount = table.getFilteredRowModel().rows.length;
+export function TransactionTable<TData>({
+  table,
+  columnsCount,
+  totalTransactions = 0,
+}: TransactionTableProps<TData>) {
+  const { pageIndex, pageSize } = table.getState().pagination;
+  const fromRow = totalTransactions === 0 ? 0 : pageIndex * pageSize + 1;
+  const toRow = Math.min((pageIndex + 1) * pageSize, totalTransactions);
 
   return (
     <Card className="w-full border border-slate-200 bg-white">
@@ -73,16 +79,27 @@ export function TransactionTable<TData>({ table, columnsCount }: TransactionTabl
 
         {/* Custom Pagination */}
         <div className="flex items-center justify-between gap-4 pt-2">
-          <div className="text-xs font-semibold text-slate-500">
-            Menampilkan {displayedCount} dari {filteredCount} transaksi.
+          <div className="text-xs text-muted-foreground">
+            {totalTransactions === 0 ? (
+              '0 transaksi ditemukan'
+            ) : (
+              <>
+                Menampilkan{' '}
+                <span className="font-semibold text-slate-900">
+                  {fromRow}–{toRow}
+                </span>{' '}
+                dari <span className="font-semibold text-slate-900">{totalTransactions}</span>{' '}
+                transaksi
+              </>
+            )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <Button
               variant="outline"
               size="sm"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="cursor-pointer text-xs font-semibold flex items-center gap-1.5"
+              className="cursor-pointer text-slate-700 bg-white border-slate-200 text-xs font-semibold hover:bg-slate-50 h-8 flex items-center gap-1"
             >
               <ChevronLeft className="h-3.5 w-3.5" />
               Sebelumnya
@@ -92,7 +109,7 @@ export function TransactionTable<TData>({ table, columnsCount }: TransactionTabl
               size="sm"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
-              className="cursor-pointer text-xs font-semibold flex items-center gap-1.5"
+              className="cursor-pointer text-slate-700 bg-white border-slate-200 text-xs font-semibold hover:bg-slate-50 h-8 flex items-center gap-1"
             >
               Berikutnya
               <ChevronRight className="h-3.5 w-3.5" />

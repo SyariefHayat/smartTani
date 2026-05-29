@@ -46,10 +46,7 @@ export function ProposalFilter({
       <div className="flex-1">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <Input 
-            placeholder="Cari proposal investasi..." 
-            className="pl-10"
-          />
+          <Input placeholder="Cari proposal investasi..." className="pl-10" />
         </div>
       </div>
       <div className="w-full md:w-[200px]">

@@ -30,7 +30,7 @@ export function FinanceHeader({ onExport, onWithdraw }: FinanceHeaderProps) {
         </Button>
         <Button
           onClick={onWithdraw}
-          className="cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs"
+          className="cursor-pointer bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs"
         >
           <ArrowUpRight className="mr-1.5 h-3.5 w-3.5" />
           Tarik Saldo

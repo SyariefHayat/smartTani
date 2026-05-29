@@ -20,7 +20,7 @@ import { columns } from './columns';
 import { purchaseService } from '@/services/purchase';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, AlertTriangle } from 'lucide-react';
 import { exportToCSV } from '@/lib/export-csv';
 import { toast } from 'sonner';
 import { PurchaseRecord, PurchaseTableActions } from './types';
@@ -95,8 +95,40 @@ export function FarmerPurchaseList() {
     []
   );
 
+  const mockPurchases = React.useMemo(
+    () => [
+      {
+        id: 'mock-pur-1',
+        farmer_id: 'mock-farmer',
+        purchase_date: new Date().toISOString(),
+        item_name: 'Pupuk Urea Subur',
+        supplier_name: 'UD. Tani Subur',
+        quantity: 10,
+        unit: 'karung',
+        total_cost: 1200000,
+        notes: 'Untuk persiapan musim tanam padi.',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+      {
+        id: 'mock-pur-2',
+        farmer_id: 'mock-farmer',
+        purchase_date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        item_name: 'Benih Jagung Hibrida',
+        supplier_name: 'Toko Tani Jaya',
+        quantity: 5,
+        unit: 'kg',
+        total_cost: 450000,
+        notes: 'Benih jagung hibrida F1.',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+    ],
+    []
+  );
+
   const {
-    data: purchases = [],
+    data: rawPurchases = [],
     isLoading,
     error,
     refetch,
@@ -105,6 +137,21 @@ export function FarmerPurchaseList() {
     queryKey: ['farmer-purchases'],
     queryFn: () => purchaseService.getPurchases(),
   });
+
+  const isOffline = !!error;
+
+  React.useEffect(() => {
+    if (isOffline) {
+      toast.error('Layanan pengeluaran sedang offline. Menggunakan data demo lokal.');
+    }
+  }, [isOffline]);
+
+  const purchases = React.useMemo(() => {
+    if (isOffline || !rawPurchases || rawPurchases.length === 0) {
+      return mockPurchases;
+    }
+    return rawPurchases;
+  }, [rawPurchases, isOffline, mockPurchases]);
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -126,6 +173,10 @@ export function FarmerPurchaseList() {
       rowSelection,
     },
   });
+
+  React.useEffect(() => {
+    table.setPageIndex(0);
+  }, [columnFilters]);
 
   const handleExport = React.useCallback(() => {
     if (purchases.length === 0) {
@@ -155,52 +206,38 @@ export function FarmerPurchaseList() {
       <div className="mx-auto flex w-full flex-col gap-4">
         <PurchaseHeader onExport={handleExport} onSuccess={refetch} />
 
-        {error ? (
-          <div className="flex w-full h-[350px] flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 text-red-500 p-6 text-center text-sm font-medium shadow-xs">
-            <svg
-              className="w-10 h-10 mb-3 text-red-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
-            <p className="font-semibold text-base mb-1">Gagal Memuat Data Pengeluaran</p>
-            <p className="text-xs text-red-400 max-w-md mb-4">
-              Layanan/Service tidak merespon atau sedang tidak aktif. Harap periksa koneksi Anda
-              atau hubungi administrator.
-            </p>
+        {isOffline && (
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
+              <p>
+                Layanan Pengeluaran Offline: Gagal memuat data teraktual. Menggunakan data demo
+                lokal.
+              </p>
+            </div>
             <Button
               variant="outline"
               size="sm"
-              className="cursor-pointer border-red-200 text-red-500 hover:bg-red-100 hover:text-red-600"
+              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
               onClick={() => refetch()}
               disabled={isRefetching}
             >
-              <RefreshCw className={`mr-2 h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`} />
-              {isRefetching ? 'Mencoba ulang...' : 'Coba Lagi'}
+              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
             </Button>
           </div>
-        ) : (
-          <>
-            {isLoading ? (
-              <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <Skeleton key={i} className="h-24 w-full rounded-xl" />
-                ))}
-              </div>
-            ) : (
-              <PurchaseStats purchases={purchases} />
-            )}
-
-            <PurchaseTable table={table} columnsCount={columns.length} isLoading={isLoading} />
-          </>
         )}
+
+        {isLoading ? (
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-24 w-full rounded-xl" />
+            ))}
+          </div>
+        ) : (
+          <PurchaseStats purchases={purchases} />
+        )}
+
+        <PurchaseTable table={table} columnsCount={columns.length} isLoading={isLoading} />
       </div>
 
       {/* Detail Dialog */}

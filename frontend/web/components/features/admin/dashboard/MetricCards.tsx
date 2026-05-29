@@ -1,13 +1,13 @@
-'use client'
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatCurrency } from '@/lib/utils'
-import { DollarSign, Users, ShoppingCart, TrendingUp } from 'lucide-react'
-import { OverviewMetrics } from '@/services/analytics'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { formatCurrency } from '@/lib/utils';
+import { DollarSign, Users, ShoppingCart, TrendingUp } from 'lucide-react';
+import { OverviewMetrics } from '@/services/analytics';
 
 interface MetricCardsProps {
-  metrics?: OverviewMetrics
-  loading?: boolean
+  metrics?: OverviewMetrics;
+  loading?: boolean;
 }
 
 export function MetricCards({ metrics, loading }: MetricCardsProps) {
@@ -40,7 +40,7 @@ export function MetricCards({ metrics, loading }: MetricCardsProps) {
       description: 'Total dana investasi tersalurkan',
       color: 'text-orange-600',
     },
-  ]
+  ];
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -56,14 +56,12 @@ export function MetricCards({ metrics, loading }: MetricCardsProps) {
             ) : (
               <>
                 <div className="text-2xl font-bold">{card.value}</div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {card.description}
-                </p>
+                <p className="text-xs text-muted-foreground mt-1">{card.description}</p>
               </>
             )}
           </CardContent>
         </Card>
       ))}
     </div>
-  )
+  );
 }

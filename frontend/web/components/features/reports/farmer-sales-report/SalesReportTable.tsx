@@ -42,6 +42,10 @@ export function SalesReportTable<TData>({ table, columnsCount }: SalesReportTabl
   const totalRows = table.getFilteredRowModel().rows.length;
   const isFiltered = table.getState().columnFilters.length > 0;
 
+  const { pageIndex, pageSize } = table.getState().pagination;
+  const fromRow = totalRows === 0 ? 0 : pageIndex * pageSize + 1;
+  const toRow = Math.min((pageIndex + 1) * pageSize, totalRows);
+
   return (
     <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
       <CardHeader className="pb-4">
@@ -171,20 +175,26 @@ export function SalesReportTable<TData>({ table, columnsCount }: SalesReportTabl
 
         {/* Pagination controls */}
         <div className="flex items-center justify-between gap-4 pt-2">
-          <div className="text-sm font-medium text-slate-500">
-            Menampilkan{' '}
-            <span className="font-semibold text-slate-800">
-              {table.getRowModel().rows?.length || 0}
-            </span>{' '}
-            dari <span className="font-semibold text-slate-800">{totalRows}</span> transaksi
+          <div className="text-xs text-muted-foreground">
+            {totalRows === 0 ? (
+              '0 transaksi ditemukan'
+            ) : (
+              <>
+                Menampilkan{' '}
+                <span className="font-semibold text-slate-900">
+                  {fromRow}–{toRow}
+                </span>{' '}
+                dari <span className="font-semibold text-slate-900">{totalRows}</span> transaksi
+              </>
+            )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <Button
               variant="outline"
               size="sm"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="cursor-pointer font-semibold text-slate-600 border-slate-200 hover:bg-slate-50 disabled:opacity-50 text-xs h-8"
+              className="cursor-pointer text-slate-700 bg-white border-slate-200 text-xs font-semibold hover:bg-slate-50 h-8"
             >
               Sebelumnya
             </Button>
@@ -193,7 +203,7 @@ export function SalesReportTable<TData>({ table, columnsCount }: SalesReportTabl
               size="sm"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
-              className="cursor-pointer font-semibold text-slate-600 border-slate-200 hover:bg-slate-50 disabled:opacity-50 text-xs h-8"
+              className="cursor-pointer text-slate-700 bg-white border-slate-200 text-xs font-semibold hover:bg-slate-50 h-8"
             >
               Berikutnya
             </Button>

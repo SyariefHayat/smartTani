@@ -2,11 +2,7 @@
 
 import { Control, Controller } from 'react-hook-form';
 import { ProductFormValues } from './schema';
-import {
-  Field,
-  FieldLabel,
-  FieldError,
-} from '@/components/ui/field';
+import { Field, FieldLabel, FieldError } from '@/components/ui/field';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
@@ -30,10 +26,7 @@ export function DescriptionSection({ control }: DescriptionSectionProps) {
         control={control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
-            <FieldLabel
-              htmlFor={field.name}
-              className="flex items-center justify-between gap-3"
-            >
+            <FieldLabel htmlFor={field.name} className="flex items-center justify-between gap-3">
               <span className="inline-flex items-center gap-1">
                 Deskripsi Singkat
                 <span className="text-destructive">*</span>
@@ -72,28 +65,13 @@ export function DescriptionSection({ control }: DescriptionSectionProps) {
                   </SelectContent>
                 </Select>
                 <Separator orientation="vertical" className="h-4 mx-1" />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-xs"
-                  className="font-bold"
-                >
+                <Button type="button" variant="ghost" size="icon-xs" className="font-bold">
                   B
                 </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-xs"
-                  className="italic"
-                >
+                <Button type="button" variant="ghost" size="icon-xs" className="italic">
                   I
                 </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-xs"
-                  className="underline"
-                >
+                <Button type="button" variant="ghost" size="icon-xs" className="underline">
                   U
                 </Button>
               </div>

@@ -10,84 +10,84 @@ import {
   Mail,
   Command,
   GalleryVerticalEnd,
-} from "lucide-react";
-import { SidebarData, SidebarTeam, SidebarNavGroup } from "./types";
+} from 'lucide-react';
+import { SidebarData, SidebarTeam, SidebarNavGroup } from './types';
 
 export const DASHBOARD_TEAMS: SidebarTeam[] = [
   {
-    name: "PT. Smarttani Indonesia",
+    name: 'PT. Smarttani Indonesia',
     logo: Command,
-    plan: "Enterprise",
+    plan: 'Enterprise',
   },
   {
-    name: "Smarttani Academy",
+    name: 'Smarttani Academy',
     logo: GraduationCap,
-    plan: "Education",
+    plan: 'Education',
   },
   {
-    name: "Koperasi Smarttani",
+    name: 'Koperasi Smarttani',
     logo: GalleryVerticalEnd,
-    plan: "Member",
+    plan: 'Member',
   },
 ];
 
 export const DASHBOARD_NAV_GROUPS: SidebarNavGroup[] = [
   {
-    title: "Utama",
+    title: 'Utama',
     items: [
       {
-        title: "Beranda",
-        url: "/",
+        title: 'Beranda',
+        url: '/',
         icon: Home,
       },
       {
-        title: "Marketplace",
-        url: "/marketplace",
+        title: 'Marketplace',
+        url: '/marketplace',
         icon: Store,
       },
       {
-        title: "Investasi",
-        url: "/investments",
+        title: 'Investasi',
+        url: '/investments',
         icon: TrendingUp,
       },
     ],
   },
   {
-    title: "Layanan",
+    title: 'Layanan',
     items: [
       {
-        title: "Distributor",
-        url: "/distributors",
+        title: 'Distributor',
+        url: '/distributors',
         icon: Package,
       },
       {
-        title: "Logistik",
-        url: "/logistics",
+        title: 'Logistik',
+        url: '/logistics',
         icon: Truck,
       },
       {
-        title: "SiTani Academy",
-        url: "/academy",
+        title: 'SiTani Academy',
+        url: '/academy',
         icon: GraduationCap,
       },
     ],
   },
   {
-    title: "Informasi",
+    title: 'Informasi',
     items: [
       {
-        title: "Artikel",
-        url: "/articles",
+        title: 'Artikel',
+        url: '/articles',
         icon: Newspaper,
       },
       {
-        title: "Tentang",
-        url: "/about",
+        title: 'Tentang',
+        url: '/about',
         icon: Info,
       },
       {
-        title: "Kontak",
-        url: "/contact",
+        title: 'Kontak',
+        url: '/contact',
         icon: Mail,
       },
     ],
@@ -96,9 +96,9 @@ export const DASHBOARD_NAV_GROUPS: SidebarNavGroup[] = [
 
 export const sidebarData: SidebarData = {
   user: {
-    name: "SmartTani User",
-    email: "user@smarttaniindonesia.com",
-    avatar: "/images/home/dashboard-logo.png",
+    name: 'SmartTani User',
+    email: 'user@smarttaniindonesia.com',
+    avatar: '/images/home/dashboard-logo.png',
   },
   teams: DASHBOARD_TEAMS,
   navGroups: DASHBOARD_NAV_GROUPS,

@@ -7,12 +7,7 @@ import { authorize } from '../middleware/authorize.middleware';
 
 const router = Router();
 
-router.get(
-  '/',
-  gatewayAuthMiddleware,
-  authorize(['investor']),
-  investmentController.getPortfolio
-);
+router.get('/', gatewayAuthMiddleware, authorize(['investor']), investmentController.getPortfolio);
 
 router.post(
   '/',

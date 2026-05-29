@@ -34,10 +34,7 @@ export class ShipmentService {
     const skip = (query.page - 1) * query.limit;
 
     const [data, total] = await Promise.all([
-      Shipment.find(filter)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(query.limit),
+      Shipment.find(filter).sort({ createdAt: -1 }).skip(skip).limit(query.limit),
       Shipment.countDocuments(filter),
     ]);
 

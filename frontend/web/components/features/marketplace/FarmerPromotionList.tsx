@@ -3,6 +3,8 @@
 import * as React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { AlertTriangle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 import {
   AlertDialog,
@@ -37,10 +39,66 @@ export function FarmerPromotionList() {
   const [deleteOpen, setDeleteOpen] = React.useState(false);
   const [selectedPromo, setSelectedPromo] = React.useState<UIPromotion | null>(null);
 
+  const mockPromotions = React.useMemo(
+    () => [
+      {
+        _id: 'mock-promo-1',
+        farmer_id: 'mock-farmer',
+        product_ids: [],
+        title: 'Diskon Awal Musim Tanam',
+        code: 'TANAMMURAH',
+        type: 'discount_percent' as const,
+        value: 10,
+        start_date: new Date().toISOString(),
+        end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        usageCount: 24,
+        limit: 100,
+        status: 'active' as const,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+      {
+        _id: 'mock-promo-2',
+        farmer_id: 'mock-farmer',
+        product_ids: [],
+        title: 'Subsidi Ongkir Jawa Timur',
+        code: 'ONGKIRJATIM',
+        type: 'discount_amount' as const,
+        value: 15000,
+        start_date: new Date().toISOString(),
+        end_date: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
+        usageCount: 89,
+        limit: 100,
+        status: 'active' as const,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+      {
+        _id: 'mock-promo-3',
+        farmer_id: 'mock-farmer',
+        product_ids: [],
+        title: 'Promo Gajian Tani',
+        code: 'GAJIANTANI',
+        type: 'discount_percent' as const,
+        value: 5,
+        start_date: new Date().toISOString(),
+        end_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+        usageCount: 0,
+        limit: 50,
+        status: 'scheduled' as const,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+    ],
+    []
+  );
+
   const {
-    data: promos = [],
+    data: rawPromos = [],
     isLoading,
     error,
+    refetch,
+    isRefetching,
   } = useQuery({
     queryKey: ['promotions', { farmer_id: user?.id }],
     queryFn: async () => {
@@ -61,6 +119,21 @@ export function FarmerPromotionList() {
     },
     enabled: !!user?.id,
   });
+
+  const isOffline = !!error;
+
+  React.useEffect(() => {
+    if (isOffline) {
+      toast.error('Layanan promosi sedang offline. Menggunakan data demo lokal.');
+    }
+  }, [isOffline]);
+
+  const promos = React.useMemo(() => {
+    if (isOffline || !rawPromos || rawPromos.length === 0) {
+      return mockPromotions;
+    }
+    return rawPromos;
+  }, [rawPromos, isOffline, mockPromotions]);
 
   // Toggle status mutation
   const toggleMutation = useMutation({
@@ -142,6 +215,26 @@ export function FarmerPromotionList() {
     <div className="w-full text-slate-900">
       <div className="mx-auto flex w-full flex-col gap-4">
         <PromotionHeader onAddPromo={() => setCreateOpen(true)} />
+
+        {isOffline && (
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
+              <p>
+                Layanan Promosi Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
+              onClick={() => refetch()}
+              disabled={isRefetching}
+            >
+              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
+            </Button>
+          </div>
+        )}
 
         <PromotionStats promos={promos} />
 

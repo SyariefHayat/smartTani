@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   Select,
@@ -6,12 +6,12 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 
 interface OrderFilterProps {
-  status: string
-  onStatusChange: (value: string) => void
+  status: string;
+  onStatusChange: (value: string) => void;
 }
 
 export function OrderFilter({ status, onStatusChange }: OrderFilterProps) {
@@ -37,5 +37,5 @@ export function OrderFilter({ status, onStatusChange }: OrderFilterProps) {
         </Select>
       </div>
     </div>
-  )
+  );
 }

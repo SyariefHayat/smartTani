@@ -25,6 +25,9 @@ export function PurchaseTable<TData>({
   isLoading,
 }: PurchaseTableProps<TData>) {
   const totalRows = table.getFilteredRowModel().rows.length;
+  const { pageIndex, pageSize } = table.getState().pagination;
+  const fromRow = totalRows === 0 ? 0 : pageIndex * pageSize + 1;
+  const toRow = Math.min((pageIndex + 1) * pageSize, totalRows);
 
   return (
     <Card className="w-full">
@@ -84,22 +87,38 @@ export function PurchaseTable<TData>({
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between gap-4 pt-2">
-          <div className="text-sm text-muted-foreground">{totalRows} catatan ditemukan</div>
+        <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100">
+          <div className="text-sm text-muted-foreground">
+            {isLoading ? (
+              <div className="h-4 w-48 animate-pulse bg-slate-100 rounded inline-block" />
+            ) : totalRows === 0 ? (
+              '0 pembelian ditemukan'
+            ) : (
+              <>
+                Menampilkan{' '}
+                <span className="font-semibold text-slate-900">
+                  {fromRow}–{toRow}
+                </span>{' '}
+                dari <span className="font-semibold text-slate-900">{totalRows}</span> pembelian
+              </>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
+              className="cursor-pointer text-slate-700 bg-white"
               onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
+              disabled={isLoading || !table.getCanPreviousPage()}
             >
               Sebelumnya
             </Button>
             <Button
               variant="outline"
               size="sm"
+              className="cursor-pointer text-slate-700 bg-white"
               onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
+              disabled={isLoading || !table.getCanNextPage()}
             >
               Berikutnya
             </Button>

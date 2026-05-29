@@ -344,23 +344,22 @@ export function FarmerSalesReport() {
       <div className="w-full text-slate-900">
         <div className="mx-auto flex w-full flex-col gap-6">
           {isQueryError && (
-            <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 font-semibold shadow-xs">
+            <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 animate-pulse" />
+                <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
                 <p>
-                  Mode Offline Simulasi: Koneksi ke server laporan penjualan terputus. Menampilkan
-                  data lokal demo agar Anda tetap dapat menjelajahi layout.
+                  Layanan Laporan Penjualan Offline: Gagal sinkronisasi data teraktual. Menggunakan
+                  data demo lokal.
                 </p>
               </div>
               <Button
                 variant="outline"
                 size="sm"
-                className="h-7 cursor-pointer border-amber-300 text-amber-800 bg-white hover:bg-amber-100 font-bold shrink-0 text-[10px]"
+                className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
                 onClick={handleRetry}
                 disabled={isRefetching}
               >
-                <RefreshCw className={`mr-1 h-3 w-3 ${isRefetching ? 'animate-spin' : ''}`} />
-                {isRefetching ? 'Hubungkan...' : 'Coba Hubungkan Kembali'}
+                {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
               </Button>
             </div>
           )}

@@ -14,7 +14,7 @@ import {
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { orderService } from '@/services/order';
 import { toast } from 'sonner';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { exportToCSV } from '@/lib/export-csv';
 import { format } from 'date-fns';
@@ -58,9 +58,88 @@ export function FarmerSalesHistory() {
     queryClient.invalidateQueries({ queryKey: ['farmer-sales-history'] });
   };
 
+  const mockSalesHistory = React.useMemo(
+    () => [
+      {
+        id: 'ORDER-901',
+        customerName: 'Budi Santoso',
+        date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        totalAmount: 250000,
+        paymentMethod: 'Online (Midtrans)',
+        status: 'completed' as OrderStatus,
+        items: [
+          { id: 'item-h1', name: 'Pupuk Organik Cair', quantity: 2, price: 125000, image: '' },
+        ],
+        platformFee: 2000,
+        shippingCost: 15000,
+        shippingAddress: {
+          recipient_name: 'Budi Santoso',
+          phone_number: '081234567890',
+          full_address: 'Jl. Ahmad Yani No. 12',
+          city: 'Surabaya',
+          province: 'Jawa Timur',
+          postal_code: '60231',
+        },
+      },
+      {
+        id: 'ORDER-902',
+        customerName: 'Dewi Lestari',
+        date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        totalAmount: 95000,
+        paymentMethod: 'Manual',
+        status: 'delivered' as OrderStatus,
+        items: [
+          { id: 'item-h2', name: 'Benih Tomat Premium 100g', quantity: 1, price: 95000, image: '' },
+        ],
+        platformFee: 2000,
+        shippingCost: 10000,
+        shippingAddress: {
+          recipient_name: 'Dewi Lestari',
+          phone_number: '082123456789',
+          full_address: 'Perum Tani Indah Blok C/10',
+          city: 'Sidoarjo',
+          province: 'Jawa Timur',
+          postal_code: '61212',
+        },
+      },
+      {
+        id: 'ORDER-903',
+        customerName: 'Joko Susilo',
+        date: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+        totalAmount: 120000,
+        paymentMethod: 'Manual',
+        status: 'cancelled' as OrderStatus,
+        items: [
+          { id: 'item-h3', name: 'Alat Gunting Dahan', quantity: 2, price: 60000, image: '' },
+        ],
+        platformFee: 2000,
+        shippingCost: 12000,
+        shippingAddress: {
+          recipient_name: 'Joko Susilo',
+          phone_number: '081333444555',
+          full_address: 'RT 04/RW 01',
+          city: 'Tuban',
+          province: 'Jawa Timur',
+          postal_code: '62311',
+        },
+      },
+    ],
+    []
+  );
+
+  React.useEffect(() => {
+    if (isError) {
+      toast.error('Layanan riwayat penjualan sedang offline. Menggunakan data demo lokal.');
+    }
+  }, [isError]);
+
   // 2. Map backend Order type to UI FarmerOrder type
   const orders: FarmerOrder[] = React.useMemo(() => {
-    const rawOrders = ordersResponse?.data?.orders || [];
+    if (isError || !ordersResponse?.data?.orders || ordersResponse.data.orders.length === 0) {
+      return mockSalesHistory;
+    }
+
+    const rawOrders = ordersResponse.data.orders;
     return rawOrders.map((o) => {
       const items = o.items.map((item) => ({
         id: item.id,
@@ -83,7 +162,7 @@ export function FarmerSalesHistory() {
         shippingAddress: o.shipping_address,
       };
     });
-  }, [ordersResponse]);
+  }, [ordersResponse, isError, mockSalesHistory]);
 
   // 3. Date range memory filtering
   const filteredOrders = React.useMemo(() => {
@@ -186,49 +265,35 @@ export function FarmerSalesHistory() {
       <div className="mx-auto flex w-full flex-col gap-6">
         <SalesHistoryHeader onExport={handleExport} />
 
-        {isError ? (
-          <div className="flex w-full h-[350px] flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 text-red-500 p-6 text-center text-sm font-medium shadow-xs">
-            <svg
-              className="w-10 h-10 mb-3 text-red-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
-            </svg>
-            <p className="font-semibold text-base mb-1">Gagal Memuat Riwayat Penjualan</p>
-            <p className="text-xs text-red-400 max-w-md mb-4">
-              Layanan order-service tidak merespon atau sedang tidak aktif. Harap periksa koneksi
-              Anda atau hubungi administrator.
-            </p>
+        {isError && (
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
+              <p>
+                Layanan Riwayat Penjualan Offline: Gagal memuat data teraktual. Menggunakan data
+                demo lokal.
+              </p>
+            </div>
             <Button
               variant="outline"
               size="sm"
-              className="cursor-pointer border-red-200 text-red-500 hover:bg-red-100 hover:text-red-600"
+              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
               onClick={handleRetry}
               disabled={isRefetching}
             >
-              <RefreshCw className={`mr-2 h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`} />
-              {isRefetching ? 'Mencoba ulang...' : 'Coba Lagi'}
+              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
             </Button>
           </div>
-        ) : (
-          <>
-            <SalesHistoryStats orders={filteredOrders} isLoading={isLoading} />
-            <SalesHistoryTable
-              table={table}
-              columnsCount={columns.length}
-              isLoading={isLoading}
-              dateRange={dateRange}
-              setDateRange={setDateRange}
-            />
-          </>
         )}
+
+        <SalesHistoryStats orders={filteredOrders} isLoading={isLoading} />
+        <SalesHistoryTable
+          table={table}
+          columnsCount={columns.length}
+          isLoading={isLoading}
+          dateRange={dateRange}
+          setDateRange={setDateRange}
+        />
       </div>
     </div>
   );

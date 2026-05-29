@@ -211,7 +211,12 @@ describe('GET /investments', () => {
           amount: 5000000,
           projected_return: 5692500,
           status: 'paid',
-          proposal: { id: UUID, title: 'Kebun Jagung', commodity: 'Jagung', status: 'open_for_funding' },
+          proposal: {
+            id: UUID,
+            title: 'Kebun Jagung',
+            commodity: 'Jagung',
+            status: 'open_for_funding',
+          },
         },
         {
           id: 'inv-2',
@@ -220,7 +225,12 @@ describe('GET /investments', () => {
           amount: 3000000,
           projected_return: 3415500,
           status: 'paid',
-          proposal: { id: 'prop-2', title: 'Kebun Padi', commodity: 'Padi', status: 'fully_funded' },
+          proposal: {
+            id: 'prop-2',
+            title: 'Kebun Padi',
+            commodity: 'Padi',
+            status: 'fully_funded',
+          },
         },
       ],
       summary: {

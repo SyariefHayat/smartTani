@@ -1,7 +1,9 @@
 'use client';
 
+import * as React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Wifi, Battery, MapPin, Cpu, SignalHigh } from 'lucide-react';
+import { Wifi, Battery, MapPin, Cpu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { IoTDevice } from './types';
 import { cn } from '@/lib/utils';
 
@@ -10,6 +12,25 @@ interface DeviceStatusListProps {
 }
 
 export function DeviceStatusList({ devices }: DeviceStatusListProps) {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const pageSize = 3;
+  const totalRows = devices.length;
+  const totalPages = Math.ceil(totalRows / pageSize);
+
+  const fromRow = totalRows === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const toRow = Math.min(currentPage * pageSize, totalRows);
+
+  const paginatedDevices = React.useMemo(() => {
+    return devices.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  }, [devices, currentPage, pageSize]);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setCurrentPage(1);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [devices]);
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'online':
@@ -38,65 +59,106 @@ export function DeviceStatusList({ devices }: DeviceStatusListProps) {
   };
 
   return (
-    <Card className="border border-slate-200 bg-white shadow-sm">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-base font-bold text-slate-800">
-              Status Perangkat IoT
-            </CardTitle>
-            <CardDescription className="text-xs text-slate-500 mt-1">
-              Daftar node sensor dan kontroler terhubung.
-            </CardDescription>
+    <Card className="border border-slate-200 bg-white shadow-sm flex flex-col justify-between">
+      <div>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-base font-bold text-slate-800">
+                Status Perangkat IoT
+              </CardTitle>
+              <CardDescription className="text-xs text-slate-500 mt-1">
+                Daftar node sensor dan kontroler terhubung.
+              </CardDescription>
+            </div>
+            <div className="p-2 rounded-lg bg-slate-50 text-slate-500">
+              <Cpu className="h-4.5 w-4.5" />
+            </div>
           </div>
-          <div className="p-2 rounded-lg bg-slate-50 text-slate-500">
-            <Cpu className="h-4.5 w-4.5" />
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {paginatedDevices.map((device) => (
+            <div
+              key={device.id}
+              className="flex flex-col gap-2.5 p-3.5 rounded-lg border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors duration-200"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-bold text-slate-800 truncate">{device.name}</span>
+                <div className="shrink-0">{getStatusBadge(device.status)}</div>
+              </div>
+              <div className="grid grid-cols-2 gap-y-2 gap-x-4 mt-1">
+                <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-500">
+                  <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                  <span className="truncate">{device.location}</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-500 justify-end">
+                  <Battery
+                    className={cn(
+                      'h-3.5 w-3.5 shrink-0',
+                      device.battery <= 20 ? 'text-rose-500 animate-bounce' : 'text-emerald-500'
+                    )}
+                  />
+                  <span>{device.battery}%</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-500">
+                  <Wifi className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                  <span className="truncate">Sinyal: {device.signal}%</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-[9px] font-mono font-semibold text-slate-400 justify-end">
+                  ID: {device.id}
+                </div>
+              </div>
+              <div className="mt-1 h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className={cn(
+                    'h-full rounded-full transition-all duration-500',
+                    device.status === 'online' ? 'bg-blue-500' : 'bg-slate-300'
+                  )}
+                  style={{ width: `${device.signal}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </div>
+
+      <CardContent className="pt-0 pb-4">
+        {/* Pagination Footer */}
+        <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100 mt-2">
+          <div className="text-xs text-muted-foreground">
+            {totalRows === 0 ? (
+              '0 perangkat ditemukan'
+            ) : (
+              <>
+                Menampilkan{' '}
+                <span className="font-semibold text-slate-900">
+                  {fromRow}–{toRow}
+                </span>{' '}
+                dari <span className="font-semibold text-slate-900">{totalRows}</span> perangkat
+              </>
+            )}
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Button
+              variant="outline"
+              size="xs"
+              className="cursor-pointer text-slate-700 bg-white px-2.5 py-1 text-[10px] h-7"
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              disabled={currentPage === 1 || totalPages === 0}
+            >
+              Sebelumnya
+            </Button>
+            <Button
+              variant="outline"
+              size="xs"
+              className="cursor-pointer text-slate-700 bg-white px-2.5 py-1 text-[10px] h-7"
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+              disabled={currentPage === totalPages || totalPages === 0}
+            >
+              Berikutnya
+            </Button>
           </div>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        {devices.map((device) => (
-          <div
-            key={device.id}
-            className="flex flex-col gap-2.5 p-3.5 rounded-lg border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors duration-200"
-          >
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-sm font-bold text-slate-800 truncate">{device.name}</span>
-              <div className="shrink-0">{getStatusBadge(device.status)}</div>
-            </div>
-            <div className="grid grid-cols-2 gap-y-2 gap-x-4 mt-1">
-              <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-500">
-                <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                <span className="truncate">{device.location}</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-500 justify-end">
-                <Battery
-                  className={cn(
-                    'h-3.5 w-3.5 shrink-0',
-                    device.battery <= 20 ? 'text-rose-500 animate-bounce' : 'text-emerald-500'
-                  )}
-                />
-                <span>{device.battery}%</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-500">
-                <Wifi className="h-3.5 w-3.5 text-blue-500 shrink-0" />
-                <span className="truncate">Sinyal: {device.signal}%</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-[9px] font-mono font-semibold text-slate-400 justify-end">
-                ID: {device.id}
-              </div>
-            </div>
-            <div className="mt-1 h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-              <div
-                className={cn(
-                  'h-full rounded-full transition-all duration-500',
-                  device.status === 'online' ? 'bg-blue-500' : 'bg-slate-300'
-                )}
-                style={{ width: `${device.signal}%` }}
-              />
-            </div>
-          </div>
-        ))}
       </CardContent>
     </Card>
   );

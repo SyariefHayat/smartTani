@@ -31,7 +31,7 @@ const options: swaggerJsdoc.Options = {
     ],
   },
   apis: [
-    './src/routes/*.ts', 
+    './src/routes/*.ts',
     './src/index.ts',
     '../auth-service/src/routes/*.ts',
     '../marketplace-service/src/routes/*.ts',
