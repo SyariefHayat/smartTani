@@ -31,9 +31,10 @@ class ProposalRepository {
     pagination: { page: number; limit: number },
     user: { id: string; role: string }
   ) {
-    const skip = (pagination.page - 1) * pagination.limit;
-    const take = pagination.limit;
+    const skip = (Number(pagination.page) - 1) * Number(pagination.limit);
+    const take = Number(pagination.limit);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
 
     // Apply role-based visibility rules

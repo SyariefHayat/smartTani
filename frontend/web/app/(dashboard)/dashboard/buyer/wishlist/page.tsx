@@ -84,10 +84,7 @@ export default function BuyerWishlistPage() {
 
   React.useEffect(() => {
     if (isQueryError) {
-      toast.error('Layanan wishlist offline. Menggunakan data demo lokal.', {
-        description: 'Menampilkan data wishlist simulasi agar Anda tetap dapat menjelajahi layout.',
-        duration: 5000,
-      });
+      toast.error('Layanan sedang offline. Menggunakan data demo lokal.');
     }
   }, [isQueryError]);
 
@@ -142,18 +139,17 @@ export default function BuyerWishlistPage() {
     <div className="w-full space-y-6 text-slate-900">
       {/* Reconnect Banner */}
       {isQueryError && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 font-semibold shadow-xs">
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 animate-pulse" />
+            <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
             <p>
-              Mode Offline Simulasi: Koneksi ke server wishlist terputus. Menampilkan data lokal
-              demo agar Anda tetap dapat menjelajahi layout.
+              Layanan Wishlist Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
             </p>
           </div>
           <Button
             variant="outline"
             size="sm"
-            className="h-7 cursor-pointer border-amber-300 text-amber-800 bg-white hover:bg-amber-100 font-bold shrink-0 text-[10px]"
+            className="h-7 cursor-pointer border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px]"
             onClick={() => refetch()}
             disabled={isRefetching}
           >
@@ -211,15 +207,30 @@ export default function BuyerWishlistPage() {
                 className="border border-slate-200 bg-white hover:shadow-md transition-all shadow-xs flex flex-col justify-between overflow-hidden group"
               >
                 <CardHeader className="p-0 relative">
-                  {/* Mock image */}
-                  <div className="h-44 w-full bg-slate-50 flex items-center justify-center border-b border-slate-100 font-extrabold text-slate-300 text-3xl uppercase tracking-wider relative">
-                    {prod.title.slice(0, 3)}
-                    {isOutOfStock && (
-                      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center text-white text-xs font-bold uppercase tracking-widest">
-                        Stok Habis
-                      </div>
-                    )}
-                  </div>
+                  {/* Real Image or Fallback placeholder */}
+                  {prod.images && prod.images.length > 0 ? (
+                    <div className="h-44 w-full relative border-b border-slate-100 overflow-hidden">
+                      <img
+                        src={prod.images[0]}
+                        alt={prod.title}
+                        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      {isOutOfStock && (
+                        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center text-white text-xs font-bold uppercase tracking-widest">
+                          Stok Habis
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="h-44 w-full bg-slate-50 flex items-center justify-center border-b border-slate-100 font-extrabold text-slate-300 text-3xl uppercase tracking-wider relative">
+                      {prod.title.slice(0, 3)}
+                      {isOutOfStock && (
+                        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center text-white text-xs font-bold uppercase tracking-widest">
+                          Stok Habis
+                        </div>
+                      )}
+                    </div>
+                  )}
                   {/* Heart button */}
                   <Button
                     variant="ghost"

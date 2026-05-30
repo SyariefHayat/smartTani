@@ -98,6 +98,31 @@ export class ReviewController {
       next(error);
     }
   }
+
+  async getBuyerReviews(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id: buyerId } = (req as AppRequest).user!;
+      const page = req.query.page ? parseInt(req.query.page as string) : 1;
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+
+      const result = await reviewService.getBuyerReviews(buyerId, page, limit);
+
+      const mappedReviews = result.reviews.map((rev) => ({
+        id: rev._id.toString(),
+        buyer_id: rev.buyer_id,
+        buyer_name: rev.buyer_name,
+        product_id: rev.product_id,
+        product_title: rev.product_title || 'Komoditas Pertanian',
+        rating: rev.rating,
+        comment: rev.comment,
+        created_at: rev.created_at.toISOString(),
+      }));
+
+      return res.status(200).json(successResponse(mappedReviews, { total: result.total }));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new ReviewController();

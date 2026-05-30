@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { getStoredAuthUser } from '@/lib/auth-storage';
 import { orderService } from '@/services/order';
@@ -15,12 +15,9 @@ import { Input } from '@/components/ui/input';
 import {
   Search,
   ShoppingBag,
-  Eye,
   RefreshCw,
   AlertTriangle,
-  CreditCard,
-  CheckCircle2,
-  MessageSquare,
+  MoreHorizontal,
 } from 'lucide-react';
 import {
   Table,
@@ -30,6 +27,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface ExtendedOrderItem {
   product_id?: string;
@@ -81,10 +87,16 @@ const MOCK_ORDERS = [
 export default function BuyerOrdersPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const user = getStoredAuthUser();
 
-  const defaultTab = searchParams.get('tab') === 'history' ? 'history' : 'active';
+  const defaultTab = pathname.includes('/history') || searchParams.get('tab') === 'history' ? 'history' : 'active';
   const [activeTab, setActiveTab] = React.useState<'active' | 'history'>(defaultTab);
+
+  React.useEffect(() => {
+    const nextTab = pathname.includes('/history') || searchParams.get('tab') === 'history' ? 'history' : 'active';
+    setActiveTab(nextTab);
+  }, [pathname, searchParams]);
   const [searchQuery, setSearchQuery] = React.useState('');
 
   // 1. Fetch Orders
@@ -130,6 +142,23 @@ export default function BuyerOrdersPage() {
     });
   }, [rawOrders, activeTab, searchQuery]);
 
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const ITEMS_PER_PAGE = 10;
+
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab, searchQuery]);
+
+  const totalRows = filteredOrders.length;
+  const totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
+  const fromRow = totalRows === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const toRow = Math.min(currentPage * ITEMS_PER_PAGE, totalRows);
+
+  const paginatedOrders = React.useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredOrders.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredOrders, currentPage]);
+
   const handlePayOrder = (orderId: string) => {
     toast.loading('Membuka gerbang pembayaran Midtrans...');
     setTimeout(() => {
@@ -153,21 +182,20 @@ export default function BuyerOrdersPage() {
   };
 
   return (
-    <div className="w-full space-y-6 text-slate-900">
+    <div className="space-y-4">
       {/* Reconnect Banner */}
       {isQueryError && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 font-semibold shadow-xs">
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 animate-pulse" />
+            <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
             <p>
-              Mode Offline Simulasi: Koneksi ke server pesanan terputus. Menampilkan data lokal demo
-              agar Anda tetap dapat menjelajahi layout.
+              Layanan Transaksi Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
             </p>
           </div>
           <Button
             variant="outline"
             size="sm"
-            className="h-7 cursor-pointer border-amber-300 text-amber-800 bg-white hover:bg-amber-100 font-bold shrink-0 text-[10px]"
+            className="h-7 cursor-pointer border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px]"
             onClick={() => refetch()}
             disabled={isRefetching}
           >
@@ -180,7 +208,7 @@ export default function BuyerOrdersPage() {
       {/* Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-slate-800">
+          <h1 className="text-xl font-bold tracking-tight lg:text-2xl">
             Pesanan Saya
           </h1>
           <p className="text-sm text-slate-500">
@@ -227,45 +255,45 @@ export default function BuyerOrdersPage() {
             />
           </div>
         </CardHeader>
-        <CardContent className="p-0">
-          {isLoading ? (
-            <div className="p-6 space-y-3">
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-16 w-full" />
-              <Skeleton className="h-16 w-full" />
-            </div>
-          ) : filteredOrders.length === 0 ? (
-            <div className="p-12 text-center text-slate-400 font-medium text-xs flex flex-col items-center justify-center gap-2">
-              <ShoppingBag className="h-8 w-8 text-slate-300" />
-              Tidak ada pesanan ditemukan pada daftar ini.
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader className="bg-slate-50/75 border-b border-slate-200">
-                  <TableRow className="hover:bg-transparent">
-                    <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider pl-6">
-                      ID Pesanan
-                    </TableHead>
-                    <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                      Tanggal
-                    </TableHead>
-                    <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                      Komoditas / Jumlah
-                    </TableHead>
-                    <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                      Total Pembayaran
-                    </TableHead>
-                    <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                      Status
-                    </TableHead>
-                    <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider text-right pr-6">
-                      Aksi
-                    </TableHead>
+        <CardContent>
+          <div className="overflow-hidden rounded-md border bg-white">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">ID Pesanan</TableHead>
+                  <TableHead>Tanggal</TableHead>
+                  <TableHead>Komoditas / Jumlah</TableHead>
+                  <TableHead>Total Pembayaran</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Aksi</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading ? (
+                  [...Array(5)].map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell><Skeleton className="h-4 w-20 bg-slate-100 rounded" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-24 bg-slate-100 rounded" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-40 bg-slate-100 rounded" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-24 bg-slate-100 rounded" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-24 bg-slate-100 rounded" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-28 bg-slate-100 rounded" /></TableCell>
+                    </TableRow>
+                  ))
+                ) : filteredOrders.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={6}
+                      className="h-32 text-center text-muted-foreground font-medium text-xs"
+                    >
+                      <div className="flex flex-col items-center justify-center gap-2">
+                        <ShoppingBag className="h-8 w-8 text-slate-300" />
+                        Tidak ada pesanan ditemukan pada daftar ini.
+                      </div>
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredOrders.map((order) => {
+                ) : (
+                  paginatedOrders.map((order) => {
                     const productTitle =
                       (order.items?.[0] as unknown as ExtendedOrderItem)?.product?.title ||
                       'Produk Tani';
@@ -278,15 +306,15 @@ export default function BuyerOrdersPage() {
                     return (
                       <TableRow
                         key={order.id}
-                        className="hover:bg-slate-50/50 transition-colors border-b border-slate-100 last:border-0"
+                        className="hover:bg-slate-50/50 transition-colors"
                       >
-                        <TableCell className="py-4 font-mono text-xs font-semibold text-slate-500 pl-6">
+                        <TableCell className="font-mono text-xs font-medium text-muted-foreground">
                           #{order.id}
                         </TableCell>
-                        <TableCell className="py-4 text-xs font-medium text-slate-600">
+                        <TableCell className="text-xs font-medium text-slate-600">
                           {format(new Date(order.created_at), 'dd MMM yyyy')}
                         </TableCell>
-                        <TableCell className="py-4 text-xs text-slate-700 max-w-xs truncate">
+                        <TableCell className="text-xs text-slate-700 max-w-xs truncate">
                           <span className="font-semibold text-slate-800">{productTitle}</span>
                           {itemsCount > 1 && (
                             <span className="text-slate-400 text-[10px] ml-1">
@@ -297,12 +325,12 @@ export default function BuyerOrdersPage() {
                             {order.items?.[0]?.quantity || 0} unit
                           </p>
                         </TableCell>
-                        <TableCell className="py-4 text-xs font-bold text-slate-800">
+                        <TableCell className="text-xs font-bold text-slate-800">
                           {formatCurrency(order.total_amount)}
                         </TableCell>
-                        <TableCell className="py-4">
+                        <TableCell>
                           <span
-                            className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-semibold border ${
+                            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold border ${
                               isCompleted
                                 ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                                 : isShipped
@@ -338,60 +366,118 @@ export default function BuyerOrdersPage() {
                                     : 'Diproses'}
                           </span>
                         </TableCell>
-                        <TableCell className="py-4 text-right pr-6">
-                          <div className="flex justify-end gap-1.5">
-                            {isPendingPayment && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-7 text-[10px] font-bold border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 hover:text-amber-800 cursor-pointer flex items-center gap-1"
-                                onClick={() => handlePayOrder(order.id)}
-                              >
-                                <CreditCard className="h-3 w-3" /> Bayar
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon-xs" className="cursor-pointer">
+                                <span className="sr-only">Buka menu</span>
+                                <MoreHorizontal className="h-4 w-4" />
                               </Button>
-                            )}
-                            {isShipped && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-7 text-[10px] font-bold border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 cursor-pointer flex items-center gap-1"
-                                onClick={() => handleConfirmReceipt(order.id)}
-                              >
-                                <CheckCircle2 className="h-3 w-3" /> Selesai
-                              </Button>
-                            )}
-                            {isCompleted && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-7 text-[10px] font-bold border-slate-200 bg-white text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center gap-1"
-                                onClick={() =>
-                                  handleWriteReview(
-                                    (order.items?.[0] as unknown as ExtendedOrderItem)
-                                      ?.product_id || 'P-01'
-                                  )
-                                }
-                              >
-                                <MessageSquare className="h-3 w-3 text-slate-400" /> Ulas
-                              </Button>
-                            )}
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 text-[10px] font-bold text-slate-500 hover:text-slate-900 cursor-pointer flex items-center gap-1"
-                              onClick={() => router.push(`/dashboard/buyer/orders/${order.id}`)}
-                            >
-                              <Eye className="h-3.5 w-3.5 text-slate-400" /> Detail
-                            </Button>
-                          </div>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48 bg-white">
+                              <DropdownMenuGroup>
+                                <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+                                <DropdownMenuItem
+                                  className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(order.id);
+                                    toast.success('ID pesanan berhasil disalin');
+                                  }}
+                                >
+                                  Salin ID Pesanan
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
+                                  onClick={() => router.push(`/dashboard/buyer/orders/${order.id}`)}
+                                >
+                                  Lihat Detail
+                                </DropdownMenuItem>
+                              </DropdownMenuGroup>
+                              {(isPendingPayment || isShipped || isCompleted) && (
+                                <>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuGroup>
+                                    {isPendingPayment && (
+                                      <DropdownMenuItem
+                                        className="cursor-pointer font-medium text-amber-600 hover:bg-amber-50 focus:bg-amber-50 focus:text-amber-700"
+                                        onClick={() => handlePayOrder(order.id)}
+                                      >
+                                        Bayar Sekarang
+                                      </DropdownMenuItem>
+                                    )}
+                                    {isShipped && (
+                                      <DropdownMenuItem
+                                        className="cursor-pointer font-medium text-blue-600 hover:bg-blue-50 focus:bg-blue-50 focus:text-blue-700"
+                                        onClick={() => handleConfirmReceipt(order.id)}
+                                      >
+                                        Konfirmasi Terima
+                                      </DropdownMenuItem>
+                                    )}
+                                    {isCompleted && (
+                                      <DropdownMenuItem
+                                        className="cursor-pointer font-medium text-emerald-600 hover:bg-emerald-50 focus:bg-emerald-50 focus:text-emerald-700"
+                                        onClick={() =>
+                                          handleWriteReview(
+                                            (order.items?.[0] as unknown as ExtendedOrderItem)
+                                              ?.product_id || 'P-01'
+                                          )
+                                        }
+                                      >
+                                        Ulas Produk
+                                      </DropdownMenuItem>
+                                    )}
+                                  </DropdownMenuGroup>
+                                </>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </TableCell>
                       </TableRow>
                     );
-                  })}
-                </TableBody>
-              </Table>
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100 mt-4">
+            <div className="text-sm text-muted-foreground">
+              {isLoading ? (
+                <div className="h-4 w-48 animate-pulse bg-slate-100 rounded inline-block" />
+              ) : totalRows === 0 ? (
+                '0 pesanan ditemukan'
+              ) : (
+                <>
+                  Menampilkan{' '}
+                  <span className="font-semibold text-slate-900">
+                    {fromRow}–{toRow}
+                  </span>{' '}
+                  dari <span className="font-semibold text-slate-900">{totalRows}</span> pesanan
+                </>
+              )}
             </div>
-          )}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer text-slate-700 bg-white"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={isLoading || currentPage === 1 || totalRows === 0}
+              >
+                Sebelumnya
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer text-slate-700 bg-white"
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={isLoading || currentPage === totalPages || totalRows === 0}
+              >
+                Berikutnya
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

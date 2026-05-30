@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Search, Sprout, RefreshCw, AlertTriangle, ArrowUpDown } from 'lucide-react';
+import { Search, Sprout, AlertTriangle, ArrowUpDown } from 'lucide-react';
 
 const MOCK_PROPOSALS = [
   {
@@ -185,11 +185,7 @@ export default function InvestorProposalsPage() {
 
   React.useEffect(() => {
     if (isQueryError) {
-      toast.error('Layanan proposal offline. Menggunakan data demo lokal.', {
-        description:
-          'Menampilkan data investasi simulasi agar Anda tetap dapat menjelajahi layout.',
-        duration: 5000,
-      });
+      toast.error('Layanan proposal offline. Menggunakan data demo lokal.');
     }
   }, [isQueryError]);
 
@@ -256,33 +252,29 @@ export default function InvestorProposalsPage() {
 
   return (
     <div className="w-full space-y-6 text-slate-900">
-      {/* Offline Alert */}
+      {/* Offline Red Alert Box */}
       {isQueryError && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-800 shadow-xs">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
-            <div>
-              <p className="text-xs font-bold">Layanan Cari Peluang Offline</p>
-              <p className="text-[10px] text-amber-600 font-medium">
-                Menampilkan data investasi simulasi. Beberapa perubahan data hanya akan disimpan
-                sementara.
-              </p>
-            </div>
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
+            <p>
+              Layanan Cari Peluang Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
+            </p>
           </div>
           <Button
             variant="outline"
             size="sm"
+            className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
             onClick={() => refetch()}
-            className="h-7 text-[10px] font-bold border-amber-300 text-amber-700 bg-white hover:bg-amber-100 hover:text-amber-800 cursor-pointer flex items-center gap-1 shrink-0"
           >
-            <RefreshCw className="h-3 w-3" /> Coba Hubungkan Kembali
+            Coba Hubungkan Kembali
           </Button>
         </div>
       )}
 
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-800">
+        <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-slate-900">
           Peluang Investasi Terbuka
         </h1>
         <p className="text-xs text-slate-500 font-medium mt-1">
@@ -290,80 +282,86 @@ export default function InvestorProposalsPage() {
         </p>
       </div>
 
-      {/* Filter Toolbar */}
-      <div className="flex flex-col md:flex-row gap-4 p-5 bg-white border border-slate-200 rounded-xl shadow-xs">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <Input
-            placeholder="Cari nama proposal atau komoditas..."
-            className="pl-10 h-10 border-slate-200 text-xs font-medium focus:border-green-500"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+      {/* Filter Toolbar wrapped in standard flat Card */}
+      <Card className="w-full">
+        <CardContent className="p-4 sm:p-5 flex flex-col md:flex-row gap-3 sm:items-center">
+          {/* Search bar input h-10 */}
+          <div className="flex-1 relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input
+              placeholder="Cari nama proposal atau komoditas..."
+              className="pl-10 !h-10 border-slate-200 text-xs font-medium focus-visible:ring-emerald-500/30"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
 
-        <div className="w-full md:w-[200px]">
-          <Select value={selectedCommodity} onValueChange={setSelectedCommodity}>
-            <SelectTrigger className="h-10 border-slate-200 text-xs font-medium focus:border-green-500 cursor-pointer">
-              <SelectValue placeholder="Komoditas" />
-            </SelectTrigger>
-            <SelectContent>
-              {commodityOptions.map((option) => (
-                <SelectItem
-                  key={option.value}
-                  value={option.value}
-                  className="text-xs cursor-pointer"
-                >
-                  {option.label}
+          {/* Select Commodity !h-10 */}
+          <div className="w-full md:w-[200px]">
+            <Select value={selectedCommodity} onValueChange={setSelectedCommodity}>
+              <SelectTrigger className="!h-10 border-slate-200 text-xs font-medium focus:border-green-500 cursor-pointer">
+                <SelectValue placeholder="Komoditas" />
+              </SelectTrigger>
+              <SelectContent>
+                {commodityOptions.map((option) => (
+                  <SelectItem
+                    key={option.value}
+                    value={option.value}
+                    className="text-xs cursor-pointer"
+                  >
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Select Location !h-10 */}
+          <div className="w-full md:w-[200px]">
+            <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+              <SelectTrigger className="!h-10 border-slate-200 text-xs font-medium focus:border-green-500 cursor-pointer">
+                <SelectValue placeholder="Lokasi" />
+              </SelectTrigger>
+              <SelectContent>
+                {provinceOptions.map((option) => (
+                  <SelectItem
+                    key={option.value}
+                    value={option.value}
+                    className="text-xs cursor-pointer"
+                  >
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Select Sort !h-10 */}
+          <div className="w-full md:w-[200px]">
+            <Select
+              value={sortBy}
+              onValueChange={(val: 'newest' | 'roi' | 'progress') => setSortBy(val)}
+            >
+              <SelectTrigger className="!h-10 border-slate-200 text-xs font-medium focus:border-green-500 cursor-pointer">
+                <span className="flex items-center gap-1.5">
+                  <ArrowUpDown className="h-3.5 w-3.5 text-slate-400" /> Urutkan
+                </span>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest" className="text-xs cursor-pointer">
+                  Terbaru
                 </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="w-full md:w-[200px]">
-          <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-            <SelectTrigger className="h-10 border-slate-200 text-xs font-medium focus:border-green-500 cursor-pointer">
-              <SelectValue placeholder="Lokasi" />
-            </SelectTrigger>
-            <SelectContent>
-              {provinceOptions.map((option) => (
-                <SelectItem
-                  key={option.value}
-                  value={option.value}
-                  className="text-xs cursor-pointer"
-                >
-                  {option.label}
+                <SelectItem value="roi" className="text-xs cursor-pointer">
+                  ROI Tertinggi
                 </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="w-full md:w-[200px]">
-          <Select
-            value={sortBy}
-            onValueChange={(val: 'newest' | 'roi' | 'progress') => setSortBy(val)}
-          >
-            <SelectTrigger className="h-10 border-slate-200 text-xs font-medium focus:border-green-500 cursor-pointer">
-              <span className="flex items-center gap-1.5">
-                <ArrowUpDown className="h-3.5 w-3.5 text-slate-400" /> Urutkan
-              </span>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest" className="text-xs cursor-pointer">
-                Terbaru
-              </SelectItem>
-              <SelectItem value="roi" className="text-xs cursor-pointer">
-                ROI Tertinggi
-              </SelectItem>
-              <SelectItem value="progress" className="text-xs cursor-pointer">
-                Hampir Terpenuhi
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+                <SelectItem value="progress" className="text-xs cursor-pointer">
+                  Hampir Terpenuhi
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Grid listing */}
       {processedProposals.length === 0 ? (

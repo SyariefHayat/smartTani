@@ -50,6 +50,10 @@ export class ReviewService {
       order_id: orderId,
     });
   }
+
+  async getBuyerReviews(buyerId: string, page: number = 1, limit: number = 10) {
+    return reviewRepository.findByBuyerId(buyerId, page, limit);
+  }
 }
 
 export default new ReviewService();

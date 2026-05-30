@@ -130,6 +130,50 @@ export class ReviewRepository {
 
     return { reviews, total };
   }
+
+  async findByBuyerId(
+    buyerId: string,
+    page: number = 1,
+    limit: number = 10
+  ): Promise<{ reviews: (IReview & { product_title?: string })[]; total: number }> {
+    const skip = (page - 1) * limit;
+
+    const [reviews, total] = await Promise.all([
+      Review.aggregate([
+        { $match: { buyer_id: buyerId } },
+        { $sort: { created_at: -1 } },
+        { $skip: skip },
+        { $limit: limit },
+        {
+          $addFields: {
+            product_id_obj: { $toObjectId: '$product_id' },
+          },
+        },
+        {
+          $lookup: {
+            from: 'products',
+            localField: 'product_id_obj',
+            foreignField: '_id',
+            as: 'product',
+          },
+        },
+        {
+          $addFields: {
+            product_title: { $arrayElemAt: ['$product.title', 0] },
+          },
+        },
+        {
+          $project: {
+            product: 0,
+            product_id_obj: 0,
+          },
+        },
+      ]),
+      Review.countDocuments({ buyer_id: buyerId }),
+    ]);
+
+    return { reviews, total };
+  }
 }
 
 export default new ReviewRepository();

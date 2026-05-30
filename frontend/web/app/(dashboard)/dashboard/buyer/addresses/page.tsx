@@ -98,10 +98,7 @@ export default function BuyerAddressesPage() {
 
   React.useEffect(() => {
     if (isQueryError) {
-      toast.error('Layanan alamat offline. Menggunakan data demo lokal.', {
-        description: 'Menampilkan data alamat simulasi agar Anda tetap dapat menjelajahi layout.',
-        duration: 5000,
-      });
+      toast.error('Layanan sedang offline. Menggunakan data demo lokal.');
     }
   }, [isQueryError]);
 
@@ -216,21 +213,20 @@ export default function BuyerAddressesPage() {
   };
 
   return (
-    <div className="w-full space-y-6 text-slate-900">
+    <div className="w-full space-y-6">
       {/* Reconnect Banner */}
       {isQueryError && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 font-semibold shadow-xs">
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 animate-pulse" />
+            <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
             <p>
-              Mode Offline Simulasi: Koneksi ke server alamat terputus. Menampilkan data lokal demo
-              agar Anda tetap dapat menjelajahi layout.
+              Layanan Alamat Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
             </p>
           </div>
           <Button
             variant="outline"
             size="sm"
-            className="h-7 cursor-pointer border-amber-300 text-amber-800 bg-white hover:bg-amber-100 font-bold shrink-0 text-[10px]"
+            className="h-7 cursor-pointer border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px]"
             onClick={() => refetch()}
             disabled={isRefetching}
           >
@@ -243,15 +239,15 @@ export default function BuyerAddressesPage() {
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-slate-800">
+          <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-foreground">
             Alamat Tersimpan
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-muted-foreground">
             Kelola daftar alamat pengiriman belanja Anda di SmartTani.
           </p>
         </div>
         <Button
-          className="font-bold text-xs cursor-pointer bg-green-600 hover:bg-green-700"
+          className="font-semibold text-xs cursor-pointer"
           onClick={() => handleOpenDialog(null)}
         >
           <Plus className="mr-2 h-4.5 w-4.5" /> Tambah Alamat Baru
@@ -260,94 +256,94 @@ export default function BuyerAddressesPage() {
 
       {/* Dialog Form Address */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-w-md bg-white border border-slate-200 rounded-xl">
+        <DialogContent className="max-w-md bg-card border border-border rounded-xl">
           <form onSubmit={handleSubmit} className="space-y-4">
             <DialogHeader>
-              <DialogTitle className="text-sm font-bold text-slate-800">
+              <DialogTitle className="text-sm font-bold text-card-foreground">
                 {editingAddress ? 'Edit Alamat Pengiriman' : 'Tambah Alamat Pengiriman'}
               </DialogTitle>
-              <DialogDescription className="text-xs text-slate-400">
+              <DialogDescription className="text-xs text-muted-foreground">
                 Masukkan detail lokasi tujuan pengiriman paket belanja Anda secara lengkap.
               </DialogDescription>
             </DialogHeader>
 
-            <div className="grid gap-3 text-xs font-semibold text-slate-700">
+            <div className="grid gap-3 text-xs font-semibold text-muted-foreground">
               <div className="space-y-1">
-                <label>Label Alamat (cth: Rumah, Kantor, Toko)</label>
+                <label className="text-card-foreground">Label Alamat (cth: Rumah, Kantor, Toko)</label>
                 <Input
                   value={label}
                   onChange={(e) => setLabel(e.target.value)}
                   required
-                  className="h-9 focus-visible:ring-green-500 text-xs"
+                  className="h-9 focus-visible:ring-primary text-xs bg-background text-foreground"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label>Nama Penerima</label>
+                  <label className="text-card-foreground">Nama Penerima</label>
                   <Input
                     value={recipientName}
                     onChange={(e) => setRecipientName(e.target.value)}
                     required
-                    className="h-9 focus-visible:ring-green-500 text-xs"
+                    className="h-9 focus-visible:ring-primary text-xs bg-background text-foreground"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label>No. Telepon / WhatsApp</label>
+                  <label className="text-card-foreground">No. Telepon / WhatsApp</label>
                   <Input
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
-                    className="h-9 focus-visible:ring-green-500 text-xs"
+                    className="h-9 focus-visible:ring-primary text-xs bg-background text-foreground"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label>Provinsi</label>
+                  <label className="text-card-foreground">Provinsi</label>
                   <Input
                     value={province}
                     onChange={(e) => setProvince(e.target.value)}
                     required
-                    className="h-9 focus-visible:ring-green-500 text-xs"
+                    className="h-9 focus-visible:ring-primary text-xs bg-background text-foreground"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label>Kota / Kabupaten</label>
+                  <label className="text-card-foreground">Kota / Kabupaten</label>
                   <Input
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     required
-                    className="h-9 focus-visible:ring-green-500 text-xs"
+                    className="h-9 focus-visible:ring-primary text-xs bg-background text-foreground"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label>Kecamatan</label>
+                  <label className="text-card-foreground">Kecamatan</label>
                   <Input
                     value={district}
                     onChange={(e) => setDistrict(e.target.value)}
                     required
-                    className="h-9 focus-visible:ring-green-500 text-xs"
+                    className="h-9 focus-visible:ring-primary text-xs bg-background text-foreground"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label>Kode Pos</label>
+                  <label className="text-card-foreground">Kode Pos</label>
                   <Input
                     value={postalCode}
                     onChange={(e) => setPostalCode(e.target.value)}
                     required
-                    className="h-9 focus-visible:ring-green-500 text-xs"
+                    className="h-9 focus-visible:ring-primary text-xs bg-background text-foreground"
                   />
                 </div>
               </div>
               <div className="space-y-1">
-                <label>Alamat Lengkap (Blok, No. Rumah, Jalan)</label>
+                <label className="text-card-foreground">Alamat Lengkap (Blok, No. Rumah, Jalan)</label>
                 <textarea
                   value={fullAddress}
                   onChange={(e) => setFullAddress(e.target.value)}
                   required
-                  className="w-full rounded-md border border-slate-200 p-2 text-xs focus:outline-none focus:ring-1 focus:ring-green-500 min-h-16"
+                  className="w-full rounded-md border border-input bg-background p-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary min-h-16 text-foreground"
                 />
               </div>
             </div>
@@ -357,7 +353,7 @@ export default function BuyerAddressesPage() {
                 type="button"
                 variant="outline"
                 size="sm"
-                className="h-9 text-xs font-bold cursor-pointer"
+                className="h-9 text-xs font-semibold cursor-pointer"
                 onClick={() => setIsOpen(false)}
               >
                 Batal
@@ -365,7 +361,7 @@ export default function BuyerAddressesPage() {
               <Button
                 type="submit"
                 size="sm"
-                className="h-9 text-xs font-bold cursor-pointer bg-green-600 hover:bg-green-700"
+                className="h-9 text-xs font-semibold cursor-pointer"
               >
                 Simpan Alamat
               </Button>
@@ -381,45 +377,53 @@ export default function BuyerAddressesPage() {
           <Skeleton className="h-44 w-full rounded-xl animate-pulse" />
         </div>
       ) : (
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
           {activeAddresses.map((addr) => (
             <Card
               key={addr.id}
-              className={`border bg-white transition-all shadow-xs flex flex-col justify-between overflow-hidden ${
-                addr.is_default ? 'border-green-300 ring-1 ring-green-100' : 'border-slate-200'
+              className={`flex flex-col justify-between overflow-hidden transition-all duration-200 hover:shadow-md ${
+                addr.is_default 
+                  ? 'border-primary/40 ring-1 ring-primary/10 bg-accent/30' 
+                  : 'border-border bg-card'
               }`}
             >
-              <CardHeader className="pb-3 border-b border-slate-100 flex flex-row items-center justify-between gap-4 p-5">
+              <CardHeader className="pb-3 border-b border-border/60 flex flex-row items-center justify-between gap-4 p-5">
                 <div className="flex items-center gap-2">
                   <MapPin
-                    className={`h-4.5 w-4.5 ${addr.is_default ? 'text-green-600' : 'text-slate-400'}`}
+                    className={`h-4.5 w-4.5 ${addr.is_default ? 'text-primary' : 'text-muted-foreground'}`}
                   />
-                  <CardTitle className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                  <CardTitle className="text-xs font-bold uppercase tracking-wider text-card-foreground">
                     {addr.label}
                   </CardTitle>
                 </div>
                 {addr.is_default && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-0.5 text-[9px] font-bold text-green-700 border border-green-200">
-                    <CheckCircle2 className="h-3 w-3" /> Utama
+                  <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 border border-primary/20 px-2.5 py-0.5 text-[9px] font-bold text-primary">
+                    <CheckCircle2 className="h-3 w-3 shrink-0" /> Utama
                   </span>
                 )}
               </CardHeader>
-              <CardContent className="p-5 space-y-2 text-xs">
-                <p className="font-bold text-slate-800">{addr.recipient_name}</p>
-                <p className="text-slate-500 font-semibold">{addr.phone_number}</p>
-                <p className="text-slate-600 font-medium leading-relaxed">{addr.full_address}</p>
-                <p className="text-slate-600 font-medium">
-                  {addr.district}, {addr.city}, {addr.province}
+              <CardContent className="p-5 flex-1 space-y-2.5 text-xs text-card-foreground">
+                <div className="space-y-1">
+                  <p className="font-bold text-sm text-foreground">{addr.recipient_name}</p>
+                  <p className="text-muted-foreground font-semibold">{addr.phone_number}</p>
+                </div>
+                <div className="space-y-1 text-muted-foreground/90 font-medium leading-relaxed">
+                  <p>{addr.full_address}</p>
+                  <p>
+                    {addr.district}, {addr.city}, {addr.province}
+                  </p>
+                </div>
+                <p className="text-[10px] text-muted-foreground/60 font-mono tracking-wide pt-1">
+                  Kode Pos: {addr.postal_code}
                 </p>
-                <p className="text-[10px] text-slate-400 font-mono">Kode Pos: {addr.postal_code}</p>
               </CardContent>
-              <CardFooter className="p-5 pt-3 border-t border-slate-100 bg-slate-50/50 flex justify-between items-center gap-2">
+              <CardFooter className="p-5 pt-3 border-t border-border bg-muted/20 flex justify-between items-center gap-2 mt-auto">
                 <div>
                   {!addr.is_default && (
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-7 text-[10px] font-bold text-green-600 hover:text-green-700 hover:bg-green-50 cursor-pointer"
+                      className="h-7 text-[10px] font-bold text-primary hover:text-primary/80 hover:bg-accent cursor-pointer"
                       onClick={() => handleSetDefault(addr.id)}
                     >
                       Jadikan Utama
@@ -430,7 +434,7 @@ export default function BuyerAddressesPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-7 w-7 p-0 cursor-pointer border-slate-200 hover:bg-white text-slate-500 hover:text-slate-800"
+                    className="h-7 w-7 p-0 cursor-pointer border-border hover:bg-accent text-muted-foreground hover:text-foreground"
                     onClick={() => handleOpenDialog(addr)}
                   >
                     <Edit2 className="h-3.5 w-3.5" />
@@ -438,7 +442,7 @@ export default function BuyerAddressesPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-7 w-7 p-0 cursor-pointer border-slate-200 hover:bg-white text-rose-500 hover:text-rose-600"
+                    className="h-7 w-7 p-0 cursor-pointer border-border hover:bg-rose-500/10 text-rose-500 hover:text-rose-600"
                     onClick={() => handleDelete(addr.id)}
                   >
                     <Trash2 className="h-3.5 w-3.5" />

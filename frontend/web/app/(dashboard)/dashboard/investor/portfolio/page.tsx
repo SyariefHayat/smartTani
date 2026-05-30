@@ -8,8 +8,9 @@ import { useAuthStore } from '@/stores/auth';
 import { formatCurrency } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -22,10 +23,10 @@ import {
   Wallet,
   TrendingUp,
   Landmark,
-  PieChart,
   Eye,
   AlertTriangle,
   RefreshCw,
+  Search,
 } from 'lucide-react';
 
 const MOCK_PORTFOLIO = [
@@ -79,7 +80,11 @@ const MOCK_PORTFOLIO = [
 export default function InvestorPortfolioPage() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  
   const [activeTab, setActiveTab] = React.useState<'all' | 'paid' | 'completed'>('all');
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [page, setPage] = React.useState(1);
+  const pageSize = 10;
 
   const {
     data: portfolioResponse,
@@ -95,11 +100,7 @@ export default function InvestorPortfolioPage() {
 
   React.useEffect(() => {
     if (isQueryError) {
-      toast.error('Layanan portofolio offline. Menggunakan data demo lokal.', {
-        description:
-          'Menampilkan data portofolio simulasi agar Anda tetap dapat menjelajahi layout.',
-        duration: 5000,
-      });
+      toast.error('Layanan portofolio offline. Menggunakan data demo lokal.');
     }
   }, [isQueryError]);
 
@@ -122,19 +123,38 @@ export default function InvestorPortfolioPage() {
 
   const summary = rawSummary || localSummary;
 
+  // Reset page when tab or search changes
+  React.useEffect(() => {
+    setPage(1);
+  }, [activeTab, searchQuery]);
+
   // Filter list
   const filteredInvestments = React.useMemo(() => {
     return rawInvestments.filter((inv) => {
-      if (activeTab === 'all') return true;
-      return inv.status === activeTab;
+      const matchesTab = activeTab === 'all' || inv.status === activeTab;
+      const matchesSearch = inv.proposal?.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            inv.proposal?.commodity?.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesTab && matchesSearch;
     });
-  }, [rawInvestments, activeTab]);
+  }, [rawInvestments, activeTab, searchQuery]);
+
+  // Pagination calculations
+  const totalRows = filteredInvestments.length;
+  const totalPages = Math.ceil(totalRows / pageSize);
+  const fromRow = totalRows === 0 ? 0 : (page - 1) * pageSize + 1;
+  const toRow = Math.min(page * pageSize, totalRows);
+  const getCanPreviousPage = page > 1;
+  const getCanNextPage = page * pageSize < totalRows;
+
+  const paginatedInvestments = React.useMemo(() => {
+    return filteredInvestments.slice((page - 1) * pageSize, page * pageSize);
+  }, [filteredInvestments, page]);
 
   if (isLoading && !isQueryError) {
     return (
       <div className="w-full space-y-6">
         <Skeleton className="h-10 w-48" />
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
           <Skeleton className="h-28 w-full" />
           <Skeleton className="h-28 w-full" />
           <Skeleton className="h-28 w-full" />
@@ -144,180 +164,179 @@ export default function InvestorPortfolioPage() {
     );
   }
 
+  const cards = [
+    {
+      title: 'Total Investasi',
+      value: formatCurrency(summary.total_invested),
+      footer: `Ditempatkan di ${summary.total_investments} proyek tani`,
+      icon: Wallet,
+      iconColorClass: 'text-emerald-500',
+    },
+    {
+      title: 'Estimasi Return',
+      value: formatCurrency(summary.total_projected_return),
+      footer: 'Proyeksi hasil komulatif saat panen',
+      icon: TrendingUp,
+      iconColorClass: 'text-blue-500',
+    },
+    {
+      title: 'Return Diterima',
+      value: formatCurrency(summary.total_actual_return),
+      footer: 'Imbal hasil cair ke saldo dompet',
+      icon: Landmark,
+      iconColorClass: 'text-emerald-500',
+    },
+  ] as const;
+
   return (
     <div className="w-full space-y-6 text-slate-900">
-      {/* Offline Alert */}
+      {/* Offline Red Alert Box */}
       {isQueryError && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-800 shadow-xs">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
-            <div>
-              <p className="text-xs font-bold">Layanan Investasi Offline</p>
-              <p className="text-[10px] text-amber-600 font-medium">
-                Menampilkan data portofolio simulasi. Beberapa perubahan data hanya akan disimpan
-                sementara.
-              </p>
-            </div>
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
+            <p>
+              Layanan Portofolio Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
+            </p>
           </div>
           <Button
             variant="outline"
             size="sm"
+            className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
             onClick={() => refetch()}
-            className="h-7 text-[10px] font-bold border-amber-300 text-amber-700 bg-white hover:bg-amber-100 hover:text-amber-800 cursor-pointer flex items-center gap-1 shrink-0"
           >
-            <RefreshCw className="h-3 w-3" /> Coba Hubungkan Kembali
+            Coba Hubungkan Kembali
           </Button>
         </div>
       )}
 
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-800">Portofolio Investasi</h1>
+        <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-slate-900">Portofolio Investasi</h1>
         <p className="text-xs text-slate-500 font-medium mt-1">
           Pantau dan kelola seluruh modal pertanian Anda di ekosistem SmartTani.
         </p>
       </div>
 
       {/* Summary Metrics */}
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card className="border-slate-200 shadow-sm bg-white hover:shadow-md transition-all">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardDescription className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Total Investasi
-            </CardDescription>
-            <Wallet className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent className="space-y-1">
-            <CardTitle className="text-xl font-bold text-slate-800 tabular-nums lg:text-2xl">
-              {formatCurrency(summary.total_invested)}
-            </CardTitle>
-            <p className="text-[10px] font-bold text-slate-400">
-              Ditempatkan di {summary.total_investments} proyek tani
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200 shadow-sm bg-white hover:shadow-md transition-all">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardDescription className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Estimasi Return
-            </CardDescription>
-            <TrendingUp className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent className="space-y-1">
-            <CardTitle className="text-xl font-bold text-blue-600 tabular-nums lg:text-2xl">
-              {formatCurrency(summary.total_projected_return)}
-            </CardTitle>
-            <p className="text-[10px] font-bold text-slate-400">
-              Proyeksi hasil komulatif saat panen
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200 shadow-sm bg-white hover:shadow-md transition-all">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardDescription className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Return Diterima
-            </CardDescription>
-            <Landmark className="h-4 w-4 text-emerald-600" />
-          </CardHeader>
-          <CardContent className="space-y-1">
-            <CardTitle className="text-xl font-bold text-emerald-600 tabular-nums lg:text-2xl">
-              {formatCurrency(summary.total_actual_return)}
-            </CardTitle>
-            <p className="text-[10px] font-bold text-slate-400">
-              Imbal hasil yang sudah cair ke saldo
-            </p>
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
+        {cards.map((card, index) => {
+          const Icon = card.icon;
+          return (
+            <Card key={index} className="min-w-0">
+              <CardHeader className="gap-1">
+                <CardDescription className="truncate text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  {card.title}
+                </CardDescription>
+                <CardTitle
+                  className="truncate text-xl font-semibold tabular-nums lg:text-2xl text-slate-800"
+                  title={card.value}
+                >
+                  {card.value}
+                </CardTitle>
+              </CardHeader>
+              <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                <div className="flex w-full min-w-0 items-center gap-1 font-medium text-slate-500">
+                  <Icon className={`size-4 shrink-0 ${card.iconColorClass}`} />
+                  <span className="truncate">{card.footer}</span>
+                </div>
+              </CardFooter>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Tabs Filter & Table Container */}
-      <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-        <CardHeader className="pb-4 border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <CardTitle className="text-sm font-bold text-slate-800">
-              Daftar Investasi Saya
-            </CardTitle>
-            <CardDescription className="text-xs mt-0.5">
-              Seluruh riwayat pendanaan proyek tani Anda.
-            </CardDescription>
-          </div>
-
-          {/* Filter tabs */}
-          <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200/50">
-            <button
-              onClick={() => setActiveTab('all')}
-              className={`px-3 py-1 rounded-md text-[10px] font-bold transition-all cursor-pointer ${
-                activeTab === 'all'
-                  ? 'bg-white text-slate-800 shadow-xs'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              Semua
-            </button>
-            <button
-              onClick={() => setActiveTab('paid')}
-              className={`px-3 py-1 rounded-md text-[10px] font-bold transition-all cursor-pointer ${
-                activeTab === 'paid'
-                  ? 'bg-white text-slate-800 shadow-xs'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              Aktif
-            </button>
-            <button
-              onClick={() => setActiveTab('completed')}
-              className={`px-3 py-1 rounded-md text-[10px] font-bold transition-all cursor-pointer ${
-                activeTab === 'completed'
-                  ? 'bg-white text-slate-800 shadow-xs'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              Selesai
-            </button>
-          </div>
-        </CardHeader>
-
-        <CardContent className="p-0">
-          {filteredInvestments.length === 0 ? (
-            <div className="py-20 text-center text-slate-500">
-              <PieChart className="w-12 h-12 mx-auto mb-4 text-slate-300 opacity-60" />
-              <p className="text-xs font-bold text-slate-700">Tidak Ada Investasi Ditemukan</p>
-              <p className="text-[10px] text-slate-400 font-medium mt-1">
-                Anda belum menempatkan dana pada kategori filter ini.
-              </p>
+      <Card className="w-full">
+        <CardContent className="space-y-4 pt-6">
+          {/* Filters integrated inside the container card */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-slate-100">
+            {/* Search Input */}
+            <div className="relative w-full sm:max-w-xs">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Input
+                placeholder="Cari Proyek..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 !h-10 text-xs border-slate-200 hover:border-slate-300 focus-visible:ring-emerald-500/30"
+              />
             </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader className="bg-slate-50/75 border-b border-slate-100">
+
+            {/* Filter Tabs */}
+            <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200/50 h-10 shrink-0">
+              <button
+                onClick={() => setActiveTab('all')}
+                className={`px-4 py-1.5 h-full rounded-md text-[10px] font-bold transition-all cursor-pointer ${
+                  activeTab === 'all'
+                    ? 'bg-white text-slate-800 shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                Semua
+              </button>
+              <button
+                onClick={() => setActiveTab('paid')}
+                className={`px-4 py-1.5 h-full rounded-md text-[10px] font-bold transition-all cursor-pointer ${
+                  activeTab === 'paid'
+                    ? 'bg-white text-slate-800 shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                Aktif
+              </button>
+              <button
+                onClick={() => setActiveTab('completed')}
+                className={`px-4 py-1.5 h-full rounded-md text-[10px] font-bold transition-all cursor-pointer ${
+                  activeTab === 'completed'
+                    ? 'bg-white text-slate-800 shadow-xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                Selesai
+              </button>
+            </div>
+          </div>
+
+          {/* Table Container */}
+          <div className="overflow-hidden rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="pl-6 py-3 text-xs font-semibold text-slate-500">
+                    Proyek / Proposal
+                  </TableHead>
+                  <TableHead className="py-3 text-xs font-semibold text-slate-500">
+                    Komoditas
+                  </TableHead>
+                  <TableHead className="py-3 text-xs font-semibold text-slate-500">
+                    Jumlah Investasi
+                  </TableHead>
+                  <TableHead className="py-3 text-xs font-semibold text-slate-500">
+                    ROI Proyeksi
+                  </TableHead>
+                  <TableHead className="py-3 text-xs font-semibold text-slate-500">
+                    ROI Aktual
+                  </TableHead>
+                  <TableHead className="py-3 text-xs font-semibold text-slate-500">
+                    Status
+                  </TableHead>
+                  <TableHead className="pr-6 py-3 text-right text-xs font-semibold text-slate-500">
+                    Aksi
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paginatedInvestments.length === 0 ? (
                   <TableRow>
-                    <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider pl-6">
-                      Proyek / Proposal
-                    </TableHead>
-                    <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                      Komoditas
-                    </TableHead>
-                    <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                      Jumlah Investasi
-                    </TableHead>
-                    <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                      ROI Proyeksi
-                    </TableHead>
-                    <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                      ROI Aktual
-                    </TableHead>
-                    <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                      Status
-                    </TableHead>
-                    <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider text-right pr-6">
-                      Aksi
-                    </TableHead>
+                    <TableCell
+                      colSpan={7}
+                      className="h-32 text-center text-xs text-muted-foreground font-medium"
+                    >
+                      Tidak ada investasi ditemukan.
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredInvestments.map((inv: Investment) => {
+                ) : (
+                  paginatedInvestments.map((inv: Investment) => {
                     const isCompleted = inv.status === 'completed';
                     const dateFormatted = new Date(inv.invested_at).toLocaleDateString('id-ID', {
                       day: 'numeric',
@@ -328,26 +347,26 @@ export default function InvestorPortfolioPage() {
                     return (
                       <TableRow
                         key={inv.id}
-                        className="hover:bg-slate-50/50 transition-colors border-b border-slate-100 last:border-0"
+                        className="hover:bg-slate-50/40 transition-colors border-b border-slate-100 last:border-0"
                       >
-                        <TableCell className="py-4 pl-6">
+                        <TableCell className="py-3.5 pl-6">
                           <span className="font-semibold text-slate-800 block text-xs line-clamp-1">
-                            {inv.proposal.title}
+                            {inv.proposal?.title || 'Budidaya Tanaman'}
                           </span>
-                          <span className="text-[9px] text-slate-400 font-bold block mt-0.5">
+                          <span className="text-[9px] text-slate-400 font-bold block mt-0.5 uppercase tracking-wide">
                             Ditempatkan: {dateFormatted}
                           </span>
                         </TableCell>
-                        <TableCell className="py-4 text-xs font-semibold text-slate-600">
-                          {inv.proposal.commodity}
+                        <TableCell className="py-3.5 text-xs font-semibold text-slate-600">
+                          {inv.proposal?.commodity || 'Pertanian'}
                         </TableCell>
-                        <TableCell className="py-4 text-xs font-bold text-slate-800">
+                        <TableCell className="py-3.5 text-xs font-bold text-slate-800">
                           {formatCurrency(Number(inv.amount))}
                         </TableCell>
-                        <TableCell className="py-4 text-xs font-bold text-blue-600">
-                          +{inv.proposal.projected_roi_percent}%
+                        <TableCell className="py-3.5 text-xs font-bold text-blue-600">
+                          +{inv.proposal?.projected_roi_percent || 0}%
                         </TableCell>
-                        <TableCell className="py-4 text-xs font-bold">
+                        <TableCell className="py-3.5 text-xs font-bold">
                           {isCompleted && inv.actual_return ? (
                             <span className="text-green-600">
                               +
@@ -362,30 +381,27 @@ export default function InvestorPortfolioPage() {
                             <span className="text-slate-400 font-semibold">-</span>
                           )}
                         </TableCell>
-                        <TableCell className="py-4">
-                          <span
-                            className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-semibold border ${
-                              isCompleted
-                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                : 'bg-blue-50 text-blue-700 border-blue-200'
-                            }`}
-                          >
-                            <span
-                              className={`h-1.5 w-1.5 rounded-full ${
-                                isCompleted ? 'bg-emerald-500' : 'bg-blue-500 animate-pulse'
-                              }`}
-                            />
-                            {isCompleted ? 'Selesai' : 'Aktif'}
-                          </span>
+                        <TableCell className="py-3.5">
+                          {isCompleted ? (
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-700">
+                              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                              Selesai
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-[10px] font-semibold text-blue-700">
+                              <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
+                              Aktif
+                            </span>
+                          )}
                         </TableCell>
-                        <TableCell className="py-4 text-right pr-6">
+                        <TableCell className="py-3.5 text-right pr-6">
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-7 text-[10px] font-bold text-slate-500 hover:text-slate-900 cursor-pointer flex items-center gap-1"
+                            className="h-7 text-[10px] font-bold text-slate-500 hover:text-slate-900 cursor-pointer flex items-center gap-1.5 ml-auto"
                             onClick={() =>
                               router.push(
-                                `/dashboard/investor/portfolio/${inv.id || inv.proposal.id}`
+                                `/dashboard/investor/portfolio/${inv.id || inv.proposal?.id}`
                               )
                             }
                           >
@@ -394,11 +410,48 @@ export default function InvestorPortfolioPage() {
                         </TableCell>
                       </TableRow>
                     );
-                  })}
-                </TableBody>
-              </Table>
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100">
+            <div className="text-xs text-muted-foreground font-medium">
+              {totalRows === 0 ? (
+                '0 investasi ditemukan'
+              ) : (
+                <>
+                  Menampilkan{' '}
+                  <span className="font-semibold text-slate-900">
+                    {fromRow}–{toRow}
+                  </span>{' '}
+                  dari <span className="font-semibold text-slate-900">{totalRows}</span> investasi
+                </>
+              )}
             </div>
-          )}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer text-slate-700 bg-white h-8 text-[11px]"
+                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                disabled={!getCanPreviousPage}
+              >
+                Sebelumnya
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer text-slate-700 bg-white h-8 text-[11px]"
+                onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={!getCanNextPage}
+              >
+                Berikutnya
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

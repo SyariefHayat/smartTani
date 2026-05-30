@@ -235,5 +235,62 @@ router.get('/farmer/:id', gatewayAuthMiddleware, overviewController.getFarmerAna
  *         description: Investor analytics data
  */
 router.get('/investor/:id', gatewayAuthMiddleware, overviewController.getInvestorAnalytics);
+router.get('/investor/:id/roi-chart', gatewayAuthMiddleware, overviewController.getInvestorROIChart);
+router.get('/investor/:id/finance', gatewayAuthMiddleware, overviewController.getInvestorFinance);
+
+/**
+ * @swagger
+ * /analytics/buyer/{id}/spending-chart:
+ *   get:
+ *     summary: Get spending chart data for a buyer
+ *     tags: [Analytics]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: from_date
+ *         schema:
+ *           type: string
+ *           format: date
+ *       - in: query
+ *         name: to_date
+ *         schema:
+ *           type: string
+ *           format: date
+ *     responses:
+ *       200:
+ *         description: Buyer spending chart data
+ */
+router.get(
+  '/buyer/:id/spending-chart',
+  gatewayAuthMiddleware,
+  overviewController.getBuyerSpendingChart
+);
+
+/**
+ * @swagger
+ * /analytics/buyer/{id}:
+ *   get:
+ *     summary: Get personal analytics for a buyer
+ *     tags: [Analytics]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Buyer analytics data
+ */
+router.get('/buyer/:id', gatewayAuthMiddleware, overviewController.getBuyerAnalytics);
+router.get('/buyer/:id/finance', gatewayAuthMiddleware, overviewController.getBuyerFinance);
 
 export default router;

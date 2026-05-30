@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import authController from '../controllers/auth.controller';
+import addressController from '../controllers/address.controller';
 import {
   RegisterSchema,
   VerifyEmailSchema,
@@ -10,6 +11,7 @@ import {
   UpdateUserStatusSchema,
   ChangePasswordSchema,
 } from '../schemas/auth.schema';
+import { CreateAddressSchema, UpdateAddressSchema } from '../schemas/address.schema';
 import { validate } from '../../../../shared/middleware/validate';
 import { loginRateLimiter } from '../middleware/rate-limiter.middleware';
 import { authenticate } from '../middleware/auth.middleware';
@@ -248,6 +250,13 @@ router.get('/users/:id', authController.getUser);
  *         description: Validation error
  */
 router.patch('/me', authenticate, validate(UpdateProfileSchema), authController.updateProfile);
+
+// Address Management
+router.get('/me/addresses', authenticate, addressController.getAll);
+router.post('/me/addresses', authenticate, validate(CreateAddressSchema), addressController.create);
+router.patch('/me/addresses/:id', authenticate, validate(UpdateAddressSchema), addressController.update);
+router.delete('/me/addresses/:id', authenticate, addressController.delete);
+router.patch('/me/addresses/:id/default', authenticate, addressController.setDefault);
 
 /**
  * @swagger

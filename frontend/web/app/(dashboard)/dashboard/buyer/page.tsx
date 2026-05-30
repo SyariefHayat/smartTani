@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getStoredAuthUser } from '@/lib/auth-storage';
 import { analyticsService, BuyerAnalytics } from '@/services/analytics';
 import { orderService } from '@/services/order';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { subDays, format } from 'date-fns';
 import { DateRange } from 'react-day-picker';
@@ -23,17 +23,16 @@ import {
 import { Button } from '@/components/ui/button';
 import {
   Download,
-  ShoppingBag,
-  TrendingUp,
-  Package,
-  Star,
   AlertTriangle,
   RefreshCw,
   Eye,
   ArrowRight,
-  Heart,
+  ArrowUp,
+  ArrowDown,
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { DatePickerWithRange } from '@/components/sections/dashboard/farmer/DatePickerRange';
+import { exportToCSV } from '@/lib/export-csv';
 
 // High-fidelity fallback simulated data if backend analytics service is offline
 const MOCK_BUYER_ANALYTICS: BuyerAnalytics = {
@@ -204,131 +203,169 @@ export default function BuyerDashboardOverview() {
     refetchOrders();
   };
 
-  const handleDownload = () => {
-    toast.success('Mengunduh laporan ringkasan belanja...');
-    // Simulated export
-    setTimeout(() => {
-      toast.success('Laporan belanja berhasil diunduh ke CSV');
-    }, 1000);
-  };
+  const handleDownload = React.useCallback(() => {
+    if (!activeAnalytics) {
+      toast.error('Data belum tersedia, coba lagi nanti');
+      return;
+    }
+
+    try {
+      const summaryData = [
+        { metrik: 'Total Belanja', nilai: formatCurrency(activeAnalytics.total_spending || 0) },
+        { metrik: 'Pesanan Aktif', nilai: `${activeAnalytics.active_orders || 0} Transaksi` },
+        { metrik: 'Total Produk Dibeli', nilai: `${activeAnalytics.total_products_bought || 0} Unit` },
+        { metrik: 'Total Ulasan Diberikan', nilai: `${activeAnalytics.total_reviews_given || 0} Ulasan` },
+        { metrik: 'Belanja Bulan Ini', nilai: formatCurrency(activeAnalytics.monthly_spending || 0) },
+        {
+          metrik: 'Perubahan Belanja',
+          nilai: `${(activeAnalytics.spending_change_percent || 0).toFixed(1)}%`,
+        },
+      ];
+
+      exportToCSV({
+        data: summaryData,
+        columns: [
+          { header: 'Metrik', accessor: (row) => row.metrik },
+          { header: 'Nilai', accessor: (row) => row.nilai },
+        ],
+        filename: 'dashboard_pembeli_ringkasan',
+      });
+
+      toast.success('Laporan dashboard berhasil diunduh');
+    } catch {
+      toast.error('Gagal mengunduh laporan');
+    }
+  }, [activeAnalytics]);
 
   const isLoading = (isAnalyticsLoading || isChartLoading || isOrdersLoading) && !isQueryError;
 
   if (!user || user.role !== 'buyer') return null;
 
+  const spendingChange = activeAnalytics.spending_change_percent || 0;
+
   const kpis = [
     {
       title: 'Total Belanja',
       value: formatCurrency(activeAnalytics.total_spending || 0),
-      description: 'Akumulasi semua transaksi selesai',
-      icon: ShoppingBag,
-      colorClass: 'text-green-500',
+      hasCompare: true,
+      change: spendingChange,
+      footer: 'dari bulan lalu',
     },
     {
-      title: 'Pesanan Aktif',
-      value: `${activeAnalytics.active_orders || 0} Transaksi`,
-      description: 'Dalam proses kirim / menunggu konfirmasi',
-      icon: TrendingUp,
-      colorClass: 'text-blue-500',
+      title: 'Total Pesanan',
+      value: (activeAnalytics.active_orders || 0).toLocaleString('id-ID'),
+      hasCompare: false,
+      change: 0,
+      footer: 'dari bulan lalu',
     },
     {
-      title: 'Produk Dibeli',
-      value: `${activeAnalytics.total_products_bought || 0} Unit`,
-      description: 'Total item produk yang telah dipesan',
-      icon: Package,
-      colorClass: 'text-amber-500',
+      title: 'Total Produk',
+      value: (activeAnalytics.total_products_bought || 0).toLocaleString('id-ID'),
+      hasCompare: false,
+      change: 0,
+      footer: 'dari bulan lalu',
     },
     {
-      title: 'Ulasan Diberikan',
-      value: `${activeAnalytics.total_reviews_given || 0} Ulasan`,
-      description: 'Review produk yang telah ditulis',
-      icon: Star,
-      colorClass: 'text-purple-500',
+      title: 'Total Ulasan',
+      value: (activeAnalytics.total_reviews_given || 0).toLocaleString('id-ID'),
+      hasCompare: false,
+      change: 0,
+      footer: 'dari bulan lalu',
     },
-  ];
+  ] as const;
 
   return (
     <DateRangeContext.Provider value={{ date, setDate }}>
-      <div className="w-full space-y-6">
-        {/* Offline Warning Banner */}
-        {isQueryError && (
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 font-semibold shadow-xs">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 animate-pulse" />
-              <p>
-                Mode Offline Simulasi: Koneksi ke server analytics terputus. Menampilkan data lokal
-                demo agar Anda tetap dapat menjelajahi layout.
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-7 cursor-pointer border-amber-300 text-amber-800 bg-white hover:bg-amber-100 font-bold shrink-0 text-[10px]"
-              onClick={handleRetry}
-              disabled={isRefetching}
-            >
-              <RefreshCw className={`mr-1 h-3 w-3 ${isRefetching ? 'animate-spin' : ''}`} />
-              {isRefetching ? 'Hubungkan...' : 'Coba Hubungkan Kembali'}
-            </Button>
-          </div>
-        )}
-
-        {/* Header */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-slate-800">
-              Dashboard Pembeli
-            </h1>
-            <p className="text-sm text-slate-500 mt-1">
-              Selamat datang kembali, {user.name}. Berikut adalah performa ringkasan aktivitas
-              belanja Anda.
+      {/* Offline Warning Banner */}
+      {isQueryError && (
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
+            <p>
+              Layanan Analytics Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
             </p>
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-            <Button
-              className="w-full sm:w-auto cursor-pointer font-bold bg-green-600 hover:bg-green-700"
-              onClick={handleDownload}
-            >
-              <Download className="mr-2 h-4 w-4" /> Unduh Laporan
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 cursor-pointer border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px]"
+            onClick={handleRetry}
+            disabled={isRefetching}
+          >
+            <RefreshCw className={`mr-1 h-3 w-3 ${isRefetching ? 'animate-spin' : ''}`} />
+            {isRefetching ? 'Hubungkan...' : 'Coba Hubungkan Kembali'}
+          </Button>
         </div>
+      )}
 
-        {/* KPI Row */}
-        {isLoading ? (
-          <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-24 w-full rounded-xl animate-pulse" />
-            ))}
-          </div>
-        ) : (
-          <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-            {kpis.map((kpi) => {
-              const Icon = kpi.icon;
-              return (
-                <Card
-                  key={kpi.title}
-                  className="min-w-0 border border-slate-200 bg-white shadow-xs"
-                >
-                  <CardHeader className="gap-1 p-5 pb-3">
-                    <CardDescription className="truncate text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                      {kpi.title}
-                    </CardDescription>
-                    <CardTitle className="truncate text-xl font-semibold tabular-nums lg:text-2xl text-slate-800">
-                      {kpi.value}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardFooter className="flex-col items-start gap-1.5 p-5 pt-0 text-sm">
-                    <div className="flex w-full min-w-0 items-center gap-1.5 font-medium text-slate-500">
-                      <Icon className={cn('size-4 shrink-0', kpi.colorClass)} />
-                      <span className="truncate text-xs text-slate-500">{kpi.description}</span>
-                    </div>
-                  </CardFooter>
-                </Card>
-              );
-            })}
-          </div>
-        )}
+      {/* Header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-xl font-bold tracking-tight lg:text-2xl">Dashboard Pembeli</h1>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+          <DatePickerWithRange />
+          <Button className="w-full sm:w-auto cursor-pointer" onClick={handleDownload}>
+            <Download /> Download
+          </Button>
+        </div>
+      </div>
+
+      {/* KPI Row */}
+      {isLoading ? (
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i} className="min-w-0">
+              <CardHeader className="gap-1">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-8 w-full" />
+              </CardHeader>
+              <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                <Skeleton className="h-4 w-full" />
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+          {kpis.map((kpi, index) => {
+            const hasCompare = kpi.hasCompare;
+            const isUp = kpi.change > 0;
+            const isDown = kpi.change < 0;
+
+            let colorClass = 'text-muted-foreground';
+            let Icon = null;
+            let percentageText = '0.0%';
+
+            if (hasCompare) {
+              colorClass = isUp ? 'text-green-500' : isDown ? 'text-red-500' : 'text-muted-foreground';
+              Icon = isUp ? ArrowUp : isDown ? ArrowDown : null;
+              percentageText = `${Math.abs(kpi.change).toFixed(1)}%`;
+            }
+
+            return (
+              <Card key={index} className="min-w-0">
+                <CardHeader className="gap-1">
+                  <CardDescription className="truncate text-xs">{kpi.title}</CardDescription>
+                  <CardTitle
+                    className="truncate text-xl font-semibold tabular-nums lg:text-2xl"
+                    title={kpi.value}
+                  >
+                    {kpi.value}
+                  </CardTitle>
+                </CardHeader>
+                <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                  <div className="flex w-full min-w-0 items-center gap-1 font-medium">
+                    {Icon && <Icon className={`size-4 shrink-0 ${colorClass}`} />}
+                    <span className="truncate">
+                      <span className={colorClass}>{percentageText} </span>
+                      <span className="text-muted-foreground">{kpi.footer}</span>
+                    </span>
+                  </div>
+                </CardFooter>
+              </Card>
+            );
+          })}
+        </div>
+      )}
 
         {/* Chart Column */}
         {isLoading ? (
@@ -475,7 +512,7 @@ export default function BuyerDashboardOverview() {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="h-7 px-2.5 text-[11px] font-bold cursor-pointer"
+                            className="h-7 cursor-pointer"
                             onClick={() => router.push(`/dashboard/buyer/orders/${order.id}`)}
                           >
                             <Eye className="mr-1 h-3.5 w-3.5" /> Detail
@@ -525,8 +562,8 @@ export default function BuyerDashboardOverview() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50 cursor-pointer"
-                          onClick={() => router.push(`/marketplace`)}
+                          className="h-8 w-8 cursor-pointer"
+                          onClick={() => router.push(`/marketplace/${prod.product_id}`)}
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
@@ -538,12 +575,8 @@ export default function BuyerDashboardOverview() {
             )}
           </div>
         </div>
-      </div>
-    </DateRangeContext.Provider>
+      </DateRangeContext.Provider>
   );
 }
 
-// Inline helper because cn comes from @/lib/utils but we want clean classes
-function cn(...inputs: unknown[]) {
-  return inputs.filter(Boolean).join(' ');
-}
+

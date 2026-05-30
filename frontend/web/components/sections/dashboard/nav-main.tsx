@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronRight, type LucideIcon } from 'lucide-react';
@@ -34,6 +35,19 @@ export function NavMain({
 }) {
   const pathname = usePathname();
 
+  const dashboardRoots = useMemo(() => new Set([
+    '/dashboard/farmer',
+    '/dashboard/buyer',
+    '/dashboard/investor',
+    '/dashboard/distributor',
+    '/dashboard/logistik',
+    '/dashboard/logistic',
+    '/dashboard/siswa',
+    '/dashboard/instruktur',
+    '/dashboard/instructor',
+    '/admin'
+  ]), []);
+
   const isSubActive = (subItem: { url: string }) => {
     if (subItem.url === pathname) return true;
     const hasExactSiblingMatch = items.some((item) =>
@@ -41,7 +55,7 @@ export function NavMain({
     );
     if (
       !hasExactSiblingMatch &&
-      subItem.url !== '/dashboard/farmer' &&
+      !dashboardRoots.has(subItem.url) &&
       pathname.startsWith(subItem.url + '/')
     ) {
       return true;
@@ -54,7 +68,7 @@ export function NavMain({
       return item.items.some((subItem) => isSubActive(subItem));
     }
     if (item.url === pathname) return true;
-    if (item.url !== '/dashboard/farmer' && pathname.startsWith(item.url + '/')) return true;
+    if (!dashboardRoots.has(item.url) && pathname.startsWith(item.url + '/')) return true;
     return false;
   };
 

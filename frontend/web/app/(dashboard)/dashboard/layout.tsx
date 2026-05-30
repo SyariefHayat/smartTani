@@ -30,9 +30,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <SearchProvider>
       <SidebarProvider>
         <AppSidebar />
-        <SidebarInset>
+        <SidebarInset className="max-w-full overflow-x-hidden">
           <DashboardHeader user={user} />
-          <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
+          <div className="flex flex-1 flex-col gap-4 p-4 max-w-full overflow-x-hidden">{children}</div>
         </SidebarInset>
       </SidebarProvider>
     </SearchProvider>

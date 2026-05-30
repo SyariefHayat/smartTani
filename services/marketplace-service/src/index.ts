@@ -29,6 +29,8 @@ import categoryRoutes from './routes/category.routes';
 import productRoutes from './routes/product.routes';
 import promotionRoutes from './routes/promotion.routes';
 import brandRoutes from './routes/brand.routes';
+import wishlistRoutes from './routes/wishlist.routes';
+import reviewRoutes from './routes/review.routes';
 
 export const app = express();
 
@@ -44,6 +46,8 @@ app.use('/categories', categoryRoutes);
 app.use('/products', productRoutes);
 app.use('/promotions', promotionRoutes);
 app.use('/brands', brandRoutes);
+app.use('/wishlist', wishlistRoutes);
+app.use('/reviews', reviewRoutes);
 
 // Sentry Error Handler
 if (env.SENTRY_DSN) {

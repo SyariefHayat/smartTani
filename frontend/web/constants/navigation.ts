@@ -170,33 +170,13 @@ export const BUYER_DASHBOARD_NAV = [
   },
   {
     title: 'Pesanan Saya',
-    url: '#',
+    url: '/dashboard/buyer/orders',
     icon: ShoppingCart,
-    items: [
-      {
-        title: 'Daftar Pesanan',
-        url: '/dashboard/buyer/orders',
-      },
-      {
-        title: 'Riwayat Pesanan',
-        url: '/dashboard/buyer/orders/history',
-      },
-    ],
   },
   {
     title: 'Pengeluaran',
-    url: '#',
+    url: '/dashboard/buyer/finance',
     icon: Wallet,
-    items: [
-      {
-        title: 'Riwayat Belanja',
-        url: '/dashboard/buyer/finance',
-      },
-      {
-        title: 'Riwayat Transaksi',
-        url: '/dashboard/buyer/finance/history',
-      },
-    ],
   },
   {
     title: 'Wishlist',
@@ -212,11 +192,6 @@ export const BUYER_DASHBOARD_NAV = [
     title: 'Ulasan Saya',
     url: '/dashboard/buyer/reviews',
     icon: Star,
-  },
-  {
-    title: 'Notifikasi',
-    url: '/dashboard/buyer/notifications',
-    icon: Bell,
   },
   {
     title: 'Pengaturan',

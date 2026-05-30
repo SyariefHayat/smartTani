@@ -26,6 +26,7 @@ model User {
   updated_at       DateTime @updatedAt @db.Timestamptz
   farm_lands       FarmLand[]
   harvest_records  HarvestRecord[]
+  saved_addresses  SavedAddress[]
 
   @@map("users")
 }
@@ -70,4 +71,24 @@ model HarvestRecord {
   @@index([farmer_id])
   @@index([land_id])
   @@map("harvest_records")
+}
+
+model SavedAddress {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id        String   @db.Uuid
+  label          String   @db.VarChar(100)
+  recipient_name String   @db.VarChar(255)
+  phone_number   String   @db.VarChar(50)
+  province       String   @db.VarChar(100)
+  city           String   @db.VarChar(100)
+  district       String   @db.VarChar(100)
+  full_address   String   @db.Text
+  postal_code    String   @db.VarChar(20)
+  is_default     Boolean  @default(false)
+  created_at     DateTime @default(now()) @db.Timestamptz
+  updated_at     DateTime @updatedAt @db.Timestamptz
+  user           User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("saved_addresses")
 }

@@ -1,6 +1,7 @@
 import { logger } from '../../../../shared/utils/logger';
 import farmerAnalyticsRepository from '../repositories/farmer-analytics.repository';
 import investorAnalyticsRepository from '../repositories/investor-analytics.repository';
+import buyerAnalyticsRepository from '../repositories/buyer-analytics.repository';
 import RedisClient from '../lib/redis';
 
 class PersonalAnalyticsService {
@@ -70,6 +71,91 @@ class PersonalAnalyticsService {
     await RedisClient.setex(cacheKey, this.TTL, JSON.stringify(metrics));
 
     return metrics;
+  }
+
+  async getInvestorROIChart(investorId: string) {
+    const cacheKey = `analytics:investor:${investorId}:roi-chart`;
+
+    const cachedData = await RedisClient.get(cacheKey);
+    if (cachedData) {
+      logger.info(`⚡ Returning investor ROI chart for ${investorId} from cache`);
+      return JSON.parse(cachedData as string);
+    }
+
+    const chartData = await investorAnalyticsRepository.getROIChart(investorId);
+    await RedisClient.setex(cacheKey, this.TTL, JSON.stringify(chartData));
+
+    return chartData;
+  }
+
+  async getInvestorFinance(investorId: string, query: { page?: number; limit?: number }) {
+    const cacheKey = `analytics:investor:${investorId}:finance:${JSON.stringify(query)}`;
+
+    const cachedData = await RedisClient.get(cacheKey);
+    if (cachedData) {
+      logger.info(`⚡ Returning investor finance for ${investorId} from cache`);
+      return JSON.parse(cachedData as string);
+    }
+
+    const financeData = await investorAnalyticsRepository.getInvestorFinance(
+      investorId,
+      query?.page,
+      query?.limit
+    );
+    await RedisClient.setex(cacheKey, this.TTL, JSON.stringify(financeData));
+
+    return financeData;
+  }
+
+  async getBuyerAnalytics(buyerId: string) {
+    const cacheKey = `analytics:buyer:${buyerId}`;
+
+    const cachedData = await RedisClient.get(cacheKey);
+    if (cachedData) {
+      logger.info(`⚡ Returning buyer analytics for ${buyerId} from cache`);
+      return JSON.parse(cachedData as string);
+    }
+
+    const metrics = await buyerAnalyticsRepository.getBuyerMetrics(buyerId);
+    await RedisClient.setex(cacheKey, this.TTL, JSON.stringify(metrics));
+
+    return metrics;
+  }
+
+  async getBuyerSpendingChart(buyerId: string, query: { from_date?: string; to_date?: string }) {
+    const cacheKey = `analytics:buyer:${buyerId}:spending-chart:${JSON.stringify(query)}`;
+
+    const cachedData = await RedisClient.get(cacheKey);
+    if (cachedData) {
+      logger.info(`⚡ Returning buyer spending chart for ${buyerId} from cache`);
+      return JSON.parse(cachedData as string);
+    }
+
+    const data = await buyerAnalyticsRepository.getSpendingChart(
+      buyerId,
+      query.from_date,
+      query.to_date
+    );
+    await RedisClient.setex(cacheKey, this.TTL, JSON.stringify(data));
+
+    return data;
+  }
+
+  async getBuyerFinance(buyerId: string, query: { page?: number; limit?: number }) {
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 20;
+    const cacheKey = `analytics:buyer:${buyerId}:finance:${page}:${limit}`;
+
+    const cachedData = await RedisClient.get(cacheKey);
+    if (cachedData) {
+      logger.info(`⚡ Returning buyer finance for ${buyerId} from cache`);
+      return JSON.parse(cachedData as string);
+    }
+
+    const data = await buyerAnalyticsRepository.getFinanceAnalytics(buyerId, page, limit);
+    await RedisClient.setex(cacheKey, this.TTL, JSON.stringify(data));
+
+    return data;
   }
 }
 

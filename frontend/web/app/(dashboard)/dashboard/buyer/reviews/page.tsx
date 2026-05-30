@@ -67,10 +67,7 @@ export default function BuyerReviewsPage() {
 
   React.useEffect(() => {
     if (isQueryError) {
-      toast.error('Layanan ulasan offline. Menggunakan data demo lokal.', {
-        description: 'Menampilkan data review simulasi agar Anda tetap dapat menjelajahi layout.',
-        duration: 5000,
-      });
+      toast.error('Layanan sedang offline. Menggunakan data demo lokal.');
     }
   }, [isQueryError]);
 
@@ -84,7 +81,7 @@ export default function BuyerReviewsPage() {
           <Star
             key={i}
             className={`h-3.5 w-3.5 ${
-              i < rating ? 'text-amber-400 fill-amber-400' : 'text-slate-200'
+              i < rating ? 'text-amber-400 fill-amber-400' : 'text-muted/40'
             }`}
           />
         ))}
@@ -93,21 +90,20 @@ export default function BuyerReviewsPage() {
   };
 
   return (
-    <div className="w-full space-y-6 text-slate-900">
+    <div className="w-full space-y-6">
       {/* Reconnect Banner */}
       {isQueryError && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 font-semibold shadow-xs">
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 animate-pulse" />
+            <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
             <p>
-              Mode Offline Simulasi: Koneksi ke server ulasan terputus. Menampilkan data lokal demo
-              agar Anda tetap dapat menjelajahi layout.
+              Layanan Ulasan Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
             </p>
           </div>
           <Button
             variant="outline"
             size="sm"
-            className="h-7 cursor-pointer border-amber-300 text-amber-800 bg-white hover:bg-amber-100 font-bold shrink-0 text-[10px]"
+            className="h-7 cursor-pointer border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px]"
             onClick={() => refetch()}
             disabled={isRefetching}
           >
@@ -120,10 +116,10 @@ export default function BuyerReviewsPage() {
       {/* Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-slate-800">
+          <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-foreground">
             Ulasan Saya
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-muted-foreground">
             Kumpulan riwayat penilaian produk yang Anda beli.
           </p>
         </div>
@@ -136,11 +132,11 @@ export default function BuyerReviewsPage() {
           <Skeleton className="h-28 w-full rounded-xl animate-pulse" />
         </div>
       ) : activeReviews.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-16 text-center text-slate-400 bg-white border border-slate-200 rounded-xl shadow-xs gap-3">
-          <MessageSquare className="h-10 w-10 text-slate-300 animate-pulse" />
+        <div className="flex flex-col items-center justify-center p-16 text-center text-muted-foreground bg-card border border-border rounded-xl shadow-xs gap-3">
+          <MessageSquare className="h-10 w-10 text-muted/60 animate-pulse" />
           <div className="space-y-1">
-            <p className="text-sm font-bold text-slate-700">Belum Ada Ulasan</p>
-            <p className="text-xs text-slate-400">
+            <p className="text-sm font-bold text-card-foreground">Belum Ada Ulasan</p>
+            <p className="text-xs text-muted-foreground/80">
               Anda belum pernah menulis ulasan produk belanjaan.
             </p>
           </div>
@@ -150,18 +146,18 @@ export default function BuyerReviewsPage() {
           {activeReviews.map((rev) => (
             <Card
               key={rev.id}
-              className="border border-slate-200 bg-white hover:shadow-xs transition-shadow shadow-xs overflow-hidden"
+              className="border border-border bg-card hover:shadow-xs transition-shadow shadow-xs overflow-hidden"
             >
-              <CardHeader className="p-5 pb-3 border-b border-slate-100 flex flex-row items-center justify-between gap-4">
+              <CardHeader className="p-5 pb-3 border-b border-border/60 flex flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-lg bg-green-50 border border-green-100 flex items-center justify-center text-green-600 shrink-0">
+                  <div className="h-10 w-10 rounded-lg bg-muted border border-border flex items-center justify-center text-muted-foreground shrink-0">
                     <Sprout className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold text-slate-800 line-clamp-1">
+                    <h3 className="text-xs font-bold text-card-foreground line-clamp-1">
                       {rev.product_title || 'Komoditas Pertanian'}
                     </h3>
-                    <p className="text-[10px] text-slate-400 mt-0.5">
+                    <p className="text-[10px] text-muted-foreground mt-0.5">
                       Penilaian: {format(new Date(rev.created_at), 'dd MMM yyyy')}
                     </p>
                   </div>
@@ -169,7 +165,7 @@ export default function BuyerReviewsPage() {
                 <div>{renderStars(rev.rating)}</div>
               </CardHeader>
               <CardContent className="p-5">
-                <p className="text-xs font-medium text-slate-600 leading-relaxed italic">
+                <p className="text-xs font-medium text-muted-foreground/90 leading-relaxed italic">
                   &ldquo;{rev.comment}&rdquo;
                 </p>
               </CardContent>
