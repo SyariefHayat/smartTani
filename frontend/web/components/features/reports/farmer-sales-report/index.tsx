@@ -27,89 +27,8 @@ import { DailySalesData, SalesReportItem, SalesReportSummary } from './types';
 import { DateRangeContext } from '@/context/dateRange';
 import { DateRange } from 'react-day-picker';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
-import { RefreshCw, AlertTriangle } from 'lucide-react';
 
-// High-fidelity fallback simulated data if backend service is offline
-const MOCK_ANALYTICS = {
-  revenue_change_percent: 16.8,
-};
 
-const MOCK_REVENUE_CHART = [
-  { date: '2026-05-21', pendapatan: 9000000, pengeluaran: 0 },
-  { date: '2026-05-22', pendapatan: 9000000, pengeluaran: 0 },
-  { date: '2026-05-23', pendapatan: 0, pengeluaran: 0 },
-  { date: '2026-05-24', pendapatan: 5500000, pengeluaran: 0 },
-  { date: '2026-05-25', pendapatan: 10500000, pengeluaran: 0 },
-  { date: '2026-05-26', pendapatan: 6000000, pengeluaran: 0 },
-  { date: '2026-05-27', pendapatan: 4500000, pengeluaran: 0 },
-];
-
-const MOCK_ORDERS = [
-  {
-    id: 'ORD-10922',
-    created_at: '2026-05-27T10:00:00Z',
-    buyer_id: 'BUY-7711',
-    buyer: { full_name: 'Siti Aminah (Buyer Kelompok A)' },
-    items: [{ product_id: 'PROD-8812', price_per_unit: 25000, quantity: 180 }],
-    total_amount: 4500000,
-    status: 'completed',
-  },
-  {
-    id: 'ORD-10901',
-    created_at: '2026-05-26T14:30:00Z',
-    buyer_id: 'BUY-8812',
-    buyer: { full_name: 'Agus Setiawan (Koperasi Tani)' },
-    items: [{ product_id: 'PROD-7712', price_per_unit: 15000, quantity: 400 }],
-    total_amount: 6000000,
-    status: 'completed',
-  },
-  {
-    id: 'ORD-10885',
-    created_at: '2026-05-25T08:15:00Z',
-    buyer_id: 'BUY-5501',
-    buyer: { full_name: 'CV Segar Sentosa' },
-    items: [{ product_id: 'PROD-9912', price_per_unit: 35000, quantity: 300 }],
-    total_amount: 10500000,
-    status: 'completed',
-  },
-  {
-    id: 'ORD-10881',
-    created_at: '2026-05-24T11:00:00Z',
-    buyer_id: 'BUY-3392',
-    buyer: { full_name: 'Pak Budi Wahyono' },
-    items: [{ product_id: 'PROD-6611', price_per_unit: 22000, quantity: 250 }],
-    total_amount: 5500000,
-    status: 'completed',
-  },
-  {
-    id: 'ORD-10850',
-    created_at: '2026-05-23T09:30:00Z',
-    buyer_id: 'BUY-2201',
-    buyer: { full_name: 'Dewi Lestari' },
-    items: [{ product_id: 'PROD-5501', price_per_unit: 12000, quantity: 100 }],
-    total_amount: 1200000,
-    status: 'cancelled',
-  },
-  {
-    id: 'ORD-10812',
-    created_at: '2026-05-22T16:45:00Z',
-    buyer_id: 'BUY-9922',
-    buyer: { full_name: 'Katering Berkah Jaya' },
-    items: [{ product_id: 'PROD-4411', price_per_unit: 18000, quantity: 500 }],
-    total_amount: 9000000,
-    status: 'completed',
-  },
-  {
-    id: 'ORD-10799',
-    created_at: '2026-05-21T10:15:00Z',
-    buyer_id: 'BUY-1192',
-    buyer: { full_name: 'Supermarket Tani Makmur' },
-    items: [{ product_id: 'PROD-3301', price_per_unit: 45000, quantity: 200 }],
-    total_amount: 9000000,
-    status: 'completed',
-  },
-];
 
 export function FarmerSalesReport() {
   const user = useAuthStore((s) => s.user);
@@ -129,8 +48,6 @@ export function FarmerSalesReport() {
     data: farmerAnalytics,
     isLoading: isAnalyticsLoading,
     isError: isAnalyticsError,
-    refetch: refetchAnalytics,
-    isRefetching: isRefetchingAnalytics,
   } = useQuery({
     queryKey: ['farmer-analytics', user?.id],
     queryFn: async () => {
@@ -145,8 +62,6 @@ export function FarmerSalesReport() {
     data: revenueChartData,
     isLoading: isChartLoading,
     isError: isChartError,
-    refetch: refetchChart,
-    isRefetching: isRefetchingChart,
   } = useQuery({
     queryKey: ['farmer-revenue-chart', user?.id, date?.from, date?.to],
     queryFn: async () => {
@@ -165,8 +80,6 @@ export function FarmerSalesReport() {
     data: ordersResponse,
     isLoading: isOrdersLoading,
     isError: isOrdersError,
-    refetch: refetchOrders,
-    isRefetching: isRefetchingOrders,
   } = useQuery({
     queryKey: ['farmer-report-orders', user?.id, date?.from, date?.to],
     queryFn: async () => {
@@ -180,22 +93,18 @@ export function FarmerSalesReport() {
     enabled: !!user?.id,
   });
 
-  const isQueryError = isAnalyticsError || isChartError || isOrdersError;
+  const isOffline = isAnalyticsError || isChartError || isOrdersError;
 
-  // Fallback to local demo data automatically on any fetch error
   React.useEffect(() => {
-    if (isQueryError) {
-      toast.error('Layanan Laporan Penjualan offline. Menggunakan data demo lokal.', {
-        description:
-          'Layanan backend analytics tidak merespon. Menampilkan data simulasi transaksi agar Anda tetap dapat meninjau dashboard.',
-        duration: 5000,
-      });
+    if (isOffline) {
+      toast.error('Gagal menghubungkan ke layanan laporan penjualan. Koneksi terputus.');
     }
-  }, [isQueryError]);
+  }, [isOffline]);
 
   // 4. Map Orders to SalesReportItem
   const orders: SalesReportItem[] = React.useMemo(() => {
-    const rawOrders = isQueryError ? MOCK_ORDERS : ordersResponse?.data?.orders || [];
+    if (isOffline) return [];
+    const rawOrders = ordersResponse?.data?.orders || [];
     return rawOrders.map((o) => {
       const quantity = o.items.reduce((sum, item) => sum + Number(item.quantity), 0);
 
@@ -219,18 +128,24 @@ export function FarmerSalesReport() {
           : 'cancelled',
       };
     });
-  }, [ordersResponse, isQueryError]);
+  }, [ordersResponse, isOffline]);
 
   // 5. Compute aggregate metrics from real/mock data
   const summary: SalesReportSummary = React.useMemo(() => {
+    if (isOffline) {
+      return {
+        totalSales: 0,
+        growth: 0,
+        avgTransaction: 0,
+        itemsSold: 0,
+      };
+    }
     const completedOrders = orders.filter((o) => o.status === 'completed');
     const totalSales = completedOrders.reduce((sum, o) => sum + o.total, 0);
     const avgTransaction =
       completedOrders.length > 0 ? Math.round(totalSales / completedOrders.length) : 0;
     const itemsSold = completedOrders.reduce((sum, o) => sum + o.quantity, 0);
-    const growth = isQueryError
-      ? MOCK_ANALYTICS.revenue_change_percent
-      : (farmerAnalytics?.revenue_change_percent ?? 0);
+    const growth = farmerAnalytics?.revenue_change_percent ?? 0;
 
     return {
       totalSales,
@@ -238,30 +153,29 @@ export function FarmerSalesReport() {
       avgTransaction,
       itemsSold,
     };
-  }, [orders, farmerAnalytics, isQueryError]);
+  }, [orders, farmerAnalytics, isOffline]);
 
   // 6. Map Chart Data with computed orders per day
   const dailyData: DailySalesData[] = React.useMemo(() => {
+    if (isOffline) return [];
     const ordersPerDay: Record<string, number> = {};
     orders.forEach((o) => {
       const day = format(new Date(o.date), 'yyyy-MM-dd');
       ordersPerDay[day] = (ordersPerDay[day] || 0) + 1;
     });
 
-    const chartRaw = isQueryError
-      ? MOCK_REVENUE_CHART
-      : ((revenueChartData || []) as Array<{
-          date: string;
-          pendapatan: number;
-          pengeluaran: number;
-        }>);
+    const chartRaw = (revenueChartData || []) as Array<{
+      date: string;
+      pendapatan: number;
+      pengeluaran: number;
+    }>;
 
     return chartRaw.map((item) => ({
       date: item.date,
       sales: item.pendapatan || 0,
       orders: ordersPerDay[item.date] || 0,
     }));
-  }, [revenueChartData, orders, isQueryError]);
+  }, [revenueChartData, orders, isOffline]);
 
   // 7. Setup React Table
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -284,11 +198,7 @@ export function FarmerSalesReport() {
     },
   });
 
-  const handleRetry = () => {
-    refetchAnalytics();
-    refetchChart();
-    refetchOrders();
-  };
+
 
   // 8. Client-side CSV export trigger
   const handleExportCSV = () => {
@@ -336,63 +246,57 @@ export function FarmerSalesReport() {
     toast.success('Laporan berhasil diekspor ke CSV');
   };
 
-  const isLoading = (isAnalyticsLoading || isChartLoading || isOrdersLoading) && !isQueryError;
-  const isRefetching = isRefetchingAnalytics || isRefetchingChart || isRefetchingOrders;
+  const isLoading = (isAnalyticsLoading || isChartLoading || isOrdersLoading) && !isOffline;
 
   return (
     <DateRangeContext.Provider value={{ date, setDate }}>
-      <div className="w-full text-slate-900">
+      <div className="w-full text-slate-900 animate-in fade-in duration-500">
         <div className="mx-auto flex w-full flex-col gap-6">
-          {isQueryError && (
-            <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-                <p>
-                  Layanan Laporan Penjualan Offline: Gagal sinkronisasi data teraktual. Menggunakan
-                  data demo lokal.
-                </p>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
-                onClick={handleRetry}
-                disabled={isRefetching}
-              >
-                {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
-              </Button>
-            </div>
-          )}
-
           <SalesReportHeader onExportCSV={handleExportCSV} />
 
-          {isLoading ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {[1, 2, 3, 4].map((i) => (
-                <Skeleton key={i} className="h-24 w-full rounded-xl" />
-              ))}
-            </div>
+          {isOffline ? (
+            <>
+              <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                Gagal memuat data statistik laporan penjualan / Koneksi ke server terputus
+              </div>
+              <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                Gagal memuat grafik analisis laporan penjualan / Koneksi ke server terputus
+              </div>
+              <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                Gagal memuat daftar riwayat laporan penjualan / Koneksi ke server terputus
+              </div>
+            </>
           ) : (
-            <SalesReportStats summary={summary} />
-          )}
+            <>
+              {isLoading ? (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <Skeleton key={i} className="h-24 w-full rounded-xl" />
+                  ))}
+                </div>
+              ) : (
+                <SalesReportStats summary={summary} />
+              )}
 
-          {isLoading ? (
-            <div className="grid gap-4 lg:grid-cols-3">
-              <Skeleton className="lg:col-span-2 h-[380px] w-full rounded-xl" />
-              <Skeleton className="h-[380px] w-full rounded-xl" />
-            </div>
-          ) : (
-            <SalesReportCharts data={dailyData} />
-          )}
+              {isLoading ? (
+                <div className="grid gap-4 lg:grid-cols-3">
+                  <Skeleton className="lg:col-span-2 h-[380px] w-full rounded-xl" />
+                  <Skeleton className="h-[380px] w-full rounded-xl" />
+                </div>
+              ) : (
+                <SalesReportCharts data={dailyData} />
+              )}
 
-          {isLoading ? (
-            <div className="space-y-3">
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-20 w-full" />
-              <Skeleton className="h-20 w-full" />
-            </div>
-          ) : (
-            <SalesReportTable table={table} columnsCount={columns.length} />
+              {isLoading ? (
+                <div className="space-y-3">
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-20 w-full" />
+                  <Skeleton className="h-20 w-full" />
+                </div>
+              ) : (
+                <SalesReportTable table={table} columnsCount={columns.length} />
+              )}
+            </>
           )}
         </div>
       </div>

@@ -71,8 +71,8 @@ export function SecuritySettings() {
   }
 
   return (
-    <Card className="border-none shadow-sm rounded-xl">
-      <CardHeader className="border-b bg-slate-50/50 rounded-t-xl">
+    <Card className="border border-slate-200 shadow-xs rounded-xl overflow-hidden bg-white text-slate-900">
+      <CardHeader className="border-b bg-slate-50/50 border-slate-100 rounded-t-xl">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-green-100 text-green-700 rounded-lg">
             <Shield className="h-5 w-5" />

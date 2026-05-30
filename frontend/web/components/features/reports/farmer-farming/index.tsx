@@ -14,7 +14,6 @@ import { LandDistributionChart } from './LandDistributionChart';
 import { RecentFarmingReports } from './RecentFarmingReports';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { DateRangeContext } from '@/context/dateRange';
@@ -26,7 +25,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -39,83 +37,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-// High-fidelity fallback simulated data if backend farming services are offline
-const MOCK_LANDS = [
-  { id: 'L-101', name: 'Lahan Utara', area_ha: 2.5, current_crop: 'Cabai Merah', status: 'active' },
-  { id: 'L-102', name: 'Lahan Selatan', area_ha: 1.8, current_crop: 'Tomat', status: 'active' },
-  {
-    id: 'L-103',
-    name: 'Lahan Barat',
-    area_ha: 3.2,
-    current_crop: 'Bawang Merah',
-    status: 'active',
-  },
-  { id: 'L-104', name: 'Lahan Timur', area_ha: 1.5, current_crop: 'Jagung', status: 'active' },
-  { id: 'L-105', name: 'Lahan Bukit', area_ha: 2.0, current_crop: null, status: 'inactive' },
-];
 
-const MOCK_HARVESTS = [
-  {
-    id: 'H-901',
-    harvest_date: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-    crop_name: 'Cabai Merah',
-    quantity: 450,
-    unit: 'kg',
-    quality_grade: 'A' as const,
-    land_id: 'L-101',
-    land: { name: 'Lahan Utara' },
-  },
-  {
-    id: 'H-902',
-    harvest_date: format(subMonths(new Date(), 1), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-    crop_name: 'Tomat',
-    quantity: 800,
-    unit: 'kg',
-    quality_grade: 'A' as const,
-    land_id: 'L-102',
-    land: { name: 'Lahan Selatan' },
-  },
-  {
-    id: 'H-903',
-    harvest_date: format(subMonths(new Date(), 2), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-    crop_name: 'Bawang Merah',
-    quantity: 1200,
-    unit: 'kg',
-    quality_grade: 'B' as const,
-    land_id: 'L-103',
-    land: { name: 'Lahan Barat' },
-  },
-  {
-    id: 'H-904',
-    harvest_date: format(subMonths(new Date(), 3), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-    crop_name: 'Jagung',
-    quantity: 1500,
-    unit: 'kg',
-    quality_grade: 'A' as const,
-    land_id: 'L-104',
-    land: { name: 'Lahan Timur' },
-  },
-  {
-    id: 'H-905',
-    harvest_date: format(subMonths(new Date(), 4), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-    crop_name: 'Cabai Merah',
-    quantity: 380,
-    unit: 'kg',
-    quality_grade: 'B' as const,
-    land_id: 'L-101',
-    land: { name: 'Lahan Utara' },
-  },
-  {
-    id: 'H-906',
-    harvest_date: format(subMonths(new Date(), 5), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-    crop_name: 'Tomat',
-    quantity: 750,
-    unit: 'kg',
-    quality_grade: 'C' as const,
-    land_id: 'L-102',
-    land: { name: 'Lahan Selatan' },
-  },
-];
 
 export function FarmingReportsManagement() {
   // Date context states (default to last 6 months to showcase fully populated historical trends cleanly)
@@ -129,8 +51,6 @@ export function FarmingReportsManagement() {
     data: landsData,
     isLoading: isLandsLoading,
     isError: isLandsError,
-    refetch: refetchLands,
-    isRefetching: isRefetchingLands,
   } = useQuery({
     queryKey: ['lands'],
     queryFn: async () => landService.getLands(),
@@ -142,13 +62,10 @@ export function FarmingReportsManagement() {
     isLoading: isHarvestsLoading,
     isError: isHarvestsError,
     refetch: refetchHarvests,
-    isRefetching: isRefetchingHarvests,
   } = useQuery({
     queryKey: ['harvests'],
     queryFn: async () => harvestService.getHarvests(),
   });
-
-  const isQueryError = isLandsError || isHarvestsError;
 
   // Filter states
   const [isFilterActive, setIsFilterActive] = React.useState(false);
@@ -168,24 +85,23 @@ export function FarmingReportsManagement() {
     notes: '',
   });
 
-  // Automatically fall back to high-fidelity demo data on API error
+  const isOffline = isLandsError || isHarvestsError;
+
   React.useEffect(() => {
-    if (isQueryError) {
-      toast.error('Layanan Laporan Pertanian offline. Menggunakan data demo lokal.', {
-        description:
-          'Layanan backend analytics tidak merespon. Menampilkan data simulasi pertanian agar Anda tetap dapat meninjau dashboard.',
-        duration: 5000,
-      });
+    if (isOffline) {
+      toast.error('Gagal menghubungkan ke layanan laporan pertanian. Koneksi terputus.');
     }
-  }, [isQueryError]);
+  }, [isOffline]);
 
   const activeLands = React.useMemo(() => {
-    return isQueryError ? MOCK_LANDS : landsData || [];
-  }, [isQueryError, landsData]);
+    if (isOffline) return [];
+    return landsData || [];
+  }, [isOffline, landsData]);
 
   const activeHarvests = React.useMemo(() => {
-    return (isQueryError ? MOCK_HARVESTS : harvestsData || []) as HarvestRecord[];
-  }, [isQueryError, harvestsData]);
+    if (isOffline) return [];
+    return (harvestsData || []) as HarvestRecord[];
+  }, [isOffline, harvestsData]);
 
   // Apply filters dynamically in memory
   const filteredHarvests = React.useMemo(() => {
@@ -219,6 +135,14 @@ export function FarmingReportsManagement() {
 
   // 3. Compute Stats Summary (based on filtered harvests)
   const summary = React.useMemo(() => {
+    if (isOffline) {
+      return {
+        totalLandArea: 0,
+        activeCropCount: 0,
+        averageHealthScore: 0,
+        projectedHarvestVal: 0,
+      };
+    }
     const filteredLands = activeLands.filter((l) => l.status === 'active');
     const totalLandArea = filteredLands.reduce((sum, l) => sum + Number(l.area_ha || 0), 0);
 
@@ -243,10 +167,11 @@ export function FarmingReportsManagement() {
       averageHealthScore,
       projectedHarvestVal: totalHarvestVal,
     };
-  }, [activeLands, filteredHarvests]);
+  }, [activeLands, filteredHarvests, isOffline]);
 
   // 4. Compute 6-Month Trends
   const trends = React.useMemo(() => {
+    if (isOffline) return [];
     const last6Months = Array.from({ length: 6 }).map((_, idx) => {
       const d = subMonths(new Date(), 5 - idx);
       return {
@@ -278,10 +203,11 @@ export function FarmingReportsManagement() {
         yield: monthlyYield,
       };
     });
-  }, [filteredHarvests]);
+  }, [filteredHarvests, isOffline]);
 
   // 5. Compute Land Area Distribution
   const distribution = React.useMemo(() => {
+    if (isOffline) return [];
     const filteredLands = activeLands.filter((l) => l.status === 'active');
     const totalArea = filteredLands.reduce((sum, l) => sum + Number(l.area_ha || 0), 0);
 
@@ -307,12 +233,9 @@ export function FarmingReportsManagement() {
         color: colors[idx % colors.length],
       };
     });
-  }, [activeLands]);
+  }, [activeLands, isOffline]);
 
-  const handleRetry = () => {
-    refetchLands();
-    refetchHarvests();
-  };
+
 
   const handleLandChange = (val: string) => {
     const land = activeLands.find((l) => l.id === val);
@@ -356,151 +279,160 @@ export function FarmingReportsManagement() {
       });
       // Trigger refresh
       refetchHarvests();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
+      const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan';
+      const responseMessage = (err as { response?: { data?: { error?: { message?: string } } } })?.response?.data?.error?.message;
       toast.error('Gagal menyimpan laporan baru.', {
-        description:
-          err.response?.data?.error?.message || err.message || 'Layanan backend offline.',
+        description: responseMessage || errorMessage || 'Layanan backend offline.',
       });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const isLoading = (isLandsLoading || isHarvestsLoading) && !isQueryError;
-  const isRefetching = isRefetchingLands || isRefetchingHarvests;
+  const isLoading = (isLandsLoading || isHarvestsLoading) && !isOffline;
 
   return (
     <DateRangeContext.Provider value={{ date, setDate }}>
-      <div className="w-full text-slate-900">
+      <div className="w-full text-slate-900 animate-in fade-in duration-500">
         <div className="mx-auto flex w-full flex-col gap-6">
-          {isQueryError && (
-            <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs animate-fade-in">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-                <p>
-                  Layanan Laporan Pertanian Offline: Gagal sinkronisasi data teraktual. Menggunakan
-                  data demo lokal.
-                </p>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
-                onClick={handleRetry}
-                disabled={isRefetching}
-              >
-                {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
-              </Button>
-            </div>
-          )}
-
           <FarmingReportHeader
             onOpenCreateModal={() => setIsCreateModalOpen(true)}
             onToggleFilter={() => setIsFilterActive(!isFilterActive)}
             isFilterActive={isFilterActive}
           />
 
-          {/* Real-time filtering section */}
-          {isFilterActive && (
-            <div className="flex flex-col gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50/50 shadow-2xs md:flex-row md:items-center animate-fade-in">
-              <div className="flex-1 space-y-1">
-                <Label
-                  htmlFor="search-crop"
-                  className="text-[11px] font-bold text-slate-500 uppercase tracking-wide"
-                >
-                  Cari Komoditas
-                </Label>
-                <Input
-                  id="search-crop"
-                  placeholder="Cari nama komoditas tanaman (contoh: Cabai)..."
-                  value={searchCropQuery}
-                  onChange={(e) => setSearchCropQuery(e.target.value)}
-                  className="text-xs h-9 bg-white border-slate-200 shadow-3xs"
-                />
+          {isOffline ? (
+            <>
+              <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                Gagal memuat data statistik laporan pertanian / Koneksi ke server terputus
               </div>
-              <div className="w-full md:w-56 space-y-1">
-                <Label
-                  htmlFor="filter-land"
-                  className="text-[11px] font-bold text-slate-500 uppercase tracking-wide"
-                >
-                  Filter Sesuai Lahan
-                </Label>
-                <Select value={selectedLandIdFilter} onValueChange={setSelectedLandIdFilter}>
-                  <SelectTrigger
-                    id="filter-land"
-                    className="text-xs h-9 bg-white border-slate-200 shadow-3xs"
-                  >
-                    <SelectValue placeholder="Semua Lahan" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border-slate-250 shadow-md">
-                    <SelectItem value="all">Semua Lahan</SelectItem>
-                    {activeLands.map((land) => (
-                      <SelectItem key={land.id} value={land.id}>
-                        {land.name} ({land.area_ha} Ha)
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="grid gap-6 lg:grid-cols-3">
+                <div className="lg:col-span-2">
+                  <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                    Gagal memuat tren kualitas & kuantitas panen / Koneksi ke server terputus
+                  </div>
+                </div>
+                <div>
+                  <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                    Gagal memuat persentase distribusi lahan tani / Koneksi ke server terputus
+                  </div>
+                </div>
               </div>
-              {(searchCropQuery || selectedLandIdFilter !== 'all') && (
-                <div className="self-end md:self-auto pt-4 md:pt-4">
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      setSearchCropQuery('');
-                      setSelectedLandIdFilter('all');
-                    }}
-                    className="text-xs font-semibold text-rose-500 hover:text-rose-600 hover:bg-rose-50 cursor-pointer h-9 px-3"
-                  >
-                    Reset Filter
-                  </Button>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-bold text-slate-800">Laporan Historis</h2>
+                </div>
+                <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                  Gagal memuat daftar riwayat catatan panen / Koneksi ke server terputus
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Real-time filtering section */}
+              {isFilterActive && (
+                <div className="flex flex-col gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50/50 shadow-2xs md:flex-row md:items-center animate-fade-in">
+                  <div className="flex-1 space-y-1">
+                    <Label
+                      htmlFor="search-crop"
+                      className="text-[11px] font-bold text-slate-500 uppercase tracking-wide"
+                    >
+                      Cari Komoditas
+                    </Label>
+                    <Input
+                      id="search-crop"
+                      placeholder="Cari nama komoditas tanaman (contoh: Cabai)..."
+                      value={searchCropQuery}
+                      onChange={(e) => setSearchCropQuery(e.target.value)}
+                      className="text-xs h-9 bg-white border-slate-200 shadow-3xs"
+                    />
+                  </div>
+                  <div className="w-full md:w-56 space-y-1">
+                    <Label
+                      htmlFor="filter-land"
+                      className="text-[11px] font-bold text-slate-500 uppercase tracking-wide"
+                    >
+                      Filter Sesuai Lahan
+                    </Label>
+                    <Select value={selectedLandIdFilter} onValueChange={setSelectedLandIdFilter}>
+                      <SelectTrigger
+                        id="filter-land"
+                        className="text-xs h-9 bg-white border-slate-200 shadow-3xs"
+                      >
+                        <SelectValue placeholder="Semua Lahan" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border-slate-250 shadow-md">
+                        <SelectItem value="all">Semua Lahan</SelectItem>
+                        {activeLands.map((land) => (
+                          <SelectItem key={land.id} value={land.id}>
+                            {land.name} ({land.area_ha} Ha)
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {(searchCropQuery || selectedLandIdFilter !== 'all') && (
+                    <div className="self-end md:self-auto pt-4 md:pt-4">
+                      <Button
+                        variant="ghost"
+                        onClick={() => {
+                          setSearchCropQuery('');
+                          setSelectedLandIdFilter('all');
+                        }}
+                        className="text-xs font-semibold text-rose-500 hover:text-rose-600 hover:bg-rose-50 cursor-pointer h-9 px-3"
+                      >
+                        Reset Filter
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
-            </div>
-          )}
 
-          {isLoading ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {[1, 2, 3, 4].map((i) => (
-                <Skeleton key={i} className="h-20 w-full rounded-xl" />
-              ))}
-            </div>
-          ) : (
-            <FarmingReportStats summary={summary} />
-          )}
-
-          <div className="grid gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2">
               {isLoading ? (
-                <Skeleton className="h-[380px] w-full rounded-xl" />
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <Skeleton key={i} className="h-20 w-full rounded-xl" />
+                  ))}
+                </div>
               ) : (
-                <FarmingTrendsChart data={trends} />
+                <FarmingReportStats summary={summary} />
               )}
-            </div>
-            <div>
-              {isLoading ? (
-                <Skeleton className="h-[380px] w-full rounded-xl" />
-              ) : (
-                <LandDistributionChart data={distribution} />
-              )}
-            </div>
-          </div>
 
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-slate-800">Laporan Historis</h2>
-            </div>
-            {isLoading ? (
-              <div className="space-y-3">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-20 w-full" />
-                <Skeleton className="h-20 w-full" />
+              <div className="grid gap-6 lg:grid-cols-3">
+                <div className="lg:col-span-2">
+                  {isLoading ? (
+                    <Skeleton className="h-[380px] w-full rounded-xl" />
+                  ) : (
+                    <FarmingTrendsChart data={trends} />
+                  )}
+                </div>
+                <div>
+                  {isLoading ? (
+                    <Skeleton className="h-[380px] w-full rounded-xl" />
+                  ) : (
+                    <LandDistributionChart data={distribution} />
+                  )}
+                </div>
               </div>
-            ) : (
-              <RecentFarmingReports data={filteredHarvests} />
-            )}
-          </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-bold text-slate-800">Laporan Historis</h2>
+                </div>
+                {isLoading ? (
+                  <div className="space-y-3">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-20 w-full" />
+                  </div>
+                ) : (
+                  <RecentFarmingReports data={filteredHarvests} />
+                )}
+              </div>
+            </>
+          )}
         </div>
 
         {/* Create Modal Dialog */}
@@ -527,7 +459,7 @@ export function FarmingReportsManagement() {
                   <SelectContent className="bg-white border border-slate-200">
                     {activeLands.map((land) => (
                       <SelectItem key={land.id} value={land.id}>
-                        {land.name} ({(land as any).location_city})
+                        {land.name} ({(land as { location_city?: string }).location_city})
                       </SelectItem>
                     ))}
                   </SelectContent>

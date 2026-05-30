@@ -13,9 +13,11 @@ export function NotificationSettings() {
   const { notificationPreferences, updateNotificationPreferences } = useAuthStore();
   const [preferences, setPreferences] = React.useState(notificationPreferences);
 
-  React.useEffect(() => {
+  const [prevPreferences, setPrevPreferences] = React.useState(notificationPreferences);
+  if (notificationPreferences !== prevPreferences) {
+    setPrevPreferences(notificationPreferences);
     setPreferences(notificationPreferences);
-  }, [notificationPreferences]);
+  }
 
   const handleToggle = (key: keyof typeof preferences, checked: boolean) => {
     setPreferences((prev) => ({
@@ -30,7 +32,7 @@ export function NotificationSettings() {
   };
 
   return (
-    <Card className="border-none shadow-sm text-slate-900">
+    <Card className="border border-slate-200 shadow-xs text-slate-900 bg-white rounded-xl">
       <CardHeader>
         <CardTitle>Preferensi Notifikasi</CardTitle>
         <CardDescription>

@@ -167,7 +167,7 @@ export function FarmSettings() {
         </div>
       )}
 
-      <Card className="border-none shadow-sm rounded-xl overflow-hidden bg-white text-slate-900">
+      <Card className="border border-slate-200 shadow-xs rounded-xl overflow-hidden bg-white text-slate-900">
         <CardHeader className="border-b bg-slate-50/50 border-slate-100">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-green-100 text-green-700 rounded-lg">

@@ -126,7 +126,7 @@ export function ProfileSettings() {
         </div>
       )}
 
-      <Card className="border-none shadow-sm text-slate-900 bg-white rounded-xl">
+      <Card className="border border-slate-200 shadow-xs text-slate-900 bg-white rounded-xl">
         <CardHeader>
           <CardTitle>Profil Petani</CardTitle>
           <CardDescription>Perbarui informasi pribadi dan foto profil Anda.</CardDescription>
