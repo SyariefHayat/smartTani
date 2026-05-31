@@ -3,9 +3,12 @@ import { z } from 'zod';
 export const RegisterSchema = z.object({
   email: z.string().email('Format email tidak valid'),
   password: z.string().min(8, 'Password minimal 8 karakter'),
-  role: z.enum(['petani', 'buyer', 'investor', 'distributor', 'logistik', 'admin'], {
-    message: 'Role tidak valid',
-  }),
+  role: z.enum(
+    ['petani', 'buyer', 'investor', 'distributor', 'logistik', 'admin', 'siswa', 'instruktur'],
+    {
+      message: 'Role tidak valid',
+    }
+  ),
   full_name: z.string().min(3, 'Nama lengkap minimal 3 karakter'),
 });
 

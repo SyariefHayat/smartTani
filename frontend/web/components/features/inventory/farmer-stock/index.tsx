@@ -61,7 +61,7 @@ export function FarmerStockManagement() {
 
   React.useEffect(() => {
     if (isOffline) {
-      toast.error('Layanan persediaan sedang offline. Menggunakan data demo lokal.');
+      toast.error('Gagal menghubungkan ke layanan persediaan. Koneksi terputus.');
     }
   }, [isOffline]);
 
@@ -112,7 +112,7 @@ export function FarmerStockManagement() {
 
   const stocks: ProductStock[] = React.useMemo(() => {
     if (isOffline || !response?.data?.products || response.data.products.length === 0) {
-      return mockStocks;
+      return [];
     }
     return response.data.products.map((p) => {
       const quantity = p.stock || 0;
@@ -258,28 +258,16 @@ export function FarmerStockManagement() {
       <div className="mx-auto flex w-full flex-col gap-6">
         <StockHeader onExport={handleExport} />
 
-        {isOffline && (
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-              <p>
-                Layanan Persediaan Offline: Gagal memuat data teraktual. Menggunakan data demo
-                lokal.
-              </p>
+        {isOffline ? (
+          <>
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat data statistik persediaan / Koneksi ke server terputus
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
-              onClick={() => refetch()}
-              disabled={isRefetching}
-            >
-              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
-            </Button>
-          </div>
-        )}
-
-        {isLoading ? (
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat daftar persediaan produk / Koneksi ke server terputus
+            </div>
+          </>
+        ) : isLoading ? (
           <div className="w-full text-slate-900 space-y-6">
             <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
               {Array.from({ length: 4 }).map((_, i) => (

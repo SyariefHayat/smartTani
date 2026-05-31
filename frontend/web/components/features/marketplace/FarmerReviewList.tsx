@@ -51,7 +51,7 @@ export function FarmerReviewList() {
         product_title: 'Pupuk Organik Cair Super',
         rating: 5,
         comment: 'Sangat bagus, tanaman padi saya tumbuh subur setelah disemprot pupuk ini.',
-        created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        created_at: '2026-05-29T10:00:00Z',
       },
       {
         _id: 'mock-rev-2',
@@ -59,7 +59,7 @@ export function FarmerReviewList() {
         product_title: 'Benih Padi Unggul Ciherang',
         rating: 5,
         comment: 'Daya tumbuh benih sangat tinggi hampir 95%. Respon penjual sangat cepat.',
-        created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        created_at: '2026-05-26T10:00:00Z',
       },
       {
         _id: 'mock-rev-3',
@@ -67,7 +67,7 @@ export function FarmerReviewList() {
         product_title: 'Sprayer Elektrik Pertanian 16L',
         rating: 4,
         comment: 'Bahan sprayer kokoh dan semburannya kencang. Cepat sampai juga barangnya.',
-        created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+        created_at: '2026-05-21T10:00:00Z',
       },
     ],
     []
@@ -101,34 +101,40 @@ export function FarmerReviewList() {
 
   useEffect(() => {
     if (isOffline) {
-      toast.error('Layanan ulasan pembeli sedang offline. Menggunakan data demo lokal.');
+      toast.error('Gagal menghubungkan ke layanan ulasan pembeli. Koneksi terputus.');
     }
   }, [isOffline]);
 
-  useEffect(() => {
-    setPage(1);
-  }, [searchTerm, ratingFilter, statusFilter]);
-
   const summary = React.useMemo(() => {
     if (isOffline || !summaryResponse?.data) {
-      return mockSummary;
+      return {
+        average_rating: 0,
+        total_reviews: 0,
+        rating_breakdown: {
+          '1': 0,
+          '2': 0,
+          '3': 0,
+          '4': 0,
+          '5': 0,
+        },
+      };
     }
     return summaryResponse.data;
-  }, [summaryResponse, isOffline, mockSummary]);
+  }, [summaryResponse, isOffline]);
 
   const rawReviews = React.useMemo(() => {
     if (isOffline || !reviewsResponse?.data || reviewsResponse.data.length === 0) {
-      return mockReviews;
+      return [];
     }
     return reviewsResponse.data;
-  }, [reviewsResponse, isOffline, mockReviews]);
+  }, [reviewsResponse, isOffline]);
 
   const total = React.useMemo(() => {
     if (isOffline) {
-      return mockReviews.length;
+      return 0;
     }
     return reviewsResponse?.meta?.total || 0;
-  }, [reviewsResponse, isOffline, mockReviews]);
+  }, [reviewsResponse, isOffline]);
 
   const totalPages = Math.ceil(total / limit);
 
@@ -169,134 +175,136 @@ export function FarmerReviewList() {
       <div className="mx-auto flex w-full flex-col gap-4">
         <ReviewHeader />
 
-        {isOffline && (
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-              <p>
-                Layanan Ulasan Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
-              </p>
+        {isOffline ? (
+          <>
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat data statistik ulasan / Koneksi ke server terputus
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
-              onClick={handleRetry}
-              disabled={isRefetching}
-            >
-              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
-            </Button>
-          </div>
-        )}
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat daftar ulasan pembeli / Koneksi ke server terputus
+            </div>
+          </>
+        ) : (
+          <>
+            <ReviewStats summary={summary} isLoading={summaryLoading} />
 
-        <ReviewStats summary={summary} isLoading={summaryLoading} />
+            <Card className="rounded-xl border border-slate-100 bg-white shadow-sm">
+              <CardContent className="space-y-4 pt-4">
+                <ReviewFilters
+                  searchTerm={searchTerm}
+                  setSearchTerm={(val) => {
+                    setSearchTerm(val);
+                    setPage(1);
+                  }}
+                  statusFilter={statusFilter}
+                  setStatusFilter={(val) => {
+                    setStatusFilter(val);
+                    setPage(1);
+                  }}
+                  ratingFilter={ratingFilter}
+                  setRatingFilter={(val) => {
+                    setRatingFilter(val);
+                    setPage(1);
+                  }}
+                />
 
-        <Card className="rounded-xl border border-slate-100 bg-white shadow-sm">
-          <CardContent className="space-y-4 pt-4">
-            <ReviewFilters
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-              statusFilter={statusFilter}
-              setStatusFilter={setStatusFilter}
-              ratingFilter={ratingFilter}
-              setRatingFilter={setRatingFilter}
-            />
+                {/* Reviews List */}
+                <div className="divide-y divide-slate-100 rounded-lg border border-slate-100 bg-white px-5">
+                  {reviewsLoading ? (
+                    Array.from({ length: 3 }).map((_, idx) => (
+                      <div
+                        key={idx}
+                        className="py-5 flex flex-col md:flex-row gap-6 border-b border-slate-100 last:border-b-0"
+                      >
+                        {/* Left Column: User & Rating */}
+                        <div className="w-full md:w-64 shrink-0 flex flex-col gap-3">
+                          <div className="flex items-center gap-3">
+                            <Skeleton className="h-10 w-10 rounded-full" />
+                            <div className="flex flex-col gap-1.5 flex-1">
+                              <Skeleton className="h-4 w-28" />
+                              <Skeleton className="h-3 w-20" />
+                            </div>
+                          </div>
+                          <div className="space-y-1.5">
+                            <Skeleton className="h-4 w-24" />
+                            <Skeleton className="h-4 w-28" />
+                          </div>
+                        </div>
 
-            {/* Reviews List */}
-            <div className="divide-y divide-slate-100 rounded-lg border border-slate-100 bg-white px-5">
-              {reviewsLoading ? (
-                Array.from({ length: 3 }).map((_, idx) => (
-                  <div
-                    key={idx}
-                    className="py-5 flex flex-col md:flex-row gap-6 border-b border-slate-100 last:border-b-0"
-                  >
-                    {/* Left Column: User & Rating */}
-                    <div className="w-full md:w-64 shrink-0 flex flex-col gap-3">
-                      <div className="flex items-center gap-3">
-                        <Skeleton className="h-10 w-10 rounded-full" />
-                        <div className="flex flex-col gap-1.5 flex-1">
-                          <Skeleton className="h-4 w-28" />
-                          <Skeleton className="h-3 w-20" />
+                        {/* Right Column: Content */}
+                        <div className="flex-1 flex flex-col gap-3 min-w-0">
+                          <div className="flex justify-between items-start gap-4">
+                            <div className="min-w-0 flex-1 space-y-2">
+                              <Skeleton className="h-3.5 w-40" />
+                              <Skeleton className="h-4 w-full" />
+                              <Skeleton className="h-4 w-5/6" />
+                            </div>
+                            <Skeleton className="h-8 w-8 rounded-full shrink-0" />
+                          </div>
                         </div>
                       </div>
-                      <div className="space-y-1.5">
-                        <Skeleton className="h-4 w-24" />
-                        <Skeleton className="h-4 w-28" />
-                      </div>
+                    ))
+                  ) : reviews.length > 0 ? (
+                    reviews.map((review) => <ReviewItem key={review.id} review={review} />)
+                  ) : (
+                    <div className="h-64 flex flex-col items-center justify-center text-center py-6">
+                      <MessageCircle className="w-12 h-12 text-slate-300 mb-3" />
+                      <p className="font-medium text-slate-600">Tidak ada ulasan ditemukan</p>
+                      <p className="text-sm text-slate-400 mt-1 max-w-sm">
+                        Coba sesuaikan kata kunci pencarian atau ubah filter untuk menemukan ulasan
+                        yang Anda cari.
+                      </p>
+                      <Button
+                        variant="outline"
+                        className="mt-4 bg-white cursor-pointer"
+                        onClick={() => {
+                          setSearchTerm('');
+                          setRatingFilter('all');
+                          setStatusFilter('all');
+                        }}
+                      >
+                        Reset Filter
+                      </Button>
                     </div>
+                  )}
+                </div>
 
-                    {/* Right Column: Content */}
-                    <div className="flex-1 flex flex-col gap-3 min-w-0">
-                      <div className="flex justify-between items-start gap-4">
-                        <div className="min-w-0 flex-1 space-y-2">
-                          <Skeleton className="h-3.5 w-40" />
-                          <Skeleton className="h-4 w-full" />
-                          <Skeleton className="h-4 w-5/6" />
-                        </div>
-                        <Skeleton className="h-8 w-8 rounded-full shrink-0" />
-                      </div>
+                {/* Pagination */}
+                {!reviewsLoading && total > 0 && (
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-100">
+                    <div className="text-sm text-muted-foreground">
+                      Menampilkan{' '}
+                      <span className="font-semibold text-slate-900">
+                        {total === 0 ? 0 : (page - 1) * limit + 1}–{Math.min(page * limit, total)}
+                      </span>{' '}
+                      dari <span className="font-semibold text-slate-900">{total}</span> ulasan
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="cursor-pointer text-slate-700 bg-white"
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                      >
+                        Sebelumnya
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="cursor-pointer text-slate-700 bg-white"
+                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={page === totalPages}
+                      >
+                        Berikutnya
+                      </Button>
                     </div>
                   </div>
-                ))
-              ) : reviews.length > 0 ? (
-                reviews.map((review) => <ReviewItem key={review.id} review={review} />)
-              ) : (
-                <div className="h-64 flex flex-col items-center justify-center text-center py-6">
-                  <MessageCircle className="w-12 h-12 text-slate-300 mb-3" />
-                  <p className="font-medium text-slate-600">Tidak ada ulasan ditemukan</p>
-                  <p className="text-sm text-slate-400 mt-1 max-w-sm">
-                    Coba sesuaikan kata kunci pencarian atau ubah filter untuk menemukan ulasan yang
-                    Anda cari.
-                  </p>
-                  <Button
-                    variant="outline"
-                    className="mt-4 bg-white cursor-pointer"
-                    onClick={() => {
-                      setSearchTerm('');
-                      setRatingFilter('all');
-                      setStatusFilter('all');
-                    }}
-                  >
-                    Reset Filter
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {/* Pagination */}
-            {!reviewsLoading && total > 0 && (
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-100">
-                <div className="text-sm text-muted-foreground">
-                  Menampilkan{' '}
-                  <span className="font-semibold text-slate-900">
-                    {total === 0 ? 0 : (page - 1) * limit + 1}–{Math.min(page * limit, total)}
-                  </span>{' '}
-                  dari <span className="font-semibold text-slate-900">{total}</span> ulasan
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="cursor-pointer text-slate-700 bg-white"
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                  >
-                    Sebelumnya
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="cursor-pointer text-slate-700 bg-white"
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    disabled={page === totalPages}
-                  >
-                    Berikutnya
-                  </Button>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                )}
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
     </div>
   );

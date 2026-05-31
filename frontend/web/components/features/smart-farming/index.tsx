@@ -144,7 +144,7 @@ export function SmartFarmingManagement() {
 
   React.useEffect(() => {
     if (isOffline) {
-      toast.error('Layanan smart farming offline. Menggunakan data demo lokal.');
+      toast.error('Gagal menghubungkan ke layanan smart farming. Koneksi terputus.');
     }
   }, [isOffline]);
 
@@ -152,8 +152,8 @@ export function SmartFarmingManagement() {
   React.useEffect(() => {
     const timer = setTimeout(() => {
       if (isOffline || !lands || lands.length === 0) {
-        setSensors(INITIAL_SENSORS);
-        setDevices(INITIAL_DEVICES);
+        setSensors([]);
+        setDevices([]);
         return;
       }
 
@@ -265,99 +265,101 @@ export function SmartFarmingManagement() {
           onAddDevice={handleAddDevice}
         />
 
-        {isOffline && (
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-              <p>
-                Layanan IoT Offline: Gagal sinkronisasi data teraktual. Menggunakan data demo lokal.
-              </p>
+        {isOffline ? (
+          <>
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat data sensor real-time / Koneksi ke server terputus
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
-              onClick={() => refetch()}
-              disabled={isRefetching}
-            >
-              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
-            </Button>
-          </div>
-        )}
-
-        {/* Real-time Sensors Overview Grid */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-700 tracking-wide uppercase flex items-center gap-1.5">
-              <Activity className="h-4 w-4 text-emerald-500" />
-              Sensor Lapangan Real-time
-            </h2>
-            {isSyncing && (
-              <span className="text-xs text-slate-400 flex items-center gap-1">
-                <RefreshCw className="h-3 w-3 animate-spin text-slate-400" />
-                Menghubungkan...
-              </span>
-            )}
-          </div>
-          <SensorOverview sensors={sensors} />
-        </div>
-
-        {/* AI Recommendations Panel */}
-        <Card className="border border-slate-200 bg-linear-to-br from-emerald-950 via-slate-900 to-slate-950 text-white shadow-lg overflow-hidden relative">
-          <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-                <Bot className="h-4.5 w-4.5" />
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal sinkronisasi rekomendasi asisten AI / Koneksi ke server terputus
+            </div>
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                Gagal memuat data otomatisasi pintar / Koneksi ke server terputus
               </div>
-              <div>
-                <CardTitle className="text-base font-bold text-slate-100 flex items-center gap-1.5">
-                  Asisten AI SmartTani
-                  <span className="text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full uppercase tracking-wider">
-                    Analis
+              <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                Gagal memuat daftar perangkat IoT / Koneksi ke server terputus
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Real-time Sensors Overview Grid */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-bold text-slate-700 tracking-wide uppercase flex items-center gap-1.5">
+                  <Activity className="h-4 w-4 text-emerald-500" />
+                  Sensor Lapangan Real-time
+                </h2>
+                {isSyncing && (
+                  <span className="text-xs text-slate-400 flex items-center gap-1">
+                    <RefreshCw className="h-3 w-3 animate-spin text-slate-400" />
+                    Menghubungkan...
                   </span>
-                </CardTitle>
-                <CardDescription className="text-xs text-slate-400 mt-0.5">
-                  Rekomendasi tindakan cerdas berdasarkan sensor & tren lahan Anda.
-                </CardDescription>
+                )}
               </div>
+              <SensorOverview sensors={sensors} />
             </div>
-          </CardHeader>
-          <CardContent className="space-y-3 pt-1">
-            <div className="grid gap-3 md:grid-cols-2">
-              <div className="p-3.5 rounded-xl border border-slate-800 bg-slate-900/60 flex items-start gap-2.5">
-                <CheckCircle2 className="h-4.5 w-4.5 text-emerald-400 shrink-0 mt-0.5" />
-                <div className="text-xs">
-                  <p className="font-bold text-emerald-400">Status Kelembaban Lahan Blok A1</p>
-                  <p className="text-slate-300 mt-1 leading-relaxed">
-                    Kadar air tanah (42%) tergolong stabil tapi mendekati batas kritis (40%). Sistem
-                    irigasi otomatis dijadwalkan aktif pukul 17:00 jika tidak terjadi hujan harian.
-                  </p>
+
+            {/* AI Recommendations Panel */}
+            <Card className="border border-slate-200 bg-linear-to-br from-emerald-950 via-slate-900 to-slate-950 text-white shadow-lg overflow-hidden relative">
+              <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                    <Bot className="h-4.5 w-4.5" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold text-slate-100 flex items-center gap-1.5">
+                      Asisten AI SmartTani
+                      <span className="text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                        Analis
+                      </span>
+                    </CardTitle>
+                    <CardDescription className="text-xs text-slate-400 mt-0.5">
+                      Rekomendasi tindakan cerdas berdasarkan sensor & tren lahan Anda.
+                    </CardDescription>
+                  </div>
                 </div>
-              </div>
-              <div className="p-3.5 rounded-xl border border-slate-800 bg-slate-900/60 flex items-start gap-2.5">
-                <Activity className="h-4.5 w-4.5 text-amber-400 shrink-0 mt-0.5" />
-                <div className="text-xs">
-                  <p className="font-bold text-amber-400">pH Tanah Kurang Optimal Blok B2</p>
-                  <p className="text-slate-300 mt-1 leading-relaxed">
-                    Tingkat keasaman tanah rendah (5.4 pH). AI merekomendasikan penambahan dolomit
-                    sebanyak 150g per tanaman pada siklus pemupukan fosfat berikutnya untuk
-                    menormalkan nutrisi.
-                  </p>
+              </CardHeader>
+              <CardContent className="space-y-3 pt-1">
+                <div className="grid gap-3 md:grid-cols-2">
+                  <div className="p-3.5 rounded-xl border border-slate-800 bg-slate-900/60 flex items-start gap-2.5">
+                    <CheckCircle2 className="h-4.5 w-4.5 text-emerald-400 shrink-0 mt-0.5" />
+                    <div className="text-xs">
+                      <p className="font-bold text-emerald-400">Status Kelembaban Lahan Blok A1</p>
+                      <p className="text-slate-300 mt-1 leading-relaxed">
+                        Kadar air tanah (42%) tergolong stabil tapi mendekati batas kritis (40%).
+                        Sistem irigasi otomatis dijadwalkan aktif pukul 17:00 jika tidak terjadi
+                        hujan harian.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="p-3.5 rounded-xl border border-slate-800 bg-slate-900/60 flex items-start gap-2.5">
+                    <Activity className="h-4.5 w-4.5 text-amber-400 shrink-0 mt-0.5" />
+                    <div className="text-xs">
+                      <p className="font-bold text-amber-400">pH Tanah Kurang Optimal Blok B2</p>
+                      <p className="text-slate-300 mt-1 leading-relaxed">
+                        Tingkat keasaman tanah rendah (5.4 pH). AI merekomendasikan penambahan
+                        dolomit sebanyak 150g per tanaman pada siklus pemupukan fosfat berikutnya
+                        untuk menormalkan nutrisi.
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
+
+            {/* 2-Column Controls Layout */}
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Automation Control Panel */}
+              <AutomationControl tasks={tasks} />
+
+              {/* Connected IoT Devices List */}
+              <DeviceStatusList devices={devices} />
             </div>
-          </CardContent>
-        </Card>
-
-        {/* 2-Column Controls Layout */}
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* Automation Control Panel */}
-          <AutomationControl tasks={tasks} />
-
-          {/* Connected IoT Devices List */}
-          <DeviceStatusList devices={devices} />
-        </div>
+          </>
+        )}
 
         {/* Coming Soon Q3 Banner */}
         <div className="relative overflow-hidden rounded-xl bg-slate-50 border border-slate-200 p-6 flex flex-col md:flex-row items-center justify-between gap-4">

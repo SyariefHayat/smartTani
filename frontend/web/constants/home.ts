@@ -224,12 +224,12 @@ export const CATEGORY_BG_COLORS = [
 ];
 
 export const CATEGORY_IMAGES = [
-  '/images/home/gabah-df.png',
-  '/images/home/beras-df.png',
-  '/images/home/jagung-df.png',
-  '/images/home/sayur-df.webp',
-  '/images/home/buah-df.png',
-  '/images/home/kedelai-df.webp',
+  '/images/home/padi-gabah.webp',
+  '/images/home/beras.webp',
+  '/images/home/jagung.webp',
+  '/images/home/sayur.webp',
+  '/images/home/buah.webp',
+  '/images/home/kedelai.webp',
 ];
 
 export const HOME_TESTIMONIALS = [

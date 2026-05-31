@@ -31,11 +31,14 @@ export function CategoryTable({
 }: CategoryTableProps) {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
+  const [prevSearchTerm, setPrevSearchTerm] = useState(searchTerm);
 
-  useEffect(() => {
+  if (searchTerm !== prevSearchTerm) {
+    setPrevSearchTerm(searchTerm);
     setCurrentPage(1);
-  }, [searchTerm]);
+  }
+
+  const pageSize = 10;
 
   const totalRows = categories.length;
   const totalPages = Math.ceil(totalRows / pageSize);

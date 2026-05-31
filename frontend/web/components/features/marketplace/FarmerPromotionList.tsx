@@ -49,13 +49,13 @@ export function FarmerPromotionList() {
         code: 'TANAMMURAH',
         type: 'discount_percent' as const,
         value: 10,
-        start_date: new Date().toISOString(),
-        end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        start_date: '2026-05-01T10:00:00Z',
+        end_date: '2026-06-30T10:00:00Z',
         usageCount: 24,
         limit: 100,
         status: 'active' as const,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: '2026-05-01T10:00:00Z',
+        updatedAt: '2026-05-01T10:00:00Z',
       },
       {
         _id: 'mock-promo-2',
@@ -65,13 +65,13 @@ export function FarmerPromotionList() {
         code: 'ONGKIRJATIM',
         type: 'discount_amount' as const,
         value: 15000,
-        start_date: new Date().toISOString(),
-        end_date: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
+        start_date: '2026-05-15T10:00:00Z',
+        end_date: '2026-06-15T10:00:00Z',
         usageCount: 89,
         limit: 100,
         status: 'active' as const,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: '2026-05-15T10:00:00Z',
+        updatedAt: '2026-05-15T10:00:00Z',
       },
       {
         _id: 'mock-promo-3',
@@ -81,13 +81,13 @@ export function FarmerPromotionList() {
         code: 'GAJIANTANI',
         type: 'discount_percent' as const,
         value: 5,
-        start_date: new Date().toISOString(),
-        end_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+        start_date: '2026-06-01T10:00:00Z',
+        end_date: '2026-06-06T10:00:00Z',
         usageCount: 0,
         limit: 50,
         status: 'scheduled' as const,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: '2026-05-25T10:00:00Z',
+        updatedAt: '2026-05-25T10:00:00Z',
       },
     ],
     []
@@ -124,16 +124,16 @@ export function FarmerPromotionList() {
 
   React.useEffect(() => {
     if (isOffline) {
-      toast.error('Layanan promosi sedang offline. Menggunakan data demo lokal.');
+      toast.error('Gagal menghubungkan ke layanan promosi. Koneksi terputus.');
     }
   }, [isOffline]);
 
   const promos = React.useMemo(() => {
-    if (isOffline || !rawPromos || rawPromos.length === 0) {
-      return mockPromotions;
+    if (isOffline || !rawPromos) {
+      return [];
     }
     return rawPromos;
-  }, [rawPromos, isOffline, mockPromotions]);
+  }, [rawPromos, isOffline]);
 
   // Toggle status mutation
   const toggleMutation = useMutation({
@@ -202,52 +202,35 @@ export function FarmerPromotionList() {
     setActiveTab('all');
   };
 
-  React.useEffect(() => {
-    if (error) {
-      toast.error(
-        'Gagal memuat data promosi: ' +
-          (error instanceof Error ? error.message : 'Terjadi kesalahan')
-      );
-    }
-  }, [error]);
-
   return (
     <div className="w-full text-slate-900">
       <div className="mx-auto flex w-full flex-col gap-4">
         <PromotionHeader onAddPromo={() => setCreateOpen(true)} />
 
-        {isOffline && (
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-              <p>
-                Layanan Promosi Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
-              </p>
+        {isOffline ? (
+          <>
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat data statistik promosi / Koneksi ke server terputus
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
-              onClick={() => refetch()}
-              disabled={isRefetching}
-            >
-              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
-            </Button>
-          </div>
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat daftar promosi / Koneksi ke server terputus
+            </div>
+          </>
+        ) : (
+          <>
+            <PromotionStats promos={promos} />
+            <PromotionTable
+              promos={filteredPromos}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              onReset={handleReset}
+              actions={tableActions}
+              isLoading={isLoading}
+            />
+          </>
         )}
-
-        <PromotionStats promos={promos} />
-
-        <PromotionTable
-          promos={filteredPromos}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          onReset={handleReset}
-          actions={tableActions}
-          isLoading={isLoading}
-        />
       </div>
 
       {/* Create Promotion Dialog */}

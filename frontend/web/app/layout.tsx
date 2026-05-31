@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={cn('h-full', plusJakartaSans.variable)}>
+    <html lang="id" className={cn('h-full', plusJakartaSans.variable)} suppressHydrationWarning>
       <body className="min-h-full flex flex-col font-sans antialiased">
         <TooltipProvider>
           <Toaster position="top-right" />

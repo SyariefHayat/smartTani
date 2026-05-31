@@ -138,14 +138,14 @@ export function FarmerSupplierList() {
 
   React.useEffect(() => {
     if (isOffline) {
-      toast.error('Layanan supplier offline. Menggunakan data demo lokal.');
+      toast.error('Gagal menghubungkan ke layanan supplier. Koneksi terputus.');
     }
   }, [isOffline]);
 
   // Aggregate dynamically from actual database purchases when online
   const mergedSuppliers = React.useMemo(() => {
     if (isOffline || !purchases || purchases.length === 0) {
-      return suppliers;
+      return [];
     }
 
     return suppliers.map((supplier) => {
@@ -286,28 +286,25 @@ export function FarmerSupplierList() {
       <div className="mx-auto flex w-full flex-col gap-4">
         <SupplierHeader onExport={handleExport} onAddSupplier={() => setCreateDialogOpen(true)} />
 
-        {isOffline && (
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-              <p>
-                Layanan Supplier Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
-              </p>
+        {isOffline ? (
+          <>
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat data statistik supplier / Koneksi ke server terputus
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
-              onClick={() => refetchPurchases()}
-              disabled={isRefetchingPurchases}
-            >
-              {isRefetchingPurchases ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
-            </Button>
-          </div>
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat daftar supplier / Koneksi ke server terputus
+            </div>
+          </>
+        ) : (
+          <>
+            <SupplierStats suppliers={mergedSuppliers} />
+            <SupplierTable
+              table={table}
+              columnsCount={columns.length}
+              isLoading={isLoadingPurchases}
+            />
+          </>
         )}
-
-        <SupplierStats suppliers={mergedSuppliers} />
-        <SupplierTable table={table} columnsCount={columns.length} isLoading={isLoadingPurchases} />
       </div>
 
       {/* View Details Dialog */}

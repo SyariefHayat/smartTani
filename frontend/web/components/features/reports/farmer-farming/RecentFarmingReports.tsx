@@ -62,9 +62,12 @@ export function RecentFarmingReports({ data }: RecentFarmingReportsProps) {
     return data.slice((currentPage - 1) * pageSize, currentPage * pageSize);
   }, [data, currentPage, pageSize]);
 
-  React.useEffect(() => {
+  const [prevData, setPrevData] = React.useState(data);
+
+  if (data !== prevData) {
+    setPrevData(data);
     setCurrentPage(1);
-  }, [data]);
+  }
 
   const getHealthScore = (grade: 'A' | 'B' | 'C') => {
     if (grade === 'A')

@@ -1,5 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/stores/auth';
+import { logout } from './auth';
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
@@ -46,18 +47,12 @@ api.interceptors.response.use(
           return api(originalRequest);
         } catch (refreshError) {
           // Refresh failed, logout user
-          useAuthStore.getState().clearAuth();
-          if (typeof window !== 'undefined') {
-            window.location.href = '/login';
-          }
+          logout();
           return Promise.reject(refreshError);
         }
       } else {
         // No refresh token available, logout
-        useAuthStore.getState().clearAuth();
-        if (typeof window !== 'undefined') {
-          window.location.href = '/login';
-        }
+        logout();
       }
     }
 

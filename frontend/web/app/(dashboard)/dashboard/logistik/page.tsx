@@ -212,14 +212,13 @@ export default function LogisticsOverviewPage() {
     <div className="w-full space-y-6 text-slate-900">
       {/* Offline Alert */}
       {isQueryError && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-800 shadow-xs">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-red-50 border border-red-200 rounded-xl p-4 text-red-800 shadow-xs">
           <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
+            <AlertTriangle className="h-5 w-5 text-red-600 shrink-0 animate-pulse" />
             <div>
-              <p className="text-xs font-bold">Layanan Kurir Offline</p>
-              <p className="text-[10px] text-amber-600 font-medium">
-                Menampilkan data pengiriman simulasi lokal. Status perubahan paket hanya disimpan
-                sementara pada memori peramban.
+              <p className="text-xs font-bold text-red-800">Layanan Kurir Offline</p>
+              <p className="text-[10px] text-red-600 font-semibold">
+                Layanan Logistik Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
               </p>
             </div>
           </div>
@@ -227,7 +226,7 @@ export default function LogisticsOverviewPage() {
             variant="outline"
             size="sm"
             onClick={handleRefetchAll}
-            className="h-7 text-[10px] font-bold border-amber-300 text-amber-700 bg-white hover:bg-amber-100 hover:text-amber-800 cursor-pointer flex items-center gap-1 shrink-0"
+            className="h-7 text-[10px] font-bold border-red-300 text-red-800 bg-white hover:bg-red-100 hover:text-red-900 cursor-pointer flex items-center gap-1 shrink-0"
           >
             <RefreshCw className="h-3 w-3" /> Coba Hubungkan Kembali
           </Button>

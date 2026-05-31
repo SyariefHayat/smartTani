@@ -43,7 +43,7 @@ export function ProductEntryForm() {
 
   useEffect(() => {
     if (isMarketplaceOffline) {
-      toast.error('Layanan marketplace sedang offline. Menggunakan data demo lokal.');
+      toast.error('Gagal menghubungkan ke layanan marketplace. Koneksi terputus.');
     }
   }, [isMarketplaceOffline]);
 
@@ -208,26 +208,6 @@ export function ProductEntryForm() {
         <EntryHeader />
         <EntryStepper currentStep={currentStep} />
 
-        {isMarketplaceOffline && (
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-              <p>
-                Layanan Marketplace Offline: Gagal memuat data teraktual. Menggunakan data demo
-                lokal.
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
-              onClick={handleRetry}
-            >
-              Coba Hubungkan Kembali
-            </Button>
-          </div>
-        )}
-
         <div className="grid grid-cols-1 gap-4 xl:items-stretch xl:grid-cols-[minmax(0,1.65fr)_minmax(320px,0.85fr)]">
           {/* Main Content */}
           <div className="min-w-0 space-y-4">
@@ -241,225 +221,277 @@ export function ProductEntryForm() {
                 <CardContent className="space-y-6 pt-6">
                   {currentStep === 1 && (
                     <>
-                      <BasicInfoSection control={form.control} />
-                      <DescriptionSection control={form.control} />
-                      <FeaturesTagsSection form={form} />
+                      {isMarketplaceOffline ? (
+                        <div className="space-y-4">
+                          <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                            Gagal memuat data Informasi Dasar / Koneksi ke server terputus
+                          </div>
+                          <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                            Gagal memuat data Deskripsi / Koneksi ke server terputus
+                          </div>
+                          <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                            Gagal memuat data Fitur & Tag / Koneksi ke server terputus
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <BasicInfoSection control={form.control} />
+                          <DescriptionSection control={form.control} />
+                          <FeaturesTagsSection form={form} />
+                        </>
+                      )}
                     </>
                   )}
 
-                  {currentStep === 2 && <SpecsSection control={form.control} />}
-
-                  {currentStep === 3 && <PricingStockSection control={form.control} />}
-
-                  {currentStep === 4 && <MediaSection form={form} />}
-
-                  {currentStep === 5 && (
-                    <div className="space-y-6 text-slate-800">
-                      <div className="border-b pb-4">
-                        <h3 className="text-lg font-bold text-slate-900">Ringkasan & Terbitkan</h3>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          Tinjau kembali seluruh informasi produk Anda sebelum dipublikasikan ke
-                          marketplace.
-                        </p>
+                  {currentStep === 2 &&
+                    (isMarketplaceOffline ? (
+                      <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                        Gagal memuat data Spesifikasi / Koneksi ke server terputus
                       </div>
+                    ) : (
+                      <SpecsSection control={form.control} />
+                    ))}
 
-                      <div className="space-y-6">
-                        {/* Section 1: Basic Info */}
-                        <div className="space-y-3">
-                          <h4 className="text-sm font-semibold text-emerald-700 border-l-2 border-emerald-500 pl-2">
-                            1. Informasi Produk
-                          </h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 bg-slate-50 p-4 rounded-lg border border-slate-100 text-sm">
-                            <div>
-                              <span className="text-muted-foreground block text-xs">
-                                Nama Produk
-                              </span>
-                              <span className="font-semibold text-slate-900">
-                                {values.name || '-'}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground block text-xs">SKU</span>
-                              <span className="font-mono font-semibold text-slate-900">
-                                {values.sku || '-'}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground block text-xs">Kategori</span>
-                              <span className="font-medium text-slate-900">
-                                {values.category || '-'}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground block text-xs">
-                                Merk/Brand
-                              </span>
-                              <span className="font-medium text-slate-900">
-                                {values.brand || '-'}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground block text-xs">
-                                Satuan Penjualan
-                              </span>
-                              <span className="font-medium text-slate-900">
-                                {values.unit || '-'}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground block text-xs">
-                                Tipe Produk
-                              </span>
-                              <span className="font-medium text-slate-900 uppercase">
-                                {values.type || '-'}
-                              </span>
-                            </div>
-                            <div className="col-span-full">
-                              <span className="text-muted-foreground block text-xs">
-                                Deskripsi Singkat
-                              </span>
-                              <span className="text-slate-700">
-                                {values.shortDescription || '-'}
-                              </span>
-                            </div>
-                            <div className="col-span-full">
-                              <span className="text-muted-foreground block text-xs">
-                                Deskripsi Lengkap
-                              </span>
-                              <span className="text-slate-700 whitespace-pre-wrap">
-                                {values.fullDescription || '-'}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Section 2: Specs */}
-                        <div className="space-y-3">
-                          <h4 className="text-sm font-semibold text-emerald-700 border-l-2 border-emerald-500 pl-2">
-                            2. Detail & Spesifikasi
-                          </h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 bg-slate-50 p-4 rounded-lg border border-slate-100 text-sm">
-                            <div>
-                              <span className="text-muted-foreground block text-xs">
-                                Asal Produk
-                              </span>
-                              <span className="font-medium text-slate-900 capitalize">
-                                {values.origin || '-'}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground block text-xs">
-                                Masa Simpan
-                              </span>
-                              <span className="font-medium text-slate-900 capitalize">
-                                {values.shelfLife?.replace('_', ' ') || '-'}
-                              </span>
-                            </div>
-                            <div className="col-span-full">
-                              <span className="text-muted-foreground block text-xs">Komposisi</span>
-                              <span className="text-slate-700">{values.composition || '-'}</span>
-                            </div>
-                            <div className="col-span-full">
-                              <span className="text-muted-foreground block text-xs">
-                                Petunjuk Penggunaan
-                              </span>
-                              <span className="text-slate-700 whitespace-pre-wrap">
-                                {values.usageInstructions || '-'}
-                              </span>
-                            </div>
-                            <div className="col-span-full">
-                              <span className="text-muted-foreground block text-xs">
-                                Sertifikasi
-                              </span>
-                              <span className="text-slate-700">{values.certification || '-'}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Section 3: Pricing & Stock */}
-                        <div className="space-y-3">
-                          <h4 className="text-sm font-semibold text-emerald-700 border-l-2 border-emerald-500 pl-2">
-                            3. Harga & Stok
-                          </h4>
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-100 text-sm">
-                            <div>
-                              <span className="text-muted-foreground block text-xs">
-                                Harga per Satuan
-                              </span>
-                              <span className="font-bold text-slate-900">
-                                {values.pricePerUnit
-                                  ? `Rp ${values.pricePerUnit.toLocaleString('id-ID')}`
-                                  : '-'}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground block text-xs">Stok Awal</span>
-                              <span className="font-bold text-slate-900">
-                                {values.stock ?? 0} {values.unit}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground block text-xs">
-                                Stok Minimum
-                              </span>
-                              <span className="font-bold text-slate-900">
-                                {values.minStock ?? 0} {values.unit}
-                              </span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground block text-xs">
-                                Min. Order
-                              </span>
-                              <span className="font-bold text-slate-900">
-                                {values.minOrder ?? 1} {values.unit}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Section 4: Media */}
-                        <div className="space-y-3">
-                          <h4 className="text-sm font-semibold text-emerald-700 border-l-2 border-emerald-500 pl-2">
-                            4. Foto Produk
-                          </h4>
-                          {values.images && values.images.length > 0 ? (
-                            <div className="flex flex-wrap gap-3 bg-slate-50 p-4 rounded-lg border border-slate-100">
-                              {values.images.map((imgUrl: string, idx: number) => (
-                                <div
-                                  key={idx}
-                                  className="relative h-20 w-20 rounded-md border border-slate-200 overflow-hidden bg-white"
-                                >
-                                  <Image
-                                    src={imgUrl}
-                                    alt={`Product ${idx}`}
-                                    fill
-                                    unoptimized
-                                    className="object-cover"
-                                  />
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <div className="bg-amber-50 border border-amber-200 text-amber-800 text-xs p-3 rounded-md">
-                              Belum ada foto produk yang diunggah.
-                            </div>
-                          )}
-                        </div>
+                  {currentStep === 3 &&
+                    (isMarketplaceOffline ? (
+                      <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                        Gagal memuat data Harga & Stok / Koneksi ke server terputus
                       </div>
+                    ) : (
+                      <PricingStockSection control={form.control} />
+                    ))}
 
-                      <div className="bg-emerald-50/50 border border-emerald-200 rounded-lg p-4 text-emerald-950 text-xs flex gap-3 items-start">
-                        <span className="text-emerald-500 text-base font-bold mt-0.5">ℹ</span>
-                        <div className="space-y-1">
-                          <h5 className="font-semibold text-emerald-900">Siap Diterbitkan</h5>
-                          <p className="text-emerald-800 leading-relaxed">
-                            Pastikan kembali seluruh data di atas sudah valid. Jika produk
-                            diterbitkan, status produk akan menjadi <strong>Aktif</strong> dan
-                            pembeli dapat langsung memesannya di marketplace SmartTani.
+                  {currentStep === 4 &&
+                    (isMarketplaceOffline ? (
+                      <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                        Gagal memuat data Media Produk / Koneksi ke server terputus
+                      </div>
+                    ) : (
+                      <MediaSection form={form} />
+                    ))}
+
+                  {currentStep === 5 &&
+                    (isMarketplaceOffline ? (
+                      <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                        Gagal memuat data Ringkasan / Koneksi ke server terputus
+                      </div>
+                    ) : (
+                      <div className="space-y-6 text-slate-800">
+                        <div className="border-b pb-4">
+                          <h3 className="text-lg font-bold text-slate-900">
+                            Ringkasan & Terbitkan
+                          </h3>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Tinjau kembali seluruh informasi produk Anda sebelum dipublikasikan ke
+                            marketplace.
                           </p>
                         </div>
+
+                        <div className="space-y-6">
+                          {/* Section 1: Basic Info */}
+                          <div className="space-y-3">
+                            <h4 className="text-sm font-semibold text-emerald-700 border-l-2 border-emerald-500 pl-2">
+                              1. Informasi Produk
+                            </h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 bg-slate-50 p-4 rounded-lg border border-slate-100 text-sm">
+                              <div>
+                                <span className="text-muted-foreground block text-xs">
+                                  Nama Produk
+                                </span>
+                                <span className="font-semibold text-slate-900">
+                                  {values.name || '-'}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground block text-xs">SKU</span>
+                                <span className="font-mono font-semibold text-slate-900">
+                                  {values.sku || '-'}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground block text-xs">
+                                  Kategori
+                                </span>
+                                <span className="font-medium text-slate-900">
+                                  {values.category || '-'}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground block text-xs">
+                                  Merk/Brand
+                                </span>
+                                <span className="font-medium text-slate-900">
+                                  {values.brand || '-'}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground block text-xs">
+                                  Satuan Penjualan
+                                </span>
+                                <span className="font-medium text-slate-900">
+                                  {values.unit || '-'}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground block text-xs">
+                                  Tipe Produk
+                                </span>
+                                <span className="font-medium text-slate-900 uppercase">
+                                  {values.type || '-'}
+                                </span>
+                              </div>
+                              <div className="col-span-full">
+                                <span className="text-muted-foreground block text-xs">
+                                  Deskripsi Singkat
+                                </span>
+                                <span className="text-slate-700">
+                                  {values.shortDescription || '-'}
+                                </span>
+                              </div>
+                              <div className="col-span-full">
+                                <span className="text-muted-foreground block text-xs">
+                                  Deskripsi Lengkap
+                                </span>
+                                <span className="text-slate-700 whitespace-pre-wrap">
+                                  {values.fullDescription || '-'}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Section 2: Specs */}
+                          <div className="space-y-3">
+                            <h4 className="text-sm font-semibold text-emerald-700 border-l-2 border-emerald-500 pl-2">
+                              2. Detail & Spesifikasi
+                            </h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 bg-slate-50 p-4 rounded-lg border border-slate-100 text-sm">
+                              <div>
+                                <span className="text-muted-foreground block text-xs">
+                                  Asal Produk
+                                </span>
+                                <span className="font-medium text-slate-900 capitalize">
+                                  {values.origin || '-'}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground block text-xs">
+                                  Masa Simpan
+                                </span>
+                                <span className="font-medium text-slate-900 capitalize">
+                                  {values.shelfLife?.replace('_', ' ') || '-'}
+                                </span>
+                              </div>
+                              <div className="col-span-full">
+                                <span className="text-muted-foreground block text-xs">
+                                  Komposisi
+                                </span>
+                                <span className="text-slate-700">{values.composition || '-'}</span>
+                              </div>
+                              <div className="col-span-full">
+                                <span className="text-muted-foreground block text-xs">
+                                  Petunjuk Penggunaan
+                                </span>
+                                <span className="text-slate-700 whitespace-pre-wrap">
+                                  {values.usageInstructions || '-'}
+                                </span>
+                              </div>
+                              <div className="col-span-full">
+                                <span className="text-muted-foreground block text-xs">
+                                  Sertifikasi
+                                </span>
+                                <span className="text-slate-700">
+                                  {values.certification || '-'}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Section 3: Pricing & Stock */}
+                          <div className="space-y-3">
+                            <h4 className="text-sm font-semibold text-emerald-700 border-l-2 border-emerald-500 pl-2">
+                              3. Harga & Stok
+                            </h4>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-100 text-sm">
+                              <div>
+                                <span className="text-muted-foreground block text-xs">
+                                  Harga per Satuan
+                                </span>
+                                <span className="font-bold text-slate-900">
+                                  {values.pricePerUnit
+                                    ? `Rp ${values.pricePerUnit.toLocaleString('id-ID')}`
+                                    : '-'}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground block text-xs">
+                                  Stok Awal
+                                </span>
+                                <span className="font-bold text-slate-900">
+                                  {values.stock ?? 0} {values.unit}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground block text-xs">
+                                  Stok Minimum
+                                </span>
+                                <span className="font-bold text-slate-900">
+                                  {values.minStock ?? 0} {values.unit}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground block text-xs">
+                                  Min. Order
+                                </span>
+                                <span className="font-bold text-slate-900">
+                                  {values.minOrder ?? 1} {values.unit}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Section 4: Media */}
+                          <div className="space-y-3">
+                            <h4 className="text-sm font-semibold text-emerald-700 border-l-2 border-emerald-500 pl-2">
+                              4. Foto Produk
+                            </h4>
+                            {values.images && values.images.length > 0 ? (
+                              <div className="flex flex-wrap gap-3 bg-slate-50 p-4 rounded-lg border border-slate-100">
+                                {values.images.map((imgUrl: string, idx: number) => (
+                                  <div
+                                    key={idx}
+                                    className="relative h-20 w-20 rounded-md border border-slate-200 overflow-hidden bg-white"
+                                  >
+                                    <Image
+                                      src={imgUrl}
+                                      alt={`Product ${idx}`}
+                                      fill
+                                      unoptimized
+                                      className="object-cover"
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="bg-amber-50 border border-amber-200 text-amber-800 text-xs p-3 rounded-md">
+                                Belum ada foto produk yang diunggah.
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="bg-emerald-50/50 border border-emerald-200 rounded-lg p-4 text-emerald-950 text-xs flex gap-3 items-start">
+                          <span className="text-emerald-500 text-base font-bold mt-0.5">ℹ</span>
+                          <div className="space-y-1">
+                            <h5 className="font-semibold text-emerald-900">Siap Diterbitkan</h5>
+                            <p className="text-emerald-800 leading-relaxed">
+                              Pastikan kembali seluruh data di atas sudah valid. Jika produk
+                              diterbitkan, status produk akan menjadi <strong>Aktif</strong> dan
+                              pembeli dapat langsung memesannya di marketplace SmartTani.
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    ))}
                 </CardContent>
               </Card>
               <EntryFooter
@@ -468,7 +500,7 @@ export function ProductEntryForm() {
                 onNext={handleNextStep}
                 onBack={handleBackStep}
                 onSaveDraft={handleSaveDraft}
-                isSubmitting={form.formState.isSubmitting || isSavingDraft}
+                isSubmitting={form.formState.isSubmitting || isSavingDraft || isMarketplaceOffline}
               />
             </form>
           </div>
@@ -477,11 +509,29 @@ export function ProductEntryForm() {
           <div className="min-w-0">
             <Card className="h-full rounded-xl">
               <CardContent className="flex h-full flex-col space-y-6 pt-6">
-                <SidebarStatus control={form.control} />
-                <Separator />
-                <SidebarSellerInfo control={form.control} />
-                <Separator />
-                <SidebarPreview control={form.control} />
+                {isMarketplaceOffline ? (
+                  <>
+                    <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                      Gagal memuat data Status / Koneksi ke server terputus
+                    </div>
+                    <Separator />
+                    <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                      Gagal memuat data Informasi Penjual / Koneksi ke server terputus
+                    </div>
+                    <Separator />
+                    <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                      Gagal memuat data Pratinjau / Koneksi ke server terputus
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <SidebarStatus control={form.control} />
+                    <Separator />
+                    <SidebarSellerInfo control={form.control} />
+                    <Separator />
+                    <SidebarPreview control={form.control} />
+                  </>
+                )}
               </CardContent>
             </Card>
           </div>

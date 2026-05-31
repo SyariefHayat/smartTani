@@ -22,6 +22,8 @@ export const logout = () => {
   removeCookie(COOKIE_KEYS.USER_ROLE);
 
   if (typeof window !== 'undefined') {
+    window.localStorage.removeItem('smarttani-cart');
+    window.dispatchEvent(new Event('storage'));
     window.location.href = '/login';
   }
 };

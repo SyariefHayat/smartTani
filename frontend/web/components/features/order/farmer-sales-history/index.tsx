@@ -48,12 +48,6 @@ export function FarmerSalesHistory() {
       orderService.getOrders({ status: 'delivered,completed,cancelled,refunded', limit: 200 }),
   });
 
-  React.useEffect(() => {
-    if (error) {
-      toast.error('Gagal mengambil data riwayat pesanan');
-    }
-  }, [error]);
-
   const handleRetry = () => {
     queryClient.invalidateQueries({ queryKey: ['farmer-sales-history'] });
   };
@@ -129,14 +123,14 @@ export function FarmerSalesHistory() {
 
   React.useEffect(() => {
     if (isError) {
-      toast.error('Layanan riwayat penjualan sedang offline. Menggunakan data demo lokal.');
+      toast.error('Gagal menghubungkan ke layanan riwayat penjualan. Koneksi terputus.');
     }
   }, [isError]);
 
   // 2. Map backend Order type to UI FarmerOrder type
   const orders: FarmerOrder[] = React.useMemo(() => {
     if (isError || !ordersResponse?.data?.orders || ordersResponse.data.orders.length === 0) {
-      return mockSalesHistory;
+      return [];
     }
 
     const rawOrders = ordersResponse.data.orders;
@@ -265,35 +259,27 @@ export function FarmerSalesHistory() {
       <div className="mx-auto flex w-full flex-col gap-6">
         <SalesHistoryHeader onExport={handleExport} />
 
-        {isError && (
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-              <p>
-                Layanan Riwayat Penjualan Offline: Gagal memuat data teraktual. Menggunakan data
-                demo lokal.
-              </p>
+        {isError ? (
+          <>
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat data statistik penjualan / Koneksi ke server terputus
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
-              onClick={handleRetry}
-              disabled={isRefetching}
-            >
-              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
-            </Button>
-          </div>
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat daftar riwayat penjualan / Koneksi ke server terputus
+            </div>
+          </>
+        ) : (
+          <>
+            <SalesHistoryStats orders={filteredOrders} isLoading={isLoading} />
+            <SalesHistoryTable
+              table={table}
+              columnsCount={columns.length}
+              isLoading={isLoading}
+              dateRange={dateRange}
+              setDateRange={setDateRange}
+            />
+          </>
         )}
-
-        <SalesHistoryStats orders={filteredOrders} isLoading={isLoading} />
-        <SalesHistoryTable
-          table={table}
-          columnsCount={columns.length}
-          isLoading={isLoading}
-          dateRange={dateRange}
-          setDateRange={setDateRange}
-        />
       </div>
     </div>
   );

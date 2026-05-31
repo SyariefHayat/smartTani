@@ -50,6 +50,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { HEADER_NAV } from '@/constants';
 import { AuthUser } from '@/constants/types';
+import { getStoredAuthUser } from '@/lib/auth-storage';
+import { logout } from '@/lib/auth';
 
 const BOTTOM_NAV = [
   { label: 'Beranda', href: '/', icon: Home },
@@ -236,14 +238,8 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleStorage = () => {
-      const auth = localStorage.getItem('smarttani-auth');
-      if (auth) {
-        try {
-          setUser(JSON.parse(auth));
-        } catch {
-          setUser(null);
-        }
-      } else setUser(null);
+      const storedUser = getStoredAuthUser();
+      setUser(storedUser as AuthUser | null);
 
       const cart = localStorage.getItem('smarttani-cart');
       if (cart) {
@@ -273,12 +269,7 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('smarttani-auth');
-    localStorage.removeItem('smarttani-cart');
-    setUser(null);
-    setCartCount(0);
-    window.dispatchEvent(new Event('storage'));
-    router.push('/');
+    logout();
   };
 
   const getDashboardLink = () => {

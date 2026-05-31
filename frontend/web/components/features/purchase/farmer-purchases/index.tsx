@@ -142,16 +142,16 @@ export function FarmerPurchaseList() {
 
   React.useEffect(() => {
     if (isOffline) {
-      toast.error('Layanan pengeluaran sedang offline. Menggunakan data demo lokal.');
+      toast.error('Gagal menghubungkan ke layanan pengeluaran. Koneksi terputus.');
     }
   }, [isOffline]);
 
   const purchases = React.useMemo(() => {
-    if (isOffline || !rawPurchases || rawPurchases.length === 0) {
-      return mockPurchases;
+    if (isOffline || !rawPurchases) {
+      return [];
     }
     return rawPurchases;
-  }, [rawPurchases, isOffline, mockPurchases]);
+  }, [rawPurchases, isOffline]);
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -206,38 +206,27 @@ export function FarmerPurchaseList() {
       <div className="mx-auto flex w-full flex-col gap-4">
         <PurchaseHeader onExport={handleExport} onSuccess={refetch} />
 
-        {isOffline && (
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-              <p>
-                Layanan Pengeluaran Offline: Gagal memuat data teraktual. Menggunakan data demo
-                lokal.
-              </p>
+        {isOffline ? (
+          <>
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat data statistik pengeluaran / Koneksi ke server terputus
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
-              onClick={() => refetch()}
-              disabled={isRefetching}
-            >
-              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
-            </Button>
-          </div>
-        )}
-
-        {isLoading ? (
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat daftar pengeluaran / Koneksi ke server terputus
+            </div>
+          </>
+        ) : isLoading ? (
           <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
             {[1, 2, 3, 4].map((i) => (
               <Skeleton key={i} className="h-24 w-full rounded-xl" />
             ))}
           </div>
         ) : (
-          <PurchaseStats purchases={purchases} />
+          <>
+            <PurchaseStats purchases={purchases} />
+            <PurchaseTable table={table} columnsCount={columns.length} isLoading={isLoading} />
+          </>
         )}
-
-        <PurchaseTable table={table} columnsCount={columns.length} isLoading={isLoading} />
       </div>
 
       {/* Detail Dialog */}

@@ -57,11 +57,16 @@ export function PromotionTable({
   isLoading,
 }: PromotionTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
+  const [prevSearchTerm, setPrevSearchTerm] = useState(searchTerm);
+  const [prevActiveTab, setPrevActiveTab] = useState(activeTab);
 
-  useEffect(() => {
+  if (searchTerm !== prevSearchTerm || activeTab !== prevActiveTab) {
+    setPrevSearchTerm(searchTerm);
+    setPrevActiveTab(activeTab);
     setCurrentPage(1);
-  }, [searchTerm, activeTab]);
+  }
+
+  const pageSize = 10;
 
   const totalRows = promos.length;
   const totalPages = Math.ceil(totalRows / pageSize);

@@ -29,6 +29,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import { logout } from '@/lib/auth';
+
 type DashboardHeaderUser = {
   name?: string | null;
   avatar?: string | null;
@@ -39,10 +41,8 @@ export function DashboardHeader({ user }: { user: DashboardHeaderUser | null }) 
   const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem('smarttani-auth');
-    window.dispatchEvent(new Event('storage'));
     showToast('Anda telah keluar dari sistem.', 'success');
-    router.push('/login');
+    logout();
   };
 
   const formatRole = (role?: string | null) => {

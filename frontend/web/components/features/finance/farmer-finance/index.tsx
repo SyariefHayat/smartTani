@@ -112,18 +112,15 @@ export function FarmerFinanceManagement() {
   const [rowSelection, setRowSelection] = React.useState({});
   const [useDemo, setUseDemo] = React.useState(false);
 
-  React.useEffect(() => {
-    if (error) {
-      setUseDemo(true);
-      toast.error('Layanan keuangan offline. Menggunakan data demo lokal.', {
-        description:
-          'Layanan backend analytics tidak merespon. Menampilkan data simulasi agar Anda tetap dapat meninjau dashboard.',
-        duration: 5000,
-      });
-    }
-  }, [error]);
+  const isOffline = !!error;
 
-  const activeData = useDemo ? MOCK_FINANCE_DATA : data;
+  React.useEffect(() => {
+    if (isOffline) {
+      toast.error('Gagal menghubungkan ke layanan keuangan. Koneksi terputus.');
+    }
+  }, [isOffline]);
+
+  const activeData = isOffline ? null : data;
 
   const pagination = React.useMemo(
     () => ({
@@ -214,9 +211,9 @@ export function FarmerFinanceManagement() {
           'id-ID'
         )}. Dana akan ditransfer ke rekening terdaftar Anda dalam 1x24 jam.`
       );
-      if (!useDemo) refetch();
+      if (!isOffline) refetch();
     }, 2000);
-  }, [summary.currentBalance, useDemo, refetch]);
+  }, [summary.currentBalance, isOffline, refetch]);
 
   // Reconnect trigger handler
   const handleRetry = React.useCallback(async () => {
@@ -250,34 +247,27 @@ export function FarmerFinanceManagement() {
   return (
     <div className="w-full text-slate-900 animate-in fade-in duration-500">
       <div className="mx-auto flex w-full flex-col gap-6">
-        {useDemo && (
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-              <p>
-                Layanan Keuangan Offline: Gagal sinkronisasi data teraktual. Menggunakan data demo
-                lokal.
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
-              onClick={handleRetry}
-              disabled={isRefetching}
-            >
-              {isRefetching ? 'Menghubungkan...' : 'Coba Hubungkan Kembali'}
-            </Button>
-          </div>
-        )}
-
         <FinanceHeader onExport={handleExport} onWithdraw={handleWithdraw} />
-        <FinanceStats summary={summary} />
-        <FinanceTable
-          table={table}
-          columnsCount={columns.length}
-          totalTransactions={activeData?.meta?.total || 0}
-        />
+
+        {isOffline ? (
+          <>
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat data statistik keuangan / Koneksi ke server terputus
+            </div>
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat daftar transaksi keuangan / Koneksi ke server terputus
+            </div>
+          </>
+        ) : (
+          <>
+            <FinanceStats summary={summary} />
+            <FinanceTable
+              table={table}
+              columnsCount={columns.length}
+              totalTransactions={activeData?.meta?.total || 0}
+            />
+          </>
+        )}
       </div>
     </div>
   );
