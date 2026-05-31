@@ -90,11 +90,11 @@ export default function BuyerWishlistPage() {
 
   React.useEffect(() => {
     if (isQueryError) {
-      toast.error('Layanan sedang offline. Menggunakan data demo lokal.');
+      toast.error('Gagal memuat daftar produk favorit. Koneksi ke server terputus.');
     }
   }, [isQueryError]);
 
-  const activeItems = isQueryError ? MOCK_WISHLIST : wishlistItems || MOCK_WISHLIST;
+  const activeItems = isQueryError ? [] : wishlistItems || [];
 
   // 2. Remove mutation
   const removeMutation = useMutation({
@@ -122,20 +122,12 @@ export default function BuyerWishlistPage() {
   });
 
   const handleRemove = (productId: string) => {
-    if (isQueryError) {
-      toast.success('Produk berhasil dihapus dari Wishlist (Simulasi)');
-      return;
-    }
     removeMutation.mutate(productId);
   };
 
   const handleAddToCart = (productId: string, stock: number) => {
     if (stock <= 0) {
       toast.error('Stok produk sedang habis');
-      return;
-    }
-    if (isQueryError) {
-      toast.success('Produk berhasil ditambahkan ke keranjang belanja! (Simulasi)');
       return;
     }
     addToCartMutation.mutate(productId);
@@ -154,7 +146,11 @@ export default function BuyerWishlistPage() {
       </div>
 
       {/* Grid of Wishlist Items */}
-      {isLoading ? (
+      {isQueryError ? (
+        <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+          Gagal memuat daftar produk favorit / Koneksi ke server terputus
+        </div>
+      ) : isLoading ? (
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
             <Skeleton key={i} className="h-72 w-full rounded-xl animate-pulse" />
