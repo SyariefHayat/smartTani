@@ -199,7 +199,7 @@ export default function StudentWebinarsPage() {
               placeholder="Cari webinar atau pembicara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 bg-white border-slate-200 text-xs font-medium focus:ring-green-500 rounded-xl"
+              className="pl-9 bg-white border-slate-200 text-xs font-medium focus:ring-slate-400 focus-visible:ring-slate-400 rounded-xl"
             />
           </div>
         </div>
@@ -237,14 +237,14 @@ export default function StudentWebinarsPage() {
                     <div>
                       <CardHeader className="pb-3 flex flex-row items-start justify-between gap-4">
                         <div className="space-y-1.5">
-                          <Badge className="bg-emerald-50 border border-emerald-100 text-emerald-700 hover:bg-emerald-50 text-[9px] font-bold uppercase rounded-lg">
+                          <Badge className="bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-50 text-[9px] font-bold uppercase rounded-lg shadow-none">
                             {web.category}
                           </Badge>
                           <CardTitle className="text-sm font-bold text-slate-800 line-clamp-2 mt-1">
                             {web.title}
                           </CardTitle>
                         </div>
-                        <div className="h-9 w-9 rounded-xl bg-green-50 text-green-600 flex items-center justify-center border border-green-100 shrink-0">
+                        <div className="h-9 w-9 rounded-xl bg-slate-50 text-slate-600 flex items-center justify-center border border-slate-200 shrink-0">
                           <Video className="h-4.5 w-4.5" />
                         </div>
                       </CardHeader>
@@ -252,7 +252,7 @@ export default function StudentWebinarsPage() {
                       <CardContent className="space-y-3.5 pb-4 text-xs font-medium text-slate-600">
                         {/* Speaker info */}
                         <div className="flex gap-2.5 items-start bg-slate-50/60 rounded-xl p-3 border border-slate-100">
-                          <div className="h-8 w-8 rounded-lg bg-green-100 text-green-700 flex items-center justify-center shrink-0 border border-green-200">
+                          <div className="h-8 w-8 rounded-lg bg-slate-50 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200">
                             <User className="h-4 w-4" />
                           </div>
                           <div>
@@ -294,7 +294,7 @@ export default function StudentWebinarsPage() {
                           </div>
                           <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-green-600 rounded-full"
+                              className="h-full bg-slate-700 rounded-full"
                               style={{ width: `${progressPct}%` }}
                             />
                           </div>
@@ -315,16 +315,16 @@ export default function StudentWebinarsPage() {
                       {isRegistered ? (
                         <Button
                           disabled
-                          className="bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-xl text-xs font-bold shadow-none"
+                          className="bg-slate-50 border border-slate-200 text-slate-500 rounded-xl text-xs font-bold shadow-none"
                         >
-                          <CheckCircle className="h-3.5 w-3.5 mr-1.5 text-emerald-600" />
+                          <CheckCircle className="h-3.5 w-3.5 mr-1.5 text-slate-500" />
                           Sudah Terdaftar
                         </Button>
                       ) : (
                         <Button
                           onClick={() => registerMutation.mutate(web.id)}
                           disabled={isFull || registerMutation.isPending}
-                          className="bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs font-bold shadow-sm"
+                          className="bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold shadow-sm cursor-pointer"
                         >
                           Daftar Sekarang
                         </Button>
@@ -366,14 +366,14 @@ export default function StudentWebinarsPage() {
                   >
                     <CardHeader className="pb-3 flex flex-row items-start justify-between gap-4">
                       <div>
-                        <Badge className="bg-amber-50 border border-amber-100 text-amber-700 text-[9px] font-bold uppercase rounded-lg mb-1.5">
+                        <Badge className="bg-slate-50 border border-slate-200 text-slate-700 text-[9px] font-bold uppercase rounded-lg mb-1.5 shadow-none">
                           Akses Link Tersedia
                         </Badge>
                         <CardTitle className="text-sm font-bold text-slate-800 line-clamp-2">
                           {web.title}
                         </CardTitle>
                       </div>
-                      <div className="h-9 w-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100 shrink-0">
+                      <div className="h-9 w-9 rounded-xl bg-slate-50 text-slate-600 flex items-center justify-center border border-slate-200 shrink-0">
                         <Video className="h-4.5 w-4.5" />
                       </div>
                     </CardHeader>
@@ -397,7 +397,7 @@ export default function StudentWebinarsPage() {
                         </div>
                         <div className="flex items-center justify-between text-slate-500 border-t border-slate-200/50 pt-1.5 mt-1.5">
                           <span>Platform:</span>
-                          <span className="font-bold text-emerald-600">{web.platform}</span>
+                          <span className="font-bold text-slate-700">{web.platform}</span>
                         </div>
                       </div>
                     </CardContent>
@@ -416,7 +416,7 @@ export default function StudentWebinarsPage() {
                           toast.success('Membuka aplikasi telekonferensi untuk webinar...');
                           window.open('https://zoom.us', '_blank');
                         }}
-                        className="bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs font-bold shadow-sm gap-1"
+                        className="bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold shadow-sm gap-1 cursor-pointer"
                       >
                         Masuk Ruang Sesi
                         <ExternalLink className="h-3.5 w-3.5 ml-0.5" />
