@@ -101,6 +101,43 @@ export interface CreateProposalInput {
   risk_notes: string;
 }
 
+export interface GetInvestmentResponse {
+  success: boolean;
+  data: Investment;
+}
+
+export interface InvestmentTransaction {
+  id: string;
+  investment_id: string;
+  type: 'investment' | 'return' | 'platform_fee';
+  amount: number;
+  status: 'pending' | 'completed' | 'failed';
+  description: string;
+  project_title: string;
+  created_at: string;
+}
+
+export interface GetTransactionsParams {
+  page?: number;
+  limit?: number;
+  type?: 'investment' | 'return' | 'platform_fee';
+  from_date?: string;
+  to_date?: string;
+}
+
+export interface GetTransactionsResponse {
+  success: boolean;
+  data: {
+    transactions: InvestmentTransaction[];
+    meta: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  };
+}
+
 export const investmentService = {
   getProposals: async (params: GetProposalsParams): Promise<GetProposalsResponse> => {
     const response = await api.get('/proposals', { params });
@@ -114,6 +151,16 @@ export const investmentService = {
 
   getPortfolio: async (): Promise<GetPortfolioResponse> => {
     const response = await api.get('/investments');
+    return response.data;
+  },
+
+  getInvestmentById: async (id: string): Promise<GetInvestmentResponse> => {
+    const response = await api.get(`/investments/${id}`);
+    return response.data;
+  },
+
+  getTransactions: async (params?: GetTransactionsParams): Promise<GetTransactionsResponse> => {
+    const response = await api.get('/investments/transactions', { params });
     return response.data;
   },
 

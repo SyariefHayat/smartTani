@@ -6,7 +6,14 @@ import { investmentService } from '@/services/investment';
 import { formatCurrency } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -16,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { FileDown, Calendar, AlertTriangle, RefreshCw, Layers } from 'lucide-react';
+import { FileDown, Wallet, TrendingUp, Award } from 'lucide-react';
 
 const MOCK_REPORT_INVESTMENTS = [
   {
@@ -68,7 +75,6 @@ export default function InvestorReportsPage() {
     data: portfolioResponse,
     isLoading,
     isError,
-    refetch,
   } = useQuery({
     queryKey: ['investor-reports-list'],
     queryFn: () => investmentService.getPortfolio(),
@@ -78,16 +84,24 @@ export default function InvestorReportsPage() {
 
   React.useEffect(() => {
     if (isQueryError) {
-      toast.error('Layanan laporan offline. Menggunakan data demo lokal.', {
-        description: 'Menampilkan data laporan simulasi agar Anda tetap dapat mengekspor layout.',
-        duration: 5000,
-      });
+      toast.error('Koneksi ke server laporan terputus. Gagal memuat data teraktual.');
     }
   }, [isQueryError]);
 
   const rawInvestments = isQueryError
     ? MOCK_REPORT_INVESTMENTS
     : portfolioResponse?.data || MOCK_REPORT_INVESTMENTS;
+
+  const summaryMetrics = React.useMemo(() => {
+    const totalInvested = rawInvestments.reduce((sum, item) => sum + item.amount, 0);
+    const totalProjected = rawInvestments.reduce((sum, item) => sum + item.projected_return, 0);
+    const totalActual = rawInvestments.reduce((sum, item) => sum + (item.actual_return || 0), 0);
+    return {
+      totalInvested,
+      totalProjected,
+      totalActual,
+    };
+  }, [rawInvestments]);
 
   const handleExportCSV = () => {
     toast.loading('Menyiapkan berkas ekspor CSV...');
@@ -133,7 +147,7 @@ export default function InvestorReportsPage() {
 
         toast.dismiss();
         toast.success('Berkas laporan CSV berhasil diunduh!');
-      } catch (err) {
+      } catch {
         toast.dismiss();
         toast.error('Gagal mengekspor laporan');
       }
@@ -143,7 +157,15 @@ export default function InvestorReportsPage() {
   if (isLoading && !isQueryError) {
     return (
       <div className="w-full space-y-6">
-        <Skeleton className="h-10 w-48" />
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <Skeleton className="h-10 w-48" />
+          <Skeleton className="h-10 w-36" />
+        </div>
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
+          <Skeleton className="h-28 w-full" />
+          <Skeleton className="h-28 w-full" />
+          <Skeleton className="h-28 w-full" />
+        </div>
         <Skeleton className="h-[400px] w-full" />
       </div>
     );
@@ -151,136 +173,184 @@ export default function InvestorReportsPage() {
 
   return (
     <div className="w-full space-y-6 text-slate-900">
-      {/* Offline Alert */}
-      {isQueryError && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-800 shadow-xs">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
-            <div>
-              <p className="text-xs font-bold">Layanan Laporan Offline</p>
-              <p className="text-[10px] text-amber-600 font-medium">
-                Menampilkan data laporan simulasi. Anda tetap dapat melakukan uji ekspor berkas CSV
-                secara lokal.
-              </p>
-            </div>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => refetch()}
-            className="h-7 text-[10px] font-bold border-amber-300 text-amber-700 bg-white hover:bg-amber-100 hover:text-amber-800 cursor-pointer flex items-center gap-1 shrink-0"
-          >
-            <RefreshCw className="h-3 w-3" /> Coba Hubungkan Kembali
-          </Button>
-        </div>
-      )}
-
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-800">Laporan Investasi</h1>
+          <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-slate-900">
+            Laporan Investasi
+          </h1>
           <p className="text-xs text-slate-500 font-medium mt-1">
             Hasilkan laporan audit keuangan portofolio Anda untuk kebutuhan rekonsiliasi atau pajak.
           </p>
         </div>
         <Button
           onClick={handleExportCSV}
-          className="h-9 text-xs font-bold bg-green-600 hover:bg-green-700 text-white cursor-pointer flex items-center gap-1.5 shadow-xs shrink-0"
+          className="h-9 text-xs font-bold bg-green-600 hover:bg-green-700 hover:text-white transition-colors text-white cursor-pointer flex items-center gap-1.5 shadow-xs shrink-0"
         >
           <FileDown className="h-4 w-4" /> Ekspor Laporan (CSV)
         </Button>
       </div>
 
+      {/* 3 Summary Metric Cards (Sesuai Gaya Farmer SectionCard) */}
+      {isQueryError ? (
+        <div className="flex h-24 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+          Gagal memuat data statistik laporan / Koneksi ke server terputus
+        </div>
+      ) : (
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
+          {[
+            {
+              title: 'Total Investasi Pokok',
+              value: formatCurrency(summaryMetrics.totalInvested),
+              footer: 'Total dana ditanam terlaporkan',
+              icon: Wallet,
+              iconColorClass: 'text-emerald-500',
+            },
+            {
+              title: 'Estimasi Imbal Hasil',
+              value: formatCurrency(summaryMetrics.totalProjected),
+              footer: 'Proyeksi total bagi hasil kontrak',
+              icon: TrendingUp,
+              iconColorClass: 'text-blue-500',
+            },
+            {
+              title: 'Bagi Hasil Terealisasi',
+              value: formatCurrency(summaryMetrics.totalActual),
+              footer: 'Keuntungan tercatat cair',
+              icon: Award,
+              iconColorClass: 'text-emerald-500',
+            },
+          ].map((card, index) => {
+            const Icon = card.icon;
+            return (
+              <Card key={index} className="min-w-0 border-slate-200 shadow-sm bg-white">
+                <CardHeader className="gap-1 pb-2">
+                  <CardDescription className="truncate text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    {card.title}
+                  </CardDescription>
+                  <CardTitle
+                    className="truncate text-xl font-semibold tabular-nums lg:text-2xl text-slate-800"
+                    title={card.value}
+                  >
+                    {card.value}
+                  </CardTitle>
+                </CardHeader>
+                <CardFooter className="flex-col items-start gap-1.5 text-sm mt-1 pt-0">
+                  <div className="flex w-full min-w-0 items-center gap-1 font-medium text-slate-500">
+                    <Icon className={`size-4 shrink-0 ${card.iconColorClass}`} />
+                    <span className="truncate">{card.footer}</span>
+                  </div>
+                </CardFooter>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
       {/* Reports Table Container */}
-      <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden">
-        <CardHeader className="pb-3 border-b border-slate-100 flex flex-row items-center justify-between">
+      <Card className="w-full overflow-hidden border border-slate-200 shadow-sm bg-white">
+        <CardHeader className="pb-3 border-b border-slate-100">
           <div>
             <CardTitle className="text-sm font-bold text-slate-800">
               Rekapitulasi Modal & Bagi Hasil
             </CardTitle>
-            <CardDescription className="text-xs mt-0.5">
+            <CardDescription className="text-xs mt-0.5 text-slate-500">
               Daftar transaksi pendanaan beserta proyeksi imbal hasil terkontrak.
             </CardDescription>
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          <Table>
-            <TableHeader className="bg-slate-50/75 border-b border-slate-100">
-              <TableRow>
-                <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider pl-6">
-                  ID Investasi
-                </TableHead>
-                <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                  Nama Proyek
-                </TableHead>
-                <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                  Komoditas
-                </TableHead>
-                <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                  Investasi Pokok
-                </TableHead>
-                <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                  Estimasi Return
-                </TableHead>
-                <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                  Bagi Hasil Aktual
-                </TableHead>
-                <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                  Status
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rawInvestments.map((inv) => {
-                const isCompleted = inv.status === 'completed';
-                return (
-                  <TableRow
-                    key={inv.id}
-                    className="hover:bg-slate-50/50 transition-colors border-b border-slate-100 last:border-0"
-                  >
-                    <TableCell className="py-4 pl-6 font-mono text-xs font-semibold text-slate-500">
-                      #{inv.id}
-                    </TableCell>
-                    <TableCell className="py-4 text-xs font-semibold text-slate-800 max-w-xs truncate">
-                      {inv.proposal.title}
-                    </TableCell>
-                    <TableCell className="py-4 text-xs font-medium text-slate-500">
-                      {inv.proposal.commodity}
-                    </TableCell>
-                    <TableCell className="py-4 text-xs font-bold text-slate-800">
-                      {formatCurrency(inv.amount)}
-                    </TableCell>
-                    <TableCell className="py-4 text-xs font-bold text-blue-600">
-                      {formatCurrency(inv.projected_return)}
-                    </TableCell>
-                    <TableCell className="py-4 text-xs font-bold">
-                      {isCompleted && inv.actual_return ? (
-                        <span className="text-green-600">{formatCurrency(inv.actual_return)}</span>
-                      ) : (
-                        <span className="text-slate-400 font-semibold">-</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="py-4">
-                      <span
-                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-semibold border ${
-                          isCompleted
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                            : 'bg-blue-50 text-blue-700 border-blue-200'
-                        }`}
-                      >
-                        <span
-                          className={`h-1.5 w-1.5 rounded-full ${
-                            isCompleted ? 'bg-emerald-500' : 'bg-blue-500'
-                          }`}
-                        />
-                        {isCompleted ? 'Selesai' : 'Aktif'}
-                      </span>
-                    </TableCell>
+          {isQueryError ? (
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm m-6">
+              Gagal memuat daftar portofolio investasi / Koneksi ke server terputus
+            </div>
+          ) : (
+            <div className="overflow-x-auto w-full">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-b border-slate-100">
+                    <TableHead className="py-3.5 pl-6 text-slate-600 font-bold text-xs uppercase tracking-wider">
+                      ID Investasi
+                    </TableHead>
+                    <TableHead className="py-3.5 text-slate-600 font-bold text-xs uppercase tracking-wider">
+                      Proyek Pertanian
+                    </TableHead>
+                    <TableHead className="py-3.5 text-slate-600 font-bold text-xs uppercase tracking-wider">
+                      Investasi Pokok
+                    </TableHead>
+                    <TableHead className="py-3.5 text-slate-600 font-bold text-xs uppercase tracking-wider">
+                      Estimasi Return
+                    </TableHead>
+                    <TableHead className="py-3.5 text-slate-600 font-bold text-xs uppercase tracking-wider">
+                      Bagi Hasil Aktual
+                    </TableHead>
+                    <TableHead className="py-3.5 text-slate-600 font-bold text-xs uppercase tracking-wider pr-6">
+                      Status
+                    </TableHead>
                   </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+                </TableHeader>
+                <TableBody>
+                  {rawInvestments.map((inv) => {
+                    const isCompleted = inv.status === 'completed';
+                    return (
+                      <TableRow
+                        key={inv.id}
+                        className="hover:bg-slate-50/30 transition-colors border-b border-slate-100/80 last:border-0"
+                      >
+                        <TableCell className="py-4 pl-6 font-mono text-xs font-bold text-slate-500">
+                          #{inv.id}
+                        </TableCell>
+                        <TableCell className="py-4">
+                          <div className="flex flex-col min-w-[200px]">
+                            <span className="font-semibold text-slate-900 text-sm line-clamp-1">
+                              {inv.proposal?.title || 'Budidaya Tanaman'}
+                            </span>
+                            <div className="flex items-center gap-1.5 mt-1">
+                              <span className="px-1.5 py-0.5 bg-slate-100 rounded text-[9px] font-bold text-slate-600 uppercase tracking-wide">
+                                {inv.proposal?.commodity || 'Pertanian'}
+                              </span>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="py-4 whitespace-nowrap">
+                          <span className="font-bold text-slate-900 text-sm">
+                            {formatCurrency(inv.amount)}
+                          </span>
+                        </TableCell>
+                        <TableCell className="py-4 whitespace-nowrap">
+                          <span className="text-xs font-bold text-blue-600 bg-blue-50/80 border border-blue-200/50 px-2 py-0.5 rounded">
+                            {formatCurrency(inv.projected_return)}
+                          </span>
+                        </TableCell>
+                        <TableCell className="py-4 whitespace-nowrap">
+                          {isCompleted && inv.actual_return ? (
+                            <span className="text-xs font-bold text-emerald-600 bg-emerald-50/80 border border-emerald-200/50 px-2 py-0.5 rounded">
+                              {formatCurrency(inv.actual_return)}
+                            </span>
+                          ) : (
+                            <span className="text-slate-400 font-semibold">-</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="py-4 whitespace-nowrap pr-6">
+                          {isCompleted ? (
+                            <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-700">
+                              <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                              Selesai
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-[10px] font-semibold text-blue-700">
+                              <span className="h-1 w-1 rounded-full bg-blue-500" />
+                              Aktif
+                            </span>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

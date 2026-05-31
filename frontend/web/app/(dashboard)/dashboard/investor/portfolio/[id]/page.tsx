@@ -10,18 +10,7 @@ import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-  ArrowLeft,
-  Landmark,
-  Sprout,
-  Calendar,
-  TrendingUp,
-  AlertTriangle,
-  RefreshCw,
-  Layers,
-  ShieldCheck,
-  UserCheck,
-} from 'lucide-react';
+import { ArrowLeft, Landmark, Sprout, Calendar, AlertTriangle, UserCheck } from 'lucide-react';
 
 const MOCK_INVESTMENT_DETAIL = {
   id: 'INV-001',
@@ -99,7 +88,6 @@ export default function InvestorInvestmentDetailPage() {
     data: portfolioResponse,
     isLoading,
     isError,
-    refetch,
   } = useQuery({
     queryKey: ['investor-portfolio-list-detail'],
     queryFn: () => investmentService.getPortfolio(),
@@ -149,25 +137,14 @@ export default function InvestorInvestmentDetailPage() {
     <div className="w-full space-y-6 text-slate-900">
       {/* Offline Alert */}
       {isQueryError && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-800 shadow-xs">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
-            <div>
-              <p className="text-xs font-bold">Layanan Detail Investasi Offline</p>
-              <p className="text-[10px] text-amber-600 font-medium">
-                Menampilkan data investasi simulasi. Beberapa perubahan data hanya akan disimpan
-                sementara.
-              </p>
-            </div>
+        <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl p-4 text-red-800 shadow-xs">
+          <AlertTriangle className="h-5 w-5 text-red-600 shrink-0 animate-pulse" />
+          <div>
+            <p className="text-xs font-bold text-red-800">Layanan Detail Investasi Offline</p>
+            <p className="text-[10px] text-red-600 font-medium">
+              Koneksi ke server terputus. Gagal memuat data teraktual.
+            </p>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => refetch()}
-            className="h-7 text-[10px] font-bold border-amber-300 text-amber-700 bg-white hover:bg-amber-100 hover:text-amber-800 cursor-pointer flex items-center gap-1 shrink-0"
-          >
-            <RefreshCw className="h-3 w-3" /> Coba Hubungkan Kembali
-          </Button>
         </div>
       )}
 

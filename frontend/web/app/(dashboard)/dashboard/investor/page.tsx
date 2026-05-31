@@ -10,7 +10,14 @@ import { useAuthStore } from '@/stores/auth';
 import { formatCurrency } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -20,149 +27,21 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import {
-  Wallet,
-  TrendingUp,
-  Landmark,
-  Calendar,
-  ArrowRight,
-  AlertTriangle,
-  Download,
-} from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { ChartContainer, ChartTooltip, type ChartConfig } from '@/components/ui/chart';
+import { Wallet, TrendingUp, Landmark, Calendar, ArrowRight, Download } from 'lucide-react';
 import { exportToCSV } from '@/lib/export-csv';
 
-const MOCK_ANALYTICS = {
-  total_invested: 48000000,
-  projected_return: 55870000,
-  actual_return: 9280000,
-  active_investments_count: 2,
-};
-
-const MOCK_ROI_CHART = [
-  { month: 'Des', invested: 10000000, return: 0 },
-  { month: 'Jan', invested: 0, return: 5000000 },
-  { month: 'Feb', invested: 15000000, return: 0 },
-  { month: 'Mar', invested: 8000000, return: 9280000 },
-  { month: 'Apr', invested: 0, return: 0 },
-  { month: 'Mei', invested: 15000000, return: 0 },
-];
-
-const MOCK_RECENT_INVESTMENTS = [
-  {
-    id: 'INV-001',
-    amount: 15000000,
-    invested_at: '2026-05-20T08:00:00Z',
-    status: 'paid',
-    proposal: {
-      title: 'Budidaya Cabai Merah Keriting Hidroponik',
-      commodity: 'Cabai Merah',
-      projected_roi_percent: 15,
-    },
+const chartConfig = {
+  invested: {
+    label: 'Dana Ditanam',
+    color: '#10b981',
   },
-  {
-    id: 'INV-002',
-    amount: 8000000,
-    invested_at: '2026-04-12T10:30:00Z',
-    status: 'completed',
-    proposal: {
-      title: 'Pengembangan Perkebunan Tomat Organik',
-      commodity: 'Tomat',
-      projected_roi_percent: 14,
-    },
+  return: {
+    label: 'Imbal Hasil Cair',
+    color: '#3b82f6',
   },
-  {
-    id: 'INV-003',
-    amount: 25000000,
-    invested_at: '2026-05-15T14:00:00Z',
-    status: 'paid',
-    proposal: {
-      title: 'Peningkatan Hasil Panen Padi Mentik Wangi',
-      commodity: 'Padi',
-      projected_roi_percent: 18,
-    },
-  },
-];
-
-const MOCK_RECENT_PROPOSALS = [
-  {
-    id: 'PROP-04',
-    farmer_id: 'F-02',
-    title: 'Budidaya Melon Alisha Berkualitas Tinggi',
-    commodity: 'Melon',
-    land_area_ha: 0.5,
-    location: {
-      province: 'Jawa Tengah',
-      city: 'Boyolali',
-      district: 'Ampel',
-      full_address: 'Desa Sidomulyo',
-    },
-    funding_needed: 35000000,
-    funding_raised: 12000000,
-    projected_roi_percent: 16,
-    duration_days: 100,
-    harvest_date_estimated: '2026-09-10T00:00:00Z',
-    description: 'Proyek penanaman melon kualitas premium dengan teknik green house.',
-    use_of_funds: 'Pembelian bibit unggul, pembangunan green house, instalasi irigasi otomatis.',
-    risk_notes: 'Fluktuasi cuaca ekstrem dan risiko serangan hama kutu daun.',
-    supporting_docs: [],
-    status: 'approved' as const,
-    created_at: '2026-05-25T10:00:00Z',
-    updated_at: '2026-05-25T10:00:00Z',
-  },
-  {
-    id: 'PROP-05',
-    farmer_id: 'F-03',
-    title: 'Modernisasi Kebun Stroberi Dataran Tinggi',
-    commodity: 'Stroberi',
-    land_area_ha: 0.3,
-    location: {
-      province: 'Jawa Barat',
-      city: 'Bandung',
-      district: 'Lembang',
-      full_address: 'Kp. Cikole',
-    },
-    funding_needed: 20000000,
-    funding_raised: 18000000,
-    projected_roi_percent: 15,
-    duration_days: 80,
-    harvest_date_estimated: '2026-08-20T00:00:00Z',
-    description:
-      'Modernisasi sistem pertanian stroberi dengan metode vertikultur untuk melipatgandakan hasil.',
-    use_of_funds: 'Rak vertikultur, instalasi drip irrigation, mulsa plastik premium.',
-    risk_notes: 'Curah hujan terlalu tinggi di masa pembungaan stroberi.',
-    supporting_docs: [],
-    status: 'approved' as const,
-    created_at: '2026-05-26T08:00:00Z',
-    updated_at: '2026-05-26T08:00:00Z',
-  },
-  {
-    id: 'PROP-06',
-    farmer_id: 'F-04',
-    title: 'Ekspansi Lahan Bawang Merah Brebes Premium',
-    commodity: 'Bawang Merah',
-    land_area_ha: 1.2,
-    location: {
-      province: 'Jawa Tengah',
-      city: 'Brebes',
-      district: 'Wanasari',
-      full_address: 'Desa Klampok',
-    },
-    funding_needed: 60000000,
-    funding_raised: 42000000,
-    projected_roi_percent: 17,
-    duration_days: 75,
-    harvest_date_estimated: '2026-08-15T00:00:00Z',
-    description:
-      'Bawang merah Brebes terkenal akan daya simpan tinggi dan aroma kuat. Proyek ekspansi lahan.',
-    use_of_funds: 'Sewa tambahan lahan, pupuk NPK, pestisida organik, upah tenaga harian.',
-    risk_notes: 'Harga pasar fluktuatif di musim panen raya nasional.',
-    supporting_docs: [],
-    status: 'approved' as const,
-    created_at: '2026-05-27T09:00:00Z',
-    updated_at: '2026-05-27T09:00:00Z',
-  },
-];
+} satisfies ChartConfig;
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -208,6 +87,7 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 export default function InvestorOverviewPage() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  const [activeMetric, setActiveMetric] = React.useState<'all' | 'invested' | 'return'>('all');
 
   // Role Guard
   React.useEffect(() => {
@@ -228,7 +108,6 @@ export default function InvestorOverviewPage() {
     data: analyticsData,
     isError: isAnalyticsError,
     isLoading: isAnalyticsLoading,
-    refetch: refetchAnalytics,
   } = useQuery({
     queryKey: ['investor-analytics-overview', user?.id],
     queryFn: () => analyticsService.getInvestorAnalytics(user?.id || ''),
@@ -239,7 +118,6 @@ export default function InvestorOverviewPage() {
     data: chartData,
     isError: isChartError,
     isLoading: isChartLoading,
-    refetch: refetchChart,
   } = useQuery({
     queryKey: ['investor-roi-chart-overview', user?.id],
     queryFn: () => analyticsService.getInvestorROIChart(user?.id || ''),
@@ -250,7 +128,6 @@ export default function InvestorOverviewPage() {
     data: proposalsResponse,
     isError: isProposalsError,
     isLoading: isProposalsLoading,
-    refetch: refetchProposals,
   } = useQuery({
     queryKey: ['investor-proposals-overview'],
     queryFn: () => investmentService.getProposals({ status: 'approved', limit: 3 }),
@@ -260,7 +137,6 @@ export default function InvestorOverviewPage() {
     data: portfolioResponse,
     isError: isPortfolioError,
     isLoading: isPortfolioLoading,
-    refetch: refetchPortfolio,
   } = useQuery({
     queryKey: ['investor-portfolio-overview', user?.id],
     queryFn: () => investmentService.getPortfolio(),
@@ -268,30 +144,36 @@ export default function InvestorOverviewPage() {
   });
 
   const isQueryError = isAnalyticsError || isChartError || isProposalsError || isPortfolioError;
-  const isLoading = (isAnalyticsLoading || isChartLoading || isProposalsLoading || isPortfolioLoading) && !isQueryError;
+  const isLoading =
+    (isAnalyticsLoading || isChartLoading || isProposalsLoading || isPortfolioLoading) &&
+    !isQueryError;
 
   // Safe Fallback Sonner Toast
   React.useEffect(() => {
     if (isQueryError) {
-      toast.error('Layanan sedang offline. Menggunakan data demo lokal.');
+      toast.error('Koneksi ke server terputus. Gagal memuat data teraktual.');
     }
   }, [isQueryError]);
 
-  const handleRetry = () => {
-    refetchAnalytics();
-    refetchChart();
-    refetchProposals();
-    refetchPortfolio();
-  };
-
-  const activeAnalytics = isQueryError ? MOCK_ANALYTICS : analyticsData || MOCK_ANALYTICS;
-  const activeChart = isQueryError ? MOCK_ROI_CHART : chartData || MOCK_ROI_CHART;
-  const activeProposals = isQueryError
-    ? MOCK_RECENT_PROPOSALS
-    : proposalsResponse?.data?.proposals || MOCK_RECENT_PROPOSALS;
-  const activeRecentInvestments = isQueryError
-    ? MOCK_RECENT_INVESTMENTS
-    : portfolioResponse?.data?.slice(0, 3) || MOCK_RECENT_INVESTMENTS;
+  const activeAnalytics = React.useMemo(
+    () =>
+      analyticsData || {
+        total_invested: 0,
+        projected_return: 0,
+        actual_return: 0,
+        active_investments_count: 0,
+      },
+    [analyticsData]
+  );
+  const activeChart = React.useMemo(() => chartData || [], [chartData]);
+  const activeProposals = React.useMemo(
+    () => proposalsResponse?.data?.proposals || [],
+    [proposalsResponse]
+  );
+  const activeRecentInvestments = React.useMemo(
+    () => portfolioResponse?.data?.slice(0, 3) || [],
+    [portfolioResponse]
+  );
 
   const handleDownload = React.useCallback(() => {
     try {
@@ -299,7 +181,10 @@ export default function InvestorOverviewPage() {
         { metrik: 'Total Dana Ditanam', nilai: formatCurrency(activeAnalytics.total_invested) },
         { metrik: 'Proyeksi Hasil Panen', nilai: formatCurrency(activeAnalytics.projected_return) },
         { metrik: 'Keuntungan Cair', nilai: formatCurrency(activeAnalytics.actual_return) },
-        { metrik: 'Proyek Tani Aktif', nilai: `${activeAnalytics.active_investments_count} Proyek` },
+        {
+          metrik: 'Proyek Tani Aktif',
+          nilai: `${activeAnalytics.active_investments_count} Proyek`,
+        },
       ];
 
       exportToCSV({
@@ -339,9 +224,9 @@ export default function InvestorOverviewPage() {
             </Card>
           ))}
         </div>
-        <div className="grid gap-6 lg:grid-cols-3">
-          <Skeleton className="lg:col-span-2 h-[350px]" />
-          <Skeleton className="h-[350px]" />
+        <div className="flex flex-col gap-6">
+          <Skeleton className="w-full h-87.5" />
+          <Skeleton className="w-full h-87.5" />
         </div>
       </div>
     );
@@ -384,26 +269,6 @@ export default function InvestorOverviewPage() {
 
   return (
     <div className="w-full space-y-6 text-slate-900">
-      {/* Visual Red Alert Box when Offline */}
-      {isQueryError && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-            <p>
-              Layanan Investor Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
-            onClick={handleRetry}
-          >
-            Coba Hubungkan Kembali
-          </Button>
-        </div>
-      )}
-
       {/* Header & Download Button */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-1">
@@ -430,141 +295,255 @@ export default function InvestorOverviewPage() {
       </div>
 
       {/* Grid Statistik (Sesuai Gaya Farmer SectionCard) */}
-      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-        {cards.map((card, index) => {
-          const Icon = card.icon;
-          return (
-            <Card key={index} className="min-w-0">
-              <CardHeader className="gap-1">
-                <CardDescription className="truncate text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  {card.title}
-                </CardDescription>
-                <CardTitle
-                  className="truncate text-xl font-semibold tabular-nums lg:text-2xl text-slate-800"
-                  title={card.value}
-                >
-                  {card.value}
-                </CardTitle>
-              </CardHeader>
-              <CardFooter className="flex-col items-start gap-1.5 text-sm">
-                <div className="flex w-full min-w-0 items-center gap-1 font-medium text-slate-500">
-                  <Icon className={`size-4 shrink-0 ${card.iconColorClass}`} />
-                  <span className="truncate">{card.footer}</span>
-                </div>
-              </CardFooter>
-            </Card>
-          );
-        })}
-      </div>
+      {isAnalyticsError ? (
+        <div className="flex h-24 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+          Gagal memuat data statistik / Koneksi ke server terputus
+        </div>
+      ) : (
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+          {cards.map((card, index) => {
+            const Icon = card.icon;
+            return (
+              <Card key={index} className="min-w-0">
+                <CardHeader className="gap-1">
+                  <CardDescription className="truncate text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    {card.title}
+                  </CardDescription>
+                  <CardTitle
+                    className="truncate text-xl font-semibold tabular-nums lg:text-2xl text-slate-800"
+                    title={card.value}
+                  >
+                    {card.value}
+                  </CardTitle>
+                </CardHeader>
+                <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                  <div className="flex w-full min-w-0 items-center gap-1 font-medium text-slate-500">
+                    <Icon className={`size-4 shrink-0 ${card.iconColorClass}`} />
+                    <span className="truncate">{card.footer}</span>
+                  </div>
+                </CardFooter>
+              </Card>
+            );
+          })}
+        </div>
+      )}
 
       {/* Main Content Area: ROI Chart & Recent Investments Table */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Chart (2/3) */}
-        <Card className="lg:col-span-2">
-          <CardHeader className="pb-3 border-b border-slate-100/80">
-            <CardTitle className="text-base font-semibold text-slate-900">
-              Tren Pertumbuhan Modal & ROI
-            </CardTitle>
-            <CardDescription className="text-xs text-slate-500">
-              Histori kontribusi dana ditanam vs realisasi imbal hasil cair.
-            </CardDescription>
+      <div className="flex flex-col gap-6">
+        {/* Chart (Full Width) */}
+        <Card className="w-full overflow-hidden">
+          <CardHeader className="flex flex-col items-stretch border-b p-0! sm:flex-row border-slate-100">
+            <div className="flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:py-0!">
+              <CardTitle className="font-semibold text-base text-slate-900">
+                Tren Pertumbuhan Modal & ROI
+              </CardTitle>
+              <CardDescription className="text-xs text-slate-500">
+                Histori kontribusi dana ditanam vs realisasi imbal hasil cair.
+              </CardDescription>
+            </div>
+            <div className="flex border-t border-slate-100 sm:border-t-0 sm:border-l">
+              <button
+                data-active={activeMetric === 'invested'}
+                className="relative z-30 flex flex-1 flex-col justify-center gap-1 px-6 py-4 text-left border-r border-slate-100 last:border-0 hover:bg-slate-50/50 data-[active=true]:bg-slate-50/80 sm:px-8 sm:py-6 min-w-56 cursor-pointer transition-colors"
+                onClick={() => setActiveMetric(activeMetric === 'invested' ? 'all' : 'invested')}
+              >
+                <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
+                  {chartConfig.invested.label}
+                </span>
+                <span className="text-base leading-none font-bold sm:text-2xl mt-1 text-slate-800">
+                  {formatCurrency(activeAnalytics.total_invested || 0)}
+                </span>
+              </button>
+              <button
+                data-active={activeMetric === 'return'}
+                className="relative z-30 flex flex-1 flex-col justify-center gap-1 px-6 py-4 text-left border-r border-slate-100 last:border-0 hover:bg-slate-50/50 data-[active=true]:bg-slate-50/80 sm:px-8 sm:py-6 min-w-56 cursor-pointer transition-colors"
+                onClick={() => setActiveMetric(activeMetric === 'return' ? 'all' : 'return')}
+              >
+                <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
+                  {chartConfig.return.label}
+                </span>
+                <span className="text-base leading-none font-bold sm:text-2xl mt-1 text-slate-800">
+                  {formatCurrency(activeAnalytics.actual_return || 0)}
+                </span>
+              </button>
+            </div>
           </CardHeader>
           <CardContent className="p-6">
-            <div className="h-64 w-full text-xs">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={activeChart} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis dataKey="month" tickLine={false} axisLine={false} stroke="#94a3b8" />
-                  <YAxis
-                    tickLine={false}
-                    axisLine={false}
-                    stroke="#94a3b8"
-                    tickFormatter={(v) => `Rp ${v / 1000000}jt`}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar
-                    dataKey="invested"
-                    name="Dana Ditanam"
-                    fill="#10b981"
-                    radius={[4, 4, 0, 0]}
-                    maxBarSize={28}
-                  />
-                  <Bar
-                    dataKey="return"
-                    name="Imbal Hasil Cair"
-                    fill="#3b82f6"
-                    radius={[4, 4, 0, 0]}
-                    maxBarSize={28}
-                  />
+            {isChartError ? (
+              <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                Gagal memuat grafik performa ROI / Koneksi ke server terputus
+              </div>
+            ) : (
+              <ChartContainer config={chartConfig} className="aspect-auto h-64 w-full">
+                <BarChart
+                  accessibilityLayer
+                  data={activeChart}
+                  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                >
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
+                  <YAxis hide />
+                  <ChartTooltip content={<CustomTooltip />} />
+                  {(activeMetric === 'all' || activeMetric === 'invested') && (
+                    <Bar
+                      dataKey="invested"
+                      name={chartConfig.invested.label}
+                      fill="var(--color-invested)"
+                      radius={[4, 4, 0, 0]}
+                      maxBarSize={28}
+                    />
+                  )}
+                  {(activeMetric === 'all' || activeMetric === 'return') && (
+                    <Bar
+                      dataKey="return"
+                      name={chartConfig.return.label}
+                      fill="var(--color-return)"
+                      radius={[4, 4, 0, 0]}
+                      maxBarSize={28}
+                    />
+                  )}
                 </BarChart>
-              </ResponsiveContainer>
-            </div>
+              </ChartContainer>
+            )}
           </CardContent>
+          <CardFooter className="flex-col items-start gap-2 text-sm pt-4 border-t border-slate-100/60 bg-slate-50/10">
+            <div className="flex gap-2 leading-none font-medium text-slate-800">
+              Imbal hasil aktual terealisasi berkala dengan tren pertumbuhan stabil{' '}
+              <TrendingUp className="h-4 w-4 text-green-500" />
+            </div>
+            <div className="leading-none text-muted-foreground text-xs">
+              Menampilkan histori dana yang ditanam dan perolehan imbal hasil cair yang terealisasi
+            </div>
+          </CardFooter>
         </Card>
 
-        {/* Recent Investments (1/3) */}
-        <Card className="flex flex-col h-full">
+        {/* Recent Investments (Full Width) */}
+        <Card className="flex flex-col w-full overflow-hidden">
           <CardHeader className="pb-3 border-b border-slate-100/80 flex flex-row items-center justify-between">
             <div>
-              <CardTitle className="text-base font-semibold text-slate-900">Investasi Terbaru</CardTitle>
-              <CardDescription className="text-[10px] text-slate-500">
-                3 proyek terakhir yang didanai.
+              <CardTitle className="text-base font-semibold text-slate-900">
+                Investasi Terbaru
+              </CardTitle>
+              <CardDescription className="text-xs text-slate-500">
+                3 proyek terakhir yang Anda danai dalam platform.
               </CardDescription>
             </div>
             <Button
               variant="ghost"
               size="sm"
-              className="text-[10px] font-bold text-slate-500 hover:text-emerald-600 flex items-center gap-1 cursor-pointer"
+              className="text-xs font-bold text-slate-500 hover:text-emerald-600 flex items-center gap-1 cursor-pointer transition-colors"
               onClick={() => router.push('/dashboard/investor/portfolio')}
             >
-              Semua <ArrowRight className="h-3 w-3" />
+              Semua Investasi <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           </CardHeader>
-          <CardContent className="p-0 flex-1">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="pl-5 py-3 text-xs font-semibold text-slate-500">Proyek Pertanian</TableHead>
-                  <TableHead className="pr-5 py-3 text-right text-xs font-semibold text-slate-500">Investasi</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {activeRecentInvestments.map((inv) => {
-                  const isCompleted = inv.status === 'completed';
-                  return (
-                    <TableRow
-                      key={inv.id}
-                      className="hover:bg-slate-50/40 transition-colors border-b border-slate-100 last:border-0"
-                    >
-                      <TableCell className="py-3.5 pl-5">
-                        <span className="font-semibold text-slate-800 block text-xs line-clamp-1">
-                          {inv.proposal?.title || 'Budidaya Tanaman'}
-                        </span>
-                        <span className="text-[9px] text-slate-400 font-bold block mt-0.5 uppercase tracking-wide">
-                          {inv.proposal?.commodity || 'Pertanian'} • ROI +{inv.proposal?.projected_roi_percent || 0}%
-                        </span>
-                      </TableCell>
-                      <TableCell className="py-3.5 text-right pr-5">
-                        <span className="font-bold text-slate-800 block text-xs">
-                          {formatCurrency(inv.amount)}
-                        </span>
-                        {isCompleted ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-700 mt-1">
-                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                            Selesai
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-[10px] font-semibold text-blue-700 mt-1">
-                            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-                            Aktif
-                          </span>
-                        )}
-                      </TableCell>
+          <CardContent className="p-0">
+            {isPortfolioError ? (
+              <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm m-6">
+                Gagal memuat data investasi terbaru / Koneksi ke server terputus
+              </div>
+            ) : (
+              <div className="overflow-x-auto w-full">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
+                      <TableHead className="pl-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        ID Transaksi
+                      </TableHead>
+                      <TableHead className="py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        Proyek Pertanian
+                      </TableHead>
+                      <TableHead className="py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        Tanggal Investasi
+                      </TableHead>
+                      <TableHead className="py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        Estimasi ROI
+                      </TableHead>
+                      <TableHead className="py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        Nominal Investasi
+                      </TableHead>
+                      <TableHead className="py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        Status
+                      </TableHead>
+                      <TableHead className="pr-6 py-3.5 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        Aksi
+                      </TableHead>
                     </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {activeRecentInvestments.map((inv) => {
+                      const isCompleted = inv.status === 'completed';
+                      return (
+                        <TableRow
+                          key={inv.id}
+                          className="hover:bg-slate-50/30 transition-colors border-b border-slate-100/80 last:border-0"
+                        >
+                          <TableCell className="py-4 pl-6">
+                            <span className="font-mono text-xs font-bold text-slate-500">
+                              {inv.id}
+                            </span>
+                          </TableCell>
+                          <TableCell className="py-4">
+                            <div className="flex flex-col min-w-[200px]">
+                              <span className="font-semibold text-slate-900 text-sm line-clamp-1">
+                                {inv.proposal?.title || 'Budidaya Tanaman'}
+                              </span>
+                              <div className="flex items-center gap-1.5 mt-1">
+                                <span className="px-1.5 py-0.5 bg-slate-100 rounded text-[9px] font-bold text-slate-600 uppercase tracking-wide">
+                                  {inv.proposal?.commodity || 'Pertanian'}
+                                </span>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="py-4 whitespace-nowrap">
+                            <span className="text-xs text-slate-600 font-medium">
+                              {new Date(inv.invested_at).toLocaleDateString('id-ID', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric',
+                              })}
+                            </span>
+                          </TableCell>
+                          <TableCell className="py-4 whitespace-nowrap">
+                            <span className="text-xs font-bold text-emerald-600 bg-emerald-50/80 border border-emerald-200/50 px-2 py-0.5 rounded">
+                              +{inv.proposal?.projected_roi_percent || 0}% ROI
+                            </span>
+                          </TableCell>
+                          <TableCell className="py-4 whitespace-nowrap">
+                            <span className="font-bold text-slate-900 text-sm">
+                              {formatCurrency(inv.amount)}
+                            </span>
+                          </TableCell>
+                          <TableCell className="py-4 whitespace-nowrap">
+                            {isCompleted ? (
+                              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-700">
+                                <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                                Selesai
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-[10px] font-semibold text-blue-700">
+                                <span className="h-1 w-1 rounded-full bg-blue-500" />
+                                Aktif
+                              </span>
+                            )}
+                          </TableCell>
+                          <TableCell className="py-4 text-right pr-6">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 text-[11px] font-bold text-slate-600 hover:text-emerald-600 hover:border-emerald-200 transition-all flex items-center gap-1 ml-auto cursor-pointer"
+                              onClick={() => router.push('/dashboard/investor/portfolio')}
+                            >
+                              Detail <ArrowRight className="h-3 w-3" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -591,13 +570,19 @@ export default function InvestorOverviewPage() {
         </div>
 
         {/* Proposals Grid */}
-        <div className="grid gap-6 md:grid-cols-3">
-          {activeProposals.slice(0, 3).map((proposal) => (
-            <div key={proposal.id} className="min-w-0">
-              <ProposalCard proposal={proposal as unknown as Proposal} />
-            </div>
-          ))}
-        </div>
+        {isProposalsError ? (
+          <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+            Gagal memuat peluang investasi pertanian / Koneksi ke server terputus
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-3">
+            {activeProposals.slice(0, 3).map((proposal) => (
+              <div key={proposal.id} className="min-w-0">
+                <ProposalCard proposal={proposal as unknown as Proposal} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

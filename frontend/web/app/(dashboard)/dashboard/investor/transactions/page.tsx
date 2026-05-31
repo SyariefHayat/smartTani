@@ -6,8 +6,14 @@ import { investmentService } from '@/services/investment';
 import { formatCurrency } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -16,14 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  ArrowUpRight,
-  ArrowDownLeft,
-  AlertTriangle,
-  RefreshCw,
-  Layers,
-  Wallet,
-} from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, Wallet, TrendingUp } from 'lucide-react';
 
 interface TransactionItem {
   id: string;
@@ -90,7 +89,6 @@ export default function InvestorTransactionsPage() {
     data: portfolioResponse,
     isLoading,
     isError,
-    refetch,
   } = useQuery({
     queryKey: ['investor-transactions-list'],
     queryFn: () => investmentService.getPortfolio(),
@@ -158,10 +156,36 @@ export default function InvestorTransactionsPage() {
     return list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [rawInvestments, isQueryError]);
 
+  const summaryMetrics = React.useMemo(() => {
+    const totalOutflow = transactions
+      .filter((tx) => tx.type === 'investment')
+      .reduce((sum, tx) => sum + tx.amount, 0);
+    const totalInflow = transactions
+      .filter((tx) => tx.type === 'return')
+      .reduce((sum, tx) => sum + tx.amount, 0);
+    const totalFee = transactions
+      .filter((tx) => tx.type === 'fee')
+      .reduce((sum, tx) => sum + tx.amount, 0);
+
+    return {
+      totalOutflow,
+      totalInflow,
+      totalFee,
+    };
+  }, [transactions]);
+
   if (isLoading && !isQueryError) {
     return (
       <div className="w-full space-y-6">
-        <Skeleton className="h-10 w-48" />
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <Skeleton className="h-10 w-48" />
+        </div>
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+          <Skeleton className="h-28 w-full" />
+          <Skeleton className="h-28 w-full" />
+          <Skeleton className="h-28 w-full" />
+          <Skeleton className="h-28 w-full" />
+        </div>
         <Skeleton className="h-[400px] w-full" />
       </div>
     );
@@ -169,131 +193,200 @@ export default function InvestorTransactionsPage() {
 
   return (
     <div className="w-full space-y-6 text-slate-900">
-      {/* Offline Alert */}
-      {isQueryError && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-800 shadow-xs">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
-            <div>
-              <p className="text-xs font-bold">Layanan Transaksi Offline</p>
-              <p className="text-[10px] text-amber-600 font-medium">
-                Menampilkan data mutasi simulasi. Beberapa data transaksi baru hanya disimpan lokal.
-              </p>
-            </div>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => refetch()}
-            className="h-7 text-[10px] font-bold border-amber-300 text-amber-700 bg-white hover:bg-amber-100 hover:text-amber-800 cursor-pointer flex items-center gap-1 shrink-0"
-          >
-            <RefreshCw className="h-3 w-3" /> Coba Hubungkan Kembali
-          </Button>
-        </div>
-      )}
-
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-800">Riwayat Transaksi</h1>
+        <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-slate-900">
+          Riwayat Transaksi
+        </h1>
         <p className="text-xs text-slate-500 font-medium mt-1">
           Audit seluruh mutasi debet/kredit dompet dan pendanaan modal Anda secara realtime.
         </p>
       </div>
 
+      {/* Grid Statistik (Sesuai Gaya Farmer SectionCard & Overview) */}
+      {isQueryError ? (
+        <div className="flex h-24 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+          Gagal memuat data statistik / Koneksi ke server terputus
+        </div>
+      ) : (
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+          {[
+            {
+              title: 'Kas Keluar (Investasi)',
+              value: formatCurrency(summaryMetrics.totalOutflow),
+              footer: 'Total dana ditanam terlaporkan',
+              icon: ArrowUpRight,
+              iconColorClass: 'text-red-500',
+            },
+            {
+              title: 'Kas Masuk (Bagi Hasil)',
+              value: formatCurrency(summaryMetrics.totalInflow),
+              footer: 'Total imbal hasil panen cair',
+              icon: ArrowDownLeft,
+              iconColorClass: 'text-emerald-500',
+            },
+            {
+              title: 'Potongan Platform Fee',
+              value: formatCurrency(summaryMetrics.totalFee),
+              footer: 'Total platform fee terpotong',
+              icon: Wallet,
+              iconColorClass: 'text-amber-500',
+            },
+            {
+              title: 'Total Transaksi',
+              value: `${transactions.length} Mutasi`,
+              footer: 'Jumlah mutasi tercatat',
+              icon: TrendingUp,
+              iconColorClass: 'text-blue-500',
+            },
+          ].map((card, index) => {
+            const Icon = card.icon;
+            return (
+              <Card key={index} className="min-w-0">
+                <CardHeader className="gap-1">
+                  <CardDescription className="truncate text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    {card.title}
+                  </CardDescription>
+                  <CardTitle
+                    className="truncate text-xl font-semibold tabular-nums lg:text-2xl text-slate-800"
+                    title={card.value}
+                  >
+                    {card.value}
+                  </CardTitle>
+                </CardHeader>
+                <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                  <div className="flex w-full min-w-0 items-center gap-1 font-medium text-slate-500">
+                    <Icon className={`size-4 shrink-0 ${card.iconColorClass}`} />
+                    <span className="truncate">{card.footer}</span>
+                  </div>
+                </CardFooter>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
       {/* Ledger Card Container */}
-      <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden">
+      <Card className="w-full overflow-hidden border border-slate-200 shadow-sm bg-white">
         <CardHeader className="pb-3 border-b border-slate-100">
-          <CardTitle className="text-sm font-bold text-slate-800">
-            Buku Besar Transaksi Keuangan
-          </CardTitle>
-          <CardDescription className="text-xs mt-0.5">
-            Catatan audit aliran kas masuk bagi hasil pertanian dan pengeluaran modal.
-          </CardDescription>
+          <div>
+            <CardTitle className="text-sm font-bold text-slate-800">
+              Buku Besar Transaksi Keuangan
+            </CardTitle>
+            <CardDescription className="text-xs mt-0.5 text-slate-500">
+              Catatan audit aliran kas masuk bagi hasil pertanian dan pengeluaran modal.
+            </CardDescription>
+          </div>
         </CardHeader>
         <CardContent className="p-0">
-          <Table>
-            <TableHeader className="bg-slate-50/75 border-b border-slate-100">
-              <TableRow>
-                <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider pl-6">
-                  ID Transaksi
-                </TableHead>
-                <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                  Tanggal
-                </TableHead>
-                <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                  Tipe
-                </TableHead>
-                <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                  Keterangan / Deskripsi
-                </TableHead>
-                <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider">
-                  Nominal Transaksi
-                </TableHead>
-                <TableHead className="h-10 text-slate-600 font-bold text-xs uppercase tracking-wider text-right pr-6">
-                  Status
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {transactions.map((tx) => {
-                const isReturn = tx.type === 'return';
-                const isFee = tx.type === 'fee';
-
-                const dateFormatted = new Date(tx.date).toLocaleDateString('id-ID', {
-                  day: 'numeric',
-                  month: 'short',
-                  year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                });
-
-                return (
-                  <TableRow
-                    key={tx.id}
-                    className="hover:bg-slate-50/50 transition-colors border-b border-slate-100 last:border-0"
-                  >
-                    <TableCell className="py-4 pl-6 font-mono text-xs font-semibold text-slate-500">
-                      #{tx.id}
-                    </TableCell>
-                    <TableCell className="py-4 text-xs font-medium text-slate-400">
-                      {dateFormatted}
-                    </TableCell>
-                    <TableCell className="py-4">
-                      {isReturn ? (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-2 py-0.5">
-                          <ArrowDownLeft className="h-3 w-3" /> Dana Masuk
-                        </span>
-                      ) : isFee ? (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5">
-                          <Wallet className="h-3 w-3" /> Potongan Fee
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-2 py-0.5">
-                          <ArrowUpRight className="h-3 w-3" /> Dana Keluar
-                        </span>
-                      )}
-                    </TableCell>
-                    <TableCell className="py-4 text-xs font-semibold text-slate-800 max-w-sm truncate">
-                      {tx.proposal_title}
-                    </TableCell>
-                    <TableCell
-                      className={`py-4 text-xs font-bold ${
-                        isReturn ? 'text-green-600' : 'text-slate-800'
-                      }`}
-                    >
-                      {isReturn ? '+' : '-'}
-                      {formatCurrency(tx.amount)}
-                    </TableCell>
-                    <TableCell className="py-4 text-right pr-6">
-                      <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700 border border-emerald-150">
-                        Sukses
-                      </span>
-                    </TableCell>
+          {isQueryError ? (
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm m-6">
+              Gagal memuat daftar riwayat transaksi / Koneksi ke server terputus
+            </div>
+          ) : (
+            <div className="overflow-x-auto w-full">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-b border-slate-100">
+                    <TableHead className="py-3.5 pl-6 text-slate-600 font-bold text-xs uppercase tracking-wider">
+                      ID Transaksi
+                    </TableHead>
+                    <TableHead className="py-3.5 text-slate-600 font-bold text-xs uppercase tracking-wider">
+                      Tanggal
+                    </TableHead>
+                    <TableHead className="py-3.5 text-slate-600 font-bold text-xs uppercase tracking-wider">
+                      Tipe
+                    </TableHead>
+                    <TableHead className="py-3.5 text-slate-600 font-bold text-xs uppercase tracking-wider">
+                      Keterangan / Deskripsi
+                    </TableHead>
+                    <TableHead className="py-3.5 text-slate-600 font-bold text-xs uppercase tracking-wider">
+                      Nominal Transaksi
+                    </TableHead>
+                    <TableHead className="py-3.5 text-slate-600 font-bold text-xs uppercase tracking-wider text-right pr-6">
+                      Status
+                    </TableHead>
                   </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+                </TableHeader>
+                <TableBody>
+                  {transactions.map((tx) => {
+                    const isReturn = tx.type === 'return';
+                    const isFee = tx.type === 'fee';
+
+                    const dateFormatted = new Date(tx.date).toLocaleDateString('id-ID', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    });
+
+                    return (
+                      <TableRow
+                        key={tx.id}
+                        className="hover:bg-slate-50/30 transition-colors border-b border-slate-100/80 last:border-0"
+                      >
+                        <TableCell className="py-4 pl-6 font-mono text-xs font-bold text-slate-500">
+                          #{tx.id}
+                        </TableCell>
+                        <TableCell className="py-4 whitespace-nowrap">
+                          <span className="text-xs text-slate-600 font-medium">
+                            {dateFormatted}
+                          </span>
+                        </TableCell>
+                        <TableCell className="py-4 whitespace-nowrap">
+                          {isReturn ? (
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-700">
+                              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                              Kas Masuk
+                            </span>
+                          ) : isFee ? (
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[10px] font-semibold text-amber-700">
+                              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                              Platform Fee
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-2.5 py-0.5 text-[10px] font-semibold text-blue-700">
+                              <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                              Investasi
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell className="py-4">
+                          <div className="flex flex-col min-w-[200px]">
+                            <span className="font-semibold text-slate-900 text-sm line-clamp-1">
+                              {tx.proposal_title || 'Mutasi Keuangan'}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="py-4 whitespace-nowrap">
+                          {isReturn ? (
+                            <span className="text-xs font-bold text-emerald-600 bg-emerald-50/80 border border-emerald-200/50 px-2.5 py-1 rounded">
+                              +{formatCurrency(tx.amount)}
+                            </span>
+                          ) : isFee ? (
+                            <span className="text-xs font-bold text-amber-700 bg-amber-50/80 border border-amber-200/50 px-2.5 py-1 rounded">
+                              -{formatCurrency(tx.amount)}
+                            </span>
+                          ) : (
+                            <span className="text-xs font-bold text-blue-600 bg-blue-50/80 border border-blue-200/50 px-2.5 py-1 rounded">
+                              -{formatCurrency(tx.amount)}
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell className="py-4 text-right pr-6 whitespace-nowrap">
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-700 border border-emerald-200">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                            Sukses
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

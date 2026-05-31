@@ -5,17 +5,9 @@ import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { investmentService, Proposal } from '@/services/investment';
 import { InvestmentForm } from '@/components/features/investment/InvestmentForm';
-import { formatCurrency } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -23,9 +15,7 @@ import {
   MapPin,
   Calendar,
   TrendingUp,
-  Info,
   AlertTriangle,
-  RefreshCw,
   Layers,
   ShieldAlert,
   FileCheck,
@@ -75,7 +65,6 @@ export default function InvestorProposalDetailPage() {
     data: proposalResponse,
     isLoading,
     isError,
-    refetch,
   } = useQuery({
     queryKey: ['investor-proposal-detail', proposalId],
     queryFn: () => investmentService.getProposalById(proposalId),
@@ -119,25 +108,14 @@ export default function InvestorProposalDetailPage() {
     <div className="w-full space-y-6 text-slate-900">
       {/* Offline Alert */}
       {isQueryError && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-800 shadow-xs">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
-            <div>
-              <p className="text-xs font-bold">Layanan Proposal Offline</p>
-              <p className="text-[10px] text-amber-600 font-medium">
-                Menampilkan data simulasi detail proyek. Beberapa pengiriman dana baru hanya akan
-                diproses lokal.
-              </p>
-            </div>
+        <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl p-4 text-red-800 shadow-xs">
+          <AlertTriangle className="h-5 w-5 text-red-600 shrink-0 animate-pulse" />
+          <div>
+            <p className="text-xs font-bold text-red-800">Layanan Detail Proposal Offline</p>
+            <p className="text-[10px] text-red-600 font-medium">
+              Koneksi ke server terputus. Gagal memuat data teraktual.
+            </p>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => refetch()}
-            className="h-7 text-[10px] font-bold border-amber-300 text-amber-700 bg-white hover:bg-amber-100 hover:text-amber-800 cursor-pointer flex items-center gap-1 shrink-0"
-          >
-            <RefreshCw className="h-3 w-3" /> Coba Hubungkan Kembali
-          </Button>
         </div>
       )}
 

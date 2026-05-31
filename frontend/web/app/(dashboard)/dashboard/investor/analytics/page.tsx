@@ -7,35 +7,22 @@ import { useAuthStore } from '@/stores/auth';
 import { formatCurrency } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import {
-  PieChart,
-  Pie,
-  Cell,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-} from 'recharts';
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { PieChart, Pie, XAxis, CartesianGrid, LineChart, Line, Label } from 'recharts';
 import {
-  TrendingUp,
-  Award,
-  Clock,
-  Activity,
-  AlertTriangle,
-  RefreshCw,
-  BarChart3,
-  PieChartIcon,
-} from 'lucide-react';
-
-const COLORS = ['#22c55e', '#3b82f6', '#eab308', '#ec4899', '#8b5cf6', '#f97316'];
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/ui/chart';
+import { TrendingUp, Award, Clock, Activity, BarChart3, PieChartIcon } from 'lucide-react';
 
 const MOCK_ANALYTICS_DATA = {
   avg_roi_percent: 15.6,
@@ -68,7 +55,6 @@ export default function InvestorAnalyticsPage() {
     data: analyticsResponse,
     isLoading,
     isError,
-    refetch,
   } = useQuery({
     queryKey: ['investor-analytics-charts', user?.id],
     queryFn: () => analyticsService.getInvestorAnalytics(user?.id || ''),
@@ -97,8 +83,54 @@ export default function InvestorAnalyticsPage() {
   const successRate = rawData.success_rate_percent || MOCK_ANALYTICS_DATA.success_rate_percent;
   const avgDuration = rawData.avg_duration_days || MOCK_ANALYTICS_DATA.avg_duration_days;
   const commodityData = rawData.commodity_breakdown || MOCK_ANALYTICS_DATA.commodity_breakdown;
-  const statusData = rawData.status_breakdown || MOCK_ANALYTICS_DATA.status_breakdown;
   const trendData = rawData.roi_trend || MOCK_ANALYTICS_DATA.roi_trend;
+
+  // Helpers and dynamic configs for the donut chart
+  const sanitizeKey = React.useCallback((name: string) => {
+    return name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+  }, []);
+
+  const chartConfig = React.useMemo(() => {
+    const config: ChartConfig = {
+      value: {
+        label: 'Investasi',
+      },
+    };
+
+    commodityData.forEach((item: { name: string; value: number }, index: number) => {
+      const key = sanitizeKey(item.name);
+      config[key] = {
+        label: item.name,
+        color: `var(--chart-${(index % 5) + 1})`,
+      };
+    });
+
+    return config;
+  }, [commodityData, sanitizeKey]);
+
+  const formattedChartData = React.useMemo(() => {
+    return commodityData.map((item: { name: string; value: number }) => {
+      const key = sanitizeKey(item.name);
+      return {
+        commodity: key,
+        value: item.value,
+        fill: `var(--color-${key})`,
+      };
+    });
+  }, [commodityData, sanitizeKey]);
+
+  const totalInvestment = React.useMemo(() => {
+    return commodityData.reduce((acc: number, curr: { value: number }) => acc + curr.value, 0);
+  }, [commodityData]);
+
+  const roiChartConfig = React.useMemo(() => {
+    return {
+      roi: {
+        label: 'Rata-rata ROI',
+        color: 'var(--chart-2)',
+      },
+    } satisfies ChartConfig;
+  }, []);
 
   if (isLoading && !isQueryError) {
     return (
@@ -120,30 +152,6 @@ export default function InvestorAnalyticsPage() {
 
   return (
     <div className="w-full space-y-6 text-slate-900">
-      {/* Offline Alert */}
-      {isQueryError && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-800 shadow-xs">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0" />
-            <div>
-              <p className="text-xs font-bold">Layanan Analitik Offline</p>
-              <p className="text-[10px] text-amber-600 font-medium">
-                Menampilkan data visualisasi simulasi. Silakan hubungkan kembali server Anda untuk
-                memantau data aktual.
-              </p>
-            </div>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => refetch()}
-            className="h-7 text-[10px] font-bold border-amber-300 text-amber-700 bg-white hover:bg-amber-100 hover:text-amber-800 cursor-pointer flex items-center gap-1 shrink-0"
-          >
-            <RefreshCw className="h-3 w-3" /> Coba Hubungkan Kembali
-          </Button>
-        </div>
-      )}
-
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-800">Analitik Mendalam</h1>
@@ -153,73 +161,73 @@ export default function InvestorAnalyticsPage() {
         </p>
       </div>
 
-      {/* 4 Performance Metric Cards */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-slate-200 shadow-sm bg-white hover:shadow-md transition-all">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardDescription className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Rata-rata ROI
-            </CardDescription>
-            <TrendingUp className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent className="space-y-1">
-            <CardTitle className="text-xl font-bold text-slate-800 tabular-nums">
-              +{avgRoi}%
-            </CardTitle>
-            <p className="text-[10px] font-bold text-slate-400">Tingkat imbal hasil rata-rata</p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200 shadow-sm bg-white hover:shadow-md transition-all">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardDescription className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Proyek Didanai
-            </CardDescription>
-            <Activity className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent className="space-y-1">
-            <CardTitle className="text-xl font-bold text-slate-800 tabular-nums">
-              {totalProjects} Proyek
-            </CardTitle>
-            <p className="text-[10px] font-bold text-slate-400">Total proyek pertanian didanai</p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200 shadow-sm bg-white hover:shadow-md transition-all">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardDescription className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Rasio Keberhasilan
-            </CardDescription>
-            <Award className="h-4 w-4 text-emerald-600" />
-          </CardHeader>
-          <CardContent className="space-y-1">
-            <CardTitle className="text-xl font-bold text-emerald-600 tabular-nums">
-              {successRate}%
-            </CardTitle>
-            <p className="text-[10px] font-bold text-slate-400">Tingkat proyek panen lancar</p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200 shadow-sm bg-white hover:shadow-md transition-all">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardDescription className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Rata-rata Durasi
-            </CardDescription>
-            <Clock className="h-4 w-4 text-orange-600" />
-          </CardHeader>
-          <CardContent className="space-y-1">
-            <CardTitle className="text-xl font-bold text-slate-800 tabular-nums">
-              {avgDuration} Hari
-            </CardTitle>
-            <p className="text-[10px] font-bold text-slate-400">Masa perputaran modal</p>
-          </CardContent>
-        </Card>
-      </div>
+      {/* 4 Performance Metric Cards (Sesuai Gaya Farmer SectionCard) */}
+      {isQueryError ? (
+        <div className="flex h-24 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+          Gagal memuat data metrik kinerja / Koneksi ke server terputus
+        </div>
+      ) : (
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+          {[
+            {
+              title: 'Rata-rata ROI',
+              value: `+${avgRoi}%`,
+              footer: 'Tingkat imbal hasil rata-rata',
+              icon: TrendingUp,
+              iconColorClass: 'text-green-600',
+            },
+            {
+              title: 'Proyek Didanai',
+              value: `${totalProjects} Proyek`,
+              footer: 'Total proyek pertanian didanai',
+              icon: Activity,
+              iconColorClass: 'text-blue-600',
+            },
+            {
+              title: 'Rasio Keberhasilan',
+              value: `${successRate}%`,
+              footer: 'Tingkat proyek panen lancar',
+              icon: Award,
+              iconColorClass: 'text-emerald-600',
+            },
+            {
+              title: 'Rata-rata Durasi',
+              value: `${avgDuration} Hari`,
+              footer: 'Masa perputaran modal',
+              icon: Clock,
+              iconColorClass: 'text-orange-600',
+            },
+          ].map((card, index) => {
+            const Icon = card.icon;
+            return (
+              <Card key={index} className="min-w-0">
+                <CardHeader className="gap-1">
+                  <CardDescription className="truncate text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    {card.title}
+                  </CardDescription>
+                  <CardTitle
+                    className="truncate text-xl font-semibold tabular-nums lg:text-2xl text-slate-800"
+                    title={card.value}
+                  >
+                    {card.value}
+                  </CardTitle>
+                </CardHeader>
+                <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                  <div className="flex w-full min-w-0 items-center gap-1 font-medium text-slate-500">
+                    <Icon className={`size-4 shrink-0 ${card.iconColorClass}`} />
+                    <span className="truncate">{card.footer}</span>
+                  </div>
+                </CardFooter>
+              </Card>
+            );
+          })}
+        </div>
+      )}
 
       {/* Charts Grid */}
       <div className="grid gap-6 md:grid-cols-2">
         {/* Commodity distribution PieChart */}
-        <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden">
+        <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden flex flex-col">
           <CardHeader className="pb-3 border-b border-slate-100">
             <CardTitle className="text-sm font-bold flex items-center gap-2 text-slate-800">
               <PieChartIcon className="h-4.5 w-4.5 text-green-600" />
@@ -229,33 +237,96 @@ export default function InvestorAnalyticsPage() {
               Proporsi alokasi pendanaan berdasarkan komoditas tanaman.
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-6">
-            <div className="h-64 w-full text-xs">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={commodityData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label={({ name, percent }) => `${name} (${((percent || 0) * 100).toFixed(0)}%)`}
-                  >
-                    {commodityData.map((entry: { name: string; value: number }, index: number) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => [formatCurrency(Number(value)), 'Investasi']} />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+          <CardContent className="flex-1 pb-0 p-6 flex items-center justify-center">
+            {isQueryError ? (
+              <div className="flex h-[280px] w-full items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                Gagal memuat data distribusi komoditas / Koneksi ke server terputus
+              </div>
+            ) : (
+              <div className="w-full max-w-[340px]">
+                <ChartContainer
+                  config={chartConfig}
+                  className="mx-auto aspect-square max-h-[280px]"
+                >
+                  <PieChart>
+                    <ChartTooltip
+                      cursor={false}
+                      content={
+                        <ChartTooltipContent
+                          hideLabel
+                          formatter={(value) => (
+                            <span className="font-bold text-slate-800">
+                              {formatCurrency(Number(value))}
+                            </span>
+                          )}
+                        />
+                      }
+                    />
+                    <Pie
+                      data={formattedChartData}
+                      dataKey="value"
+                      nameKey="commodity"
+                      innerRadius={80}
+                      outerRadius={105}
+                      strokeWidth={5}
+                    >
+                      <Label
+                        content={({ viewBox }) => {
+                          if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+                            return (
+                              <text
+                                x={viewBox.cx}
+                                y={viewBox.cy}
+                                textAnchor="middle"
+                                dominantBaseline="middle"
+                              >
+                                <tspan
+                                  x={viewBox.cx}
+                                  y={(viewBox.cy || 0) - 4}
+                                  className="fill-slate-800 text-lg font-bold tracking-tight lg:text-xl"
+                                >
+                                  {formatCurrency(totalInvestment)}
+                                </tspan>
+                                <tspan
+                                  x={viewBox.cx}
+                                  y={(viewBox.cy || 0) + 20}
+                                  className="fill-slate-500 text-[10px] font-semibold uppercase tracking-wider md:text-xs"
+                                >
+                                  Total Modal
+                                </tspan>
+                              </text>
+                            );
+                          }
+                        }}
+                      />
+                    </Pie>
+                  </PieChart>
+                </ChartContainer>
+              </div>
+            )}
           </CardContent>
+          <CardFooter className="flex-col gap-2 p-6 pt-0 text-xs">
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 mt-2 border-t border-slate-100 pt-4">
+              {commodityData.map((item: { name: string; value: number }, index: number) => {
+                const key = sanitizeKey(item.name);
+                const percent = totalInvestment > 0 ? (item.value / totalInvestment) * 100 : 0;
+                return (
+                  <div key={key} className="flex items-center gap-1.5">
+                    <div
+                      className="h-2 w-2 rounded-full shrink-0"
+                      style={{ backgroundColor: `var(--chart-${(index % 5) + 1})` }}
+                    />
+                    <span className="text-slate-600 font-medium">{item.name}</span>
+                    <span className="text-slate-400 font-bold">({percent.toFixed(0)}%)</span>
+                  </div>
+                );
+              })}
+            </div>
+          </CardFooter>
         </Card>
 
         {/* ROI line chart trend */}
-        <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden">
+        <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden flex flex-col">
           <CardHeader className="pb-3 border-b border-slate-100">
             <CardTitle className="text-sm font-bold flex items-center gap-2 text-slate-800">
               <BarChart3 className="h-4.5 w-4.5 text-green-600" />
@@ -265,31 +336,78 @@ export default function InvestorAnalyticsPage() {
               Rata-rata persentase ROI bulanan dari panen selesai.
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-6">
-            <div className="h-64 w-full text-xs">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={trendData} margin={{ top: 10, right: 15, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis dataKey="month" tickLine={false} axisLine={false} stroke="#94a3b8" />
-                  <YAxis
-                    tickLine={false}
-                    axisLine={false}
-                    stroke="#94a3b8"
-                    tickFormatter={(v) => `${v}%`}
-                  />
-                  <Tooltip formatter={(value) => [`+${value}%`, 'ROI']} />
-                  <Line
-                    type="monotone"
-                    dataKey="roi"
-                    stroke="#22c55e"
-                    strokeWidth={3}
-                    activeDot={{ r: 6 }}
-                    dot={{ strokeWidth: 2, r: 4 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+          <CardContent className="flex-1 p-6">
+            {isQueryError ? (
+              <div className="flex h-64 w-full items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                Gagal memuat grafik performa ROI / Koneksi ke server terputus
+              </div>
+            ) : (
+              <div className="w-full">
+                <ChartContainer config={roiChartConfig} className="w-full h-64 text-xs">
+                  <LineChart
+                    accessibilityLayer
+                    data={trendData}
+                    margin={{
+                      left: 12,
+                      right: 12,
+                      top: 10,
+                      bottom: 0,
+                    }}
+                  >
+                    <CartesianGrid vertical={false} stroke="#f1f5f9" />
+                    <XAxis
+                      dataKey="month"
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={8}
+                      tickFormatter={(value) => String(value).slice(0, 3)}
+                    />
+                    <ChartTooltip
+                      cursor={false}
+                      content={
+                        <ChartTooltipContent
+                          hideLabel
+                          formatter={(value) => (
+                            <div className="flex items-center gap-1.5 font-medium text-slate-800">
+                              <TrendingUp className="h-3.5 w-3.5 text-green-600" />
+                              <span>ROI:</span>
+                              <span className="font-bold">+{value}%</span>
+                            </div>
+                          )}
+                        />
+                      }
+                    />
+                    <Line
+                      dataKey="roi"
+                      type="natural"
+                      stroke="var(--color-roi)"
+                      strokeWidth={3}
+                      dot={{
+                        fill: 'var(--color-roi)',
+                        strokeWidth: 2,
+                        r: 4,
+                      }}
+                      activeDot={{
+                        r: 6,
+                      }}
+                    />
+                  </LineChart>
+                </ChartContainer>
+              </div>
+            )}
           </CardContent>
+          <CardFooter className="flex-col gap-2 p-6 pt-0 text-xs text-slate-500 border-t border-slate-100 mt-2">
+            <div className="flex items-center gap-2 font-semibold text-slate-600 mt-4">
+              <TrendingUp className="h-4 w-4 text-green-500" />
+              <span>
+                Peningkatan ROI rata-rata sebesar +{trendData[trendData.length - 1]?.roi}% pada
+                bulan terbaru.
+              </span>
+            </div>
+            <div className="text-[10px] font-medium text-slate-400">
+              Menampilkan total imbal hasil kumulatif proyek tani yang berhasil.
+            </div>
+          </CardFooter>
         </Card>
       </div>
     </div>

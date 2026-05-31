@@ -14,9 +14,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Search, Sprout, AlertTriangle, ArrowUpDown } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Search, Sprout, ArrowUpDown, X } from 'lucide-react';
 
 const MOCK_PROPOSALS = [
   {
@@ -171,11 +172,24 @@ export default function InvestorProposalsPage() {
   const [selectedLocation, setSelectedLocation] = React.useState('all');
   const [sortBy, setSortBy] = React.useState<'newest' | 'roi' | 'progress'>('newest');
 
+  const hasActiveFilters =
+    searchQuery !== '' ||
+    selectedCommodity !== 'all' ||
+    selectedLocation !== 'all' ||
+    sortBy !== 'newest';
+
+  const resetFilters = React.useCallback(() => {
+    setSearchQuery('');
+    setSelectedCommodity('all');
+    setSelectedLocation('all');
+    setSortBy('newest');
+    toast.success('Filter pencarian berhasil direset');
+  }, []);
+
   const {
     data: proposalsResponse,
     isLoading,
     isError,
-    refetch,
   } = useQuery({
     queryKey: ['investor-proposals-browse'],
     queryFn: () => investmentService.getProposals({ status: 'approved', limit: 30 }),
@@ -185,7 +199,7 @@ export default function InvestorProposalsPage() {
 
   React.useEffect(() => {
     if (isQueryError) {
-      toast.error('Layanan proposal offline. Menggunakan data demo lokal.');
+      toast.error('Koneksi ke server proposal terputus. Gagal memuat data teraktual.');
     }
   }, [isQueryError]);
 
@@ -252,119 +266,187 @@ export default function InvestorProposalsPage() {
 
   return (
     <div className="w-full space-y-6 text-slate-900">
-      {/* Offline Red Alert Box */}
-      {isQueryError && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-            <p>
-              Layanan Cari Peluang Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px] cursor-pointer"
-            onClick={() => refetch()}
-          >
-            Coba Hubungkan Kembali
-          </Button>
+      {/* Header & Status Info */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-slate-900">
+            Peluang Investasi Terbuka
+          </h1>
+          <p className="text-xs text-slate-500 font-medium mt-1">
+            Gunakan kecanggihan SmartTani untuk mendanai petani andal Lamongan dan raih ROI
+            memuaskan.
+          </p>
         </div>
-      )}
-
-      {/* Header */}
-      <div>
-        <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-slate-900">
-          Peluang Investasi Terbuka
-        </h1>
-        <p className="text-xs text-slate-500 font-medium mt-1">
-          Gunakan kecanggihan SmartTani untuk mendanai petani andal Lamongan dan raih ROI memuaskan.
-        </p>
+        <div className="text-right text-[10px] font-bold text-slate-400 bg-slate-100 px-3 py-1.5 rounded-full shrink-0 tracking-wide uppercase">
+          {processedProposals.length} Proyek Terbuka
+        </div>
       </div>
 
       {/* Filter Toolbar wrapped in standard flat Card */}
-      <Card className="w-full">
-        <CardContent className="p-4 sm:p-5 flex flex-col md:flex-row gap-3 sm:items-center">
-          {/* Search bar input h-10 */}
-          <div className="flex-1 relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <Input
-              placeholder="Cari nama proposal atau komoditas..."
-              className="pl-10 !h-10 border-slate-200 text-xs font-medium focus-visible:ring-emerald-500/30"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+      <Card className="w-full border-slate-100/80 shadow-xs bg-white/70 backdrop-blur-md">
+        <CardContent className="p-4 sm:p-5 flex flex-col gap-3">
+          <div className="flex flex-col md:flex-row gap-3 sm:items-center">
+            {/* Search bar input h-10 */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input
+                placeholder="Cari nama proposal atau komoditas..."
+                className="pl-10 !h-10 border-slate-200 text-xs font-semibold text-slate-700 bg-white focus-visible:ring-emerald-500/30"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
 
-          {/* Select Commodity !h-10 */}
-          <div className="w-full md:w-[200px]">
-            <Select value={selectedCommodity} onValueChange={setSelectedCommodity}>
-              <SelectTrigger className="!h-10 border-slate-200 text-xs font-medium focus:border-green-500 cursor-pointer">
-                <SelectValue placeholder="Komoditas" />
-              </SelectTrigger>
-              <SelectContent>
-                {commodityOptions.map((option) => (
+            {/* Select Commodity !h-10 */}
+            <div className="w-full md:w-[200px]">
+              <Select value={selectedCommodity} onValueChange={setSelectedCommodity}>
+                <SelectTrigger className="!h-10 border-slate-200 text-xs font-semibold text-slate-700 focus:border-green-500 cursor-pointer bg-white">
+                  <SelectValue placeholder="Komoditas" />
+                </SelectTrigger>
+                <SelectContent>
+                  {commodityOptions.map((option) => (
+                    <SelectItem
+                      key={option.value}
+                      value={option.value}
+                      className="text-xs cursor-pointer font-medium text-slate-700 focus:bg-slate-50"
+                    >
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Select Location !h-10 */}
+            <div className="w-full md:w-[200px]">
+              <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+                <SelectTrigger className="!h-10 border-slate-200 text-xs font-semibold text-slate-700 focus:border-green-500 cursor-pointer bg-white">
+                  <SelectValue placeholder="Lokasi" />
+                </SelectTrigger>
+                <SelectContent>
+                  {provinceOptions.map((option) => (
+                    <SelectItem
+                      key={option.value}
+                      value={option.value}
+                      className="text-xs cursor-pointer font-medium text-slate-700 focus:bg-slate-50"
+                    >
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Select Sort !h-10 */}
+            <div className="w-full md:w-[200px]">
+              <Select
+                value={sortBy}
+                onValueChange={(val: 'newest' | 'roi' | 'progress') => setSortBy(val)}
+              >
+                <SelectTrigger className="!h-10 border-slate-200 text-xs font-semibold text-slate-700 focus:border-green-500 cursor-pointer bg-white">
+                  <span className="flex items-center gap-1.5">
+                    <ArrowUpDown className="h-3.5 w-3.5 text-slate-400" /> Urutkan
+                  </span>
+                </SelectTrigger>
+                <SelectContent>
                   <SelectItem
-                    key={option.value}
-                    value={option.value}
-                    className="text-xs cursor-pointer"
+                    value="newest"
+                    className="text-xs cursor-pointer font-medium text-slate-700 focus:bg-slate-50"
                   >
-                    {option.label}
+                    Terbaru
                   </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Select Location !h-10 */}
-          <div className="w-full md:w-[200px]">
-            <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-              <SelectTrigger className="!h-10 border-slate-200 text-xs font-medium focus:border-green-500 cursor-pointer">
-                <SelectValue placeholder="Lokasi" />
-              </SelectTrigger>
-              <SelectContent>
-                {provinceOptions.map((option) => (
                   <SelectItem
-                    key={option.value}
-                    value={option.value}
-                    className="text-xs cursor-pointer"
+                    value="roi"
+                    className="text-xs cursor-pointer font-medium text-slate-700 focus:bg-slate-50"
                   >
-                    {option.label}
+                    ROI Tertinggi
                   </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                  <SelectItem
+                    value="progress"
+                    className="text-xs cursor-pointer font-medium text-slate-700 focus:bg-slate-50"
+                  >
+                    Hampir Terpenuhi
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          {/* Select Sort !h-10 */}
-          <div className="w-full md:w-[200px]">
-            <Select
-              value={sortBy}
-              onValueChange={(val: 'newest' | 'roi' | 'progress') => setSortBy(val)}
-            >
-              <SelectTrigger className="!h-10 border-slate-200 text-xs font-medium focus:border-green-500 cursor-pointer">
-                <span className="flex items-center gap-1.5">
-                  <ArrowUpDown className="h-3.5 w-3.5 text-slate-400" /> Urutkan
+          {/* Active Filters row */}
+          {hasActiveFilters && (
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100/80">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+                  Filter Aktif:
                 </span>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="newest" className="text-xs cursor-pointer">
-                  Terbaru
-                </SelectItem>
-                <SelectItem value="roi" className="text-xs cursor-pointer">
-                  ROI Tertinggi
-                </SelectItem>
-                <SelectItem value="progress" className="text-xs cursor-pointer">
-                  Hampir Terpenuhi
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+                {searchQuery && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-slate-50 hover:bg-slate-100/80 text-slate-600 font-bold text-[9px] px-2 py-0.5 rounded border border-slate-100 flex items-center gap-1 shrink-0 uppercase tracking-wider"
+                  >
+                    Cari: &quot;{searchQuery}&quot;
+                    <X
+                      onClick={() => setSearchQuery('')}
+                      className="h-2.5 w-2.5 hover:text-red-500 cursor-pointer shrink-0"
+                    />
+                  </Badge>
+                )}
+                {selectedCommodity !== 'all' && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-slate-50 hover:bg-slate-100/80 text-slate-600 font-bold text-[9px] px-2 py-0.5 rounded border border-slate-100 flex items-center gap-1 shrink-0 uppercase tracking-wider"
+                  >
+                    Komoditas: {selectedCommodity}
+                    <X
+                      onClick={() => setSelectedCommodity('all')}
+                      className="h-2.5 w-2.5 hover:text-red-500 cursor-pointer shrink-0"
+                    />
+                  </Badge>
+                )}
+                {selectedLocation !== 'all' && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-slate-50 hover:bg-slate-100/80 text-slate-600 font-bold text-[9px] px-2 py-0.5 rounded border border-slate-100 flex items-center gap-1 shrink-0 uppercase tracking-wider"
+                  >
+                    Lokasi: {selectedLocation}
+                    <X
+                      onClick={() => setSelectedLocation('all')}
+                      className="h-2.5 w-2.5 hover:text-red-500 cursor-pointer shrink-0"
+                    />
+                  </Badge>
+                )}
+                {sortBy !== 'newest' && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-slate-50 hover:bg-slate-100/80 text-slate-600 font-bold text-[9px] px-2 py-0.5 rounded border border-slate-100 flex items-center gap-1 shrink-0 uppercase tracking-wider"
+                  >
+                    Urutan: {sortBy === 'roi' ? 'ROI Tertinggi' : 'Hampir Terpenuhi'}
+                    <X
+                      onClick={() => setSortBy('newest')}
+                      className="h-2.5 w-2.5 hover:text-red-500 cursor-pointer shrink-0"
+                    />
+                  </Badge>
+                )}
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={resetFilters}
+                className="text-[9px] font-bold text-red-500 hover:text-red-600 hover:bg-red-50/50 p-0 h-6 cursor-pointer ml-auto uppercase tracking-wider"
+              >
+                Reset Semua Filter
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
       {/* Grid listing */}
-      {processedProposals.length === 0 ? (
+      {isQueryError ? (
+        <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+          Gagal memuat peluang investasi pertanian / Koneksi ke server terputus
+        </div>
+      ) : processedProposals.length === 0 ? (
         <div className="py-24 text-center bg-white border border-slate-200 rounded-xl">
           <Sprout className="w-12 h-12 mx-auto mb-4 text-slate-300 opacity-60 animate-bounce" />
           <p className="text-xs font-bold text-slate-700">Tidak Ada Proyek Tani Cocok</p>
