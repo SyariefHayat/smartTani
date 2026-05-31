@@ -182,7 +182,6 @@ export default function BuyerFinancePage() {
     isLoading,
     isError,
     refetch,
-    isRefetching,
   } = useQuery({
     queryKey: ['buyer-finance-analytics', user?.id, date?.from, date?.to],
     queryFn: async () => {
@@ -196,15 +195,27 @@ export default function BuyerFinancePage() {
 
   React.useEffect(() => {
     if (isQueryError) {
-      toast.error('Layanan keuangan offline. Menggunakan data demo lokal.', {
-        description:
-          'Menampilkan data pengeluaran simulasi agar Anda tetap dapat menjelajahi layout.',
-        duration: 5000,
-      });
+      toast.error('Gagal memuat data keuangan. Koneksi ke server terputus.');
     }
   }, [isQueryError]);
 
-  const activeData = isQueryError ? MOCK_FINANCE_DATA : financeData || MOCK_FINANCE_DATA;
+  const activeData = isQueryError
+    ? {
+        total_spending: 0,
+        monthly_spending: 0,
+        avg_per_order: 0,
+        spending_change_percent: 0,
+        transactions: [],
+        meta: { page: 1, limit: 10, total: 0 },
+      }
+    : financeData || {
+        total_spending: 0,
+        monthly_spending: 0,
+        avg_per_order: 0,
+        spending_change_percent: 0,
+        transactions: [],
+        meta: { page: 1, limit: 10, total: 0 },
+      };
 
   // Filter transactions by searchQuery and date range
   const filteredTransactions = React.useMemo(() => {
@@ -333,28 +344,6 @@ export default function BuyerFinancePage() {
 
   return (
     <DateRangeContext.Provider value={{ date, setDate }}>
-      {/* Warning Banner */}
-      {isQueryError && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-            <p>
-              Layanan Keuangan Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7 cursor-pointer border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px]"
-            onClick={() => refetch()}
-            disabled={isRefetching}
-          >
-            <RefreshCw className={`mr-1 h-3 w-3 ${isRefetching ? 'animate-spin' : ''}`} />
-            {isRefetching ? 'Hubungkan...' : 'Coba Hubungkan Kembali'}
-          </Button>
-        </div>
-      )}
-
       {/* Header — matches farmer dashboard exactly */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -371,7 +360,11 @@ export default function BuyerFinancePage() {
       </div>
 
       {/* Stats Row — exact SectionCard pattern from farmer dashboard */}
-      {isLoading ? (
+      {isQueryError ? (
+        <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+          Gagal memuat data statistik keuangan / Koneksi ke server terputus
+        </div>
+      ) : isLoading ? (
         <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <Card key={i} className="min-w-0">
@@ -456,8 +449,8 @@ export default function BuyerFinancePage() {
           </CardContent>
         </Card>
       ) : isQueryError ? (
-        <Card className="flex h-100 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500">
-          Gagal memuat data grafik pengeluaran
+        <Card className="flex h-100 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+          Gagal memuat grafik analisis pengeluaran / Koneksi ke server terputus
         </Card>
       ) : (
         <Card className="py-0">
@@ -557,156 +550,166 @@ export default function BuyerFinancePage() {
           </div>
         </CardHeader>
         <CardContent>
-          {isLoading ? (
-            <div className="space-y-2">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full" />
-              ))}
-            </div>
-          ) : filteredTransactions.length === 0 ? (
-            <div className="overflow-hidden rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Transaksi</TableHead>
-                    <TableHead>Tanggal</TableHead>
-                    <TableHead>Rincian Pembelian</TableHead>
-                    <TableHead>Pengeluaran</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Aksi</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
-                      Tidak ada hasil.
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+          {isQueryError ? (
+            <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat daftar faktur pembelian / Koneksi ke server terputus
             </div>
           ) : (
-            <div className="overflow-hidden rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Transaksi</TableHead>
-                    <TableHead>Tanggal</TableHead>
-                    <TableHead>Rincian Pembelian</TableHead>
-                    <TableHead>Pengeluaran</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Aksi</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {paginatedTransactions.map((tx) => {
-                    const isCompleted = tx.status === 'completed';
-                    return (
-                      <TableRow key={tx.id}>
-                        <TableCell className="font-mono text-xs font-medium text-muted-foreground">
-                          #{tx.id}
-                        </TableCell>
-                        <TableCell className="text-xs font-medium text-slate-600">
-                          {format(new Date(tx.date), 'dd MMM yyyy, HH:mm', { locale: localeId })}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col">
-                            <span
-                              className="font-medium text-sm truncate max-w-40 lg:max-w-60"
-                              title={tx.items_summary}
-                            >
-                              {tx.items_summary}
-                            </span>
-                            <span className="text-[10px] text-muted-foreground uppercase">
-                              {tx.order_id}
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="text-sm font-medium tabular-nums">
-                            {formatCurrency(tx.amount)}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <span
-                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold border ${
-                              isCompleted
-                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                : 'bg-rose-50 text-rose-700 border-rose-200'
-                            }`}
-                          >
-                            <span
-                              className={`h-1.5 w-1.5 rounded-full ${isCompleted ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`}
-                            />
-                            {isCompleted ? 'Berhasil' : 'Batal'}
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon-xs" className="cursor-pointer">
-                                <span className="sr-only">Buka menu</span>
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48 bg-white">
-                              <DropdownMenuGroup>
-                                <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-                                <DropdownMenuItem
-                                  className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
-                                  onClick={() => {
-                                    navigator.clipboard.writeText(tx.id);
-                                    toast.success('ID transaksi berhasil disalin');
-                                  }}
-                                >
-                                  Salin ID Transaksi
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
-                                  onClick={() =>
-                                    router.push(`/dashboard/buyer/orders/${tx.order_id}`)
-                                  }
-                                >
-                                  Lihat Detail Pesanan
-                                </DropdownMenuItem>
-                              </DropdownMenuGroup>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+            <>
+              {isLoading ? (
+                <div className="space-y-2">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Skeleton key={i} className="h-12 w-full" />
+                  ))}
+                </div>
+              ) : filteredTransactions.length === 0 ? (
+                <div className="overflow-hidden rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Transaksi</TableHead>
+                        <TableHead>Tanggal</TableHead>
+                        <TableHead>Rincian Pembelian</TableHead>
+                        <TableHead>Pengeluaran</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Aksi</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                          Tidak ada hasil.
                         </TableCell>
                       </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
-          )}
+                    </TableBody>
+                  </Table>
+                </div>
+              ) : (
+                <div className="overflow-hidden rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Transaksi</TableHead>
+                        <TableHead>Tanggal</TableHead>
+                        <TableHead>Rincian Pembelian</TableHead>
+                        <TableHead>Pengeluaran</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Aksi</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {paginatedTransactions.map((tx) => {
+                        const isCompleted = tx.status === 'completed';
+                        return (
+                          <TableRow key={tx.id}>
+                            <TableCell className="font-mono text-xs font-medium text-muted-foreground">
+                              #{tx.id}
+                            </TableCell>
+                            <TableCell className="text-xs font-medium text-slate-600">
+                              {format(new Date(tx.date), 'dd MMM yyyy, HH:mm', {
+                                locale: localeId,
+                              })}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex flex-col">
+                                <span
+                                  className="font-medium text-sm truncate max-w-40 lg:max-w-60"
+                                  title={tx.items_summary}
+                                >
+                                  {tx.items_summary}
+                                </span>
+                                <span className="text-[10px] text-muted-foreground uppercase">
+                                  {tx.order_id}
+                                </span>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="text-sm font-medium tabular-nums">
+                                {formatCurrency(tx.amount)}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <span
+                                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold border ${
+                                  isCompleted
+                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                    : 'bg-rose-50 text-rose-700 border-rose-200'
+                                }`}
+                              >
+                                <span
+                                  className={`h-1.5 w-1.5 rounded-full ${isCompleted ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`}
+                                />
+                                {isCompleted ? 'Berhasil' : 'Batal'}
+                              </span>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="icon-xs" className="cursor-pointer">
+                                    <span className="sr-only">Buka menu</span>
+                                    <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-48 bg-white">
+                                  <DropdownMenuGroup>
+                                    <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+                                    <DropdownMenuItem
+                                      className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
+                                      onClick={() => {
+                                        navigator.clipboard.writeText(tx.id);
+                                        toast.success('ID transaksi berhasil disalin');
+                                      }}
+                                    >
+                                      Salin ID Transaksi
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
+                                      onClick={() =>
+                                        router.push(`/dashboard/buyer/orders/${tx.order_id}`)
+                                      }
+                                    >
+                                      Lihat Detail Pesanan
+                                    </DropdownMenuItem>
+                                  </DropdownMenuGroup>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
 
-          {/* Pagination */}
-          <div className="flex items-center justify-end space-x-2 py-4">
-            <div className="flex-1 text-sm text-muted-foreground">
-              Menampilkan {fromRow}–{toRow} dari {totalRows} transaksi
-            </div>
-            <div className="space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={isLoading || currentPage === 1 || totalRows === 0}
-                className="cursor-pointer"
-              >
-                Sebelumnya
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={isLoading || currentPage === totalPages || totalRows === 0}
-                className="cursor-pointer"
-              >
-                Berikutnya
-              </Button>
-            </div>
-          </div>
+              {/* Pagination */}
+              <div className="flex items-center justify-end space-x-2 py-4">
+                <div className="flex-1 text-sm text-muted-foreground">
+                  Menampilkan {fromRow}–{toRow} dari {totalRows} transaksi
+                </div>
+                <div className="space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={isLoading || currentPage === 1 || totalRows === 0}
+                    className="cursor-pointer"
+                  >
+                    Sebelumnya
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    disabled={isLoading || currentPage === totalPages || totalRows === 0}
+                    className="cursor-pointer"
+                  >
+                    Berikutnya
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
     </DateRangeContext.Provider>
