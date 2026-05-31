@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -34,6 +35,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Field, FieldGroup } from '@/components/ui/field';
+import { Label } from '@/components/ui/label';
 
 const MOCK_ADDRESSES: SavedAddress[] = [
   {
@@ -265,101 +268,141 @@ export default function BuyerAddressesPage() {
               </DialogDescription>
             </DialogHeader>
 
-            <div className="grid gap-3 text-xs font-semibold text-muted-foreground">
-              <div className="space-y-1">
-                <label className="text-card-foreground">
+            <FieldGroup className="gap-4">
+              <Field>
+                <Label
+                  htmlFor="address-label"
+                  className="text-card-foreground text-xs font-semibold"
+                >
                   Label Alamat (cth: Rumah, Kantor, Toko)
-                </label>
+                </Label>
                 <Input
+                  id="address-label"
                   value={label}
                   onChange={(e) => setLabel(e.target.value)}
                   required
                   className="h-9 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs bg-background text-foreground"
                 />
-              </div>
+              </Field>
+
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-card-foreground">Nama Penerima</label>
+                <Field>
+                  <Label
+                    htmlFor="recipient-name"
+                    className="text-card-foreground text-xs font-semibold"
+                  >
+                    Nama Penerima
+                  </Label>
                   <Input
+                    id="recipient-name"
                     value={recipientName}
                     onChange={(e) => setRecipientName(e.target.value)}
                     required
                     className="h-9 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs bg-background text-foreground"
                   />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-card-foreground">No. Telepon / WhatsApp</label>
+                </Field>
+                <Field>
+                  <Label
+                    htmlFor="phone-number"
+                    className="text-card-foreground text-xs font-semibold"
+                  >
+                    No. Telepon / WhatsApp
+                  </Label>
                   <Input
+                    id="phone-number"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
                     className="h-9 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs bg-background text-foreground"
                   />
-                </div>
+                </Field>
               </div>
+
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-card-foreground">Provinsi</label>
+                <Field>
+                  <Label htmlFor="province" className="text-card-foreground text-xs font-semibold">
+                    Provinsi
+                  </Label>
                   <Input
+                    id="province"
                     value={province}
                     onChange={(e) => setProvince(e.target.value)}
                     required
                     className="h-9 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs bg-background text-foreground"
                   />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-card-foreground">Kota / Kabupaten</label>
+                </Field>
+                <Field>
+                  <Label htmlFor="city" className="text-card-foreground text-xs font-semibold">
+                    Kota / Kabupaten
+                  </Label>
                   <Input
+                    id="city"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     required
                     className="h-9 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs bg-background text-foreground"
                   />
-                </div>
+                </Field>
               </div>
+
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-card-foreground">Kecamatan</label>
+                <Field>
+                  <Label htmlFor="district" className="text-card-foreground text-xs font-semibold">
+                    Kecamatan
+                  </Label>
                   <Input
+                    id="district"
                     value={district}
                     onChange={(e) => setDistrict(e.target.value)}
                     required
                     className="h-9 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs bg-background text-foreground"
                   />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-card-foreground">Kode Pos</label>
+                </Field>
+                <Field>
+                  <Label
+                    htmlFor="postal-code"
+                    className="text-card-foreground text-xs font-semibold"
+                  >
+                    Kode Pos
+                  </Label>
                   <Input
+                    id="postal-code"
                     value={postalCode}
                     onChange={(e) => setPostalCode(e.target.value)}
                     required
                     className="h-9 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs bg-background text-foreground"
                   />
-                </div>
+                </Field>
               </div>
-              <div className="space-y-1">
-                <label className="text-card-foreground">
+
+              <Field>
+                <Label
+                  htmlFor="full-address"
+                  className="text-card-foreground text-xs font-semibold"
+                >
                   Alamat Lengkap (Blok, No. Rumah, Jalan)
-                </label>
+                </Label>
                 <textarea
+                  id="full-address"
                   value={fullAddress}
                   onChange={(e) => setFullAddress(e.target.value)}
                   required
                   className="w-full rounded-md border border-input bg-background p-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary min-h-16 text-foreground"
                 />
-              </div>
-            </div>
+              </Field>
+            </FieldGroup>
 
             <DialogFooter className="pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="h-9 text-xs font-semibold cursor-pointer"
-                onClick={() => setIsOpen(false)}
-              >
-                Batal
-              </Button>
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-9 text-xs font-semibold cursor-pointer"
+                >
+                  Batal
+                </Button>
+              </DialogClose>
               <Button type="submit" size="sm" className="h-9 text-xs font-semibold cursor-pointer">
                 Simpan Alamat
               </Button>
