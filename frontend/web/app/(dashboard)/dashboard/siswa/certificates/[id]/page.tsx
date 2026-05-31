@@ -150,7 +150,7 @@ export default function CertificateDetailPage({ params }: PageProps) {
         <Button
           onClick={() => router.push('/dashboard/siswa/certificates')}
           size="sm"
-          className="bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-sm text-xs font-semibold"
+          className="bg-slate-800 hover:bg-slate-900 text-white rounded-xl shadow-sm text-xs font-semibold cursor-pointer"
         >
           Kembali ke Daftar
         </Button>
@@ -229,7 +229,7 @@ export default function CertificateDetailPage({ params }: PageProps) {
           <Button
             onClick={handlePrint}
             size="sm"
-            className="bg-green-600 hover:bg-green-700 text-xs font-semibold text-white rounded-xl shadow-sm gap-1.5"
+            className="bg-slate-800 hover:bg-slate-900 text-xs font-semibold text-white rounded-xl shadow-sm gap-1.5 cursor-pointer"
           >
             <Printer className="h-3.5 w-3.5" />
             Cetak / PDF

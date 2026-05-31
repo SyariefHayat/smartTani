@@ -180,7 +180,7 @@ export default function StudentCertificatesPage() {
             placeholder="Cari nama kursus atau nomor sertifikat..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 bg-white border-slate-200 text-xs font-medium focus:ring-green-500 rounded-xl"
+            className="pl-9 bg-white border-slate-200 text-xs font-medium focus:ring-slate-400 focus-visible:ring-slate-400 rounded-xl"
           />
         </div>
         <div className="text-[11px] font-semibold text-slate-500 sm:ml-auto">
@@ -205,7 +205,7 @@ export default function StudentCertificatesPage() {
             <Link href="/dashboard/siswa/courses" passHref legacyBehavior>
               <Button
                 size="sm"
-                className="mt-4 bg-green-600 hover:bg-green-700 text-xs font-semibold text-white rounded-xl shadow-sm gap-2"
+                className="mt-4 bg-slate-800 hover:bg-slate-900 text-xs font-semibold text-white rounded-xl shadow-sm gap-2 cursor-pointer"
               >
                 <BookOpen className="h-3.5 w-3.5" />
                 Mulai Belajar Sekarang
@@ -228,12 +228,12 @@ export default function StudentCertificatesPage() {
                 className="border-slate-200 bg-white hover:shadow-md transition-all duration-300 rounded-2xl overflow-hidden flex flex-col group"
               >
                 {/* Visual Top Decorative Seal */}
-                <div className="h-2.5 bg-gradient-to-r from-emerald-500 via-green-600 to-amber-500" />
+                <div className="h-1.5 bg-slate-700" />
 
                 <CardContent className="pt-6 flex-1 flex flex-col gap-4">
                   {/* Decorative Icon */}
                   <div className="flex items-start justify-between">
-                    <div className="h-10 w-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm">
+                    <div className="h-10 w-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-700 shadow-sm">
                       <AwardIcon className="h-5.5 w-5.5" />
                     </div>
                     <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200 text-slate-500 uppercase tracking-wider">
@@ -243,7 +243,7 @@ export default function StudentCertificatesPage() {
 
                   {/* Course Details */}
                   <div className="space-y-1">
-                    <h3 className="text-sm font-bold text-slate-800 line-clamp-2 min-h-10 group-hover:text-green-700 transition-colors">
+                    <h3 className="text-sm font-bold text-slate-800 line-clamp-2 min-h-10 group-hover:text-slate-700 transition-colors">
                       {cert.course?.title}
                     </h3>
                     <p className="text-[10px] font-bold text-slate-400">
@@ -283,7 +283,7 @@ export default function StudentCertificatesPage() {
                   <Link href={`/dashboard/siswa/certificates/${cert.id}`} passHref legacyBehavior>
                     <Button
                       size="sm"
-                      className="w-full text-xs font-semibold text-white bg-green-600 hover:bg-green-700 rounded-xl shadow-sm"
+                      className="w-full text-xs font-semibold text-white bg-slate-800 hover:bg-slate-900 rounded-xl shadow-sm cursor-pointer"
                     >
                       <Download className="h-3.5 w-3.5 mr-1" />
                       Unduh PDF
