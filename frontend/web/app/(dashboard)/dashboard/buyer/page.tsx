@@ -29,6 +29,7 @@ import {
   ArrowRight,
   ArrowUp,
   ArrowDown,
+  TrendingUp,
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { DatePickerWithRange } from '@/components/sections/dashboard/farmer/DatePickerRange';
@@ -444,19 +445,13 @@ export default function BuyerDashboardOverview() {
                             year: 'numeric',
                           });
                         }}
-                        formatter={(value, name, item) => (
-                          <div className="flex flex-col gap-1">
-                            <div className="flex items-center gap-1.5">
-                              <span className="h-2.5 w-2.5 rounded-full bg-green-600 shrink-0" />
-                              <span className="text-[10px] text-muted-foreground uppercase font-semibold">
-                                Total Belanja
-                              </span>
-                            </div>
+                        formatter={(value) => (
+                          <div className="flex flex-col gap-0.5">
+                            <span className="text-[10px] text-muted-foreground uppercase font-semibold">
+                              Total Belanja
+                            </span>
                             <span className="text-sm font-bold text-slate-800">
                               {formatCurrency(value as number)}
-                            </span>
-                            <span className="text-[10px] text-slate-400 font-medium mt-0.5">
-                              {item.payload.orders_count} Pesanan
                             </span>
                           </div>
                         )}
@@ -468,6 +463,18 @@ export default function BuyerDashboardOverview() {
               </ChartContainer>
             </div>
           </CardContent>
+          <CardFooter className="flex-col items-start gap-2 text-sm pt-4 border-t border-slate-100">
+            <div className="flex gap-2 leading-none font-medium text-slate-800">
+              {spendingChange >= 0 ? 'Peningkatan' : 'Penurunan'} pengeluaran sebesar{' '}
+              {Math.abs(spendingChange).toFixed(1)}% bulan ini{' '}
+              <TrendingUp
+                className={cn('h-4 w-4', spendingChange >= 0 ? 'text-green-500' : 'text-red-500')}
+              />
+            </div>
+            <div className="leading-none text-muted-foreground text-xs">
+              Menampilkan total nominal belanja harian dalam rentang waktu terpilih
+            </div>
+          </CardFooter>
         </Card>
       )}
 
