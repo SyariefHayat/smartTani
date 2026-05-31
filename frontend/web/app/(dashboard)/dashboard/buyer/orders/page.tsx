@@ -40,44 +40,6 @@ interface ExtendedOrderItem {
   price_per_unit: number;
 }
 
-const MOCK_ORDERS = [
-  {
-    id: 'ORD-88192',
-    created_at: '2026-05-27T10:00:00Z',
-    total_amount: 1500000,
-    status: 'shipped',
-    items: [{ product: { title: 'Cabai Merah Keriting' }, quantity: 60, price_per_unit: 25000 }],
-  },
-  {
-    id: 'ORD-88180',
-    created_at: '2026-05-26T18:00:00Z',
-    total_amount: 450000,
-    status: 'pending_payment',
-    items: [{ product: { title: 'Bibit Tomat Unggul' }, quantity: 25, price_per_unit: 18000 }],
-  },
-  {
-    id: 'ORD-88151',
-    created_at: '2026-05-26T14:30:00Z',
-    total_amount: 2100000,
-    status: 'completed',
-    items: [{ product: { title: 'Pupuk Organik Bio-Tani' }, quantity: 70, price_per_unit: 30000 }],
-  },
-  {
-    id: 'ORD-88092',
-    created_at: '2026-05-24T08:15:00Z',
-    total_amount: 4500000,
-    status: 'completed',
-    items: [{ product: { title: 'Alat Semprot Hama' }, quantity: 15, price_per_unit: 300000 }],
-  },
-  {
-    id: 'ORD-87850',
-    created_at: '2026-05-21T09:30:00Z',
-    total_amount: 900000,
-    status: 'cancelled',
-    items: [{ product: { title: 'Bawang Merah Bima' }, quantity: 30, price_per_unit: 30000 }],
-  },
-];
-
 export default function BuyerOrdersPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -104,14 +66,11 @@ export default function BuyerOrdersPage() {
 
   React.useEffect(() => {
     if (isQueryError) {
-      toast.error('Layanan transaksi offline. Menggunakan data demo lokal.', {
-        description: 'Menampilkan data pesanan simulasi agar Anda tetap dapat menjelajahi layout.',
-        duration: 5000,
-      });
+      toast.error('Gagal memuat data transaksi. Koneksi ke server terputus.');
     }
   }, [isQueryError]);
 
-  const rawOrders = isQueryError ? MOCK_ORDERS : ordersResponse?.data?.orders || MOCK_ORDERS;
+  const rawOrders = isQueryError ? [] : ordersResponse?.data?.orders || [];
 
   // Filter orders by active vs history
   // Active status: pending_payment, confirmed_seller, shipped, delivered, paid
@@ -208,241 +167,254 @@ export default function BuyerOrdersPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="overflow-hidden rounded-md border bg-white">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px]">ID Pesanan</TableHead>
-                  <TableHead>Tanggal</TableHead>
-                  <TableHead>Komoditas</TableHead>
-                  <TableHead>Jumlah</TableHead>
-                  <TableHead>Total Pembayaran</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Aksi</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
-                  [...Array(5)].map((_, i) => (
-                    <TableRow key={i}>
-                      <TableCell>
-                        <Skeleton className="h-4 w-20 bg-slate-100 rounded" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-24 bg-slate-100 rounded" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-40 bg-slate-100 rounded" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-16 bg-slate-100 rounded" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-24 bg-slate-100 rounded" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-24 bg-slate-100 rounded" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-28 bg-slate-100 rounded" />
-                      </TableCell>
+          {isError ? (
+            <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat daftar transaksi pesanan / Koneksi ke server terputus
+            </div>
+          ) : (
+            <>
+              <div className="overflow-hidden rounded-md border bg-white">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[100px]">ID Pesanan</TableHead>
+                      <TableHead>Tanggal</TableHead>
+                      <TableHead>Komoditas</TableHead>
+                      <TableHead>Jumlah</TableHead>
+                      <TableHead>Total Pembayaran</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Aksi</TableHead>
                     </TableRow>
-                  ))
-                ) : filteredOrders.length === 0 ? (
-                  <TableRow>
-                    <TableCell
-                      colSpan={7}
-                      className="h-32 text-center text-muted-foreground font-medium text-xs"
-                    >
-                      <div className="flex flex-col items-center justify-center gap-2">
-                        <ShoppingBag className="h-8 w-8 text-slate-300" />
-                        Tidak ada pesanan ditemukan pada daftar ini.
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  paginatedOrders.map((order) => {
-                    const productTitle =
-                      (order.items?.[0] as unknown as ExtendedOrderItem)?.product?.title ||
-                      'Produk Tani';
-                    const itemsCount = order.items?.length || 1;
-                    const isCompleted = order.status === 'completed';
-                    const isShipped = order.status === 'shipped';
-                    const isPendingPayment = order.status === 'pending_payment';
-                    const isCancelled = order.status === 'cancelled';
-
-                    return (
-                      <TableRow key={order.id} className="hover:bg-slate-50/50 transition-colors">
-                        <TableCell className="font-mono text-xs font-medium text-muted-foreground">
-                          #{order.id}
-                        </TableCell>
-                        <TableCell className="text-xs font-medium text-slate-600">
-                          {format(new Date(order.created_at), 'dd MMM yyyy')}
-                        </TableCell>
-                        <TableCell className="text-xs text-slate-700 max-w-xs truncate">
-                          <span className="font-semibold text-slate-800">{productTitle}</span>
-                          {itemsCount > 1 && (
-                            <span className="text-slate-400 text-[10px] ml-1">
-                              +{itemsCount - 1} item lainnya
-                            </span>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-xs font-medium text-slate-600">
-                          {(order.items?.[0]?.quantity || 0).toLocaleString('id-ID')} unit
-                        </TableCell>
-                        <TableCell className="text-xs font-bold text-slate-800">
-                          {formatCurrency(order.total_amount)}
-                        </TableCell>
-                        <TableCell>
-                          <span
-                            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold border ${
-                              isCompleted
-                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                : isShipped
-                                  ? 'bg-blue-50 text-blue-700 border-blue-200'
-                                  : isPendingPayment
-                                    ? 'bg-amber-50 text-amber-700 border-amber-200'
-                                    : isCancelled
-                                      ? 'bg-rose-50 text-rose-700 border-rose-200'
-                                      : 'bg-slate-50 text-slate-700 border-slate-200'
-                            }`}
-                          >
-                            <span
-                              className={`h-1.5 w-1.5 rounded-full ${
-                                isCompleted
-                                  ? 'bg-emerald-500 animate-pulse'
-                                  : isShipped
-                                    ? 'bg-blue-500 animate-pulse'
-                                    : isPendingPayment
-                                      ? 'bg-amber-500'
-                                      : isCancelled
-                                        ? 'bg-rose-500'
-                                        : 'bg-slate-400'
-                              }`}
-                            />
-                            {isCompleted
-                              ? 'Selesai'
-                              : isShipped
-                                ? 'Dalam Pengiriman'
-                                : isPendingPayment
-                                  ? 'Menunggu Pembayaran'
-                                  : isCancelled
-                                    ? 'Dibatalkan'
-                                    : 'Diproses'}
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon-xs" className="cursor-pointer">
-                                <span className="sr-only">Buka menu</span>
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48 bg-white">
-                              <DropdownMenuGroup>
-                                <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-                                <DropdownMenuItem
-                                  className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
-                                  onClick={() => {
-                                    navigator.clipboard.writeText(order.id);
-                                    toast.success('ID pesanan berhasil disalin');
-                                  }}
-                                >
-                                  Salin ID Pesanan
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
-                                  onClick={() => router.push(`/dashboard/buyer/orders/${order.id}`)}
-                                >
-                                  Lihat Detail
-                                </DropdownMenuItem>
-                              </DropdownMenuGroup>
-                              {(isPendingPayment || isShipped || isCompleted) && (
-                                <>
-                                  <DropdownMenuSeparator />
-                                  <DropdownMenuGroup>
-                                    {isPendingPayment && (
-                                      <DropdownMenuItem
-                                        className="cursor-pointer font-medium text-amber-600 hover:bg-amber-50 focus:bg-amber-50 focus:text-amber-700"
-                                        onClick={() => handlePayOrder(order.id)}
-                                      >
-                                        Bayar Sekarang
-                                      </DropdownMenuItem>
-                                    )}
-                                    {isShipped && (
-                                      <DropdownMenuItem
-                                        className="cursor-pointer font-medium text-blue-600 hover:bg-blue-50 focus:bg-blue-50 focus:text-blue-700"
-                                        onClick={() => handleConfirmReceipt(order.id)}
-                                      >
-                                        Konfirmasi Terima
-                                      </DropdownMenuItem>
-                                    )}
-                                    {isCompleted && (
-                                      <DropdownMenuItem
-                                        className="cursor-pointer font-medium text-emerald-600 hover:bg-emerald-50 focus:bg-emerald-50 focus:text-emerald-700"
-                                        onClick={() =>
-                                          handleWriteReview(
-                                            (order.items?.[0] as unknown as ExtendedOrderItem)
-                                              ?.product_id || 'P-01'
-                                          )
-                                        }
-                                      >
-                                        Ulas Produk
-                                      </DropdownMenuItem>
-                                    )}
-                                  </DropdownMenuGroup>
-                                </>
-                              )}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                  </TableHeader>
+                  <TableBody>
+                    {isLoading ? (
+                      [...Array(5)].map((_, i) => (
+                        <TableRow key={i}>
+                          <TableCell>
+                            <Skeleton className="h-4 w-20 bg-slate-100 rounded" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-4 w-24 bg-slate-100 rounded" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-4 w-40 bg-slate-100 rounded" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-4 w-16 bg-slate-100 rounded" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-4 w-24 bg-slate-100 rounded" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-4 w-24 bg-slate-100 rounded" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-4 w-28 bg-slate-100 rounded" />
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : filteredOrders.length === 0 ? (
+                      <TableRow>
+                        <TableCell
+                          colSpan={7}
+                          className="h-32 text-center text-muted-foreground font-medium text-xs"
+                        >
+                          <div className="flex flex-col items-center justify-center gap-2">
+                            <ShoppingBag className="h-8 w-8 text-slate-300" />
+                            Tidak ada pesanan ditemukan pada daftar ini.
+                          </div>
                         </TableCell>
                       </TableRow>
-                    );
-                  })
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                    ) : (
+                      paginatedOrders.map((order) => {
+                        const productTitle =
+                          (order.items?.[0] as unknown as ExtendedOrderItem)?.product?.title ||
+                          'Produk Tani';
+                        const itemsCount = order.items?.length || 1;
+                        const isCompleted = order.status === 'completed';
+                        const isShipped = order.status === 'shipped';
+                        const isPendingPayment = order.status === 'pending_payment';
+                        const isCancelled = order.status === 'cancelled';
 
-          {/* Pagination */}
-          <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100 mt-4">
-            <div className="text-sm text-muted-foreground">
-              {isLoading ? (
-                <div className="h-4 w-48 animate-pulse bg-slate-100 rounded inline-block" />
-              ) : totalRows === 0 ? (
-                '0 pesanan ditemukan'
-              ) : (
-                <>
-                  Menampilkan{' '}
-                  <span className="font-semibold text-slate-900">
-                    {fromRow}–{toRow}
-                  </span>{' '}
-                  dari <span className="font-semibold text-slate-900">{totalRows}</span> pesanan
-                </>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className="cursor-pointer text-slate-700 bg-white"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={isLoading || currentPage === 1 || totalRows === 0}
-              >
-                Sebelumnya
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="cursor-pointer text-slate-700 bg-white"
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={isLoading || currentPage === totalPages || totalRows === 0}
-              >
-                Berikutnya
-              </Button>
-            </div>
-          </div>
+                        return (
+                          <TableRow
+                            key={order.id}
+                            className="hover:bg-slate-50/50 transition-colors"
+                          >
+                            <TableCell className="font-mono text-xs font-medium text-muted-foreground">
+                              #{order.id}
+                            </TableCell>
+                            <TableCell className="text-xs font-medium text-slate-600">
+                              {format(new Date(order.created_at), 'dd MMM yyyy')}
+                            </TableCell>
+                            <TableCell className="text-xs text-slate-700 max-w-xs truncate">
+                              <span className="font-semibold text-slate-800">{productTitle}</span>
+                              {itemsCount > 1 && (
+                                <span className="text-slate-400 text-[10px] ml-1">
+                                  +{itemsCount - 1} item lainnya
+                                </span>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-xs font-medium text-slate-600">
+                              {(order.items?.[0]?.quantity || 0).toLocaleString('id-ID')} unit
+                            </TableCell>
+                            <TableCell className="text-xs font-bold text-slate-800">
+                              {formatCurrency(order.total_amount)}
+                            </TableCell>
+                            <TableCell>
+                              <span
+                                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold border ${
+                                  isCompleted
+                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                    : isShipped
+                                      ? 'bg-blue-50 text-blue-700 border-blue-200'
+                                      : isPendingPayment
+                                        ? 'bg-amber-50 text-amber-700 border-amber-200'
+                                        : isCancelled
+                                          ? 'bg-rose-50 text-rose-700 border-rose-200'
+                                          : 'bg-slate-50 text-slate-700 border-slate-200'
+                                }`}
+                              >
+                                <span
+                                  className={`h-1.5 w-1.5 rounded-full ${
+                                    isCompleted
+                                      ? 'bg-emerald-500 animate-pulse'
+                                      : isShipped
+                                        ? 'bg-blue-500 animate-pulse'
+                                        : isPendingPayment
+                                          ? 'bg-amber-500'
+                                          : isCancelled
+                                            ? 'bg-rose-500'
+                                            : 'bg-slate-400'
+                                  }`}
+                                />
+                                {isCompleted
+                                  ? 'Selesai'
+                                  : isShipped
+                                    ? 'Dalam Pengiriman'
+                                    : isPendingPayment
+                                      ? 'Menunggu Pembayaran'
+                                      : isCancelled
+                                        ? 'Dibatalkan'
+                                        : 'Diproses'}
+                              </span>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="icon-xs" className="cursor-pointer">
+                                    <span className="sr-only">Buka menu</span>
+                                    <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-48 bg-white">
+                                  <DropdownMenuGroup>
+                                    <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+                                    <DropdownMenuItem
+                                      className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
+                                      onClick={() => {
+                                        navigator.clipboard.writeText(order.id);
+                                        toast.success('ID pesanan berhasil disalin');
+                                      }}
+                                    >
+                                      Salin ID Pesanan
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
+                                      onClick={() =>
+                                        router.push(`/dashboard/buyer/orders/${order.id}`)
+                                      }
+                                    >
+                                      Lihat Detail
+                                    </DropdownMenuItem>
+                                  </DropdownMenuGroup>
+                                  {(isPendingPayment || isShipped || isCompleted) && (
+                                    <>
+                                      <DropdownMenuSeparator />
+                                      <DropdownMenuGroup>
+                                        {isPendingPayment && (
+                                          <DropdownMenuItem
+                                            className="cursor-pointer font-medium text-amber-600 hover:bg-amber-50 focus:bg-amber-50 focus:text-amber-700"
+                                            onClick={() => handlePayOrder(order.id)}
+                                          >
+                                            Bayar Sekarang
+                                          </DropdownMenuItem>
+                                        )}
+                                        {isShipped && (
+                                          <DropdownMenuItem
+                                            className="cursor-pointer font-medium text-blue-600 hover:bg-blue-50 focus:bg-blue-50 focus:text-blue-700"
+                                            onClick={() => handleConfirmReceipt(order.id)}
+                                          >
+                                            Konfirmasi Terima
+                                          </DropdownMenuItem>
+                                        )}
+                                        {isCompleted && (
+                                          <DropdownMenuItem
+                                            className="cursor-pointer font-medium text-emerald-600 hover:bg-emerald-50 focus:bg-emerald-50 focus:text-emerald-700"
+                                            onClick={() =>
+                                              handleWriteReview(
+                                                (order.items?.[0] as unknown as ExtendedOrderItem)
+                                                  ?.product_id || 'P-01'
+                                              )
+                                            }
+                                          >
+                                            Ulas Produk
+                                          </DropdownMenuItem>
+                                        )}
+                                      </DropdownMenuGroup>
+                                    </>
+                                  )}
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Pagination */}
+              <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100 mt-4">
+                <div className="text-sm text-muted-foreground">
+                  {isLoading ? (
+                    <div className="h-4 w-48 animate-pulse bg-slate-100 rounded inline-block" />
+                  ) : totalRows === 0 ? (
+                    '0 pesanan ditemukan'
+                  ) : (
+                    <>
+                      Menampilkan{' '}
+                      <span className="font-semibold text-slate-900">
+                        {fromRow}–{toRow}
+                      </span>{' '}
+                      dari <span className="font-semibold text-slate-900">{totalRows}</span> pesanan
+                    </>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="cursor-pointer text-slate-700 bg-white"
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={isLoading || currentPage === 1 || totalRows === 0}
+                  >
+                    Sebelumnya
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="cursor-pointer text-slate-700 bg-white"
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    disabled={isLoading || currentPage === totalPages || totalRows === 0}
+                  >
+                    Berikutnya
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>
