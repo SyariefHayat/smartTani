@@ -98,6 +98,20 @@ export interface StudentAnalytics {
   top_categories: Array<{ category: string; count: number }>;
 }
 
+export interface Webinar {
+  id: string;
+  title: string;
+  speaker: string;
+  speaker_title: string;
+  date: string;
+  time: string;
+  description: string;
+  platform: string;
+  registered_count: number;
+  max_slots: number;
+  category: string;
+}
+
 export interface GetCoursesParams {
   category?: string;
   difficulty?: string;
@@ -180,6 +194,11 @@ export const academyService = {
 
   getStudentAnalytics: async (): Promise<StudentAnalytics> => {
     const response = await api.get('/academy/analytics/student');
+    return response.data.data;
+  },
+
+  getWebinars: async (): Promise<Webinar[]> => {
+    const response = await api.get('/academy/webinars');
     return response.data.data;
   },
 };

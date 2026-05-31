@@ -17,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { academyService, Webinar } from '@/services/academy';
 import {
   Video,
   Calendar,
@@ -28,21 +29,9 @@ import {
   ExternalLink,
   BookOpen,
   Share2,
+  AlertTriangle,
+  RefreshCw,
 } from 'lucide-react';
-
-interface Webinar {
-  id: string;
-  title: string;
-  speaker: string;
-  speaker_title: string;
-  date: string;
-  time: string;
-  description: string;
-  platform: string;
-  registered_count: number;
-  max_slots: number;
-  category: string;
-}
 
 const MOCK_WEBINARS: Webinar[] = [
   {
@@ -109,13 +98,21 @@ export default function StudentWebinarsPage() {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [activeTab, setActiveTab] = React.useState('all');
 
-  const { data: webinars, isLoading } = useQuery<Webinar[]>({
+  const {
+    data: webinars,
+    isLoading,
+    isError: isWebinarsError,
+    refetch: refetchWebinars,
+  } = useQuery<Webinar[]>({
     queryKey: ['student-webinars', user?.id],
-    queryFn: async () => {
-      // Simulate API or load
-      return MOCK_WEBINARS;
-    },
+    queryFn: () => academyService.getWebinars(),
   });
+
+  React.useEffect(() => {
+    if (isWebinarsError) {
+      toast.error('Koneksi ke Layanan Academy terputus.');
+    }
+  }, [isWebinarsError]);
 
   const { data: registeredIds } = useQuery<string[]>({
     queryKey: ['student-registered-webinars', user?.id],
@@ -205,7 +202,23 @@ export default function StudentWebinarsPage() {
         </div>
 
         <TabsContent value="all" className="mt-0">
-          {isLoading ? (
+          {isWebinarsError ? (
+            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 p-8 text-center text-red-500 font-semibold text-sm">
+              <AlertTriangle className="h-8 w-8 text-red-600 mb-2 animate-pulse" />
+              <p className="font-bold">Gagal memuat sesi webinar & event</p>
+              <p className="text-xs text-red-400 font-normal mt-1 mb-4">
+                Koneksi ke server Layanan Academy terputus. Silakan coba hubungkan kembali.
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold text-xs cursor-pointer"
+                onClick={() => refetchWebinars()}
+              >
+                <RefreshCw className="h-3 w-3 mr-1" /> Coba Hubungkan Kembali
+              </Button>
+            </div>
+          ) : isLoading ? (
             <div className="grid gap-6 md:grid-cols-2">
               {[1, 2].map((i) => (
                 <div key={i} className="h-64 w-full bg-slate-100 animate-pulse rounded-2xl" />
@@ -338,7 +351,23 @@ export default function StudentWebinarsPage() {
         </TabsContent>
 
         <TabsContent value="registered" className="mt-0">
-          {filteredWebinars.length === 0 ? (
+          {isWebinarsError ? (
+            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 p-8 text-center text-red-500 font-semibold text-sm">
+              <AlertTriangle className="h-8 w-8 text-red-600 mb-2 animate-pulse" />
+              <p className="font-bold">Gagal memuat sesi webinar & event</p>
+              <p className="text-xs text-red-400 font-normal mt-1 mb-4">
+                Koneksi ke server Layanan Academy terputus. Silakan coba hubungkan kembali.
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold text-xs cursor-pointer"
+                onClick={() => refetchWebinars()}
+              >
+                <RefreshCw className="h-3 w-3 mr-1" /> Coba Hubungkan Kembali
+              </Button>
+            </div>
+          ) : filteredWebinars.length === 0 ? (
             <Card className="border-dashed border-slate-200 bg-slate-50/50 py-12 flex flex-col items-center justify-center text-center">
               <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2.5">
                 <Video className="h-5 w-5" />
