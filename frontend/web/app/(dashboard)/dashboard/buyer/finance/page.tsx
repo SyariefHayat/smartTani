@@ -29,6 +29,7 @@ import {
   ArrowUp,
   ArrowDown,
   Loader2,
+  MoreHorizontal,
 } from 'lucide-react';
 import {
   Table,
@@ -38,6 +39,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { DatePickerWithRange } from '@/components/sections/dashboard/farmer/DatePickerRange';
 import { DateRangeContext } from '@/context/dateRange';
 import { DateRange } from 'react-day-picker';
@@ -474,9 +484,7 @@ export default function BuyerFinancePage() {
                 className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left border-l data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-l sm:px-8 sm:py-6 min-w-56 cursor-pointer hover:bg-muted/20 transition-colors"
                 onClick={() => setActiveChart('transaksi')}
               >
-                <span className="text-xs text-muted-foreground">
-                  {chartConfig.transaksi.label}
-                </span>
+                <span className="text-xs text-muted-foreground">{chartConfig.transaksi.label}</span>
                 <span className="text-base leading-none font-bold sm:text-2xl">
                   {chartTotals.transaksi.toLocaleString('id-ID')} Tx
                 </span>
@@ -561,6 +569,7 @@ export default function BuyerFinancePage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Transaksi</TableHead>
+                    <TableHead>Tanggal</TableHead>
                     <TableHead>Rincian Pembelian</TableHead>
                     <TableHead>Pengeluaran</TableHead>
                     <TableHead>Status</TableHead>
@@ -569,7 +578,7 @@ export default function BuyerFinancePage() {
                 </TableHeader>
                 <TableBody>
                   <TableRow>
-                    <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
+                    <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
                       Tidak ada hasil.
                     </TableCell>
                   </TableRow>
@@ -582,6 +591,7 @@ export default function BuyerFinancePage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Transaksi</TableHead>
+                    <TableHead>Tanggal</TableHead>
                     <TableHead>Rincian Pembelian</TableHead>
                     <TableHead>Pengeluaran</TableHead>
                     <TableHead>Status</TableHead>
@@ -593,17 +603,18 @@ export default function BuyerFinancePage() {
                     const isCompleted = tx.status === 'completed';
                     return (
                       <TableRow key={tx.id}>
-                        <TableCell>
-                          <div className="flex flex-col">
-                            <span className="font-medium text-sm">#{tx.id}</span>
-                            <span className="text-[10px] text-muted-foreground">
-                              {format(new Date(tx.date), 'dd MMM yyyy, HH:mm', { locale: localeId })}
-                            </span>
-                          </div>
+                        <TableCell className="font-mono text-xs font-medium text-muted-foreground">
+                          #{tx.id}
+                        </TableCell>
+                        <TableCell className="text-xs font-medium text-slate-600">
+                          {format(new Date(tx.date), 'dd MMM yyyy, HH:mm', { locale: localeId })}
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-col">
-                            <span className="font-medium text-sm truncate max-w-40 lg:max-w-60" title={tx.items_summary}>
+                            <span
+                              className="font-medium text-sm truncate max-w-40 lg:max-w-60"
+                              title={tx.items_summary}
+                            >
                               {tx.items_summary}
                             </span>
                             <span className="text-[10px] text-muted-foreground uppercase">
@@ -631,14 +642,36 @@ export default function BuyerFinancePage() {
                           </span>
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 text-[10px] cursor-pointer px-2"
-                            onClick={() => router.push(`/dashboard/buyer/orders/${tx.order_id}`)}
-                          >
-                            <Eye className="mr-1 h-3 w-3" /> Detail
-                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon-xs" className="cursor-pointer">
+                                <span className="sr-only">Buka menu</span>
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48 bg-white">
+                              <DropdownMenuGroup>
+                                <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+                                <DropdownMenuItem
+                                  className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(tx.id);
+                                    toast.success('ID transaksi berhasil disalin');
+                                  }}
+                                >
+                                  Salin ID Transaksi
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
+                                  onClick={() =>
+                                    router.push(`/dashboard/buyer/orders/${tx.order_id}`)
+                                  }
+                                >
+                                  Lihat Detail Pesanan
+                                </DropdownMenuItem>
+                              </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </TableCell>
                       </TableRow>
                     );
