@@ -30,7 +30,9 @@ const MOCK_WISHLIST: WishlistItem[] = [
       title: 'Cabai Merah Keriting Unggul',
       price_per_unit: 25000,
       stock: 120,
-      images: [],
+      images: [
+        'https://images.unsplash.com/photo-1516253593875-bd7ba052fbc5?w=600&auto=format&fit=crop&q=80',
+      ],
       description: 'Cabai segar petikan langsung dari petani mitra Lamongan.',
     },
   },
@@ -44,7 +46,9 @@ const MOCK_WISHLIST: WishlistItem[] = [
       title: 'Pupuk Kompos Organik Bio-Tani',
       price_per_unit: 30000,
       stock: 45,
-      images: [],
+      images: [
+        'https://images.unsplash.com/photo-1595855759920-86582396756a?w=600&auto=format&fit=crop&q=80',
+      ],
       description: 'Pupuk organik penyubur mikroba tanah alami.',
     },
   },
@@ -58,7 +62,9 @@ const MOCK_WISHLIST: WishlistItem[] = [
       title: 'Bibit Tomat Hibrida F1',
       price_per_unit: 18000,
       stock: 0,
-      images: [],
+      images: [
+        'https://images.unsplash.com/photo-1610832958506-ee5633619144?w=600&auto=format&fit=crop&q=80',
+      ],
       description: 'Daya tumbuh tinggi, tahan layu bakteri.',
     },
   },
