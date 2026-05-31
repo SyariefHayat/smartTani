@@ -398,20 +398,22 @@ export default function BuyerDashboardOverview() {
       {isLoading ? (
         <Skeleton className="h-[350px] w-full rounded-xl" />
       ) : (
-        <Card className="border-slate-200 shadow-sm bg-white">
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <div>
-                <CardTitle className="text-base font-bold text-slate-800">
-                  Tren Pengeluaran Belanja
-                </CardTitle>
-                <CardDescription className="text-xs">
-                  Grafik total belanja harian Anda.
-                </CardDescription>
-              </div>
-              <div className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded">
-                {activeAnalytics.spending_change_percent >= 0 ? '+' : ''}
-                {activeAnalytics.spending_change_percent}% dibanding bln lalu
+        <Card className="py-0 border border-slate-200 shadow-sm bg-white overflow-hidden">
+          <CardHeader className="flex flex-col items-stretch border-b p-0! sm:flex-row">
+            <div className="flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:py-0!">
+              <CardTitle className="font-semibold lg:text-xl text-slate-800">
+                Tren Pengeluaran Belanja
+              </CardTitle>
+              <CardDescription>Grafik total belanja harian Anda.</CardDescription>
+            </div>
+            <div className="flex">
+              <div className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left bg-slate-50/50 sm:border-t-0 sm:border-l border-slate-100 sm:px-8 sm:py-6 min-w-56">
+                <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
+                  Total Belanja
+                </span>
+                <span className="text-base leading-none font-bold sm:text-2xl text-slate-800 mt-1">
+                  {formatCurrency(activeAnalytics.total_spending || 0)}
+                </span>
               </div>
             </div>
           </CardHeader>
