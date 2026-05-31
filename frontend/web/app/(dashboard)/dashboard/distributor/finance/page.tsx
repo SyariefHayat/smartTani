@@ -28,7 +28,7 @@ import {
 import { Calendar, TrendingUp, Wallet, Landmark, RefreshCw, FileText } from 'lucide-react';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _MOCK_FINANCE_TRANSACTIONS = [
+const MOCK_FINANCE_TRANSACTIONS = [
   {
     id: 'ORD-98822',
     total_amount: 14500000,

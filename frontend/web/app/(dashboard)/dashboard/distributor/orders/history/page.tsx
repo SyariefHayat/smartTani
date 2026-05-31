@@ -329,7 +329,7 @@ export default function DistributorOrdersHistoryPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-[110px]">ID Pesanan</TableHead>
+                      <TableHead className="w-27.5">ID Pesanan</TableHead>
                       <TableHead>Tanggal</TableHead>
                       <TableHead>Mitra Petani</TableHead>
                       <TableHead className="text-center">Jumlah Barang</TableHead>

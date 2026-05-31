@@ -106,7 +106,7 @@ const _MOCK_SPENDING_CHART = [
 ];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _MOCK_RECENT_ORDERS = [
+const MOCK_RECENT_ORDERS = [
   {
     id: 'ORD-98822',
     total_amount: 14500000,
@@ -242,7 +242,7 @@ export default function DistributorOverviewPage() {
     unique_products_bought: 0,
     top_products: [],
   };
-  const activeOrders = recentOrders || [];
+  const activeOrders = (recentOrders || []) as unknown as typeof MOCK_RECENT_ORDERS;
   const activeChart = spendingChart || [];
 
   const spendingChange = activeAnalytics.spending_change_percent || 0;

@@ -35,18 +35,22 @@ export function NavMain({
 }) {
   const pathname = usePathname();
 
-  const dashboardRoots = useMemo(() => new Set([
-    '/dashboard/farmer',
-    '/dashboard/buyer',
-    '/dashboard/investor',
-    '/dashboard/distributor',
-    '/dashboard/logistik',
-    '/dashboard/logistic',
-    '/dashboard/siswa',
-    '/dashboard/instruktur',
-    '/dashboard/instructor',
-    '/admin'
-  ]), []);
+  const dashboardRoots = useMemo(
+    () =>
+      new Set([
+        '/dashboard/farmer',
+        '/dashboard/buyer',
+        '/dashboard/investor',
+        '/dashboard/distributor',
+        '/dashboard/logistik',
+        '/dashboard/logistic',
+        '/dashboard/siswa',
+        '/dashboard/instruktur',
+        '/dashboard/instructor',
+        '/admin',
+      ]),
+    []
+  );
 
   const isSubActive = (subItem: { url: string }) => {
     if (subItem.url === pathname) return true;
@@ -68,7 +72,17 @@ export function NavMain({
       return item.items.some((subItem) => isSubActive(subItem));
     }
     if (item.url === pathname) return true;
-    if (!dashboardRoots.has(item.url) && pathname.startsWith(item.url + '/')) return true;
+
+    // Check if there is another main navigation item that matches the current pathname exactly
+    const hasExactMainSiblingMatch = items.some((sibling) => sibling.url === pathname);
+
+    if (
+      !hasExactMainSiblingMatch &&
+      !dashboardRoots.has(item.url) &&
+      pathname.startsWith(item.url + '/')
+    ) {
+      return true;
+    }
     return false;
   };
 

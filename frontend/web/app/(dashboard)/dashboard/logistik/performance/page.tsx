@@ -4,24 +4,17 @@ import * as React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { logisticsService } from '@/services/logistics';
 import { useAuthStore } from '@/stores/auth';
-import { formatCurrency } from '@/lib/utils';
-import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Legend,
-} from 'recharts';
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { PieChart, Pie, LineChart, Line, CartesianGrid, XAxis, Label } from 'recharts';
 import {
   TrendingUp,
   Clock,
@@ -30,64 +23,111 @@ import {
   BarChart3,
   Activity,
   Award,
+  GitCommitVertical,
 } from 'lucide-react';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/ui/chart';
 
-const COLORS = ['#22c55e', '#3b82f6', '#eab308', '#ec4899', '#8b5cf6', '#f97316'];
-
-const MOCK_ANALYTICS = {
-  pending_pickup_count: 3,
-  active_count: 2,
-  delivered_today: 4,
-  delivered_this_month: 78,
-  delivered_all_time: 412,
-  avg_delivery_hours: 14.5,
-  ontime_rate_percent: 96.8,
-  monthly_change_percent: 8.2,
-};
-
-const MOCK_PERFORMANCE_TRENDS = [
-  { month: 'Des', delivered: 45, avg_hours: 18.2 },
-  { month: 'Jan', delivered: 58, avg_hours: 17.0 },
-  { month: 'Feb', delivered: 64, avg_hours: 16.5 },
-  { month: 'Mar', delivered: 70, avg_hours: 15.2 },
-  { month: 'Apr', delivered: 75, avg_hours: 14.8 },
-  { month: 'Mei', delivered: 78, avg_hours: 14.5 },
-];
-
-const MOCK_STATUS_DISTRIBUTION = [
-  { name: 'Menunggu Pickup', value: 3 },
-  { name: 'Diambil', value: 1 },
-  { name: 'Transit', value: 1 },
-  { name: 'Sukses Terkirim', value: 78 },
-];
+const chartConfig = {
+  deliveries: {
+    label: 'Paket Terkirim',
+    color: '#334155', // slate-700
+  },
+  avg_hours: {
+    label: 'Rata Durasi (Jam)',
+    color: '#94a3b8', // slate-400
+  },
+  packageCount: {
+    label: 'Paket',
+  },
+  pending_pickup: {
+    label: 'Menunggu Pickup',
+    color: '#cbd5e1', // slate-300
+  },
+  picked_up: {
+    label: 'Diambil',
+    color: '#94a3b8', // slate-400
+  },
+  in_transit: {
+    label: 'Transit',
+    color: '#64748b', // slate-500
+  },
+  delivered_status: {
+    label: 'Sukses Terkirim',
+    color: '#334155', // slate-700
+  },
+} satisfies ChartConfig;
 
 export default function LogisticsPerformancePage() {
   const user = useAuthStore((state) => state.user);
 
+  // Fetch KPI statistics
   const {
     data: analyticsResponse,
-    isLoading,
-    isError,
-    refetch,
+    isLoading: isStatsLoading,
+    isError: isStatsError,
+    refetch: refetchStats,
   } = useQuery({
     queryKey: ['logistics-analytics-performance', user?.id],
     queryFn: () => logisticsService.getLogisticsAnalytics(user?.id || ''),
     enabled: !!user?.id,
   });
 
-  const isQueryError = isError;
+  // Fetch performance chart data
+  const {
+    data: chartResponse,
+    isLoading: isChartLoading,
+    isError: isChartError,
+    refetch: refetchChart,
+  } = useQuery({
+    queryKey: ['logistics-performance-chart', user?.id],
+    queryFn: () => logisticsService.getLogisticsPerformanceChart(user?.id || ''),
+    enabled: !!user?.id,
+  });
 
-  React.useEffect(() => {
-    if (isQueryError) {
-      toast.error('Layanan performa analitik offline. Menggunakan data demo lokal.', {
-        description:
-          'Menampilkan data grafik simulasi agar Anda tetap dapat memantau produktivitas.',
-        duration: 5000,
-      });
-    }
-  }, [isQueryError]);
+  const isQueryError = isStatsError || isChartError;
+  const isLoading = isStatsLoading || isChartLoading;
 
-  const rawData = isQueryError ? MOCK_ANALYTICS : analyticsResponse || MOCK_ANALYTICS;
+  const refetch = () => {
+    refetchStats();
+    refetchChart();
+  };
+
+  const chartData = React.useMemo(() => {
+    if (!analyticsResponse) return [];
+    return [
+      {
+        status: 'pending_pickup',
+        count: analyticsResponse.pending_pickup_count,
+        fill: 'var(--color-pending_pickup)',
+      },
+      {
+        status: 'picked_up',
+        count: analyticsResponse.active_count ? Math.ceil(analyticsResponse.active_count / 2) : 0,
+        fill: 'var(--color-picked_up)',
+      },
+      {
+        status: 'in_transit',
+        count: analyticsResponse.active_count ? Math.floor(analyticsResponse.active_count / 2) : 0,
+        fill: 'var(--color-in_transit)',
+      },
+      {
+        status: 'delivered_status',
+        count: analyticsResponse.delivered_all_time,
+        fill: 'var(--color-delivered_status)',
+      },
+    ];
+  }, [analyticsResponse]);
+
+  const totalPackages = React.useMemo(() => {
+    return chartData.reduce((acc, curr) => acc + curr.count, 0);
+  }, [chartData]);
+
+  const lineChartData = chartResponse || [];
 
   if (isLoading && !isQueryError) {
     return (
@@ -108,29 +148,6 @@ export default function LogisticsPerformancePage() {
 
   return (
     <div className="w-full space-y-6 text-slate-900">
-      {/* Offline Alert */}
-      {isQueryError && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-red-50 border border-red-200 rounded-xl p-4 text-red-800 shadow-xs">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-red-600 shrink-0 animate-pulse" />
-            <div>
-              <p className="text-xs font-bold text-red-800">Layanan Performa Offline</p>
-              <p className="text-[10px] text-red-600 font-semibold">
-                Layanan Logistik Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
-              </p>
-            </div>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => refetch()}
-            className="h-7 text-[10px] font-bold border-red-300 text-red-800 bg-white hover:bg-red-100 hover:text-red-900 cursor-pointer flex items-center gap-1 shrink-0"
-          >
-            <RefreshCw className="h-3 w-3" /> Coba Hubungkan Kembali
-          </Button>
-        </div>
-      )}
-
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-800">
@@ -142,152 +159,245 @@ export default function LogisticsPerformancePage() {
         </p>
       </div>
 
-      {/* Numerical summaries */}
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card className="border-slate-200 shadow-sm bg-white hover:shadow-md transition-all relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500" />
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pl-6">
-            <CardDescription className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Tingkat Ketepatan Waktu
-            </CardDescription>
-            <Award className="h-4 w-4 text-emerald-600" />
-          </CardHeader>
-          <CardContent className="space-y-1 pl-6">
-            <CardTitle className="text-2xl font-bold text-slate-800 tabular-nums lg:text-3xl">
-              {rawData.ontime_rate_percent}%
-            </CardTitle>
-            <p className="text-[10px] font-bold text-slate-400">Ketepatan kirim (Target &gt;95%)</p>
-          </CardContent>
-        </Card>
+      {/* Query Error State */}
+      {isQueryError ? (
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 p-8 text-center text-red-500 font-semibold text-sm">
+          <AlertTriangle className="h-8 w-8 text-red-600 mb-2 animate-pulse" />
+          <p className="font-bold">Gagal memuat data performa kurir</p>
+          <p className="text-xs text-red-400 font-normal mt-1 mb-4">
+            Koneksi ke server Layanan Logistik terputus. Silakan periksa jaringan Anda atau coba
+            hubungkan kembali.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold text-xs"
+            onClick={refetch}
+          >
+            <RefreshCw className="h-3 w-3 mr-1" /> Coba Hubungkan Kembali
+          </Button>
+        </div>
+      ) : (
+        <>
+          {/* Stats Grid - overview style */}
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
+            {/* Card 1 */}
+            <Card className="min-w-0">
+              <CardHeader className="gap-1">
+                <CardDescription className="truncate text-[10.5px] font-semibold text-slate-500 uppercase tracking-wider">
+                  Tingkat Ketepatan Waktu
+                </CardDescription>
+                <CardTitle className="truncate text-xl font-semibold tabular-nums lg:text-2xl text-slate-800">
+                  {analyticsResponse?.ontime_rate_percent || 0}%
+                </CardTitle>
+              </CardHeader>
+              <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                <div className="flex w-full min-w-0 items-center gap-1.5 font-medium text-xs">
+                  <Award className="size-4 shrink-0 text-slate-400" />
+                  <span className="truncate text-slate-500">Ketepatan kirim (Target &gt;95%)</span>
+                </div>
+              </CardFooter>
+            </Card>
 
-        <Card className="border-slate-200 shadow-sm bg-white hover:shadow-md transition-all relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-500" />
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pl-6">
-            <CardDescription className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Rata-rata Transit
-            </CardDescription>
-            <Clock className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent className="space-y-1 pl-6">
-            <CardTitle className="text-2xl font-bold text-slate-800 tabular-nums lg:text-3xl">
-              {rawData.avg_delivery_hours} Jam
-            </CardTitle>
-            <p className="text-[10px] font-bold text-slate-400">Efisiensi waktu tempuh antarkota</p>
-          </CardContent>
-        </Card>
+            {/* Card 2 */}
+            <Card className="min-w-0">
+              <CardHeader className="gap-1">
+                <CardDescription className="truncate text-[10.5px] font-semibold text-slate-500 uppercase tracking-wider">
+                  Rata-rata Transit
+                </CardDescription>
+                <CardTitle className="truncate text-xl font-semibold tabular-nums lg:text-2xl text-slate-800">
+                  {analyticsResponse?.avg_delivery_hours || 0} Jam
+                </CardTitle>
+              </CardHeader>
+              <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                <div className="flex w-full min-w-0 items-center gap-1.5 font-medium text-xs">
+                  <Clock className="size-4 shrink-0 text-slate-400" />
+                  <span className="truncate text-slate-500">Efisiensi waktu tempuh antarkota</span>
+                </div>
+              </CardFooter>
+            </Card>
 
-        <Card className="border-slate-200 shadow-sm bg-white hover:shadow-md transition-all relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-1.5 h-full bg-green-600" />
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 pl-6">
-            <CardDescription className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Pertumbuhan Bulanan
-            </CardDescription>
-            <TrendingUp className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent className="space-y-1 pl-6">
-            <CardTitle className="text-2xl font-bold text-green-600 tabular-nums lg:text-3xl">
-              +{rawData.monthly_change_percent}%
-            </CardTitle>
-            <p className="text-[10px] font-bold text-slate-400">
-              Kenaikan order dibanding bulan lalu
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+            {/* Card 3 */}
+            <Card className="min-w-0 col-span-2 md:col-span-1">
+              <CardHeader className="gap-1">
+                <CardDescription className="truncate text-[10.5px] font-semibold text-slate-500 uppercase tracking-wider">
+                  Pertumbuhan Bulanan
+                </CardDescription>
+                <CardTitle className="truncate text-xl font-semibold tabular-nums lg:text-2xl text-slate-800">
+                  +{analyticsResponse?.monthly_change_percent || 0}%
+                </CardTitle>
+              </CardHeader>
+              <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                <div className="flex w-full min-w-0 items-center gap-1.5 font-medium text-xs">
+                  <TrendingUp className="size-4 shrink-0 text-slate-400" />
+                  <span className="truncate text-slate-500">
+                    Kenaikan order dibanding bulan lalu
+                  </span>
+                </div>
+              </CardFooter>
+            </Card>
+          </div>
 
-      {/* Visual Analytics Charts Grid */}
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Trend of success deliveries and transit hours */}
-        <Card className="border-slate-200 shadow-sm bg-white">
-          <CardHeader>
-            <CardTitle className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
-              <Activity className="w-4 h-4 text-green-600" /> Tren Produktivitas Bulanan
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Rata-rata waktu transit vs kuantitas paket terkirim.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-6 pt-2">
-            <div className="h-72 w-full text-xs">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={MOCK_PERFORMANCE_TRENDS}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="month" stroke="#94a3b8" fontSize={10} tickLine={false} />
-                  <YAxis yAxisId="left" stroke="#3b82f6" fontSize={10} tickLine={false} />
-                  <YAxis
-                    yAxisId="right"
-                    orientation="right"
-                    stroke="#eab308"
-                    fontSize={10}
-                    tickLine={false}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#ffffff',
-                      borderRadius: '8px',
-                      border: '1px solid #e2e8f0',
-                    }}
-                    labelStyle={{ fontWeight: 'bold', color: '#1e293b' }}
-                  />
-                  <Legend verticalAlign="top" height={36} />
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="delivered"
-                    name="Paket Terkirim"
-                    stroke="#3b82f6"
-                    strokeWidth={3}
-                    activeDot={{ r: 6 }}
-                  />
-                  <Line
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="avg_hours"
-                    name="Rata Durasi (Jam)"
-                    stroke="#eab308"
-                    strokeWidth={3}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+          {/* Visual Analytics Charts Grid matching table card wrapper style */}
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Trend of success deliveries and transit hours */}
+            <Card className="border-slate-200 shadow-sm bg-white overflow-hidden flex flex-col justify-between">
+              <div>
+                <CardHeader>
+                  <CardTitle className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                    <Activity className="w-4 h-4 text-slate-400" /> Tren Produktivitas Bulanan
+                  </CardTitle>
+                  <CardDescription className="text-xs">
+                    Rata-rata waktu transit vs kuantitas paket terkirim.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-6 pt-2">
+                  <ChartContainer config={chartConfig} className="h-72 w-full">
+                    <LineChart
+                      accessibilityLayer
+                      data={lineChartData}
+                      margin={{
+                        left: 12,
+                        right: 12,
+                      }}
+                    >
+                      <CartesianGrid vertical={false} stroke="#f1f5f9" />
+                      <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} />
+                      <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                      <Line
+                        dataKey="deliveries"
+                        type="natural"
+                        stroke="var(--color-deliveries)"
+                        strokeWidth={2}
+                        dot={({ cx, cy, payload }) => {
+                          if (cx == null || cy == null) {
+                            return null;
+                          }
+                          const r = 24;
+                          return (
+                            <GitCommitVertical
+                              key={`${payload.date}-deliveries`}
+                              x={cx - r / 2}
+                              y={cy - r / 2}
+                              width={r}
+                              height={r}
+                              fill="white"
+                              stroke="var(--color-deliveries)"
+                            />
+                          );
+                        }}
+                      />
+                      <Line
+                        dataKey="avg_hours"
+                        type="natural"
+                        stroke="var(--color-avg_hours)"
+                        strokeWidth={2}
+                        dot={({ cx, cy, payload }) => {
+                          if (cx == null || cy == null) {
+                            return null;
+                          }
+                          const r = 24;
+                          return (
+                            <GitCommitVertical
+                              key={`${payload.date}-hours`}
+                              x={cx - r / 2}
+                              y={cy - r / 2}
+                              width={r}
+                              height={r}
+                              fill="white"
+                              stroke="var(--color-avg_hours)"
+                            />
+                          );
+                        }}
+                      />
+                    </LineChart>
+                  </ChartContainer>
+                </CardContent>
+              </div>
+              <div className="px-6 pb-6 pt-0 flex flex-col items-start gap-1.5 text-sm">
+                <div className="flex gap-1.5 items-center leading-none font-medium text-xs text-slate-700">
+                  Performa bulan ini meningkat {analyticsResponse?.monthly_change_percent || 0}%{' '}
+                  <TrendingUp className="h-4 w-4 text-slate-400" />
+                </div>
+                <div className="leading-none text-[10px] text-slate-400 font-medium">
+                  Menampilkan total paket terkirim dan rata-rata durasi transit dalam 6 bulan
+                  terakhir.
+                </div>
+              </div>
+            </Card>
 
-        {/* Status distributions */}
-        <Card className="border-slate-200 shadow-sm bg-white">
-          <CardHeader>
-            <CardTitle className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
-              <BarChart3 className="w-4 h-4 text-green-600" /> Distribusi Status Paket
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Peta komposisi daur hidup paket yang di-assign seumur hidup.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-6 pt-2">
-            <div className="h-72 w-full text-xs">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={MOCK_STATUS_DISTRIBUTION}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={90}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label={({ name, percent }) => `${name} (${((percent || 0) * 100).toFixed(0)}%)`}
+            {/* Status distributions */}
+            <Card className="border-slate-200 shadow-sm bg-white overflow-hidden flex flex-col justify-between">
+              <div>
+                <CardHeader>
+                  <CardTitle className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                    <BarChart3 className="w-4 h-4 text-slate-400" /> Distribusi Status Paket
+                  </CardTitle>
+                  <CardDescription className="text-xs">
+                    Peta komposisi daur hidup paket yang di-assign seumur hidup.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-6 pt-2">
+                  <ChartContainer
+                    config={chartConfig}
+                    className="mx-auto aspect-square max-h-[288px] w-full"
                   >
-                    {MOCK_STATUS_DISTRIBUTION.map((_entry: unknown, index: number) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => [`${value} Paket`, 'Jumlah']} />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+                    <PieChart>
+                      <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                      <Pie
+                        data={chartData}
+                        dataKey="count"
+                        nameKey="status"
+                        innerRadius={60}
+                        strokeWidth={5}
+                      >
+                        <Label
+                          content={({ viewBox }) => {
+                            if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+                              return (
+                                <text
+                                  x={viewBox.cx}
+                                  y={viewBox.cy}
+                                  textAnchor="middle"
+                                  dominantBaseline="middle"
+                                >
+                                  <tspan
+                                    x={viewBox.cx}
+                                    y={viewBox.cy}
+                                    className="fill-slate-800 text-3xl font-bold font-sans"
+                                  >
+                                    {totalPackages.toLocaleString()}
+                                  </tspan>
+                                  <tspan
+                                    x={viewBox.cx}
+                                    y={(viewBox.cy || 0) + 20}
+                                    className="fill-slate-400 text-[10px] font-bold uppercase tracking-wider font-sans"
+                                  >
+                                    Total Paket
+                                  </tspan>
+                                </text>
+                              );
+                            }
+                          }}
+                        />
+                      </Pie>
+                    </PieChart>
+                  </ChartContainer>
+                </CardContent>
+              </div>
+              <div className="px-6 pb-6 pt-0 flex flex-col items-start gap-1.5 text-sm">
+                <div className="flex gap-1.5 items-center leading-none font-medium text-xs text-slate-700">
+                  Mayoritas paket berstatus sukses terkirim{' '}
+                  <Award className="h-4 w-4 text-slate-400" />
+                </div>
+                <div className="leading-none text-[10px] text-slate-400 font-medium">
+                  Menampilkan kontribusi status pengiriman paket seumur hidup kurir logistik.
+                </div>
+              </div>
+            </Card>
+          </div>
+        </>
+      )}
     </div>
   );
 }
