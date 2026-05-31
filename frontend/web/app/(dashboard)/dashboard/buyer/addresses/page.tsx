@@ -219,9 +219,7 @@ export default function BuyerAddressesPage() {
         <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
           <div className="flex items-center gap-2">
             <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-            <p>
-              Layanan Alamat Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
-            </p>
+            <p>Layanan Alamat Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.</p>
           </div>
           <Button
             variant="outline"
@@ -269,12 +267,14 @@ export default function BuyerAddressesPage() {
 
             <div className="grid gap-3 text-xs font-semibold text-muted-foreground">
               <div className="space-y-1">
-                <label className="text-card-foreground">Label Alamat (cth: Rumah, Kantor, Toko)</label>
+                <label className="text-card-foreground">
+                  Label Alamat (cth: Rumah, Kantor, Toko)
+                </label>
                 <Input
                   value={label}
                   onChange={(e) => setLabel(e.target.value)}
                   required
-                  className="h-9 focus-visible:ring-primary text-xs bg-background text-foreground"
+                  className="h-9 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs bg-background text-foreground"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -284,7 +284,7 @@ export default function BuyerAddressesPage() {
                     value={recipientName}
                     onChange={(e) => setRecipientName(e.target.value)}
                     required
-                    className="h-9 focus-visible:ring-primary text-xs bg-background text-foreground"
+                    className="h-9 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs bg-background text-foreground"
                   />
                 </div>
                 <div className="space-y-1">
@@ -293,7 +293,7 @@ export default function BuyerAddressesPage() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
-                    className="h-9 focus-visible:ring-primary text-xs bg-background text-foreground"
+                    className="h-9 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs bg-background text-foreground"
                   />
                 </div>
               </div>
@@ -304,7 +304,7 @@ export default function BuyerAddressesPage() {
                     value={province}
                     onChange={(e) => setProvince(e.target.value)}
                     required
-                    className="h-9 focus-visible:ring-primary text-xs bg-background text-foreground"
+                    className="h-9 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs bg-background text-foreground"
                   />
                 </div>
                 <div className="space-y-1">
@@ -313,7 +313,7 @@ export default function BuyerAddressesPage() {
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     required
-                    className="h-9 focus-visible:ring-primary text-xs bg-background text-foreground"
+                    className="h-9 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs bg-background text-foreground"
                   />
                 </div>
               </div>
@@ -324,7 +324,7 @@ export default function BuyerAddressesPage() {
                     value={district}
                     onChange={(e) => setDistrict(e.target.value)}
                     required
-                    className="h-9 focus-visible:ring-primary text-xs bg-background text-foreground"
+                    className="h-9 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs bg-background text-foreground"
                   />
                 </div>
                 <div className="space-y-1">
@@ -333,12 +333,14 @@ export default function BuyerAddressesPage() {
                     value={postalCode}
                     onChange={(e) => setPostalCode(e.target.value)}
                     required
-                    className="h-9 focus-visible:ring-primary text-xs bg-background text-foreground"
+                    className="h-9 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs bg-background text-foreground"
                   />
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="text-card-foreground">Alamat Lengkap (Blok, No. Rumah, Jalan)</label>
+                <label className="text-card-foreground">
+                  Alamat Lengkap (Blok, No. Rumah, Jalan)
+                </label>
                 <textarea
                   value={fullAddress}
                   onChange={(e) => setFullAddress(e.target.value)}
@@ -358,11 +360,7 @@ export default function BuyerAddressesPage() {
               >
                 Batal
               </Button>
-              <Button
-                type="submit"
-                size="sm"
-                className="h-9 text-xs font-semibold cursor-pointer"
-              >
+              <Button type="submit" size="sm" className="h-9 text-xs font-semibold cursor-pointer">
                 Simpan Alamat
               </Button>
             </DialogFooter>
@@ -382,8 +380,8 @@ export default function BuyerAddressesPage() {
             <Card
               key={addr.id}
               className={`flex flex-col justify-between overflow-hidden transition-all duration-200 hover:shadow-md ${
-                addr.is_default 
-                  ? 'border-primary/40 ring-1 ring-primary/10 bg-accent/30' 
+                addr.is_default
+                  ? 'border-primary/40 ring-1 ring-primary/10 bg-accent/30'
                   : 'border-border bg-card'
               }`}
             >
