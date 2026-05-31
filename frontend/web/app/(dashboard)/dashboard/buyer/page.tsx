@@ -374,7 +374,7 @@ export default function BuyerDashboardOverview() {
       {/* Chart Column */}
       {isChartError ? (
         <Card className="flex h-[350px] items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
-          Gagal memuat grafik pengeluaran belanja / Koneksi ke server terputus
+          Gagal memuat data grafik pengeluaran / Koneksi ke server terputus
         </Card>
       ) : isLoading ? (
         <Skeleton className="h-[350px] w-full rounded-xl" />
