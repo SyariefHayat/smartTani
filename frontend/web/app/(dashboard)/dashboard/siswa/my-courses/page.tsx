@@ -161,7 +161,7 @@ export default function StudentMyCoursesPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-800 flex items-center gap-2">
-          <BookOpen className="h-7 w-7 text-green-600" /> Kelas & Kursus Saya
+          <BookOpen className="h-7 w-7 text-slate-700" /> Kelas & Kursus Saya
         </h1>
         <p className="text-xs text-slate-500 font-semibold mt-1">
           Pantau status pendaftaran kelas Anda, lanjutkan pembelajaran bab silabus, dan akses
@@ -222,7 +222,7 @@ export default function StudentMyCoursesPage() {
               <Link href="/dashboard/siswa/courses" className="inline-block mt-2">
                 <Button
                   size="sm"
-                  className="bg-green-600 hover:bg-green-700 text-xs font-bold text-white shadow-sm cursor-pointer"
+                  className="bg-slate-800 hover:bg-slate-900 text-xs font-bold text-white shadow-sm cursor-pointer"
                 >
                   Jelajahi Kursus
                 </Button>
@@ -234,12 +234,12 @@ export default function StudentMyCoursesPage() {
             {filteredEnrollments.map((enroll) => (
               <Card
                 key={enroll.id}
-                className="border-slate-200 hover:border-green-300 hover:shadow-md transition-all duration-300 bg-white overflow-hidden flex flex-col justify-between group"
+                className="border-slate-200 hover:border-slate-355 hover:shadow-md transition-all duration-300 bg-white overflow-hidden flex flex-col justify-between group"
               >
                 <CardContent className="pt-5 space-y-4">
                   {/* Category & Badge */}
                   <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-0.5 text-[9px] font-bold text-green-700 border border-green-100">
+                    <span className="inline-flex items-center rounded-md bg-slate-50 px-2 py-0.5 text-[9px] font-bold text-slate-700 border border-slate-200">
                       {enroll.course?.category}
                     </span>
                     {enroll.status === 'completed' ? (
@@ -255,7 +255,7 @@ export default function StudentMyCoursesPage() {
 
                   {/* Title & Instructor */}
                   <div className="space-y-1">
-                    <h3 className="text-sm font-bold text-slate-800 leading-snug group-hover:text-green-600 transition-colors line-clamp-2">
+                    <h3 className="text-sm font-bold text-slate-800 leading-snug group-hover:text-slate-750 transition-colors line-clamp-2">
                       {enroll.course?.title}
                     </h3>
                     <p className="text-[10px] font-semibold text-slate-500">
@@ -267,12 +267,9 @@ export default function StudentMyCoursesPage() {
                   <div className="space-y-1.5 pt-2 border-t border-slate-100">
                     <div className="flex justify-between text-[10px] font-bold text-slate-500">
                       <span>Kemajuan Silabus</span>
-                      <span className="text-green-600">{enroll.progress_percent}%</span>
+                      <span className="text-slate-850 font-bold">{enroll.progress_percent}%</span>
                     </div>
-                    <Progress
-                      value={enroll.progress_percent}
-                      className="h-1.5 bg-slate-100 text-green-600"
-                    />
+                    <Progress value={enroll.progress_percent} className="h-1.5 bg-slate-100" />
                   </div>
                 </CardContent>
 
@@ -294,7 +291,7 @@ export default function StudentMyCoursesPage() {
                     </Link>
                   ) : (
                     <Link href={`/dashboard/siswa/courses/${enroll.course_id}/learn`}>
-                      <Button className="bg-green-600 hover:bg-green-700 text-white font-bold text-xs h-9 px-3 gap-1 rounded-xl shadow-sm cursor-pointer w-full sm:w-auto">
+                      <Button className="bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs h-9 px-3 gap-1 rounded-xl shadow-sm cursor-pointer w-full sm:w-auto">
                         <Play className="h-3 w-3 fill-current" /> Lanjut Belajar{' '}
                         <ArrowRight className="h-3.5 w-3.5" />
                       </Button>
