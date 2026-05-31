@@ -9,7 +9,14 @@ import { getStoredAuthUser } from '@/lib/auth-storage';
 import { formatCurrency } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -19,20 +26,56 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import {
-  Boxes,
-  ShoppingCart,
-  Handshake,
-  Wallet,
-  ArrowRight,
-  TrendingUp,
-  AlertTriangle,
-  FileText,
-  Plus,
-} from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { ChartContainer, ChartTooltip, type ChartConfig } from '@/components/ui/chart';
+import { Boxes, ShoppingCart, Handshake, Wallet, ArrowRight, Plus } from 'lucide-react';
 
-const MOCK_ANALYTICS = {
+const chartConfig = {
+  spending: {
+    label: 'Belanja Grosir',
+    color: '#16a34a',
+  },
+} satisfies ChartConfig;
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    value: number;
+    dataKey: string | number;
+    name: string;
+    [key: string]: unknown;
+  }>;
+  label?: string | number;
+}
+
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="rounded-xl border border-slate-100 bg-white/95 p-3 shadow-lg backdrop-blur-md min-w-48 text-slate-800">
+        <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase border-b pb-1.5 border-slate-100">
+          Bulan {label}
+        </p>
+        <div className="space-y-2 mt-2.5">
+          {payload.map((item, index) => (
+            <div key={index} className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-green-500" />
+                <span className="text-xs text-slate-500 font-medium">{item.name}</span>
+              </div>
+              <span className="text-xs font-bold text-slate-900">
+                {formatCurrency(Number(item.value))}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _MOCK_ANALYTICS = {
   total_spending: 125000000,
   monthly_spending: 34500000,
   spending_change_percent: 12.5,
@@ -52,7 +95,8 @@ const MOCK_ANALYTICS = {
   ],
 };
 
-const MOCK_SPENDING_CHART = [
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _MOCK_SPENDING_CHART = [
   { month: 'Des', spending: 18000000, orders_count: 4 },
   { month: 'Jan', spending: 22000000, orders_count: 5 },
   { month: 'Feb', spending: 15000000, orders_count: 3 },
@@ -61,7 +105,8 @@ const MOCK_SPENDING_CHART = [
   { month: 'Mei', spending: 34500000, orders_count: 8 },
 ];
 
-const MOCK_RECENT_ORDERS = [
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _MOCK_RECENT_ORDERS = [
   {
     id: 'ORD-98822',
     total_amount: 14500000,
@@ -106,68 +151,78 @@ const MOCK_RECENT_ORDERS = [
 
 export default function DistributorOverviewPage() {
   const user = getStoredAuthUser();
-  const [isOffline, setIsOffline] = React.useState(false);
 
   // Queries
-  const { data: analytics, isLoading: isAnalyticsLoading } = useQuery({
+  const {
+    data: analytics,
+    isLoading: isAnalyticsLoading,
+    isError: isAnalyticsError,
+  } = useQuery({
     queryKey: ['distributor-analytics', user?.id],
     queryFn: async () => {
-      try {
-        if (!user?.id) throw new Error('Unauthenticated');
-        return await distributorService.getAnalytics(user.id);
-      } catch {
-        setIsOffline(true);
-        return MOCK_ANALYTICS;
-      }
+      if (!user?.id) throw new Error('Unauthenticated');
+      return await distributorService.getAnalytics(user.id);
     },
+    enabled: !!user?.id,
   });
 
-  const { data: spendingChart, isLoading: isSpendingLoading } = useQuery({
+  const {
+    data: spendingChart,
+    isLoading: isSpendingLoading,
+    isError: isChartError,
+  } = useQuery({
     queryKey: ['distributor-spending-chart', user?.id],
     queryFn: async () => {
-      try {
-        if (!user?.id) throw new Error('Unauthenticated');
-        return await distributorService.getSpendingChart(user.id);
-      } catch {
-        return MOCK_SPENDING_CHART;
-      }
+      if (!user?.id) throw new Error('Unauthenticated');
+      return await distributorService.getSpendingChart(user.id);
     },
+    enabled: !!user?.id,
   });
 
-  const { data: recentOrders, isLoading: isOrdersLoading } = useQuery({
+  const {
+    data: recentOrders,
+    isLoading: isOrdersLoading,
+    isError: isOrdersError,
+  } = useQuery({
     queryKey: ['distributor-recent-orders', user?.id],
-    queryFn: async () => {
-      try {
-        const res = await orderService.getOrders({ limit: 5 });
-        if (!res || !res.data || !res.data.orders || res.data.orders.length === 0)
-          return MOCK_RECENT_ORDERS;
-        return res.data.orders;
-      } catch {
-        return MOCK_RECENT_ORDERS;
+    queryFn: async (): Promise<Record<string, unknown>[]> => {
+      const res = await orderService.getOrders({ limit: 5 });
+      if (!res || !res.data || !res.data.orders) {
+        throw new Error('Gagal memuat pesanan');
       }
+      return res.data.orders as unknown as Record<string, unknown>[];
     },
+    enabled: !!user?.id,
   });
 
-  const isLoading = isAnalyticsLoading || isSpendingLoading || isOrdersLoading;
+  const isQueryError = isAnalyticsError || isChartError || isOrdersError;
+  const isLoading = (isAnalyticsLoading || isSpendingLoading || isOrdersLoading) && !isQueryError;
 
   React.useEffect(() => {
-    if (isOffline) {
-      toast.error('Layanan B2B luring. Menggunakan data demo lokal.', {
-        description: 'Menampilkan data simulasi memori offline.',
-        duration: 4000,
-      });
+    if (isQueryError) {
+      toast.error('Koneksi ke server terputus. Gagal memuat data teraktual.');
     }
-  }, [isOffline]);
+  }, [isQueryError]);
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <Skeleton className="h-10 w-64" />
-        <div className="grid gap-4 md:grid-cols-4">
-          <Skeleton className="h-28" />
-          <Skeleton className="h-28" />
-          <Skeleton className="h-28" />
-          <Skeleton className="h-28" />
+      <div className="w-full space-y-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <Skeleton className="h-10 w-48" />
+          <Skeleton className="h-10 w-36" />
+        </div>
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i} className="min-w-0">
+              <CardHeader className="gap-1 pb-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-8 w-full" />
+              </CardHeader>
+              <CardFooter className="flex-col items-start gap-1.5 text-sm mt-1.5 pt-0">
+                <Skeleton className="h-4 w-full" />
+              </CardFooter>
+            </Card>
+          ))}
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           <Skeleton className="h-80 md:col-span-2" />
@@ -177,19 +232,61 @@ export default function DistributorOverviewPage() {
     );
   }
 
-  const activeAnalytics = analytics || MOCK_ANALYTICS;
-  const activeOrders = (recentOrders || MOCK_RECENT_ORDERS) as unknown as typeof MOCK_RECENT_ORDERS;
-  const activeChart = spendingChart || MOCK_SPENDING_CHART;
+  const activeAnalytics = analytics || {
+    total_spending: 0,
+    monthly_spending: 0,
+    spending_change_percent: 0,
+    active_orders: 0,
+    total_orders: 0,
+    unique_suppliers: 0,
+    unique_products_bought: 0,
+    top_products: [],
+  };
+  const activeOrders = recentOrders || [];
+  const activeChart = spendingChart || [];
+
+  const spendingChange = activeAnalytics.spending_change_percent || 0;
+
+  const kpis = [
+    {
+      title: 'Belanja Bulan Ini',
+      value: formatCurrency(activeAnalytics.monthly_spending),
+      footer: `+${spendingChange.toFixed(1)}% dari bulan lalu`,
+      icon: Wallet,
+      iconColorClass: 'text-emerald-500',
+    },
+    {
+      title: 'Pesanan Aktif',
+      value: `${activeAnalytics.active_orders} Pesanan`,
+      footer: `Total ${activeAnalytics.total_orders} pesanan selesai`,
+      icon: ShoppingCart,
+      iconColorClass: 'text-blue-500',
+    },
+    {
+      title: 'Mitra Petani',
+      value: `${activeAnalytics.unique_suppliers} Petani`,
+      footer: 'Supplier suplai aktif',
+      icon: Handshake,
+      iconColorClass: 'text-purple-500',
+    },
+    {
+      title: 'Total Gudang',
+      value: '1.250 kg',
+      footer: `${activeAnalytics.unique_products_bought} jenis komoditas`,
+      icon: Boxes,
+      iconColorClass: 'text-amber-500',
+    },
+  ] as const;
 
   return (
     <div className="w-full space-y-6 text-slate-900">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-800">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-slate-900">
             Ringkasan Bisnis Distributor
           </h1>
-          <p className="text-xs text-slate-500 font-medium mt-1">
+          <p className="text-xs text-slate-500 font-medium">
             Selamat datang kembali,{' '}
             <span className="font-bold text-green-700">
               {user?.name || user?.full_name || 'Mitra B2B'}
@@ -197,157 +294,102 @@ export default function DistributorOverviewPage() {
             . Kelola rantai pasok dan pembelian grosir Anda.
           </p>
         </div>
-        <div className="flex gap-2">
-          <Link href="/dashboard/distributor/catalog">
-            <Button className="bg-green-600 hover:bg-green-700 text-white font-bold text-xs h-10 px-4 rounded-lg flex items-center gap-1.5 cursor-pointer shadow-sm">
-              <Plus className="h-4 w-4" /> Belanja Grosir B2B
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+          <Link href="/dashboard/distributor/catalog" className="w-full sm:w-auto">
+            <Button className="w-full sm:w-auto cursor-pointer">
+              <Plus className="mr-2 h-4 w-4" /> Belanja Grosir B2B
             </Button>
           </Link>
         </div>
       </div>
 
-      {/* Offline Alert Banner */}
-      {isOffline && (
-        <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-4 flex items-start gap-3 shadow-sm">
-          <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-xs font-bold text-amber-800">Modus Simulasi Luring Aktif</h4>
-            <p className="text-[11px] text-amber-600/90 font-medium mt-0.5 leading-relaxed">
-              Koneksi ke backend SmartTani terputus atau luring. Semua fitur manajemen kemitraan,
-              keranjang grosir B2B, checkout, dan mutasi barang gudang berjalan secara simulasi
-              memori lokal berperingkat tinggi.
-            </p>
-          </div>
+      {/* KPI Cards Grid (Sesuai Gaya Investor/Farmer Overview) */}
+      {isAnalyticsError ? (
+        <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+          Gagal memuat data statistik B2B / Koneksi ke server terputus
+        </div>
+      ) : (
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+          {kpis.map((card, index) => {
+            const Icon = card.icon;
+            return (
+              <Card key={index} className="min-w-0">
+                <CardHeader className="gap-1">
+                  <CardDescription className="truncate text-xs">{card.title}</CardDescription>
+                  <CardTitle
+                    className="truncate text-xl font-semibold tabular-nums lg:text-2xl"
+                    title={card.value}
+                  >
+                    {card.value}
+                  </CardTitle>
+                </CardHeader>
+                <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                  <div className="flex w-full min-w-0 items-center gap-1 font-medium">
+                    <Icon className={`size-4 shrink-0 ${card.iconColorClass}`} />
+                    <span className="truncate text-muted-foreground">{card.footer}</span>
+                  </div>
+                </CardFooter>
+              </Card>
+            );
+          })}
         </div>
       )}
-
-      {/* KPI Cards Grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {/* KPI 1: Total Spending */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <span className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider block">
-              Belanja Bulan Ini
-            </span>
-            <div className="p-2 bg-green-50 rounded-lg text-green-600">
-              <Wallet className="h-4 w-4" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl font-bold text-slate-800">
-              {formatCurrency(activeAnalytics.monthly_spending)}
-            </div>
-            <div className="text-[10.5px] font-semibold text-slate-500 mt-1 flex items-center gap-1">
-              <span className="text-green-600 flex items-center gap-0.5 font-bold">
-                <TrendingUp className="h-3 w-3" /> +{activeAnalytics.spending_change_percent}%
-              </span>
-              dari bulan lalu
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* KPI 2: Active Orders */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <span className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider block">
-              Pesanan Aktif
-            </span>
-            <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
-              <ShoppingCart className="h-4 w-4" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl font-bold text-slate-800">
-              {activeAnalytics.active_orders}{' '}
-              <span className="text-xs font-medium text-slate-500">Pesanan</span>
-            </div>
-            <div className="text-[10.5px] font-semibold text-slate-500 mt-1">
-              Total {activeAnalytics.total_orders} pesanan selesai
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* KPI 3: Unique Suppliers */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <span className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider block">
-              Mitra Petani
-            </span>
-            <div className="p-2 bg-purple-50 rounded-lg text-purple-600">
-              <Handshake className="h-4 w-4" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl font-bold text-slate-800">
-              {activeAnalytics.unique_suppliers}{' '}
-              <span className="text-xs font-medium text-slate-500">Petani</span>
-            </div>
-            <div className="text-[10.5px] font-semibold text-slate-500 mt-1">
-              Supplier suplai aktif
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* KPI 4: Stock Gudang */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <span className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider block">
-              Total Gudang
-            </span>
-            <div className="p-2 bg-amber-50 rounded-lg text-amber-600">
-              <Boxes className="h-4 w-4" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl font-bold text-slate-800">
-              1.250 <span className="text-xs font-medium text-slate-500">kg/unit</span>
-            </div>
-            <div className="text-[10.5px] font-semibold text-slate-500 mt-1">
-              {activeAnalytics.unique_products_bought} jenis komoditas terlacak
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Main Contents */}
       <div className="grid gap-6 md:grid-cols-3">
         {/* Left Side: Chart */}
-        <Card className="border-slate-200 shadow-sm bg-white md:col-span-2 flex flex-col justify-between">
-          <CardHeader className="pb-2 border-b border-slate-50">
-            <CardTitle className="text-sm font-bold text-slate-800">
-              Riwayat Pengeluaran Belanja Grosir
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Tren nominal pembelian grosir B2B Anda selama 6 bulan terakhir.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={activeChart} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis
-                    dataKey="month"
-                    stroke="#94a3b8"
-                    fontSize={11}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
-                  <Tooltip
-                    contentStyle={{
-                      background: '#0f172a',
-                      borderRadius: '8px',
-                      color: '#fff',
-                      fontSize: '11px',
-                      border: 'none',
-                    }}
-                    formatter={(value) => [formatCurrency(Number(value)), 'Belanja']}
-                  />
-                  <Bar dataKey="spending" fill="#16a34a" radius={[6, 6, 0, 0]} maxBarSize={45} />
-                </BarChart>
-              </ResponsiveContainer>
+        <Card className="w-full overflow-hidden md:col-span-2 flex flex-col justify-between">
+          <CardHeader className="flex flex-col items-stretch border-b p-0! sm:flex-row border-slate-100">
+            <div className="flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:py-0!">
+              <CardTitle className="font-semibold text-base text-slate-800">
+                Riwayat Pengeluaran Belanja Grosir
+              </CardTitle>
+              <CardDescription className="text-xs text-slate-500">
+                Tren nominal pembelian grosir B2B Anda selama 6 bulan terakhir.
+              </CardDescription>
             </div>
+            <div className="flex border-t border-slate-100 sm:border-t-0 sm:border-l">
+              <div className="relative z-30 flex flex-1 flex-col justify-center gap-1 px-6 py-4 text-left bg-slate-50/50 sm:px-8 sm:py-6 min-w-56">
+                <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">
+                  Total Belanja B2B
+                </span>
+                <span className="text-base leading-none font-bold sm:text-2xl mt-1 text-slate-800">
+                  {formatCurrency(activeAnalytics.total_spending || 0)}
+                </span>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6">
+            {isChartError ? (
+              <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                Gagal memuat grafik pengeluaran / Koneksi ke server terputus
+              </div>
+            ) : (
+              <div className="h-64 w-full">
+                <ChartContainer config={chartConfig} className="h-full w-full aspect-auto">
+                  <BarChart data={activeChart} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                    <XAxis
+                      dataKey="month"
+                      stroke="#94a3b8"
+                      fontSize={11}
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={8}
+                    />
+                    <YAxis hide />
+                    <ChartTooltip content={<CustomTooltip />} />
+                    <Bar
+                      dataKey="spending"
+                      name={chartConfig.spending.label}
+                      fill="var(--color-spending)"
+                      radius={[4, 4, 0, 0]}
+                      maxBarSize={45}
+                    />
+                  </BarChart>
+                </ChartContainer>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -388,13 +430,13 @@ export default function DistributorOverviewPage() {
       </div>
 
       {/* Recent Orders Section */}
-      <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-        <CardHeader className="pb-3 border-b border-slate-50 flex flex-row items-center justify-between">
-          <div>
-            <CardTitle className="text-sm font-bold text-slate-800">
+      <Card className="w-full">
+        <CardHeader className="flex flex-row items-center justify-between pb-4">
+          <div className="space-y-1">
+            <CardTitle className="text-base font-bold text-slate-800">
               Aktivitas Pesanan Terbaru
             </CardTitle>
-            <CardDescription className="text-xs">
+            <CardDescription className="text-xs text-slate-500">
               Daftar transaksi grosir tani yang baru-baru ini diproses.
             </CardDescription>
           </div>
@@ -405,101 +447,110 @@ export default function DistributorOverviewPage() {
             Semua Pesanan <ArrowRight className="h-4 w-4" />
           </Link>
         </CardHeader>
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader className="bg-slate-50/50">
-                <TableRow className="border-b border-slate-100">
-                  <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider py-3">
-                    Order ID
-                  </TableHead>
-                  <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider">
-                    Mitra Petani
-                  </TableHead>
-                  <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-center">
-                    Jumlah Barang
-                  </TableHead>
-                  <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-right">
-                    Total Bayar
-                  </TableHead>
-                  <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-center">
-                    Status
-                  </TableHead>
-                  <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-right">
-                    Tanggal
-                  </TableHead>
-                  <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-center">
-                    Aksi
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {activeOrders.map((order: (typeof MOCK_RECENT_ORDERS)[number]) => {
-                  const statusColors: Record<string, string> = {
-                    pending_payment: 'bg-amber-50 text-amber-700 border-amber-200/50',
-                    paid: 'bg-blue-50 text-blue-700 border-blue-200/50',
-                    confirmed: 'bg-purple-50 text-purple-700 border-purple-200/50',
-                    shipped: 'bg-indigo-50 text-indigo-700 border-indigo-200/50',
-                    completed: 'bg-green-50 text-green-700 border-green-200/50',
-                    cancelled: 'bg-rose-50 text-rose-700 border-rose-200/50',
-                  };
-
-                  const statusLabels: Record<string, string> = {
-                    pending_payment: 'Menunggu Bayar',
-                    paid: 'Dibayar',
-                    confirmed: 'Dikonfirmasi',
-                    shipped: 'Dikirim',
-                    completed: 'Selesai',
-                    cancelled: 'Batal',
-                  };
-
-                  return (
-                    <TableRow
-                      key={order.id}
-                      className="border-b border-slate-100 hover:bg-slate-50/40"
-                    >
-                      <TableCell className="font-bold text-xs py-3 text-slate-800">
-                        {order.id}
-                      </TableCell>
-                      <TableCell className="text-xs font-semibold text-slate-600">
-                        {order.seller?.full_name || 'Petani Mandiri'}
-                      </TableCell>
-                      <TableCell className="text-xs font-bold text-slate-600 text-center">
-                        {order.items_count} Jenis
-                      </TableCell>
-                      <TableCell className="text-xs font-bold text-slate-800 text-right">
-                        {formatCurrency(order.total_amount)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <span
-                          className={`inline-flex items-center rounded-lg border px-2.5 py-0.5 text-[10.5px] font-bold ${statusColors[order.status] || 'bg-slate-50 text-slate-600'}`}
-                        >
-                          {statusLabels[order.status] || order.status}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-xs font-semibold text-slate-500 text-right">
-                        {new Date(order.created_at || '').toLocaleDateString('id-ID', {
-                          day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Link href={`/dashboard/distributor/orders/${order.id}`}>
-                          <Button
-                            variant="ghost"
-                            className="h-8 px-2 text-xs font-bold text-green-600 hover:text-green-700 hover:bg-green-50/50 flex items-center gap-1 justify-center mx-auto cursor-pointer"
-                          >
-                            <FileText className="h-3.5 w-3.5" /> Detail
-                          </Button>
-                        </Link>
-                      </TableCell>
+        <CardContent>
+          {isOrdersError ? (
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat data aktivitas pesanan terbaru / Koneksi ke server terputus
+            </div>
+          ) : (
+            <>
+              <div className="overflow-hidden rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-25">Order ID</TableHead>
+                      <TableHead>Mitra Petani</TableHead>
+                      <TableHead className="text-center">Jumlah Barang</TableHead>
+                      <TableHead className="text-right">Total Bayar</TableHead>
+                      <TableHead className="text-center">Status</TableHead>
+                      <TableHead className="text-right">Tanggal</TableHead>
+                      <TableHead className="text-right"></TableHead>
                     </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </div>
+                  </TableHeader>
+                  <TableBody>
+                    {activeOrders.map((order: (typeof MOCK_RECENT_ORDERS)[number]) => {
+                      const statusColors: Record<string, string> = {
+                        pending_payment: 'bg-amber-50 text-amber-700 border-amber-200/50',
+                        paid: 'bg-blue-50 text-blue-700 border-blue-200/50',
+                        confirmed: 'bg-purple-50 text-purple-700 border-purple-200/50',
+                        shipped: 'bg-indigo-50 text-indigo-700 border-indigo-200/50',
+                        completed: 'bg-green-50 text-green-700 border-green-200/50',
+                        cancelled: 'bg-rose-50 text-rose-700 border-rose-200/50',
+                      };
+
+                      const statusLabels: Record<string, string> = {
+                        pending_payment: 'Menunggu Bayar',
+                        paid: 'Dibayar',
+                        confirmed: 'Dikonfirmasi',
+                        shipped: 'Dikirim',
+                        completed: 'Selesai',
+                        cancelled: 'Batal',
+                      };
+
+                      return (
+                        <TableRow key={order.id}>
+                          <TableCell className="font-medium text-xs">
+                            <span className="font-mono text-xs font-bold text-slate-500">
+                              {order.id}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-xs font-semibold text-slate-700">
+                            {order.seller?.full_name || 'Petani Mandiri'}
+                          </TableCell>
+                          <TableCell className="text-center text-xs font-medium text-slate-600">
+                            {order.items_count} Jenis
+                          </TableCell>
+                          <TableCell className="text-right font-medium text-xs">
+                            {formatCurrency(order.total_amount)}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <span
+                              className={`inline-flex items-center rounded-lg border px-2.5 py-0.5 text-[10.5px] font-bold ${statusColors[order.status] || 'bg-slate-50 text-slate-600'}`}
+                            >
+                              {statusLabels[order.status] || order.status}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-right text-xs text-slate-500">
+                            {new Date(order.created_at || '').toLocaleDateString('id-ID', {
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                            })}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Link href={`/dashboard/distributor/orders/${order.id}`}>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 text-xs font-bold text-green-600 hover:text-green-700 hover:bg-green-50/50 cursor-pointer"
+                              >
+                                Detail
+                              </Button>
+                            </Link>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Pagination */}
+              <div className="flex items-center justify-end space-x-2 py-4">
+                <div className="flex-1 text-sm text-muted-foreground">
+                  Menampilkan 1-{activeOrders.length} dari {activeOrders.length} pesanan
+                </div>
+                <div className="space-x-2">
+                  <Button variant="outline" size="sm" disabled={true} className="cursor-pointer">
+                    Sebelumnya
+                  </Button>
+                  <Button variant="outline" size="sm" disabled={true} className="cursor-pointer">
+                    Berikutnya
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>

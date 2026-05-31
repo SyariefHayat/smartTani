@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { orderService } from '@/services/order';
 import { getStoredAuthUser } from '@/lib/auth-storage';
@@ -25,8 +26,17 @@ import {
   CreditCard,
   CheckSquare,
   FileText,
-  AlertTriangle,
+  MoreHorizontal,
 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface DistributorOrder {
   id: string;
@@ -91,26 +101,31 @@ const MOCK_ORDERS: DistributorOrder[] = [
 
 export default function DistributorOrdersPage() {
   const user = getStoredAuthUser();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = React.useState('');
   const [statusFilter, setStatusFilter] = React.useState('all');
-  const [isOffline, setIsOffline] = React.useState(false);
 
   // Fetch orders
-  const { data: orders, isLoading } = useQuery({
+  const {
+    data: orders,
+    isLoading,
+    isError: isOrdersError,
+  } = useQuery({
     queryKey: ['distributor-orders', user?.id],
-    queryFn: async () => {
-      try {
-        const res = await orderService.getOrders();
-        if (!res || !res.data || !res.data.orders || res.data.orders.length === 0)
-          throw new Error('Empty');
-        return res.data.orders;
-      } catch {
-        setIsOffline(true);
-        return MOCK_ORDERS;
-      }
+    queryFn: async (): Promise<DistributorOrder[]> => {
+      const res = await orderService.getOrders();
+      if (!res || !res.data || !res.data.orders) throw new Error('Empty');
+      return res.data.orders as unknown as DistributorOrder[];
     },
+    enabled: !!user?.id,
   });
+
+  React.useEffect(() => {
+    if (isOrdersError) {
+      toast.error('Koneksi ke server terputus. Gagal memuat data teraktual.');
+    }
+  }, [isOrdersError]);
 
   // Payment mutation
   const payMutation = useMutation({
@@ -123,8 +138,7 @@ export default function DistributorOrdersPage() {
       } catch {
         // Local simulation fallback: update query client cache directly
         queryClient.setQueryData(['distributor-orders', user?.id], (old: unknown) => {
-          const currentList =
-            (old as DistributorOrder[]) || (MOCK_ORDERS as unknown as DistributorOrder[]);
+          const currentList = (old as DistributorOrder[]) || [];
           return currentList.map((o) =>
             o.id === orderId ? { ...o, status: 'paid' } : o
           ) as DistributorOrder[];
@@ -148,8 +162,7 @@ export default function DistributorOrdersPage() {
       } catch {
         // Local simulation fallback: update query client cache directly
         queryClient.setQueryData(['distributor-orders', user?.id], (old: unknown) => {
-          const currentList =
-            (old as DistributorOrder[]) || (MOCK_ORDERS as unknown as DistributorOrder[]);
+          const currentList = (old as DistributorOrder[]) || [];
           return currentList.map((o) =>
             o.id === orderId ? { ...o, status: 'completed' } : o
           ) as DistributorOrder[];
@@ -164,7 +177,7 @@ export default function DistributorOrdersPage() {
     },
   });
 
-  const activeOrders = (orders || MOCK_ORDERS) as DistributorOrder[];
+  const activeOrders = orders || MOCK_ORDERS;
 
   // Search and filter logic
   const filteredOrders = activeOrders.filter((order) => {
@@ -196,19 +209,6 @@ export default function DistributorOrdersPage() {
           Pantau status pemesanan bulk B2B komoditas pertanian Anda dari petani mitra.
         </p>
       </div>
-
-      {isOffline && (
-        <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-4 flex items-start gap-3 shadow-sm">
-          <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-xs font-bold text-amber-800">Modus Simulasi Luring Aktif</h4>
-            <p className="text-[11px] text-amber-600/90 font-medium mt-0.5 leading-relaxed">
-              Semua mutasi pembayaran, penerimaan, dan pelacakan pesanan grosir diproses menggunakan
-              simulasi memori lokal luring.
-            </p>
-          </div>
-        </div>
-      )}
 
       {/* Filter and Search controls */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-white p-4 border border-slate-200 rounded-xl shadow-sm">
@@ -242,10 +242,14 @@ export default function DistributorOrdersPage() {
       </div>
 
       {/* Orders Table */}
-      <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-        <CardContent className="p-0">
-          {isLoading ? (
-            <div className="p-8 space-y-3">
+      <Card className="w-full">
+        <CardContent className="pt-6">
+          {isOrdersError ? (
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat data daftar pesanan B2B / Koneksi ke server terputus
+            </div>
+          ) : isLoading ? (
+            <div className="space-y-3">
               <Skeleton className="h-8 w-full" />
               <Skeleton className="h-8 w-full" />
               <Skeleton className="h-8 w-full" />
@@ -266,139 +270,191 @@ export default function DistributorOrdersPage() {
               </Link>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader className="bg-slate-50/50">
-                  <TableRow className="border-b border-slate-100">
-                    <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider py-3">
-                      Order ID
-                    </TableHead>
-                    <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider">
-                      Mitra Petani
-                    </TableHead>
-                    <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-center">
-                      Jumlah Barang
-                    </TableHead>
-                    <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-right">
-                      Total Bayar
-                    </TableHead>
-                    <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-center">
-                      Status
-                    </TableHead>
-                    <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-right">
-                      Tanggal
-                    </TableHead>
-                    <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-center">
-                      Aksi Cepat
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredOrders.map((order: DistributorOrder) => {
-                    const statusColors: Record<string, string> = {
-                      pending_payment: 'bg-amber-50 text-amber-700 border-amber-200/50',
-                      paid: 'bg-blue-50 text-blue-700 border-blue-200/50',
-                      confirmed: 'bg-purple-50 text-purple-700 border-purple-200/50',
-                      shipped: 'bg-indigo-50 text-indigo-700 border-indigo-200/50',
-                      completed: 'bg-green-50 text-green-700 border-green-200/50',
-                      cancelled: 'bg-rose-50 text-rose-700 border-rose-200/50',
-                    };
+            <>
+              <div className="overflow-hidden rounded-md border bg-white shadow-xs">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[110px]">ID Pesanan</TableHead>
+                      <TableHead>Tanggal</TableHead>
+                      <TableHead>Mitra Petani</TableHead>
+                      <TableHead className="text-center">Jumlah Barang</TableHead>
+                      <TableHead className="text-right">Total Bayar</TableHead>
+                      <TableHead className="text-center">Status</TableHead>
+                      <TableHead className="text-right">Aksi</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredOrders.map((order: DistributorOrder) => {
+                      const statusColors: Record<string, string> = {
+                        pending_payment: 'bg-amber-50 text-amber-700 border-amber-200',
+                        paid: 'bg-blue-50 text-blue-700 border-blue-200',
+                        confirmed: 'bg-purple-50 text-purple-700 border-purple-200',
+                        shipped: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                        completed: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                        cancelled: 'bg-rose-50 text-rose-700 border-rose-200',
+                      };
 
-                    const statusLabels: Record<string, string> = {
-                      pending_payment: 'Menunggu Bayar',
-                      paid: 'Dibayar',
-                      confirmed: 'Dikonfirmasi',
-                      shipped: 'Dikirim',
-                      completed: 'Selesai',
-                      cancelled: 'Batal',
-                    };
+                      const statusDotColors: Record<string, string> = {
+                        pending_payment: 'bg-amber-500',
+                        paid: 'bg-blue-500 animate-pulse',
+                        confirmed: 'bg-purple-500',
+                        shipped: 'bg-indigo-500 animate-pulse',
+                        completed: 'bg-emerald-500',
+                        cancelled: 'bg-rose-500',
+                      };
 
-                    return (
-                      <TableRow
-                        key={order.id}
-                        className="border-b border-slate-100 hover:bg-slate-50/40"
-                      >
-                        <TableCell className="font-bold text-xs py-3 text-slate-800">
-                          {order.id}
-                        </TableCell>
-                        <TableCell className="text-xs font-semibold text-slate-600">
-                          {order.seller?.full_name || order.seller?.name || 'Petani Mandiri'}
-                        </TableCell>
-                        <TableCell className="text-xs font-bold text-slate-600 text-center">
-                          {order.items_count} Jenis
-                        </TableCell>
-                        <TableCell className="text-xs font-bold text-slate-800 text-right">
-                          {formatCurrency(order.total_amount)}
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <span
-                            className={`inline-flex items-center rounded-lg border px-2.5 py-0.5 text-[10.5px] font-bold ${statusColors[order.status] || 'bg-slate-50 text-slate-600'}`}
-                          >
-                            {statusLabels[order.status] || order.status}
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-xs font-semibold text-slate-500 text-right">
-                          {new Date(order.created_at || order.createdAt || '').toLocaleDateString(
-                            'id-ID',
-                            {
-                              day: 'numeric',
-                              month: 'short',
-                              year: 'numeric',
-                            }
-                          )}
-                        </TableCell>
-                        <TableCell className="py-2.5">
-                          <div className="flex items-center justify-center gap-1.5">
-                            {order.status === 'pending_payment' && (
-                              <Button
-                                size="sm"
-                                onClick={() => payMutation.mutate(order.id)}
-                                className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-[10.5px] h-7.5 px-2.5 rounded-lg flex items-center gap-1 cursor-pointer"
-                                disabled={payMutation.isPending}
-                              >
-                                <CreditCard className="w-3.5 h-3.5" /> Bayar
-                              </Button>
+                      const statusLabels: Record<string, string> = {
+                        pending_payment: 'Menunggu Bayar',
+                        paid: 'Dibayar',
+                        confirmed: 'Dikonfirmasi',
+                        shipped: 'Dikirim',
+                        completed: 'Selesai',
+                        cancelled: 'Batal',
+                      };
+
+                      return (
+                        <TableRow key={order.id} className="hover:bg-slate-50/50 transition-colors">
+                          <TableCell className="font-mono text-xs font-medium text-muted-foreground">
+                            #{order.id}
+                          </TableCell>
+                          <TableCell className="text-xs font-medium text-slate-600">
+                            {new Date(order.created_at || order.createdAt || '').toLocaleDateString(
+                              'id-ID',
+                              {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                              }
                             )}
-
-                            {order.status === 'shipped' && (
-                              <Button
-                                size="sm"
-                                onClick={() => confirmMutation.mutate(order.id)}
-                                className="bg-green-600 hover:bg-green-700 text-white font-bold text-[10.5px] h-7.5 px-2.5 rounded-lg flex items-center gap-1 cursor-pointer"
-                                disabled={confirmMutation.isPending}
-                              >
-                                <CheckSquare className="w-3.5 h-3.5" /> Selesai
-                              </Button>
-                            )}
-
-                            {order.status === 'completed' && (
-                              <Link href="/dashboard/distributor/finance/invoices">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="border-slate-200 text-slate-700 font-bold text-[10.5px] h-7.5 px-2.5 rounded-lg flex items-center gap-1 cursor-pointer"
+                          </TableCell>
+                          <TableCell className="text-xs font-semibold text-slate-700">
+                            {order.seller?.full_name || order.seller?.name || 'Petani Mandiri'}
+                          </TableCell>
+                          <TableCell className="text-center text-xs font-medium text-slate-600">
+                            {order.items_count} Jenis
+                          </TableCell>
+                          <TableCell className="text-right font-bold text-slate-800 text-xs">
+                            {formatCurrency(order.total_amount)}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <span
+                              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold border ${statusColors[order.status] || 'bg-slate-50 text-slate-700 border-slate-200'}`}
+                            >
+                              <span
+                                className={`h-1.5 w-1.5 rounded-full ${statusDotColors[order.status] || 'bg-slate-400'}`}
+                              />
+                              {statusLabels[order.status] || order.status}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 cursor-pointer text-slate-500 hover:text-slate-700"
+                                  >
+                                    <span className="sr-only">Buka menu</span>
+                                    <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  align="end"
+                                  className="w-48 bg-white border border-slate-200 shadow-md rounded-lg"
                                 >
-                                  <FileText className="w-3.5 h-3.5" /> Invoice
-                                </Button>
-                              </Link>
-                            )}
+                                  <DropdownMenuGroup>
+                                    <DropdownMenuLabel className="text-[11px] font-bold text-slate-400 px-3 py-1.5 uppercase tracking-wider">
+                                      Aksi
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuItem
+                                      className="cursor-pointer text-xs font-semibold text-slate-700 hover:bg-slate-50 focus:bg-slate-50 px-3 py-2 flex items-center gap-2"
+                                      onClick={() => {
+                                        navigator.clipboard.writeText(order.id);
+                                        toast.success('ID pesanan berhasil disalin');
+                                      }}
+                                    >
+                                      Salin ID Pesanan
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      className="cursor-pointer text-xs font-semibold text-slate-700 hover:bg-slate-50 focus:bg-slate-50 px-3 py-2 flex items-center gap-2"
+                                      onClick={() =>
+                                        router.push(`/dashboard/distributor/orders/${order.id}`)
+                                      }
+                                    >
+                                      Lihat Detail
+                                    </DropdownMenuItem>
+                                  </DropdownMenuGroup>
 
-                            <Link href={`/dashboard/distributor/orders/${order.id}`}>
-                              <Button
-                                variant="ghost"
-                                className="h-7.5 px-2 text-[10.5px] font-bold text-green-600 hover:text-green-700 hover:bg-green-50/50 flex items-center gap-0.5 justify-center cursor-pointer"
-                              >
-                                Detail
-                              </Button>
-                            </Link>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
+                                  {(order.status === 'pending_payment' ||
+                                    order.status === 'shipped' ||
+                                    order.status === 'completed') && (
+                                    <>
+                                      <DropdownMenuSeparator className="my-1 border-slate-100" />
+                                      <DropdownMenuGroup>
+                                        {order.status === 'pending_payment' && (
+                                          <DropdownMenuItem
+                                            className="cursor-pointer text-xs font-bold text-amber-600 hover:bg-amber-50 focus:bg-amber-50 px-3 py-2 flex items-center gap-2"
+                                            onClick={() => payMutation.mutate(order.id)}
+                                            disabled={payMutation.isPending}
+                                          >
+                                            <CreditCard className="w-3.5 h-3.5 shrink-0" /> Bayar
+                                            Sekarang
+                                          </DropdownMenuItem>
+                                        )}
+
+                                        {order.status === 'shipped' && (
+                                          <DropdownMenuItem
+                                            className="cursor-pointer text-xs font-bold text-green-600 hover:bg-green-50 focus:bg-green-50 px-3 py-2 flex items-center gap-2"
+                                            onClick={() => confirmMutation.mutate(order.id)}
+                                            disabled={confirmMutation.isPending}
+                                          >
+                                            <CheckSquare className="w-3.5 h-3.5 shrink-0" /> Selesai
+                                            / Diterima
+                                          </DropdownMenuItem>
+                                        )}
+
+                                        {order.status === 'completed' && (
+                                          <DropdownMenuItem
+                                            className="cursor-pointer text-xs font-bold text-slate-700 hover:bg-slate-50 focus:bg-slate-50 px-3 py-2 flex items-center gap-2"
+                                            onClick={() =>
+                                              router.push('/dashboard/distributor/finance/invoices')
+                                            }
+                                          >
+                                            <FileText className="w-3.5 h-3.5 shrink-0 text-slate-500" />{' '}
+                                            Lihat Invoice
+                                          </DropdownMenuItem>
+                                        )}
+                                      </DropdownMenuGroup>
+                                    </>
+                                  )}
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Pagination */}
+              <div className="flex items-center justify-end space-x-2 py-4">
+                <div className="flex-1 text-sm text-muted-foreground">
+                  Menampilkan 1-{filteredOrders.length} dari {filteredOrders.length} pesanan
+                </div>
+                <div className="space-x-2">
+                  <Button variant="outline" size="sm" disabled={true} className="cursor-pointer">
+                    Sebelumnya
+                  </Button>
+                  <Button variant="outline" size="sm" disabled={true} className="cursor-pointer">
+                    Berikutnya
+                  </Button>
+                </div>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>

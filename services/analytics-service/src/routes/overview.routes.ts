@@ -235,7 +235,11 @@ router.get('/farmer/:id', gatewayAuthMiddleware, overviewController.getFarmerAna
  *         description: Investor analytics data
  */
 router.get('/investor/:id', gatewayAuthMiddleware, overviewController.getInvestorAnalytics);
-router.get('/investor/:id/roi-chart', gatewayAuthMiddleware, overviewController.getInvestorROIChart);
+router.get(
+  '/investor/:id/roi-chart',
+  gatewayAuthMiddleware,
+  overviewController.getInvestorROIChart
+);
 router.get('/investor/:id/finance', gatewayAuthMiddleware, overviewController.getInvestorFinance);
 
 /**
@@ -292,5 +296,12 @@ router.get(
  */
 router.get('/buyer/:id', gatewayAuthMiddleware, overviewController.getBuyerAnalytics);
 router.get('/buyer/:id/finance', gatewayAuthMiddleware, overviewController.getBuyerFinance);
+
+router.get('/distributor/:id', gatewayAuthMiddleware, overviewController.getDistributorAnalytics);
+router.get(
+  '/distributor/:id/spending-chart',
+  gatewayAuthMiddleware,
+  overviewController.getDistributorSpendingChart
+);
 
 export default router;

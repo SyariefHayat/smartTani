@@ -2,6 +2,7 @@ import { logger } from '../../../../shared/utils/logger';
 import farmerAnalyticsRepository from '../repositories/farmer-analytics.repository';
 import investorAnalyticsRepository from '../repositories/investor-analytics.repository';
 import buyerAnalyticsRepository from '../repositories/buyer-analytics.repository';
+import distributorAnalyticsRepository from '../repositories/distributor-analytics.repository';
 import RedisClient from '../lib/redis';
 
 class PersonalAnalyticsService {
@@ -153,6 +154,43 @@ class PersonalAnalyticsService {
     }
 
     const data = await buyerAnalyticsRepository.getFinanceAnalytics(buyerId, page, limit);
+    await RedisClient.setex(cacheKey, this.TTL, JSON.stringify(data));
+
+    return data;
+  }
+
+  async getDistributorAnalytics(distributorId: string) {
+    const cacheKey = `analytics:distributor:${distributorId}`;
+
+    const cachedData = await RedisClient.get(cacheKey);
+    if (cachedData) {
+      logger.info(`⚡ Returning distributor analytics for ${distributorId} from cache`);
+      return JSON.parse(cachedData as string);
+    }
+
+    const metrics = await distributorAnalyticsRepository.getDistributorMetrics(distributorId);
+    await RedisClient.setex(cacheKey, this.TTL, JSON.stringify(metrics));
+
+    return metrics;
+  }
+
+  async getDistributorSpendingChart(
+    distributorId: string,
+    query: { from_date?: string; to_date?: string }
+  ) {
+    const cacheKey = `analytics:distributor:${distributorId}:spending-chart:${JSON.stringify(query)}`;
+
+    const cachedData = await RedisClient.get(cacheKey);
+    if (cachedData) {
+      logger.info(`⚡ Returning distributor spending chart for ${distributorId} from cache`);
+      return JSON.parse(cachedData as string);
+    }
+
+    const data = await distributorAnalyticsRepository.getSpendingChart(
+      distributorId,
+      query.from_date,
+      query.to_date
+    );
     await RedisClient.setex(cacheKey, this.TTL, JSON.stringify(data));
 
     return data;

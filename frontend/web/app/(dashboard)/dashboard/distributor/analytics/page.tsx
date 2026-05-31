@@ -5,8 +5,16 @@ import { useQuery } from '@tanstack/react-query';
 import { distributorService } from '@/services/distributor';
 import { getStoredAuthUser } from '@/lib/auth-storage';
 import { formatCurrency } from '@/lib/utils';
+import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from '@/components/ui/card';
 import {
   LineChart,
   Line,
@@ -21,8 +29,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { TrendingUp, Award, Layers, BarChart3, AlertTriangle } from 'lucide-react';
+import { TrendingUp, Award, Layers, BarChart3 } from 'lucide-react';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MOCK_ANALYTICS_DATA = {
   total_spending: 125000000,
   monthly_spending: 34500000,
@@ -45,6 +54,7 @@ const MOCK_ANALYTICS_DATA = {
   ],
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MOCK_SPENDING_HISTORY = [
   { month: 'Des', spending: 18000000, orders_count: 4 },
   { month: 'Jan', spending: 22000000, orders_count: 5 },
@@ -65,35 +75,42 @@ const COLORS = ['#16a34a', '#3b82f6', '#8b5cf6', '#f59e0b'];
 
 export default function DistributorAnalyticsPage() {
   const user = getStoredAuthUser();
-  const [isOffline, setIsOffline] = React.useState(false);
 
   // Fetch analytics
-  const { data: analytics, isLoading: isAnalyticsLoading } = useQuery({
+  const {
+    data: analytics,
+    isLoading: isAnalyticsLoading,
+    isError: isAnalyticsError,
+  } = useQuery({
     queryKey: ['distributor-deep-analytics', user?.id],
     queryFn: async () => {
-      try {
-        if (!user?.id) throw new Error('Unauthenticated');
-        return await distributorService.getAnalytics(user.id);
-      } catch {
-        setIsOffline(true);
-        return MOCK_ANALYTICS_DATA;
-      }
+      if (!user?.id) throw new Error('Unauthenticated');
+      return await distributorService.getAnalytics(user.id);
     },
+    enabled: !!user?.id,
   });
 
-  const { data: spendingHistory, isLoading: isSpendingLoading } = useQuery({
+  const {
+    data: spendingHistory,
+    isLoading: isSpendingLoading,
+    isError: isChartError,
+  } = useQuery({
     queryKey: ['distributor-deep-spending-history', user?.id],
     queryFn: async () => {
-      try {
-        if (!user?.id) throw new Error('Unauthenticated');
-        return await distributorService.getSpendingChart(user.id);
-      } catch {
-        return MOCK_SPENDING_HISTORY;
-      }
+      if (!user?.id) throw new Error('Unauthenticated');
+      return await distributorService.getSpendingChart(user.id);
     },
+    enabled: !!user?.id,
   });
 
-  const isLoading = isAnalyticsLoading || isSpendingLoading;
+  const isQueryError = isAnalyticsError || isChartError;
+  const isLoading = (isAnalyticsLoading || isSpendingLoading) && !isQueryError;
+
+  React.useEffect(() => {
+    if (isQueryError) {
+      toast.error('Koneksi ke server terputus. Gagal memuat data teraktual.');
+    }
+  }, [isQueryError]);
 
   if (isLoading) {
     return (
@@ -107,8 +124,19 @@ export default function DistributorAnalyticsPage() {
     );
   }
 
-  const activeAnalytics = analytics || MOCK_ANALYTICS_DATA;
-  const activeHistory = spendingHistory || MOCK_SPENDING_HISTORY;
+  const activeAnalytics = analytics || {
+    total_spending: 0,
+    monthly_spending: 0,
+    spending_change_percent: 0,
+    active_orders: 0,
+    total_orders: 0,
+    unique_suppliers: 0,
+    unique_products_bought: 0,
+    avg_order_value: 0,
+    top_products: [],
+    top_suppliers: [],
+  };
+  const activeHistory = spendingHistory || [];
 
   return (
     <div className="w-full space-y-6 text-slate-900">
@@ -123,93 +151,102 @@ export default function DistributorAnalyticsPage() {
         </p>
       </div>
 
-      {isOffline && (
-        <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-4 flex items-start gap-3 shadow-sm">
-          <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-xs font-bold text-amber-800">Modus Simulasi Luring Aktif</h4>
-            <p className="text-[11px] text-amber-600/90 font-medium mt-0.5 leading-relaxed">
-              Semua grafik analisis belanja kemitraan digenerasikan menggunakan representasi model
-              data luring lokal.
-            </p>
-          </div>
+      {/* Stats summary panel (Standardised) */}
+      {isAnalyticsError ? (
+        <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+          Gagal memuat data statistik B2B / Koneksi ke server terputus
+        </div>
+      ) : (
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+          {/* Stat 1 */}
+          <Card className="min-w-0">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Total Pengadaan Modal
+              </CardDescription>
+              <CardTitle
+                className="truncate text-xl font-semibold tabular-nums lg:text-2xl text-slate-800"
+                title={formatCurrency(activeAnalytics.total_spending)}
+              >
+                {formatCurrency(activeAnalytics.total_spending)}
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium">
+                <TrendingUp className="size-4 shrink-0 text-emerald-500" />
+                <span className="truncate text-muted-foreground">Jumlah modal belanja selesai</span>
+              </div>
+            </CardFooter>
+          </Card>
+
+          {/* Stat 2 */}
+          <Card className="min-w-0">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Komoditas Dibeli
+              </CardDescription>
+              <CardTitle
+                className="truncate text-xl font-semibold tabular-nums lg:text-2xl text-slate-800"
+                title={`${activeAnalytics.unique_products_bought} Jenis`}
+              >
+                {activeAnalytics.unique_products_bought} Jenis
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium">
+                <Layers className="size-4 shrink-0 text-blue-500" />
+                <span className="truncate text-muted-foreground">Total variasi produk tani</span>
+              </div>
+            </CardFooter>
+          </Card>
+
+          {/* Stat 3 */}
+          <Card className="min-w-0">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Petani Supplier
+              </CardDescription>
+              <CardTitle
+                className="truncate text-xl font-semibold tabular-nums lg:text-2xl text-slate-800"
+                title={`${activeAnalytics.unique_suppliers} Petani`}
+              >
+                {activeAnalytics.unique_suppliers} Petani
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium">
+                <Award className="size-4 shrink-0 text-purple-500" />
+                <span className="truncate text-muted-foreground">
+                  Petani mitra terhubung langsung
+                </span>
+              </div>
+            </CardFooter>
+          </Card>
+
+          {/* Stat 4 */}
+          <Card className="min-w-0">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Rata-rata Order
+              </CardDescription>
+              <CardTitle
+                className="truncate text-xl font-semibold tabular-nums lg:text-2xl text-slate-800"
+                title={formatCurrency(activeAnalytics.avg_order_value)}
+              >
+                {formatCurrency(activeAnalytics.avg_order_value)}
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium">
+                <BarChart3 className="size-4 shrink-0 text-amber-500" />
+                <span className="truncate text-muted-foreground">
+                  Rata-rata nominal per checkout
+                </span>
+              </div>
+            </CardFooter>
+          </Card>
         </div>
       )}
-
-      {/* Stats summary panel */}
-      <div className="grid gap-4 sm:grid-cols-4">
-        {/* Stat 1 */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardHeader className="pb-1.5 flex flex-row items-center justify-between space-y-0">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
-              Total Pengadaan Modal
-            </span>
-            <TrendingUp className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-lg font-bold text-slate-800">
-              {formatCurrency(activeAnalytics.total_spending)}
-            </div>
-            <p className="text-[10px] font-semibold text-slate-400 mt-1">
-              Jumlah modal belanja selesai
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Stat 2 */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardHeader className="pb-1.5 flex flex-row items-center justify-between space-y-0">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
-              Komoditas Dibeli
-            </span>
-            <Layers className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-lg font-bold text-slate-800">
-              {activeAnalytics.unique_products_bought} Jenis
-            </div>
-            <p className="text-[10px] font-semibold text-slate-400 mt-1">
-              Total variasi produk tani
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Stat 3 */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardHeader className="pb-1.5 flex flex-row items-center justify-between space-y-0">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
-              Petani Supplier
-            </span>
-            <Award className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-lg font-bold text-slate-800">
-              {activeAnalytics.unique_suppliers} Petani
-            </div>
-            <p className="text-[10px] font-semibold text-slate-400 mt-1">
-              Petani mitra terhubung langsung
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Stat 4 */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardHeader className="pb-1.5 flex flex-row items-center justify-between space-y-0">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
-              Rata-rata Order
-            </span>
-            <BarChart3 className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-lg font-bold text-slate-800">
-              {formatCurrency(activeAnalytics.avg_order_value)}
-            </div>
-            <p className="text-[10px] font-semibold text-slate-400 mt-1">
-              Rata-rata nominal per checkout
-            </p>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Main Analysis Chart Panel */}
       <div className="grid gap-6 md:grid-cols-3">
@@ -224,42 +261,48 @@ export default function DistributorAnalyticsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
-            <div className="h-72 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={activeHistory}
-                  margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                  <XAxis
-                    dataKey="month"
-                    stroke="#94a3b8"
-                    fontSize={11}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
-                  <Tooltip
-                    contentStyle={{
-                      background: '#0f172a',
-                      borderRadius: '8px',
-                      color: '#fff',
-                      fontSize: '11px',
-                      border: 'none',
-                    }}
-                    formatter={(value) => [formatCurrency(Number(value)), 'Total Belanja']}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="spending"
-                    stroke="#16a34a"
-                    strokeWidth={3}
-                    dot={{ fill: '#16a34a', r: 4 }}
-                    activeDot={{ r: 6 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+            {isChartError ? (
+              <div className="flex h-72 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                Gagal memuat tren belanja / Koneksi ke server terputus
+              </div>
+            ) : (
+              <div className="h-72 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={activeHistory}
+                    margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                    <XAxis
+                      dataKey="month"
+                      stroke="#94a3b8"
+                      fontSize={11}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} axisLine={false} />
+                    <Tooltip
+                      contentStyle={{
+                        background: '#0f172a',
+                        borderRadius: '8px',
+                        color: '#fff',
+                        fontSize: '11px',
+                        border: 'none',
+                      }}
+                      formatter={(value) => [formatCurrency(Number(value)), 'Total Belanja']}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="spending"
+                      stroke="#16a34a"
+                      strokeWidth={3}
+                      dot={{ fill: '#16a34a', r: 4 }}
+                      activeDot={{ r: 6 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -274,38 +317,46 @@ export default function DistributorAnalyticsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6 flex flex-col items-center justify-center">
-            <div className="h-52 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={MOCK_CATEGORY_DATA}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={3}
-                    dataKey="value"
-                  >
-                    {MOCK_CATEGORY_DATA.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => formatCurrency(Number(value))} />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-            {/* Custom Legend labels */}
-            <div className="flex flex-wrap gap-x-4 gap-y-1.5 justify-center mt-3 text-xs font-semibold text-slate-500">
-              {MOCK_CATEGORY_DATA.map((entry, index) => (
-                <div key={entry.name} className="flex items-center gap-1.5">
-                  <span
-                    className="h-3 w-3 rounded-full shrink-0"
-                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
-                  />
-                  <span>{entry.name}</span>
+            {isAnalyticsError ? (
+              <div className="flex h-52 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm w-full">
+                Gagal memuat kategori persediaan / Koneksi ke server terputus
+              </div>
+            ) : (
+              <>
+                <div className="h-52 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={MOCK_CATEGORY_DATA}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={3}
+                        dataKey="value"
+                      >
+                        {MOCK_CATEGORY_DATA.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    </PieChart>
+                  </ResponsiveContainer>
                 </div>
-              ))}
-            </div>
+                {/* Custom Legend labels */}
+                <div className="flex flex-wrap gap-x-4 gap-y-1.5 justify-center mt-3 text-xs font-semibold text-slate-500">
+                  {MOCK_CATEGORY_DATA.map((entry, index) => (
+                    <div key={entry.name} className="flex items-center gap-1.5">
+                      <span
+                        className="h-3 w-3 rounded-full shrink-0"
+                        style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                      />
+                      <span>{entry.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -321,44 +372,55 @@ export default function DistributorAnalyticsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-6">
-          <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                layout="vertical"
-                data={activeAnalytics.top_suppliers}
-                margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
-                <XAxis
-                  type="number"
-                  stroke="#94a3b8"
-                  fontSize={11}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis
-                  dataKey="name"
-                  type="category"
-                  stroke="#94a3b8"
-                  fontSize={11}
-                  tickLine={false}
-                  axisLine={false}
-                  width={100}
-                />
-                <Tooltip
-                  contentStyle={{
-                    background: '#0f172a',
-                    borderRadius: '8px',
-                    color: '#fff',
-                    fontSize: '11px',
-                    border: 'none',
-                  }}
-                  formatter={(value) => [formatCurrency(Number(value)), 'Kontribusi Belanja']}
-                />
-                <Bar dataKey="total_amount" fill="#3b82f6" radius={[0, 6, 6, 0]} maxBarSize={30} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          {isAnalyticsError ? (
+            <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat kontribusi supplier / Koneksi ke server terputus
+            </div>
+          ) : (
+            <div className="h-64 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  layout="vertical"
+                  data={activeAnalytics.top_suppliers}
+                  margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
+                  <XAxis
+                    type="number"
+                    stroke="#94a3b8"
+                    fontSize={11}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    dataKey="name"
+                    type="category"
+                    stroke="#94a3b8"
+                    fontSize={11}
+                    tickLine={false}
+                    axisLine={false}
+                    width={100}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      background: '#0f172a',
+                      borderRadius: '8px',
+                      color: '#fff',
+                      fontSize: '11px',
+                      border: 'none',
+                    }}
+                    formatter={(value) => [formatCurrency(Number(value)), 'Kontribusi Belanja']}
+                  />
+                  <Bar
+                    dataKey="total_amount"
+                    fill="#3b82f6"
+                    radius={[0, 6, 6, 0]}
+                    maxBarSize={30}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

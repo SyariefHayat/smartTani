@@ -17,8 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Search, Store, Sprout, MapPin, Layers, AlertTriangle, ArrowUpDown } from 'lucide-react';
+import { Search, Store, Sprout, MapPin, Layers, ArrowUpDown } from 'lucide-react';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MOCK_PRODUCTS = [
   {
     id: 'prod-001',
@@ -136,12 +137,12 @@ export default function DistributorCatalogPage() {
         return enriched;
       } catch {
         setIsOffline(true);
-        return MOCK_PRODUCTS;
+        return [];
       }
     },
   });
 
-  const activeProducts = (products || MOCK_PRODUCTS) as unknown as CatalogProduct[];
+  const activeProducts = (products || []) as unknown as CatalogProduct[];
 
   // Filter and sort products
   const filteredProducts = activeProducts
@@ -172,30 +173,23 @@ export default function DistributorCatalogPage() {
   return (
     <div className="w-full space-y-6 text-slate-900">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-800">Katalog Produk B2B</h1>
-        <p className="text-xs text-slate-500 font-medium mt-1">
-          Jelajahi komoditas pertanian terbaik dari petani lokal untuk pengadaan grosir bisnis Anda.
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-slate-900">
+            Katalog Produk B2B
+          </h1>
+          <p className="text-xs text-slate-500 font-semibold mt-1">
+            Jelajahi komoditas pertanian terbaik dari petani lokal untuk pengadaan grosir bisnis
+            Anda.
+          </p>
+        </div>
       </div>
 
-      {isOffline && (
-        <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-4 flex items-start gap-3 shadow-sm">
-          <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-xs font-bold text-amber-800">Modus Simulasi Luring Aktif</h4>
-            <p className="text-[11px] text-amber-600/90 font-medium mt-0.5 leading-relaxed">
-              Komoditas dan MOQ produk ditampilkan menggunakan basis data simulasi lokal luring.
-            </p>
-          </div>
-        </div>
-      )}
-
       {/* Filter and Search Panel */}
-      <div className="grid gap-4 sm:grid-cols-4 bg-white p-4 border border-slate-200 rounded-xl shadow-sm items-end">
+      <div className="grid gap-4 sm:grid-cols-4 bg-white p-4 border border-slate-200/60 rounded-2xl shadow-xs items-end">
         {/* Search */}
         <div className="space-y-1.5 sm:col-span-2">
-          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
             Cari Komoditas / Petani
           </label>
           <div className="relative">
@@ -205,26 +199,26 @@ export default function DistributorCatalogPage() {
               placeholder="Cari beras, wortel, Budi..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-10 text-xs font-semibold border-slate-200 focus:border-green-500 w-full"
+              className="pl-10 h-10 text-xs font-semibold border-slate-200 focus-visible:ring-emerald-500/30 focus-visible:border-emerald-500 w-full rounded-xl"
             />
           </div>
         </div>
 
         {/* Category Filter */}
         <div className="space-y-1.5">
-          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
             Kategori
           </label>
           <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="h-10 border-slate-200 text-xs font-semibold focus:border-green-500 w-full cursor-pointer">
+            <SelectTrigger className="h-10 border-slate-200 text-xs font-semibold focus:border-emerald-500 w-full cursor-pointer rounded-xl">
               <span className="flex items-center gap-1.5">
                 <Layers className="h-4 w-4 text-slate-400" />
                 <SelectValue placeholder="Pilih Kategori" />
               </span>
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="rounded-xl">
               {categories.map((cat) => (
-                <SelectItem key={cat} value={cat} className="text-xs cursor-pointer">
+                <SelectItem key={cat} value={cat} className="text-xs cursor-pointer rounded-lg">
                   {cat === 'all' ? 'Semua Kategori' : cat}
                 </SelectItem>
               ))}
@@ -234,27 +228,27 @@ export default function DistributorCatalogPage() {
 
         {/* Sorting */}
         <div className="space-y-1.5">
-          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
             Urutkan Berdasarkan
           </label>
           <Select value={sortOption} onValueChange={setSortOption}>
-            <SelectTrigger className="h-10 border-slate-200 text-xs font-semibold focus:border-green-500 w-full cursor-pointer">
+            <SelectTrigger className="h-10 border-slate-200 text-xs font-semibold focus:border-emerald-500 w-full cursor-pointer rounded-xl">
               <span className="flex items-center gap-1.5">
                 <ArrowUpDown className="h-4 w-4 text-slate-400" />
                 <SelectValue placeholder="Urutkan" />
               </span>
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest" className="text-xs cursor-pointer">
+            <SelectContent className="rounded-xl">
+              <SelectItem value="newest" className="text-xs cursor-pointer rounded-lg">
                 Terbaru
               </SelectItem>
-              <SelectItem value="price_asc" className="text-xs cursor-pointer">
+              <SelectItem value="price_asc" className="text-xs cursor-pointer rounded-lg">
                 Harga: Terendah
               </SelectItem>
-              <SelectItem value="price_desc" className="text-xs cursor-pointer">
+              <SelectItem value="price_desc" className="text-xs cursor-pointer rounded-lg">
                 Harga: Tertinggi
               </SelectItem>
-              <SelectItem value="stock_desc" className="text-xs cursor-pointer">
+              <SelectItem value="stock_desc" className="text-xs cursor-pointer rounded-lg">
                 Stok Terbanyak
               </SelectItem>
             </SelectContent>
@@ -262,19 +256,38 @@ export default function DistributorCatalogPage() {
         </div>
       </div>
 
-      {/* Products Grid */}
-      {isLoading ? (
+      {isOffline ? (
+        <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+          Gagal memuat katalog produk B2B / Koneksi ke server terputus
+        </div>
+      ) : isLoading ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <Skeleton className="h-80" />
-          <Skeleton className="h-80" />
-          <Skeleton className="h-80" />
+          {[1, 2, 3].map((n) => (
+            <Card
+              key={n}
+              className="border-slate-100 shadow-xs bg-white overflow-hidden rounded-2xl p-4 space-y-4"
+            >
+              <Skeleton className="h-44 w-full rounded-xl" />
+              <Skeleton className="h-5 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-14 w-full rounded-xl" />
+              <div className="flex justify-between items-center">
+                <Skeleton className="h-4 w-1/3" />
+                <Skeleton className="h-4 w-1/4" />
+              </div>
+              <Skeleton className="h-9 w-full rounded-xl" />
+            </Card>
+          ))}
         </div>
       ) : filteredProducts.length === 0 ? (
-        <div className="py-20 text-center bg-white border border-slate-200 rounded-xl shadow-sm">
-          <Store className="mx-auto h-12 w-12 text-slate-300" />
-          <h3 className="mt-4 text-xs font-bold text-slate-800">Komoditas tidak ditemukan</h3>
-          <p className="mt-1 text-[11px] text-slate-500 font-semibold">
-            Coba ubah kata kunci atau ganti filter kategori.
+        <div className="py-16 text-center bg-white border border-slate-200/60 rounded-2xl shadow-xs">
+          <div className="mx-auto h-14 w-14 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100">
+            <Store className="h-6 w-6 text-slate-400" />
+          </div>
+          <h3 className="mt-4 text-sm font-bold text-slate-800">Komoditas tidak ditemukan</h3>
+          <p className="mt-1 text-xs text-slate-500 font-medium max-w-xs mx-auto">
+            Coba ubah kata kunci pencarian atau ganti kategori filter untuk menemukan produk grosir
+            yang sesuai.
           </p>
         </div>
       ) : (
@@ -285,7 +298,7 @@ export default function DistributorCatalogPage() {
             return (
               <Card
                 key={prod.id}
-                className="border-slate-200 hover:border-green-300 shadow-sm bg-white overflow-hidden flex flex-col justify-between group hover:shadow-md transition-all duration-300"
+                className="border-slate-100 hover:border-emerald-500/30 shadow-xs hover:shadow-lg hover:shadow-emerald-500/5 bg-white overflow-hidden flex flex-col justify-between group rounded-2xl transition-all duration-300 relative"
               >
                 {/* Image */}
                 <div className="relative aspect-video w-full overflow-hidden bg-slate-100 border-b border-slate-100">
@@ -293,67 +306,79 @@ export default function DistributorCatalogPage() {
                   <img
                     src={prod.images?.[0] || 'https://placehold.co/600x400?text=Produk+SmartTani'}
                     alt={prod.title}
-                    className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute top-2 left-2">
-                    <span className="inline-flex items-center rounded-lg bg-green-600 px-2 py-0.5 text-[9.5px] font-bold text-white shadow-sm">
+                  <div className="absolute top-3 left-3">
+                    <span className="inline-flex items-center rounded-full bg-emerald-50/90 backdrop-blur-xs border border-emerald-200/50 px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 shadow-xs">
                       {prod.category}
                     </span>
                   </div>
                 </div>
 
                 {/* Details */}
-                <CardContent className="pt-4 space-y-3.5 flex-1">
+                <CardContent className="pt-4 px-4 pb-0 space-y-4 flex-1">
                   <div>
-                    <h3 className="text-xs font-bold text-slate-800 line-clamp-1 group-hover:text-green-600 transition-colors">
+                    <h3 className="text-sm font-bold text-slate-800 line-clamp-2 group-hover:text-emerald-600 transition-colors leading-snug">
                       {prod.title}
                     </h3>
-                    <div className="flex items-center gap-1 text-[10px] text-slate-500 font-semibold mt-1">
-                      <Sprout className="h-3.5 w-3.5 text-green-600" />
+                    <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium mt-2">
+                      <div className="h-5 w-5 rounded-full bg-emerald-50 flex items-center justify-center shrink-0 border border-emerald-100/50">
+                        <Sprout className="h-3 w-3 text-emerald-600" />
+                      </div>
                       <span>
                         Petani:{' '}
-                        <span className="font-bold text-slate-700">
+                        <span className="font-semibold text-slate-700">
                           {prod.farmer?.full_name || 'Petani Mitra'}
                         </span>
                       </span>
                     </div>
                   </div>
 
-                  {/* Price and MOQ Info */}
-                  <div className="flex items-end justify-between bg-slate-50/50 p-2.5 rounded-xl border border-slate-100">
-                    <div>
+                  {/* Price and MOQ Info (Ticket-like design) */}
+                  <div className="bg-slate-50/80 p-3 rounded-xl border border-slate-100/80 relative overflow-hidden grid grid-cols-2 gap-2 divide-x divide-slate-200/80">
+                    <div className="pr-1">
                       <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
                         Harga Grosir
                       </span>
-                      <span className="text-sm font-bold text-green-600">
-                        {formatCurrency(prod.price_per_unit)}
-                      </span>
-                      <span className="text-[10px] text-slate-400 font-semibold">
-                        {' '}
-                        / {prod.unit}
-                      </span>
+                      <div className="mt-0.5 flex items-baseline gap-0.5">
+                        <span className="text-base font-extrabold text-emerald-600">
+                          {formatCurrency(prod.price_per_unit)}
+                        </span>
+                        <span className="text-[9px] text-slate-400 font-bold uppercase">
+                          /{prod.unit}
+                        </span>
+                      </div>
                     </div>
-                    <div className="text-right">
+                    <div className="pl-3">
                       <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
                         Min. Order (MOQ)
                       </span>
-                      <span className="text-xs font-bold text-slate-700">
-                        {prod.min_order} {prod.unit}
-                      </span>
+                      <div className="mt-0.5">
+                        <span className="text-xs font-bold text-slate-700 bg-white px-2 py-0.5 rounded-md border border-slate-200/60 shadow-xs inline-block">
+                          {prod.min_order} {prod.unit}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Stock Level Warning */}
-                  <div className="flex items-center justify-between text-[10px] font-semibold text-slate-500">
-                    <div className="flex items-center gap-1">
-                      <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                  {/* Stock Level and Location (Capsules) */}
+                  <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500">
+                    <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-slate-100 bg-slate-50/50 text-[10px] font-semibold text-slate-500">
+                      <MapPin className="h-3 w-3 text-slate-400" />
                       <span>{prod.location?.city || 'Banyuwangi'}</span>
                     </div>
+
                     <span
-                      className={`inline-flex items-center gap-1 font-bold ${isLowStock ? 'text-rose-500' : 'text-green-600'}`}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] font-bold ${
+                        isLowStock
+                          ? 'bg-rose-50 text-rose-700 border-rose-100'
+                          : 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                      }`}
                     >
                       <span
-                        className={`h-2 w-2 rounded-full ${isLowStock ? 'bg-rose-500 animate-pulse' : 'bg-green-500'}`}
+                        className={`h-1.5 w-1.5 rounded-full ${
+                          isLowStock ? 'bg-rose-500 animate-pulse' : 'bg-emerald-500'
+                        }`}
                       />
                       Stok: {prod.stock} {prod.unit}
                     </span>
@@ -361,9 +386,9 @@ export default function DistributorCatalogPage() {
                 </CardContent>
 
                 {/* Footer Action */}
-                <CardFooter className="pt-2 pb-4 border-t border-slate-50 bg-slate-50/10">
+                <CardFooter className="pt-4 pb-4 px-4 border-t border-slate-50 bg-slate-50/10">
                   <Link href={`/dashboard/distributor/catalog/${prod.id}`} className="block w-full">
-                    <Button className="w-full bg-slate-900 hover:bg-green-600 text-white font-bold text-xs h-9 cursor-pointer transition-colors shadow-sm">
+                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-9.5 rounded-xl cursor-pointer transition-all duration-300 shadow-xs hover:shadow-md active:scale-98">
                       Pesan Grosir Sekarang
                     </Button>
                   </Link>

@@ -75,7 +75,11 @@ const MOCK_SUPPLIER_TRANSACTIONS = [
   },
 ];
 
-export default function DistributorSupplierDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default function DistributorSupplierDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const resolvedParams = React.use(params);
   const farmerId = resolvedParams.id || 'farmer-1';
   const [isOffline, setIsOffline] = React.useState(false);
@@ -131,21 +135,23 @@ export default function DistributorSupplierDetailPage({ params }: { params: Prom
       <div>
         <Link
           href="/dashboard/distributor/suppliers"
-          className="inline-flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors bg-white px-3 py-1.5 rounded-full border border-slate-200/60 shadow-xs hover:border-slate-300"
         >
           <ChevronLeft className="h-4 w-4" /> Kembali ke Daftar Mitra Petani
         </Link>
       </div>
 
       {isOffline && (
-        <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-4 flex items-start gap-3 shadow-sm">
-          <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-xs font-bold text-amber-800">Modus Simulasi Luring Aktif</h4>
-            <p className="text-[11px] text-amber-600/90 font-medium mt-0.5 leading-relaxed">
-              Detail profil petani mitra dan transaksi khusus disimulasikan menggunakan data offline
-              lokal.
-            </p>
+        <div className="flex h-fit flex-col md:flex-row md:items-center justify-between gap-3 rounded-2xl border border-red-200 bg-red-50/80 px-4 py-3.5 text-xs text-red-800 font-semibold shadow-xs">
+          <div className="flex items-start gap-2.5">
+            <AlertTriangle className="h-4.5 w-4.5 shrink-0 text-red-600 mt-0.5 animate-pulse" />
+            <div>
+              <p className="font-bold text-red-900 text-xs">Layanan Mitra Petani Offline</p>
+              <p className="text-[11px] text-red-600 font-medium mt-0.5 leading-relaxed">
+                Detail profil petani mitra dan transaksi khusus disimulasikan menggunakan data
+                offline lokal.
+              </p>
+            </div>
           </div>
         </div>
       )}
@@ -154,25 +160,27 @@ export default function DistributorSupplierDetailPage({ params }: { params: Prom
       <div className="grid gap-6 md:grid-cols-3">
         {/* Left Side: Bio Card & Stats */}
         <div className="space-y-6">
-          <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
+          <Card className="border-slate-200/60 shadow-xs bg-white overflow-hidden rounded-2xl">
             <CardContent className="pt-6 space-y-5">
               {/* Header Profile */}
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-green-50 text-base font-bold text-green-600 border border-green-100">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-base font-bold text-emerald-700 border border-emerald-100/60">
                   {activeSupplier.name?.charAt(0)}
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-slate-800">{activeSupplier.name}</h3>
-                  <div className="flex items-center gap-1 text-[10px] text-slate-400 font-semibold mt-1">
-                    <MapPin className="h-3.5 w-3.5" />
-                    <span>{activeSupplier.location}</span>
+                  <div className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold mt-1">
+                    <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-slate-100 bg-slate-50/50 text-[9.5px] font-semibold text-slate-500">
+                      <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                      <span>{activeSupplier.location}</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Bio description */}
-              <div className="space-y-1 pt-3 border-t border-slate-100">
-                <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+              <div className="space-y-1.5 pt-4 border-t border-slate-100">
+                <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
                   Bio Petani / Produsen
                 </h4>
                 <p className="text-xs text-slate-600 font-semibold leading-relaxed">
@@ -181,14 +189,15 @@ export default function DistributorSupplierDetailPage({ params }: { params: Prom
               </div>
 
               {/* Key numbers */}
-              <div className="pt-3 border-t border-slate-100 space-y-3.5 text-xs font-semibold text-slate-500">
-                <div className="flex justify-between">
+              <div className="pt-4 border-t border-slate-100 space-y-3 text-xs font-semibold text-slate-500">
+                <div className="flex justify-between items-center">
                   <span>Rating Mitra</span>
-                  <span className="text-slate-800 font-bold">
-                    ★ {activeSupplier.rating || 4.8} / 5.0
+                  <span className="text-slate-855 font-bold flex items-center gap-1">
+                    <span className="text-amber-500 text-sm">★</span> {activeSupplier.rating || 4.8}{' '}
+                    / 5.0
                   </span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <span>Terdaftar Sejak</span>
                   <span className="text-slate-800 font-bold">
                     {activeSupplier.joined_at || 'Januari 2025'}
@@ -200,26 +209,30 @@ export default function DistributorSupplierDetailPage({ params }: { params: Prom
 
           {/* Cumulative Stats */}
           <div className="grid gap-4 grid-cols-2">
-            <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
+            <Card className="border-slate-200/60 shadow-xs bg-white overflow-hidden rounded-2xl">
               <CardContent className="pt-4 flex flex-col justify-between h-24">
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
                   Transaksi
                 </span>
-                <div className="text-base font-bold text-slate-800 flex items-center gap-1">
-                  <Handshake className="h-4.5 w-4.5 text-green-600" />
-                  {activeSupplier.total_transactions} Kali
+                <div className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                  <div className="h-6.5 w-6.5 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0 border border-emerald-100/50">
+                    <Handshake className="h-3.5 w-3.5 text-emerald-600" />
+                  </div>
+                  <span>{activeSupplier.total_transactions} Kali</span>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
+            <Card className="border-slate-200/60 shadow-xs bg-white overflow-hidden rounded-2xl">
               <CardContent className="pt-4 flex flex-col justify-between h-24">
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
                   Total Beli
                 </span>
-                <div className="text-xs font-bold text-slate-800 flex items-center gap-0.5 leading-snug">
-                  <TrendingUp className="h-4 w-4 text-green-600 shrink-0" />
-                  {formatCurrency(activeSupplier.total_amount)}
+                <div className="text-xs font-bold text-slate-850 flex items-center gap-1 leading-snug">
+                  <div className="h-6.5 w-6.5 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0 border border-emerald-100/50">
+                    <TrendingUp className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                  </div>
+                  <span className="truncate">{formatCurrency(activeSupplier.total_amount)}</span>
                 </div>
               </CardContent>
             </Card>
@@ -229,9 +242,9 @@ export default function DistributorSupplierDetailPage({ params }: { params: Prom
         {/* Right Side: Commodities Provided & Ledger History */}
         <div className="md:col-span-2 space-y-6">
           {/* Card 1: Active supplied products */}
-          <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-            <CardHeader className="pb-3 border-b border-slate-50">
-              <CardTitle className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+          <Card className="border-slate-200/60 shadow-xs bg-white overflow-hidden rounded-2xl">
+            <CardHeader className="pb-3 border-b border-slate-100/50">
+              <CardTitle className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
                 Komoditas yang Tersedia
               </CardTitle>
             </CardHeader>
@@ -263,7 +276,7 @@ export default function DistributorSupplierDetailPage({ params }: { params: Prom
 
                     <div className="flex sm:text-right flex-row sm:flex-col justify-between items-center sm:items-end gap-1.5 text-xs font-semibold text-slate-500">
                       <div>
-                        <span className="text-slate-800 font-bold">
+                        <span className="text-emerald-600 font-extrabold">
                           {formatCurrency(prod.price_per_unit)}
                         </span>{' '}
                         / {prod.unit}
@@ -275,7 +288,7 @@ export default function DistributorSupplierDetailPage({ params }: { params: Prom
                         <Link href={`/dashboard/distributor/catalog/${prod.id}`}>
                           <Button
                             size="sm"
-                            className="bg-slate-900 hover:bg-green-600 text-white font-bold text-[10px] h-7 px-2.5 rounded-lg cursor-pointer"
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] h-7 px-3.5 rounded-lg cursor-pointer transition-colors shadow-xs"
                           >
                             Order
                           </Button>
@@ -289,9 +302,9 @@ export default function DistributorSupplierDetailPage({ params }: { params: Prom
           </Card>
 
           {/* Card 2: Transaction Ledger list with this specific farmer */}
-          <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-            <CardHeader className="pb-3 border-b border-slate-50">
-              <CardTitle className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+          <Card className="border-slate-200/60 shadow-xs bg-white overflow-hidden rounded-2xl">
+            <CardHeader className="pb-3 border-b border-slate-100/50">
+              <CardTitle className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
                 Riwayat Transaksi Kemitraan
               </CardTitle>
             </CardHeader>
@@ -300,16 +313,16 @@ export default function DistributorSupplierDetailPage({ params }: { params: Prom
                 <Table>
                   <TableHeader className="bg-slate-50/50">
                     <TableRow className="border-b border-slate-100">
-                      <TableHead className="text-[10px] font-bold text-slate-500 uppercase tracking-wider py-2.5 pl-4">
+                      <TableHead className="text-[10px] font-bold text-slate-400 uppercase tracking-wider py-2.5 pl-4">
                         Order ID
                       </TableHead>
-                      <TableHead className="text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">
+                      <TableHead className="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">
                         Total Bayar
                       </TableHead>
-                      <TableHead className="text-[10px] font-bold text-slate-500 uppercase tracking-wider text-center">
+                      <TableHead className="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">
                         Status
                       </TableHead>
-                      <TableHead className="text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right pr-4">
+                      <TableHead className="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right pr-4">
                         Tanggal
                       </TableHead>
                     </TableRow>
@@ -331,12 +344,17 @@ export default function DistributorSupplierDetailPage({ params }: { params: Prom
                           </TableCell>
                           <TableCell className="text-center">
                             <span
-                              className={`inline-flex items-center rounded-lg border px-2 py-0.5 text-[9.5px] font-bold ${
+                              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10.5px] font-bold ${
                                 isCompleted
-                                  ? 'bg-green-50 text-green-700 border-green-200/50'
+                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200/50'
                                   : 'bg-indigo-50 text-indigo-700 border-indigo-200/50'
                               }`}
                             >
+                              <span
+                                className={`h-1.5 w-1.5 rounded-full ${
+                                  isCompleted ? 'bg-emerald-500' : 'bg-indigo-500 animate-pulse'
+                                }`}
+                              />
                               {isCompleted ? 'Selesai' : 'Dikirim'}
                             </span>
                           </TableCell>

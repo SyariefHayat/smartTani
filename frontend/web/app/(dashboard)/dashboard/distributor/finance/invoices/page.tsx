@@ -7,8 +7,9 @@ import { orderService } from '@/services/order';
 import { formatCurrency } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -17,8 +18,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { FileText, Download, Printer, AlertTriangle, ChevronLeft } from 'lucide-react';
+import { FileText, Download, Printer, ChevronLeft, Search } from 'lucide-react';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MOCK_INVOICES = [
   {
     invoice_no: 'INV/20260527/ORD98822',
@@ -57,46 +59,77 @@ const MOCK_INVOICES = [
 ];
 
 export default function DistributorInvoicesPage() {
-  const [isOffline, setIsOffline] = React.useState(false);
-
   // Fetch completed orders to generate invoices
-  const { data: invoices, isLoading } = useQuery({
+  const {
+    data: invoices,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ['distributor-invoices'],
     queryFn: async () => {
-      try {
-        const res = await orderService.getOrders();
-        const completedRes = (
-          (res.data?.orders || []) as unknown as Record<string, unknown>[]
-        ).filter((o: Record<string, unknown>) => o.status === 'completed');
-        const mapped = completedRes.map((o: Record<string, unknown>) => ({
-          invoice_no: `INV/${new Date((o.created_at || o.createdAt) as string).toISOString().slice(0, 10).replace(/-/g, '')}/${(o.id as string).replace(/-/g, '')}`,
-          order_id: o.id as string,
-          total_amount: o.total_amount as number,
-          created_at: (o.created_at || o.createdAt) as string,
-          items_summary:
-            (o.items as Record<string, unknown>[] | undefined)
-              ?.map((item) => `${item.title} (${item.quantity}${item.unit})`)
-              .join(', ') || 'Pengadaan Komoditas Tani',
-          seller_name:
-            ((o.seller as Record<string, unknown> | undefined)?.full_name as string) ||
-            'Petani Mandiri',
-          items: ((o.items as Record<string, unknown>[] | undefined) || []).map((item) => ({
-            title: item.title as string,
-            price: item.price as number,
-            quantity: item.quantity as number,
-            unit: item.unit as string,
-          })),
-        }));
-        if (!mapped || mapped.length === 0) throw new Error('Empty');
-        return mapped;
-      } catch {
-        setIsOffline(true);
-        return MOCK_INVOICES;
-      }
+      const res = await orderService.getOrders();
+      const completedRes = (
+        (res.data?.orders || []) as unknown as Record<string, unknown>[]
+      ).filter((o: Record<string, unknown>) => o.status === 'completed');
+      const mapped = completedRes.map((o: Record<string, unknown>) => ({
+        invoice_no: `INV/${new Date((o.created_at || o.createdAt) as string).toISOString().slice(0, 10).replace(/-/g, '')}/${(o.id as string).replace(/-/g, '')}`,
+        order_id: o.id as string,
+        total_amount: o.total_amount as number,
+        created_at: (o.created_at || o.createdAt) as string,
+        items_summary:
+          (o.items as Record<string, unknown>[] | undefined)
+            ?.map((item) => `${item.title} (${item.quantity}${item.unit})`)
+            .join(', ') || 'Pengadaan Komoditas Tani',
+        seller_name:
+          ((o.seller as Record<string, unknown> | undefined)?.full_name as string) ||
+          'Petani Mandiri',
+        items: ((o.items as Record<string, unknown>[] | undefined) || []).map((item) => ({
+          title: item.title as string,
+          price: item.price as number,
+          quantity: item.quantity as number,
+          unit: item.unit as string,
+        })),
+      }));
+      if (!mapped || mapped.length === 0) throw new Error('Empty');
+      return mapped;
     },
   });
 
-  const activeInvoices = (invoices || MOCK_INVOICES) as unknown as typeof MOCK_INVOICES;
+  React.useEffect(() => {
+    if (isError) {
+      toast.error('Koneksi ke server terputus. Gagal memuat data teraktual.');
+    }
+  }, [isError]);
+
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const [pageIndex, setPageIndex] = React.useState(0);
+  const [pageSize] = React.useState(5); // 5 items per page
+
+  // Reset pageIndex on search changes
+  React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPageIndex(0);
+  }, [searchTerm]);
+
+  const filteredInvoices = React.useMemo(() => {
+    const activeInvoices = (invoices || []) as unknown as typeof MOCK_INVOICES;
+    return activeInvoices.filter(
+      (inv) =>
+        inv.invoice_no.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        inv.seller_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        inv.items_summary.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [invoices, searchTerm]);
+
+  const totalRows = filteredInvoices.length;
+  const fromRow = totalRows === 0 ? 0 : pageIndex * pageSize + 1;
+  const toRow = Math.min((pageIndex + 1) * pageSize, totalRows);
+  const totalPages = Math.ceil(totalRows / pageSize);
+
+  const paginatedInvoices = React.useMemo(() => {
+    const start = pageIndex * pageSize;
+    return filteredInvoices.slice(start, start + pageSize);
+  }, [filteredInvoices, pageIndex, pageSize]);
 
   const handleDownloadInvoice = (inv: (typeof MOCK_INVOICES)[number]) => {
     toast.loading('Menyiapkan dokumen cetak invoice...', { id: 'print-inv' });
@@ -251,109 +284,150 @@ export default function DistributorInvoicesPage() {
         </p>
       </div>
 
-      {isOffline && (
-        <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-4 flex items-start gap-3 shadow-sm">
-          <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-xs font-bold text-amber-800">Modus Simulasi Luring Aktif</h4>
-            <p className="text-[11px] text-amber-600/90 font-medium mt-0.5 leading-relaxed">
-              Arsip berkas invoice lunas digenerasikan menggunakan arsip pesanan simulasi lokal.
-            </p>
+      {/* Invoice list Container */}
+      <Card className="border-slate-200 shadow-sm bg-white overflow-hidden rounded-xl border">
+        <CardHeader className="pb-4 border-b border-slate-100 p-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-1">
+            <CardTitle className="text-sm font-bold text-slate-800">
+              Daftar Invoice Belanja B2B
+            </CardTitle>
+            <CardDescription className="text-xs">
+              Cetak atau unduh dokumen invoice resmi lunas sebagai berkas pelaporan pengeluaran
+              modal usaha Anda.
+            </CardDescription>
           </div>
-        </div>
-      )}
-
-      {/* Invoice list */}
-      <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-        <CardContent className="p-0">
-          {isLoading ? (
-            <div className="p-8 space-y-2">
+          <div className="relative max-w-xs w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input
+              type="text"
+              placeholder="Cari no. invoice / petani..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 h-9.5 text-xs font-semibold border-slate-200 focus-visible:ring-emerald-500/30 focus-visible:border-emerald-500 w-full rounded-lg bg-white"
+            />
+          </div>
+        </CardHeader>
+        <CardContent className="p-6">
+          {isError ? (
+            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+              Gagal memuat data invoice belanja B2B / Koneksi ke server terputus
+            </div>
+          ) : isLoading ? (
+            <div className="space-y-3">
+              <Skeleton className="h-8 w-full" />
               <Skeleton className="h-8 w-full" />
               <Skeleton className="h-8 w-full" />
             </div>
-          ) : activeInvoices.length === 0 ? (
+          ) : filteredInvoices.length === 0 ? (
             <div className="py-14 text-center">
               <FileText className="mx-auto h-12 w-12 text-slate-300" />
-              <h3 className="mt-4 text-xs font-bold text-slate-800">
-                Belum ada invoice diterbitkan
-              </h3>
+              <h3 className="mt-4 text-xs font-bold text-slate-800">Invoice tidak ditemukan</h3>
               <p className="mt-1 text-[11px] text-slate-500 font-semibold">
-                Selesaikan penerimaan pesanan grosir untuk menerbitkan invoice lunas.
+                Tidak ada dokumen invoice yang cocok dengan kata kunci &ldquo;{searchTerm}&rdquo;.
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader className="bg-slate-50/50">
-                  <TableRow className="border-b border-slate-100">
-                    <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider py-3 pl-4">
-                      No. Invoice
-                    </TableHead>
-                    <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider">
-                      Tanggal Terbit
-                    </TableHead>
-                    <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider">
-                      Mitra Petani
-                    </TableHead>
-                    <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider">
-                      Komoditas Barang
-                    </TableHead>
-                    <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-right">
-                      Nominal Lunas
-                    </TableHead>
-                    <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-center">
-                      Status
-                    </TableHead>
-                    <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-center">
-                      Unduh
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {activeInvoices.map((inv: (typeof MOCK_INVOICES)[number]) => (
-                    <TableRow
-                      key={inv.invoice_no}
-                      className="border-b border-slate-100 hover:bg-slate-50/40"
-                    >
-                      <TableCell className="font-bold text-xs py-3 pl-4 text-slate-800">
-                        {inv.invoice_no}
-                      </TableCell>
-                      <TableCell className="text-xs font-semibold text-slate-500">
-                        {new Date(inv.created_at).toLocaleDateString('id-ID', {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric',
-                        })}
-                      </TableCell>
-                      <TableCell className="text-xs font-semibold text-slate-600">
-                        {inv.seller_name}
-                      </TableCell>
-                      <TableCell className="text-xs font-semibold text-slate-600 max-w-[200px] truncate">
-                        {inv.items_summary}
-                      </TableCell>
-                      <TableCell className="text-xs font-bold text-slate-800 text-right">
-                        {formatCurrency(inv.total_amount)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <span className="inline-flex items-center rounded-lg border border-green-200/50 bg-green-50 px-2.5 py-0.5 text-[9.5px] font-bold text-green-700">
-                          Lunas
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Button
-                          size="sm"
-                          onClick={() => handleDownloadInvoice(inv)}
-                          className="bg-green-600 hover:bg-green-700 text-white font-bold text-[10px] h-7.5 px-2.5 rounded-lg flex items-center justify-center gap-1 cursor-pointer mx-auto shadow-sm"
-                        >
-                          <Download className="w-3.5 h-3.5" /> PDF /{' '}
-                          <Printer className="w-3.5 h-3.5" /> Cetak
-                        </Button>
-                      </TableCell>
+            <>
+              <div className="overflow-hidden rounded-xl border bg-white shadow-xs">
+                <Table>
+                  <TableHeader className="bg-slate-50/50">
+                    <TableRow className="border-b border-slate-100">
+                      <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider py-3 pl-4">
+                        No. Invoice
+                      </TableHead>
+                      <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider">
+                        Tanggal Terbit
+                      </TableHead>
+                      <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider">
+                        Mitra Petani
+                      </TableHead>
+                      <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider">
+                        Komoditas Barang
+                      </TableHead>
+                      <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-right">
+                        Nominal Lunas
+                      </TableHead>
+                      <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-center">
+                        Status
+                      </TableHead>
+                      <TableHead className="text-[10.5px] font-bold text-slate-500 uppercase tracking-wider text-center">
+                        Aksi
+                      </TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {paginatedInvoices.map((inv: (typeof MOCK_INVOICES)[number]) => (
+                      <TableRow
+                        key={inv.invoice_no}
+                        className="border-b border-slate-100 hover:bg-slate-50/40"
+                      >
+                        <TableCell className="font-bold text-xs py-3 pl-4 text-slate-850">
+                          {inv.invoice_no}
+                        </TableCell>
+                        <TableCell className="text-xs font-semibold text-slate-500">
+                          {new Date(inv.created_at).toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          })}
+                        </TableCell>
+                        <TableCell className="text-xs font-semibold text-slate-600">
+                          {inv.seller_name}
+                        </TableCell>
+                        <TableCell className="text-xs font-semibold text-slate-600 max-w-[200px] truncate">
+                          {inv.items_summary}
+                        </TableCell>
+                        <TableCell className="text-xs font-bold text-slate-800 text-right">
+                          {formatCurrency(inv.total_amount)}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <span className="inline-flex items-center rounded-lg border border-emerald-200/50 bg-emerald-50 px-2.5 py-0.5 text-[9.5px] font-bold text-emerald-700">
+                            Lunas
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Button
+                            size="sm"
+                            onClick={() => handleDownloadInvoice(inv)}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] h-7.5 px-2.5 rounded-lg flex items-center justify-center gap-1 cursor-pointer mx-auto shadow-sm"
+                          >
+                            <Download className="w-3.5 h-3.5" /> PDF /{' '}
+                            <Printer className="w-3.5 h-3.5" /> Cetak
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Pagination */}
+              <div className="flex items-center justify-between gap-4 pt-3 border-t border-slate-100 mt-4">
+                <div className="text-xs font-semibold text-slate-500">
+                  Menampilkan {fromRow}-{toRow} dari {totalRows} invoice
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPageIndex((prev) => Math.max(0, prev - 1))}
+                    disabled={pageIndex === 0}
+                    className="border-slate-200 text-slate-700 font-bold text-xs h-8 px-3 rounded-lg bg-white hover:bg-slate-50 disabled:opacity-50 cursor-pointer"
+                  >
+                    Sebelumnya
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPageIndex((prev) => Math.min(totalPages - 1, prev + 1))}
+                    disabled={pageIndex >= totalPages - 1}
+                    className="border-slate-200 text-slate-700 font-bold text-xs h-8 px-3 rounded-lg bg-white hover:bg-slate-50 disabled:opacity-50 cursor-pointer"
+                  >
+                    Berikutnya
+                  </Button>
+                </div>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
