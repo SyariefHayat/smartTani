@@ -208,11 +208,11 @@ export default function InstructorCoursesPage() {
       </div>
 
       {isOffline && (
-        <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-4 flex items-start gap-3 shadow-sm">
-          <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-start gap-3">
+          <AlertTriangle className="h-5 w-5 text-slate-500 shrink-0 mt-0.5" />
           <div>
-            <h4 className="text-xs font-bold text-amber-800">Modus Simulasi Luring Aktif</h4>
-            <p className="text-[11px] font-semibold text-amber-600 mt-0.5">
+            <h4 className="text-xs font-bold text-slate-800">Modus Simulasi Luring Aktif</h4>
+            <p className="text-[11px] font-medium text-slate-500 mt-0.5">
               Academy Service backend sedang tidak terhubung. Anda tetap dapat mengedit draf,
               mengurutkan bab modul belajar, and publish/unpublish kelas di peramban Anda.
             </p>
@@ -341,23 +341,25 @@ export default function InstructorCoursesPage() {
                       </td>
                       <td className="py-4 px-4">
                         {course.average_rating > 0 ? (
-                          <div className="flex items-center gap-1 bg-amber-50 border border-amber-100 text-amber-700 px-2 py-0.5 rounded-lg text-[10px] max-w-fit">
-                            <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-                            {course.average_rating} ({course.review_count} Ulasan)
+                          <div className="flex items-center gap-1 bg-slate-50 border border-slate-200 text-slate-600 px-2 py-0.5 rounded-lg text-[10px] max-w-fit">
+                            <Star className="h-3 w-3 text-slate-400" />
+                            <span>
+                              {course.average_rating} ({course.review_count} Ulasan)
+                            </span>
                           </div>
                         ) : (
-                          <span className="text-[10px] text-slate-400">Belum Ada</span>
+                          <span className="text-[10px] text-slate-400 font-medium">Belum Ada</span>
                         )}
                       </td>
                       <td className="py-4 px-4">
                         {course.is_published ? (
-                          <Badge className="bg-slate-50 border border-slate-200 text-slate-700 text-[9px] font-bold rounded-lg uppercase shadow-none">
-                            Published
-                          </Badge>
+                          <span className="inline-flex items-center rounded-md bg-slate-50 px-2 py-0.5 text-[10px] font-medium text-slate-600 border border-slate-200/60">
+                            Terpublikasi
+                          </span>
                         ) : (
-                          <Badge className="bg-slate-100 border border-slate-200 text-slate-500 text-[9px] font-bold rounded-lg uppercase">
-                            Draft
-                          </Badge>
+                          <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500 border border-transparent">
+                            Draf
+                          </span>
                         )}
                       </td>
                       <td className="py-4 px-4 text-right">
@@ -408,9 +410,9 @@ export default function InstructorCoursesPage() {
                                 onClick={() =>
                                   publishMutation.mutate({ id: course.id, publish: false })
                                 }
-                                className="rounded-lg text-xs cursor-pointer gap-2 py-2 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                                className="rounded-lg text-xs cursor-pointer gap-2 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                               >
-                                <Archive className="h-3.5 w-3.5" />
+                                <Archive className="h-3.5 w-3.5 text-slate-400" />
                                 Unpublish
                               </DropdownMenuItem>
                             ) : (
