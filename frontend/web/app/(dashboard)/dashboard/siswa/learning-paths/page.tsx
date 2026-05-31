@@ -136,36 +136,7 @@ export default function LearningPathsPage() {
     refetch: refetchEnrollments,
   } = useQuery<Enrollment[]>({
     queryKey: ['student-enrollments-all', user?.id],
-    queryFn: async () => {
-      try {
-        return await academyService.getMyEnrollments();
-      } catch {
-        // Retrieve local storage progress mock
-        const listKey = `enrollments-${user?.id}`;
-        const savedList = localStorage.getItem(listKey);
-        if (savedList) return JSON.parse(savedList);
-
-        // Fallback simple active list
-        return [
-          {
-            id: 'enroll-1',
-            student_id: user?.id || 'siswa-1',
-            course_id: 'course-001',
-            status: 'active' as const,
-            enrolled_at: new Date().toISOString(),
-            progress_percent: 65,
-          },
-          {
-            id: 'enroll-4',
-            student_id: user?.id || 'siswa-1',
-            course_id: 'course-004',
-            status: 'completed' as const,
-            enrolled_at: new Date().toISOString(),
-            progress_percent: 100,
-          },
-        ];
-      }
-    },
+    queryFn: () => academyService.getMyEnrollments(),
   });
 
   React.useEffect(() => {
