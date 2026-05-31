@@ -237,7 +237,8 @@ export default function BuyerOrdersPage() {
                 <TableRow>
                   <TableHead className="w-[100px]">ID Pesanan</TableHead>
                   <TableHead>Tanggal</TableHead>
-                  <TableHead>Komoditas / Jumlah</TableHead>
+                  <TableHead>Komoditas</TableHead>
+                  <TableHead>Jumlah</TableHead>
                   <TableHead>Total Pembayaran</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Aksi</TableHead>
@@ -257,6 +258,9 @@ export default function BuyerOrdersPage() {
                         <Skeleton className="h-4 w-40 bg-slate-100 rounded" />
                       </TableCell>
                       <TableCell>
+                        <Skeleton className="h-4 w-16 bg-slate-100 rounded" />
+                      </TableCell>
+                      <TableCell>
                         <Skeleton className="h-4 w-24 bg-slate-100 rounded" />
                       </TableCell>
                       <TableCell>
@@ -270,7 +274,7 @@ export default function BuyerOrdersPage() {
                 ) : filteredOrders.length === 0 ? (
                   <TableRow>
                     <TableCell
-                      colSpan={6}
+                      colSpan={7}
                       className="h-32 text-center text-muted-foreground font-medium text-xs"
                     >
                       <div className="flex flex-col items-center justify-center gap-2">
@@ -305,9 +309,9 @@ export default function BuyerOrdersPage() {
                               +{itemsCount - 1} item lainnya
                             </span>
                           )}
-                          <p className="text-[10px] text-slate-400 font-medium mt-0.5">
-                            {order.items?.[0]?.quantity || 0} unit
-                          </p>
+                        </TableCell>
+                        <TableCell className="text-xs font-medium text-slate-600">
+                          {(order.items?.[0]?.quantity || 0).toLocaleString('id-ID')} unit
                         </TableCell>
                         <TableCell className="text-xs font-bold text-slate-800">
                           {formatCurrency(order.total_amount)}
