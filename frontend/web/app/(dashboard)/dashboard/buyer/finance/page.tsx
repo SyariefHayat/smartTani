@@ -350,14 +350,16 @@ export default function BuyerFinancePage() {
 
   return (
     <DateRangeContext.Provider value={{ date, setDate }}>
-      {/* Header — matches farmer dashboard exactly */}
+      {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight lg:text-2xl">
-            Riwayat Belanja & Pengeluaran
+            {isHistoryPage ? 'Riwayat Transaksi' : 'Ringkasan Pengeluaran'}
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Pantau seluruh catatan pengeluaran belanja, analisis transaksi, dan faktur digital Anda.
+            {isHistoryPage
+              ? 'Daftar lengkap transaksi dan faktur digital belanja Anda.'
+              : 'Ringkasan statistik pengeluaran dan grafik analisis belanja Anda.'}
           </p>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
@@ -365,359 +367,505 @@ export default function BuyerFinancePage() {
         </div>
       </div>
 
-      {/* Stats Row — exact SectionCard pattern from farmer dashboard */}
-      {isQueryError && !isHistoryPage ? (
-        <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
-          Gagal memuat data statistik keuangan / Koneksi ke server terputus
-        </div>
-      ) : isLoading ? (
-        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Card key={i} className="min-w-0">
-              <CardHeader className="gap-1">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-8 w-full" />
-              </CardHeader>
-              <CardFooter className="flex-col items-start gap-1.5 text-sm">
-                <Skeleton className="h-4 w-full" />
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
-      ) : (
-        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-          {stats.map((stat, index) => {
-            const hasCompare = stat.hasCompare;
-            const statIsUp = stat.change > 0;
-            const statIsDown = stat.change < 0;
-
-            let colorClass = 'text-muted-foreground';
-            let Icon = null;
-            let percentageText = '0.0%';
-
-            if (hasCompare) {
-              colorClass = statIsUp
-                ? 'text-green-500'
-                : statIsDown
-                  ? 'text-red-500'
-                  : 'text-muted-foreground';
-              Icon = statIsUp ? ArrowUp : statIsDown ? ArrowDown : null;
-              percentageText = `${Math.abs(stat.change).toFixed(1)}%`;
-            }
-
-            return (
-              <Card key={index} className="min-w-0">
+      {/* Stats Row — Spending Summary Only */}
+      {!isHistoryPage &&
+        (isQueryError ? (
+          <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+            Gagal memuat data statistik keuangan / Koneksi ke server terputus
+          </div>
+        ) : isLoading ? (
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Card key={i} className="min-w-0">
                 <CardHeader className="gap-1">
-                  <CardDescription className="truncate text-xs">{stat.title}</CardDescription>
-                  <CardTitle
-                    className="truncate text-xl font-semibold tabular-nums lg:text-2xl"
-                    title={stat.value}
-                  >
-                    {stat.value}
-                  </CardTitle>
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-8 w-full" />
                 </CardHeader>
                 <CardFooter className="flex-col items-start gap-1.5 text-sm">
-                  <div className="flex w-full min-w-0 items-center gap-1 font-medium">
-                    {Icon && <Icon className={`size-4 shrink-0 ${colorClass}`} />}
-                    <span className="truncate">
-                      {hasCompare && <span className={colorClass}>{percentageText} </span>}
-                      <span className="text-muted-foreground">{stat.footer}</span>
-                    </span>
-                  </div>
+                  <Skeleton className="h-4 w-full" />
                 </CardFooter>
               </Card>
-            );
-          })}
-        </div>
-      )}
+            ))}
+          </div>
+        ) : (
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+            {stats.map((stat, index) => {
+              const hasCompare = stat.hasCompare;
+              const statIsUp = stat.change > 0;
+              const statIsDown = stat.change < 0;
 
-      {/* Interactive Spending Chart — exact ChartBarInteractive pattern from farmer */}
-      {isLoading ? (
-        <Card className="py-0">
-          <CardHeader className="flex flex-col items-stretch border-b p-0! sm:flex-row">
-            <div className="flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:py-0!">
-              <Skeleton className="h-6 w-48" />
-              <Skeleton className="h-4 w-64" />
+              let colorClass = 'text-muted-foreground';
+              let Icon = null;
+              let percentageText = '0.0%';
+
+              if (hasCompare) {
+                colorClass = statIsUp
+                  ? 'text-green-500'
+                  : statIsDown
+                    ? 'text-red-500'
+                    : 'text-muted-foreground';
+                Icon = statIsUp ? ArrowUp : statIsDown ? ArrowDown : null;
+                percentageText = `${Math.abs(stat.change).toFixed(1)}%`;
+              }
+
+              return (
+                <Card key={index} className="min-w-0">
+                  <CardHeader className="gap-1">
+                    <CardDescription className="truncate text-xs">{stat.title}</CardDescription>
+                    <CardTitle
+                      className="truncate text-xl font-semibold tabular-nums lg:text-2xl"
+                      title={stat.value}
+                    >
+                      {stat.value}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                    <div className="flex w-full min-w-0 items-center gap-1 font-medium">
+                      {Icon && <Icon className={`size-4 shrink-0 ${colorClass}`} />}
+                      <span className="truncate">
+                        {hasCompare && <span className={colorClass}>{percentageText} </span>}
+                        <span className="text-muted-foreground">{stat.footer}</span>
+                      </span>
+                    </div>
+                  </CardFooter>
+                </Card>
+              );
+            })}
+          </div>
+        ))}
+
+      {/* Interactive Spending Chart — Spending Summary Only */}
+      {!isHistoryPage &&
+        (isLoading ? (
+          <Card className="py-0">
+            <CardHeader className="flex flex-col items-stretch border-b p-0! sm:flex-row">
+              <div className="flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:py-0!">
+                <Skeleton className="h-6 w-48" />
+                <Skeleton className="h-4 w-64" />
+              </div>
+              <div className="flex">
+                <div className="px-6 py-4 sm:px-8 sm:py-6 border-l">
+                  <Skeleton className="h-4 w-20 mb-2" />
+                  <Skeleton className="h-8 w-32" />
+                </div>
+                <div className="px-6 py-4 sm:px-8 sm:py-6 border-l">
+                  <Skeleton className="h-4 w-20 mb-2" />
+                  <Skeleton className="h-8 w-32" />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="px-2 sm:p-6 flex h-75 items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </CardContent>
+          </Card>
+        ) : isQueryError ? (
+          <Card className="flex h-100 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+            Gagal memuat grafik analisis pengeluaran / Koneksi ke server terputus
+          </Card>
+        ) : (
+          <Card className="py-0">
+            <CardHeader className="flex flex-col items-stretch border-b p-0! sm:flex-row">
+              <div className="flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:py-0!">
+                <CardTitle className="font-semibold lg:text-xl">Analisis Pengeluaran</CardTitle>
+                <CardDescription>
+                  Grafik pengeluaran belanja harian dan frekuensi transaksi Anda.
+                </CardDescription>
+              </div>
+              <div className="flex">
+                <button
+                  data-active={activeChart === 'belanja'}
+                  className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-l sm:px-8 sm:py-6 min-w-56 cursor-pointer hover:bg-muted/20 transition-colors"
+                  onClick={() => setActiveChart('belanja')}
+                >
+                  <span className="text-xs text-muted-foreground">{chartConfig.belanja.label}</span>
+                  <span className="text-base leading-none font-bold sm:text-2xl">
+                    {formatCurrency(chartTotals.belanja)}
+                  </span>
+                </button>
+                <button
+                  data-active={activeChart === 'transaksi'}
+                  className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left border-l data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-l sm:px-8 sm:py-6 min-w-56 cursor-pointer hover:bg-muted/20 transition-colors"
+                  onClick={() => setActiveChart('transaksi')}
+                >
+                  <span className="text-xs text-muted-foreground">
+                    {chartConfig.transaksi.label}
+                  </span>
+                  <span className="text-base leading-none font-bold sm:text-2xl">
+                    {chartTotals.transaksi.toLocaleString('id-ID')} Tx
+                  </span>
+                </button>
+              </div>
+            </CardHeader>
+            <CardContent className="px-2 sm:p-6">
+              {chartData.length === 0 ? (
+                <div className="flex h-62.5 items-center justify-center text-muted-foreground">
+                  Tidak ada data belanja untuk periode ini
+                </div>
+              ) : (
+                <ChartContainer config={chartConfig} className="aspect-auto h-75 w-full">
+                  <BarChart accessibilityLayer data={chartData} margin={{ left: 12, right: 12 }}>
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                      dataKey="date"
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={8}
+                      minTickGap={32}
+                      tickFormatter={(value) =>
+                        new Date(value).toLocaleDateString('id-ID', {
+                          month: 'short',
+                          day: 'numeric',
+                        })
+                      }
+                    />
+                    <YAxis
+                      hide={activeChart === 'transaksi'}
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={8}
+                      tickFormatter={(value) =>
+                        activeChart === 'belanja'
+                          ? value >= 1000000
+                            ? `Rp ${(value / 1000000).toFixed(1)}jt`
+                            : value >= 1000
+                              ? `Rp ${(value / 1000).toFixed(0)}rb`
+                              : `Rp ${value}`
+                          : value.toLocaleString('id-ID')
+                      }
+                    />
+                    <ChartTooltip content={<CustomTooltip />} />
+                    <Bar
+                      dataKey={activeChart}
+                      fill={`var(--color-${activeChart})`}
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ChartContainer>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+
+      {/* Invoice Ledger Table */}
+      {isHistoryPage ? (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Daftar Faktur Pembelian</CardTitle>
             </div>
-            <div className="flex">
-              <div className="px-6 py-4 sm:px-8 sm:py-6 border-l">
-                <Skeleton className="h-4 w-20 mb-2" />
-                <Skeleton className="h-8 w-32" />
-              </div>
-              <div className="px-6 py-4 sm:px-8 sm:py-6 border-l">
-                <Skeleton className="h-4 w-20 mb-2" />
-                <Skeleton className="h-8 w-32" />
-              </div>
+            <div className="flex items-center pt-4">
+              <Input
+                placeholder="Cari ID transaksi atau produk..."
+                className="rounded-sm max-w-full"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
           </CardHeader>
-          <CardContent className="px-2 sm:p-6 flex h-75 items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-          </CardContent>
-        </Card>
-      ) : isQueryError && !isHistoryPage ? (
-        <Card className="flex h-100 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
-          Gagal memuat grafik analisis pengeluaran / Koneksi ke server terputus
-        </Card>
-      ) : (
-        <Card className="py-0">
-          <CardHeader className="flex flex-col items-stretch border-b p-0! sm:flex-row">
-            <div className="flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:py-0!">
-              <CardTitle className="font-semibold lg:text-xl">Analisis Pengeluaran</CardTitle>
-              <CardDescription>
-                Grafik pengeluaran belanja harian dan frekuensi transaksi Anda.
-              </CardDescription>
-            </div>
-            <div className="flex">
-              <button
-                data-active={activeChart === 'belanja'}
-                className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-l sm:px-8 sm:py-6 min-w-56 cursor-pointer hover:bg-muted/20 transition-colors"
-                onClick={() => setActiveChart('belanja')}
-              >
-                <span className="text-xs text-muted-foreground">{chartConfig.belanja.label}</span>
-                <span className="text-base leading-none font-bold sm:text-2xl">
-                  {formatCurrency(chartTotals.belanja)}
-                </span>
-              </button>
-              <button
-                data-active={activeChart === 'transaksi'}
-                className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left border-l data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-l sm:px-8 sm:py-6 min-w-56 cursor-pointer hover:bg-muted/20 transition-colors"
-                onClick={() => setActiveChart('transaksi')}
-              >
-                <span className="text-xs text-muted-foreground">{chartConfig.transaksi.label}</span>
-                <span className="text-base leading-none font-bold sm:text-2xl">
-                  {chartTotals.transaksi.toLocaleString('id-ID')} Tx
-                </span>
-              </button>
-            </div>
-          </CardHeader>
-          <CardContent className="px-2 sm:p-6">
-            {chartData.length === 0 ? (
-              <div className="flex h-62.5 items-center justify-center text-muted-foreground">
-                Tidak ada data belanja untuk periode ini
+          <CardContent>
+            {isLoading ? (
+              <div className="space-y-2">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Skeleton key={i} className="h-12 w-full" />
+                ))}
+              </div>
+            ) : filteredTransactions.length === 0 ? (
+              <div className="overflow-hidden rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Transaksi</TableHead>
+                      <TableHead>Tanggal</TableHead>
+                      <TableHead>Rincian Pembelian</TableHead>
+                      <TableHead>Pengeluaran</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Aksi</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                        Tidak ada hasil.
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
               </div>
             ) : (
-              <ChartContainer config={chartConfig} className="aspect-auto h-75 w-full">
-                <BarChart accessibilityLayer data={chartData} margin={{ left: 12, right: 12 }}>
-                  <CartesianGrid vertical={false} />
-                  <XAxis
-                    dataKey="date"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                    minTickGap={32}
-                    tickFormatter={(value) =>
-                      new Date(value).toLocaleDateString('id-ID', {
-                        month: 'short',
-                        day: 'numeric',
-                      })
-                    }
-                  />
-                  <YAxis
-                    hide={activeChart === 'transaksi'}
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                    tickFormatter={(value) =>
-                      activeChart === 'belanja'
-                        ? value >= 1000000
-                          ? `Rp ${(value / 1000000).toFixed(1)}jt`
-                          : value >= 1000
-                            ? `Rp ${(value / 1000).toFixed(0)}rb`
-                            : `Rp ${value}`
-                        : value.toLocaleString('id-ID')
-                    }
-                  />
-                  <ChartTooltip content={<CustomTooltip />} />
-                  <Bar
-                    dataKey={activeChart}
-                    fill={`var(--color-${activeChart})`}
-                    radius={[4, 4, 0, 0]}
-                  />
-                </BarChart>
-              </ChartContainer>
+              <div className="overflow-hidden rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Transaksi</TableHead>
+                      <TableHead>Tanggal</TableHead>
+                      <TableHead>Rincian Pembelian</TableHead>
+                      <TableHead>Pengeluaran</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Aksi</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {paginatedTransactions.map((tx) => {
+                      const isCompleted = tx.status === 'completed';
+                      return (
+                        <TableRow key={tx.id}>
+                          <TableCell className="font-mono text-xs font-medium text-muted-foreground">
+                            #{tx.id}
+                          </TableCell>
+                          <TableCell className="text-xs font-medium text-slate-600">
+                            {format(new Date(tx.date), 'dd MMM yyyy, HH:mm', {
+                              locale: localeId,
+                            })}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-col">
+                              <span
+                                className="font-medium text-sm truncate max-w-40 lg:max-w-60"
+                                title={tx.items_summary}
+                              >
+                                {tx.items_summary}
+                              </span>
+                              <span className="text-[10px] text-muted-foreground uppercase">
+                                {tx.order_id}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm font-medium tabular-nums">
+                              {formatCurrency(tx.amount)}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <span
+                              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold border ${
+                                isCompleted
+                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                  : 'bg-rose-50 text-rose-700 border-rose-200'
+                              }`}
+                            >
+                              <span
+                                className={`h-1.5 w-1.5 rounded-full ${isCompleted ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`}
+                              />
+                              {isCompleted ? 'Berhasil' : 'Batal'}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon-xs" className="cursor-pointer">
+                                  <span className="sr-only">Buka menu</span>
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="w-48 bg-white">
+                                <DropdownMenuGroup>
+                                  <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+                                  <DropdownMenuItem
+                                    className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(tx.id);
+                                      toast.success('ID transaksi berhasil disalin');
+                                    }}
+                                  >
+                                    Salin ID Transaksi
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
+                                    onClick={() =>
+                                      router.push(`/dashboard/buyer/orders/${tx.order_id}`)
+                                    }
+                                  >
+                                    Lihat Detail Pesanan
+                                  </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+
+            {/* Pagination */}
+            <div className="flex items-center justify-end space-x-2 py-4">
+              <div className="flex-1 text-sm text-muted-foreground">
+                Menampilkan {fromRow}–{toRow} dari {totalRows} transaksi
+              </div>
+              <div className="space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={isLoading || currentPage === 1 || totalRows === 0}
+                  className="cursor-pointer"
+                >
+                  Sebelumnya
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={isLoading || currentPage === totalPages || totalRows === 0}
+                  className="cursor-pointer"
+                >
+                  Berikutnya
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Transaksi Terbaru</CardTitle>
+              <CardDescription>5 transaksi pembelian terakhir Anda.</CardDescription>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push('/dashboard/buyer/finance/history')}
+              className="cursor-pointer"
+            >
+              Lihat Semua
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {isQueryError ? (
+              <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                Gagal memuat daftar transaksi terbaru / Koneksi ke server terputus
+              </div>
+            ) : isLoading ? (
+              <div className="space-y-2">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Skeleton key={i} className="h-12 w-full" />
+                ))}
+              </div>
+            ) : activeData.transactions.length === 0 ? (
+              <div className="overflow-hidden rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Transaksi</TableHead>
+                      <TableHead>Tanggal</TableHead>
+                      <TableHead>Rincian Pembelian</TableHead>
+                      <TableHead>Pengeluaran</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Aksi</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                        Tidak ada transaksi terbaru.
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            ) : (
+              <div className="overflow-hidden rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Transaksi</TableHead>
+                      <TableHead>Tanggal</TableHead>
+                      <TableHead>Rincian Pembelian</TableHead>
+                      <TableHead>Pengeluaran</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Aksi</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {activeData.transactions.slice(0, 5).map((tx) => {
+                      const isCompleted = tx.status === 'completed';
+                      return (
+                        <TableRow key={tx.id}>
+                          <TableCell className="font-mono text-xs font-medium text-muted-foreground">
+                            #{tx.id}
+                          </TableCell>
+                          <TableCell className="text-xs font-medium text-slate-600">
+                            {format(new Date(tx.date), 'dd MMM yyyy, HH:mm', {
+                              locale: localeId,
+                            })}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-col">
+                              <span
+                                className="font-medium text-sm truncate max-w-40 lg:max-w-60"
+                                title={tx.items_summary}
+                              >
+                                {tx.items_summary}
+                              </span>
+                              <span className="text-[10px] text-muted-foreground uppercase">
+                                {tx.order_id}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm font-medium tabular-nums">
+                              {formatCurrency(tx.amount)}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <span
+                              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold border ${
+                                isCompleted
+                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                  : 'bg-rose-50 text-rose-700 border-rose-200'
+                              }`}
+                            >
+                              <span
+                                className={`h-1.5 w-1.5 rounded-full ${isCompleted ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`}
+                              />
+                              {isCompleted ? 'Berhasil' : 'Batal'}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon-xs" className="cursor-pointer">
+                                  <span className="sr-only">Buka menu</span>
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="w-48 bg-white">
+                                <DropdownMenuGroup>
+                                  <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+                                  <DropdownMenuItem
+                                    className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(tx.id);
+                                      toast.success('ID transaksi berhasil disalin');
+                                    }}
+                                  >
+                                    Salin ID Transaksi
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
+                                    onClick={() =>
+                                      router.push(`/dashboard/buyer/orders/${tx.order_id}`)
+                                    }
+                                  >
+                                    Lihat Detail Pesanan
+                                  </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
             )}
           </CardContent>
         </Card>
       )}
-
-      {/* Invoice Ledger Table */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Daftar Faktur Pembelian</CardTitle>
-          </div>
-          <div className="flex items-center pt-4">
-            <Input
-              placeholder="Cari ID transaksi atau produk..."
-              className="rounded-sm max-w-full"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </CardHeader>
-        <CardContent>
-          {isQueryError && !isHistoryPage ? (
-            <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
-              Gagal memuat daftar faktur pembelian / Koneksi ke server terputus
-            </div>
-          ) : (
-            <>
-              {isLoading ? (
-                <div className="space-y-2">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Skeleton key={i} className="h-12 w-full" />
-                  ))}
-                </div>
-              ) : filteredTransactions.length === 0 ? (
-                <div className="overflow-hidden rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Transaksi</TableHead>
-                        <TableHead>Tanggal</TableHead>
-                        <TableHead>Rincian Pembelian</TableHead>
-                        <TableHead>Pengeluaran</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Aksi</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
-                          Tidak ada hasil.
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </div>
-              ) : (
-                <div className="overflow-hidden rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Transaksi</TableHead>
-                        <TableHead>Tanggal</TableHead>
-                        <TableHead>Rincian Pembelian</TableHead>
-                        <TableHead>Pengeluaran</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Aksi</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {paginatedTransactions.map((tx) => {
-                        const isCompleted = tx.status === 'completed';
-                        return (
-                          <TableRow key={tx.id}>
-                            <TableCell className="font-mono text-xs font-medium text-muted-foreground">
-                              #{tx.id}
-                            </TableCell>
-                            <TableCell className="text-xs font-medium text-slate-600">
-                              {format(new Date(tx.date), 'dd MMM yyyy, HH:mm', {
-                                locale: localeId,
-                              })}
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex flex-col">
-                                <span
-                                  className="font-medium text-sm truncate max-w-40 lg:max-w-60"
-                                  title={tx.items_summary}
-                                >
-                                  {tx.items_summary}
-                                </span>
-                                <span className="text-[10px] text-muted-foreground uppercase">
-                                  {tx.order_id}
-                                </span>
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="text-sm font-medium tabular-nums">
-                                {formatCurrency(tx.amount)}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <span
-                                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold border ${
-                                  isCompleted
-                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                    : 'bg-rose-50 text-rose-700 border-rose-200'
-                                }`}
-                              >
-                                <span
-                                  className={`h-1.5 w-1.5 rounded-full ${isCompleted ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`}
-                                />
-                                {isCompleted ? 'Berhasil' : 'Batal'}
-                              </span>
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button variant="ghost" size="icon-xs" className="cursor-pointer">
-                                    <span className="sr-only">Buka menu</span>
-                                    <MoreHorizontal className="h-4 w-4" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-48 bg-white">
-                                  <DropdownMenuGroup>
-                                    <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-                                    <DropdownMenuItem
-                                      className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
-                                      onClick={() => {
-                                        navigator.clipboard.writeText(tx.id);
-                                        toast.success('ID transaksi berhasil disalin');
-                                      }}
-                                    >
-                                      Salin ID Transaksi
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      className="cursor-pointer text-slate-700 hover:bg-slate-50 focus:bg-slate-50"
-                                      onClick={() =>
-                                        router.push(`/dashboard/buyer/orders/${tx.order_id}`)
-                                      }
-                                    >
-                                      Lihat Detail Pesanan
-                                    </DropdownMenuItem>
-                                  </DropdownMenuGroup>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-
-              {/* Pagination */}
-              <div className="flex items-center justify-end space-x-2 py-4">
-                <div className="flex-1 text-sm text-muted-foreground">
-                  Menampilkan {fromRow}–{toRow} dari {totalRows} transaksi
-                </div>
-                <div className="space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                    disabled={isLoading || currentPage === 1 || totalRows === 0}
-                    className="cursor-pointer"
-                  >
-                    Sebelumnya
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                    disabled={isLoading || currentPage === totalPages || totalRows === 0}
-                    className="cursor-pointer"
-                  >
-                    Berikutnya
-                  </Button>
-                </div>
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
     </DateRangeContext.Provider>
   );
 }
