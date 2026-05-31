@@ -164,7 +164,8 @@ export default function BuyerOrderDetailPage() {
     retry: false,
   });
 
-  const isTracking404 = (trackingError as any)?.response?.status === 404;
+  const isTracking404 =
+    (trackingError as { response?: { status?: number } })?.response?.status === 404;
   const isQueryError = isOrderError || (isTrackingError && !isTracking404);
 
   const handleRetry = async () => {
@@ -291,7 +292,8 @@ export default function BuyerOrderDetailPage() {
             </h1>
             <span
               className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-semibold border ${
-                statusConfig[order.status]?.className || 'bg-slate-50 text-slate-700 border-slate-200'
+                statusConfig[order.status]?.className ||
+                'bg-slate-50 text-slate-700 border-slate-200'
               }`}
             >
               <span
@@ -342,29 +344,34 @@ export default function BuyerOrderDetailPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 divide-y divide-slate-100">
-               {order.items.map((item: any, index: number) => {
-                 const productTitle = item?.product?.title || 'Produk Tani';
-                 const initialLetters = productTitle.slice(0, 2).toUpperCase();
+              {order.items.map(
+                (
+                  item: { product?: { title: string }; quantity: number; price_per_unit: number },
+                  index: number
+                ) => {
+                  const productTitle = item?.product?.title || 'Produk Tani';
+                  const initialLetters = productTitle.slice(0, 2).toUpperCase();
 
-                 return (
-                   <div key={index} className="p-5 flex items-center justify-between gap-4">
-                     <div className="flex items-center gap-3">
-                       <div className="h-12 w-12 rounded-lg bg-green-50 border border-green-100 flex items-center justify-center text-green-600 font-extrabold text-sm shrink-0">
-                         {initialLetters}
-                       </div>
-                       <div>
-                         <h4 className="text-sm font-semibold text-slate-800">{productTitle}</h4>
-                         <p className="text-xs text-slate-400 mt-0.5">
-                           {item.quantity} unit x {formatCurrency(item.price_per_unit)}
-                         </p>
-                       </div>
-                     </div>
-                     <p className="text-sm font-bold text-slate-800">
-                       {formatCurrency(item.price_per_unit * item.quantity)}
-                     </p>
-                   </div>
-                 );
-               })}
+                  return (
+                    <div key={index} className="p-5 flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="h-12 w-12 rounded-lg bg-green-50 border border-green-100 flex items-center justify-center text-green-600 font-extrabold text-sm shrink-0">
+                          {initialLetters}
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold text-slate-800">{productTitle}</h4>
+                          <p className="text-xs text-slate-400 mt-0.5">
+                            {item.quantity} unit x {formatCurrency(item.price_per_unit)}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-sm font-bold text-slate-800">
+                        {formatCurrency(item.price_per_unit * item.quantity)}
+                      </p>
+                    </div>
+                  );
+                }
+              )}
             </CardContent>
           </Card>
 
@@ -412,7 +419,9 @@ export default function BuyerOrderDetailPage() {
                               {step.title}
                             </h4>
                             <p className="text-[10px] text-slate-400 font-medium">
-                              {format(new Date(step.time), 'dd MMM yyyy, HH:mm', { locale: localeId })}
+                              {format(new Date(step.time), 'dd MMM yyyy, HH:mm', {
+                                locale: localeId,
+                              })}
                             </p>
                             <p className="text-xs text-slate-500 font-medium leading-relaxed">
                               {step.description}
@@ -434,7 +443,8 @@ export default function BuyerOrderDetailPage() {
                     Informasi Pengiriman Belum Tersedia
                   </p>
                   <p className="text-[10px] text-slate-400 max-w-xs leading-relaxed">
-                    Pesanan Anda sedang diproses oleh penjual. Nomor resi dan pelacakan kurir akan muncul secara real-time setelah kurir melakukan pick-up paket.
+                    Pesanan Anda sedang diproses oleh penjual. Nomor resi dan pelacakan kurir akan
+                    muncul secara real-time setelah kurir melakukan pick-up paket.
                   </p>
                 </div>
               )}
@@ -455,8 +465,12 @@ export default function BuyerOrderDetailPage() {
             <CardContent className="p-4 space-y-2 text-xs">
               {order.shipping_address ? (
                 <>
-                  <p className="font-bold text-slate-800">{order.shipping_address.recipient_name}</p>
-                  <p className="text-slate-500 font-semibold">{order.shipping_address.phone_number}</p>
+                  <p className="font-bold text-slate-800">
+                    {order.shipping_address.recipient_name}
+                  </p>
+                  <p className="text-slate-500 font-semibold">
+                    {order.shipping_address.phone_number}
+                  </p>
                   <p className="text-slate-600 font-medium leading-relaxed">
                     {order.shipping_address.full_address}
                   </p>
