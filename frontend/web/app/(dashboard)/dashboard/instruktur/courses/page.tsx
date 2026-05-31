@@ -200,7 +200,7 @@ export default function InstructorCoursesPage() {
           </p>
         </div>
         <Link href="/dashboard/instruktur/courses/create" passHref legacyBehavior>
-          <Button className="bg-green-600 hover:bg-green-700 text-white text-xs font-black px-4 py-2 rounded-xl shadow-sm gap-1.5 cursor-pointer">
+          <Button className="bg-slate-800 hover:bg-slate-900 text-white text-xs font-black px-4 py-2 rounded-xl shadow-sm gap-1.5 cursor-pointer">
             <Plus className="h-4.5 w-4.5" />
             Buat Kelas Baru
           </Button>
@@ -228,32 +228,41 @@ export default function InstructorCoursesPage() {
             placeholder="Cari judul kelas..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 bg-white border-slate-200 text-xs font-semibold focus:ring-green-500 rounded-xl"
+            className="pl-9 bg-white border-slate-200 text-xs font-semibold focus:ring-slate-800 rounded-xl"
           />
         </div>
 
         <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl max-w-fit self-end sm:self-auto">
           <Button
-            variant={statusFilter === 'all' ? 'default' : 'ghost'}
             onClick={() => setStatusFilter('all')}
             size="sm"
-            className="text-[10px] font-black rounded-lg px-3 py-1 data-[state=active]:bg-white"
+            className={`text-[10px] font-bold rounded-lg px-3 py-1 cursor-pointer transition-colors ${
+              statusFilter === 'all'
+                ? 'bg-slate-800 text-white hover:bg-slate-900'
+                : 'text-slate-600 hover:bg-slate-200/60 hover:text-slate-900'
+            }`}
           >
             Semua
           </Button>
           <Button
-            variant={statusFilter === 'published' ? 'default' : 'ghost'}
             onClick={() => setStatusFilter('published')}
             size="sm"
-            className="text-[10px] font-black rounded-lg px-3 py-1"
+            className={`text-[10px] font-bold rounded-lg px-3 py-1 cursor-pointer transition-colors ${
+              statusFilter === 'published'
+                ? 'bg-slate-800 text-white hover:bg-slate-900'
+                : 'text-slate-600 hover:bg-slate-200/60 hover:text-slate-900'
+            }`}
           >
             Published
           </Button>
           <Button
-            variant={statusFilter === 'draft' ? 'default' : 'ghost'}
             onClick={() => setStatusFilter('draft')}
             size="sm"
-            className="text-[10px] font-black rounded-lg px-3 py-1"
+            className={`text-[10px] font-bold rounded-lg px-3 py-1 cursor-pointer transition-colors ${
+              statusFilter === 'draft'
+                ? 'bg-slate-800 text-white hover:bg-slate-900'
+                : 'text-slate-600 hover:bg-slate-200/60 hover:text-slate-900'
+            }`}
           >
             Draft
           </Button>
@@ -276,7 +285,7 @@ export default function InstructorCoursesPage() {
             <Link href="/dashboard/instruktur/courses/create" passHref legacyBehavior>
               <Button
                 size="sm"
-                className="mt-4 bg-green-600 hover:bg-green-700 text-xs font-semibold text-white rounded-xl shadow-sm gap-2"
+                className="mt-4 bg-slate-800 hover:bg-slate-900 text-xs font-semibold text-white rounded-xl shadow-sm gap-2"
               >
                 <Plus className="h-4 w-4" />
                 Mulai Susun Kursus Pertama
@@ -342,7 +351,7 @@ export default function InstructorCoursesPage() {
                       </td>
                       <td className="py-4 px-4">
                         {course.is_published ? (
-                          <Badge className="bg-emerald-50 border border-emerald-100 text-emerald-700 text-[9px] font-bold rounded-lg uppercase">
+                          <Badge className="bg-slate-50 border border-slate-200 text-slate-700 text-[9px] font-bold rounded-lg uppercase shadow-none">
                             Published
                           </Badge>
                         ) : (
@@ -409,7 +418,7 @@ export default function InstructorCoursesPage() {
                                 onClick={() =>
                                   publishMutation.mutate({ id: course.id, publish: true })
                                 }
-                                className="rounded-lg text-xs cursor-pointer gap-2 py-2 text-green-700 hover:text-green-800 hover:bg-green-50"
+                                className="rounded-lg text-xs cursor-pointer gap-2 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100"
                               >
                                 <Globe className="h-3.5 w-3.5" />
                                 Publish Kelas
