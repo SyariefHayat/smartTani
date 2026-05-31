@@ -67,11 +67,11 @@ export default function BuyerReviewsPage() {
 
   React.useEffect(() => {
     if (isQueryError) {
-      toast.error('Layanan sedang offline. Menggunakan data demo lokal.');
+      toast.error('Gagal memuat daftar ulasan. Koneksi ke server terputus.');
     }
   }, [isQueryError]);
 
-  const activeReviews = isQueryError ? MOCK_REVIEWS : reviews || MOCK_REVIEWS;
+  const activeReviews = isQueryError ? [] : reviews || [];
 
   // Render Stars helper
   const renderStars = (rating: number) => {
@@ -91,28 +91,6 @@ export default function BuyerReviewsPage() {
 
   return (
     <div className="w-full space-y-6">
-      {/* Reconnect Banner */}
-      {isQueryError && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-            <p>
-              Layanan Ulasan Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7 cursor-pointer border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px]"
-            onClick={() => refetch()}
-            disabled={isRefetching}
-          >
-            <RefreshCw className={`mr-1 h-3 w-3 ${isRefetching ? 'animate-spin' : ''}`} />
-            {isRefetching ? 'Hubungkan...' : 'Coba Hubungkan Kembali'}
-          </Button>
-        </div>
-      )}
-
       {/* Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -126,7 +104,11 @@ export default function BuyerReviewsPage() {
       </div>
 
       {/* Reviews Cards List */}
-      {isLoading ? (
+      {isQueryError ? (
+        <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+          Gagal memuat daftar ulasan produk / Koneksi ke server terputus
+        </div>
+      ) : isLoading ? (
         <div className="space-y-4">
           <Skeleton className="h-28 w-full rounded-xl animate-pulse" />
           <Skeleton className="h-28 w-full rounded-xl animate-pulse" />
