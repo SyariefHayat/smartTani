@@ -28,15 +28,13 @@ import {
 import {
   GraduationCap,
   Search,
-  BookOpen,
   Clock,
   Star,
   Award,
-  Sparkles,
-  ArrowUpDown,
   Filter,
   CheckCircle2,
-  Tv,
+  AlertTriangle,
+  RefreshCw,
 } from 'lucide-react';
 
 const MOCK_COURSES: Course[] = [
@@ -149,36 +147,34 @@ export default function StudentCatalogPage() {
   const [difficultyFilter, setDifficultyFilter] = React.useState('all');
   const [modeFilter, setModeFilter] = React.useState('all');
   const [sortOption, setSortOption] = React.useState('popular');
-  const [isOffline, setIsOffline] = React.useState(false);
 
   // Fetch enrollments to display enrolled indicators
   const { data: myEnrollments } = useQuery({
     queryKey: ['student-enrollments-all', user?.id],
-    queryFn: async () => {
-      try {
-        return await academyService.getMyEnrollments();
-      } catch {
-        return [] as Enrollment[];
-      }
-    },
+    queryFn: () => academyService.getMyEnrollments(),
   });
 
   // Fetch courses
-  const { data: courses, isLoading } = useQuery({
+  const {
+    data: courses,
+    isLoading,
+    isError: isCoursesError,
+    refetch: refetchCourses,
+  } = useQuery({
     queryKey: ['student-catalog-courses'],
     queryFn: async () => {
-      try {
-        const res = await academyService.getCourses();
-        if (!res || !res.courses || res.courses.length === 0) throw new Error('Empty');
-        return res.courses;
-      } catch {
-        setIsOffline(true);
-        return MOCK_COURSES;
-      }
+      const res = await academyService.getCourses();
+      return res.courses || [];
     },
   });
 
-  const activeCourses = courses || MOCK_COURSES;
+  React.useEffect(() => {
+    if (isCoursesError) {
+      toast.error('Koneksi ke Layanan Academy terputus.');
+    }
+  }, [isCoursesError]);
+
+  const activeCourses = courses || [];
 
   // Filter & Sort logic
   const filteredCourses = activeCourses
@@ -214,7 +210,7 @@ export default function StudentCatalogPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-800 flex items-center gap-2">
-          <GraduationCap className="h-7 w-7 text-green-600" /> Katalog Kelas SiTani Academy
+          <GraduationCap className="h-7 w-7 text-slate-700" /> Katalog Kelas SiTani Academy
         </h1>
         <p className="text-xs text-slate-500 font-semibold mt-1">
           Pilih kurikulum terlengkap, daftarkan diri Anda, dan mulailah belajar dari ahli pertanian
@@ -233,7 +229,7 @@ export default function StudentCatalogPage() {
                 placeholder="Cari kelas, pengajar..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 h-10 text-xs border-slate-200 focus:border-green-500 rounded-xl"
+                className="pl-9 h-10 text-xs border-slate-200 focus:border-slate-400 rounded-xl"
               />
             </div>
 
@@ -307,7 +303,7 @@ export default function StudentCatalogPage() {
                 onClick={() => setModeFilter(mode.value)}
                 className={`px-3 py-1 rounded-full text-[10.5px] font-bold border transition-all cursor-pointer ${
                   modeFilter === mode.value
-                    ? 'bg-green-600 border-green-600 text-white shadow-sm'
+                    ? 'bg-slate-800 border-slate-800 text-white shadow-sm'
                     : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
                 }`}
               >
@@ -319,7 +315,23 @@ export default function StudentCatalogPage() {
       </Card>
 
       {/* Courses Catalog Grid */}
-      {isLoading ? (
+      {isCoursesError ? (
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 p-8 text-center text-red-500 font-semibold text-sm">
+          <AlertTriangle className="h-8 w-8 text-red-600 mb-2 animate-pulse" />
+          <p className="font-bold">Gagal memuat katalog kelas</p>
+          <p className="text-xs text-red-400 font-normal mt-1 mb-4">
+            Koneksi ke server Layanan Academy terputus. Silakan coba hubungkan kembali.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold text-xs"
+            onClick={() => refetchCourses()}
+          >
+            <RefreshCw className="h-3 w-3 mr-1" /> Coba Hubungkan Kembali
+          </Button>
+        </div>
+      ) : isLoading ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <Skeleton className="h-96" />
           <Skeleton className="h-96" />
@@ -343,12 +355,12 @@ export default function StudentCatalogPage() {
             return (
               <Card
                 key={course.id}
-                className="border-slate-200 hover:border-green-300 hover:shadow-md transition-all duration-300 bg-white overflow-hidden flex flex-col justify-between group"
+                className="border-slate-200 hover:border-slate-350 hover:shadow-md transition-all duration-300 bg-white overflow-hidden flex flex-col justify-between group"
               >
                 <div className="p-5 space-y-4">
                   {/* Category & Badge Row */}
                   <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-0.5 text-[9px] font-bold text-green-700 border border-green-100">
+                    <span className="inline-flex items-center rounded-md bg-slate-50 px-2 py-0.5 text-[9px] font-bold text-slate-700 border border-slate-200">
                       {course.category}
                     </span>
                     {isCompleted ? (
@@ -369,7 +381,7 @@ export default function StudentCatalogPage() {
                   {/* Title & Desc */}
                   <div className="space-y-1">
                     <Link href={`/dashboard/siswa/courses/${course.id}`}>
-                      <h3 className="text-sm font-bold text-slate-800 leading-snug group-hover:text-green-600 transition-colors line-clamp-2">
+                      <h3 className="text-sm font-bold text-slate-800 leading-snug group-hover:text-slate-700 transition-colors line-clamp-2">
                         {course.title}
                       </h3>
                     </Link>
@@ -425,7 +437,7 @@ export default function StudentCatalogPage() {
                     </span>
                   </div>
                   <Link href={`/dashboard/siswa/courses/${course.id}`}>
-                    <Button className="bg-green-600 hover:bg-green-700 text-white font-bold text-xs h-9 px-3 gap-1 rounded-xl shadow-sm cursor-pointer">
+                    <Button className="bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs h-9 px-3 gap-1 rounded-xl shadow-sm cursor-pointer">
                       Detail & Silabus
                     </Button>
                   </Link>
