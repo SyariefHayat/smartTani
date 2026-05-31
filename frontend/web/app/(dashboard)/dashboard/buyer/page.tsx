@@ -21,16 +21,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-  Download,
-  AlertTriangle,
-  RefreshCw,
-  Eye,
-  ArrowRight,
-  ArrowUp,
-  ArrowDown,
-  TrendingUp,
-} from 'lucide-react';
+import { Download, Eye, ArrowRight, ArrowUp, ArrowDown, TrendingUp } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { DatePickerWithRange } from '@/components/sections/dashboard/farmer/DatePickerRange';
 import { exportToCSV } from '@/lib/export-csv';
@@ -191,7 +182,6 @@ export default function BuyerDashboardOverview() {
   });
 
   const isQueryError = isAnalyticsError || isChartError || isOrdersError;
-  const isRefetching = isRefetchingAnalytics || isRefetchingChart || isRefetchingOrders;
 
   // Toast error on query failure
   React.useEffect(() => {
@@ -221,12 +211,6 @@ export default function BuyerDashboardOverview() {
       };
   const activeChart = isQueryError ? [] : chartData || [];
   const activeOrders = isQueryError ? [] : ordersData?.data?.orders || [];
-
-  const handleRetry = () => {
-    refetchAnalytics();
-    refetchChart();
-    refetchOrders();
-  };
 
   const handleDownload = React.useCallback(() => {
     if (!activeAnalytics) {
@@ -310,26 +294,6 @@ export default function BuyerDashboardOverview() {
 
   return (
     <DateRangeContext.Provider value={{ date, setDate }}>
-      {/* Offline Warning Banner */}
-      {isQueryError && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-            <p>Koneksi ke server terputus. Gagal memuat data dashboard teraktual.</p>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7 cursor-pointer border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px]"
-            onClick={handleRetry}
-            disabled={isRefetching}
-          >
-            <RefreshCw className={`mr-1 h-3 w-3 ${isRefetching ? 'animate-spin' : ''}`} />
-            {isRefetching ? 'Hubungkan...' : 'Coba Hubungkan Kembali'}
-          </Button>
-        </div>
-      )}
-
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-xl font-bold tracking-tight lg:text-2xl">Dashboard Pembeli</h1>
