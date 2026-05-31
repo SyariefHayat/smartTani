@@ -208,28 +208,6 @@ export default function BuyerNotificationsPage() {
 
   return (
     <div className="w-full space-y-6">
-      {/* Reconnect Banner */}
-      {isQueryError && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs animate-in fade-in slide-in-from-top-2 duration-300">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-            <p>
-              Layanan Notifikasi Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7 cursor-pointer border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px]"
-            onClick={() => refetch()}
-            disabled={isRefetching}
-          >
-            <RefreshCw className={`mr-1 h-3 w-3 ${isRefetching ? 'animate-spin' : ''}`} />
-            {isRefetching ? 'Hubungkan...' : 'Coba Hubungkan Kembali'}
-          </Button>
-        </div>
-      )}
-
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
@@ -266,119 +244,125 @@ export default function BuyerNotificationsPage() {
         )}
       </div>
 
-      {/* Control Card (Filter + Search) */}
-      <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden">
-        <CardHeader className="pb-3 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100">
-          <div className="flex flex-wrap gap-1.5">
-            {[
-              { id: 'all', label: 'Semua' },
-              { id: 'order', label: 'Transaksi' },
-              { id: 'promo', label: 'Promo & Diskon' },
-              { id: 'system', label: 'Sistem' },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                data-active={activeTab === tab.id}
-                className="px-3 py-1.5 text-xs font-semibold rounded-md border border-slate-200 bg-white text-slate-600 data-[active=true]:bg-green-50 data-[active=true]:border-green-200 data-[active=true]:text-green-700 hover:bg-slate-50 cursor-pointer transition-colors shadow-2xs"
-                onClick={() => setActiveTab(tab.id as NotificationType)}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Search bar */}
-          <div className="relative w-full md:w-72">
-            <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400 pointer-events-none" />
-            <Input
-              placeholder="Cari kata kunci notifikasi..."
-              className="h-9 rounded-md border-slate-200 bg-white pl-9 pr-4 text-xs text-slate-900 focus-visible:ring-green-500 shadow-2xs"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </CardHeader>
-        <CardContent className="p-0">
-          {isLoading ? (
-            <div className="p-6 space-y-4">
-              <Skeleton className="h-16 w-full rounded-lg animate-pulse" />
-              <Skeleton className="h-16 w-full rounded-lg animate-pulse" />
-              <Skeleton className="h-16 w-full rounded-lg animate-pulse" />
-            </div>
-          ) : filteredNotifications.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-16 text-center text-slate-400 gap-3 bg-white">
-              <Bell className="h-10 w-10 text-slate-300 animate-pulse" />
-              <div className="space-y-1">
-                <p className="text-sm font-bold text-slate-700">Tidak Ada Notifikasi</p>
-                <p className="text-xs text-slate-400">
-                  Tidak ada pemberitahuan yang cocok dengan filter atau pencarian Anda.
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="divide-y divide-slate-100 bg-white">
-              {groupedNotifications.map((group) => (
-                <div key={group.title} className="p-6 pb-2 last:pb-6 space-y-3">
-                  <h2 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1">
-                    {group.title}
-                  </h2>
-                  <div className="space-y-2.5">
-                    {group.items.map((item) => (
-                      <div
-                        key={item.id}
-                        data-unread={!item.is_read}
-                        className="group flex gap-4 p-4 rounded-xl border border-slate-150/70 hover:border-slate-300 hover:bg-slate-50/40 hover:shadow-2xs transition-all duration-200 relative data-[unread=true]:bg-indigo-50/15 data-[unread=true]:border-green-200/50"
-                      >
-                        {/* Unread indicator left vertical line */}
-                        {!item.is_read && (
-                          <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl bg-green-500" />
-                        )}
-
-                        {renderIcon(item.type)}
-
-                        <div className="flex-1 min-w-0 pr-4">
-                          <div className="flex items-start justify-between gap-4">
-                            <h3 className="text-xs font-bold text-slate-800 flex items-center gap-1.5 leading-snug">
-                              {item.title}
-                              {!item.is_read && (
-                                <span className="h-2 w-2 rounded-full bg-green-500 shrink-0 animate-pulse" />
-                              )}
-                            </h3>
-                            <span className="text-[10px] font-medium text-slate-400 whitespace-nowrap pt-0.5">
-                              {formatDistanceToNow(new Date(item.created_at), {
-                                addSuffix: true,
-                                locale: localeId,
-                              })}
-                            </span>
-                          </div>
-                          <p className="text-xs text-slate-500 font-medium leading-relaxed mt-1">
-                            {item.message}
-                          </p>
-                        </div>
-
-                        {/* Mark single as read hover action button */}
-                        {!item.is_read && (
-                          <div className="flex items-center self-center shrink-0">
-                            <Button
-                              variant="ghost"
-                              size="icon-xs"
-                              title="Tandai dibaca"
-                              className="h-7 w-7 rounded-full bg-white hover:bg-green-50 hover:text-green-600 border border-slate-100 shadow-xs cursor-pointer"
-                              onClick={() => handleMarkAsRead(item.id)}
-                            >
-                              <Check className="h-3.5 w-3.5" />
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+      {/* Control Card (Filter + Search) or Error Box */}
+      {isQueryError ? (
+        <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+          Gagal memuat kotak masuk notifikasi / Koneksi ke server terputus
+        </div>
+      ) : (
+        <Card className="border border-slate-200 shadow-sm bg-white overflow-hidden">
+          <CardHeader className="pb-3 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100">
+            <div className="flex flex-wrap gap-1.5">
+              {[
+                { id: 'all', label: 'Semua' },
+                { id: 'order', label: 'Transaksi' },
+                { id: 'promo', label: 'Promo & Diskon' },
+                { id: 'system', label: 'Sistem' },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  data-active={activeTab === tab.id}
+                  className="px-3 py-1.5 text-xs font-semibold rounded-md border border-slate-200 bg-white text-slate-600 data-[active=true]:bg-green-50 data-[active=true]:border-green-200 data-[active=true]:text-green-700 hover:bg-slate-50 cursor-pointer transition-colors shadow-2xs"
+                  onClick={() => setActiveTab(tab.id as NotificationType)}
+                >
+                  {tab.label}
+                </button>
               ))}
             </div>
-          )}
-        </CardContent>
-      </Card>
+
+            {/* Search bar */}
+            <div className="relative w-full md:w-72">
+              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              <Input
+                placeholder="Cari kata kunci notifikasi..."
+                className="h-9 rounded-md border-slate-200 bg-white pl-9 pr-4 text-xs text-slate-900 focus-visible:ring-green-500 shadow-2xs"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            {isLoading ? (
+              <div className="p-6 space-y-4">
+                <Skeleton className="h-16 w-full rounded-lg animate-pulse" />
+                <Skeleton className="h-16 w-full rounded-lg animate-pulse" />
+                <Skeleton className="h-16 w-full rounded-lg animate-pulse" />
+              </div>
+            ) : filteredNotifications.length === 0 ? (
+              <div className="flex flex-col items-center justify-center p-16 text-center text-slate-400 gap-3 bg-white">
+                <Bell className="h-10 w-10 text-slate-300 animate-pulse" />
+                <div className="space-y-1">
+                  <p className="text-sm font-bold text-slate-700">Tidak Ada Notifikasi</p>
+                  <p className="text-xs text-slate-400">
+                    Tidak ada pemberitahuan yang cocok dengan filter atau pencarian Anda.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="divide-y divide-slate-100 bg-white">
+                {groupedNotifications.map((group) => (
+                  <div key={group.title} className="p-6 pb-2 last:pb-6 space-y-3">
+                    <h2 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1">
+                      {group.title}
+                    </h2>
+                    <div className="space-y-2.5">
+                      {group.items.map((item) => (
+                        <div
+                          key={item.id}
+                          data-unread={!item.is_read}
+                          className="group flex gap-4 p-4 rounded-xl border border-slate-150/70 hover:border-slate-300 hover:bg-slate-50/40 hover:shadow-2xs transition-all duration-200 relative data-[unread=true]:bg-indigo-50/15 data-[unread=true]:border-green-200/50"
+                        >
+                          {/* Unread indicator left vertical line */}
+                          {!item.is_read && (
+                            <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl bg-green-500" />
+                          )}
+
+                          {renderIcon(item.type)}
+
+                          <div className="flex-1 min-w-0 pr-4">
+                            <div className="flex items-start justify-between gap-4">
+                              <h3 className="text-xs font-bold text-slate-800 flex items-center gap-1.5 leading-snug">
+                                {item.title}
+                                {!item.is_read && (
+                                  <span className="h-2 w-2 rounded-full bg-green-500 shrink-0 animate-pulse" />
+                                )}
+                              </h3>
+                              <span className="text-[10px] font-medium text-slate-400 whitespace-nowrap pt-0.5">
+                                {formatDistanceToNow(new Date(item.created_at), {
+                                  addSuffix: true,
+                                  locale: localeId,
+                                })}
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-500 font-medium leading-relaxed mt-1">
+                              {item.message}
+                            </p>
+                          </div>
+
+                          {/* Mark single as read hover action button */}
+                          {!item.is_read && (
+                            <div className="flex items-center self-center shrink-0">
+                              <Button
+                                variant="ghost"
+                                size="icon-xs"
+                                title="Tandai dibaca"
+                                className="h-7 w-7 rounded-full bg-white hover:bg-green-50 hover:text-green-600 border border-slate-100 shadow-xs cursor-pointer"
+                                onClick={() => handleMarkAsRead(item.id)}
+                              >
+                                <Check className="h-3.5 w-3.5" />
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

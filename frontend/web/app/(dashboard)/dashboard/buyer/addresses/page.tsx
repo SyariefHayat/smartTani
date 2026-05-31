@@ -217,26 +217,6 @@ export default function BuyerAddressesPage() {
 
   return (
     <div className="w-full space-y-6">
-      {/* Reconnect Banner */}
-      {isQueryError && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-            <p>Layanan Alamat Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.</p>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7 cursor-pointer border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px]"
-            onClick={() => refetch()}
-            disabled={isRefetching}
-          >
-            <RefreshCw className={`mr-1 h-3 w-3 ${isRefetching ? 'animate-spin' : ''}`} />
-            {isRefetching ? 'Hubungkan...' : 'Coba Hubungkan Kembali'}
-          </Button>
-        </div>
-      )}
-
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -412,7 +392,11 @@ export default function BuyerAddressesPage() {
       </Dialog>
 
       {/* Grid List Address */}
-      {isLoading ? (
+      {isQueryError ? (
+        <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+          Gagal memuat daftar alamat tersimpan / Koneksi ke server terputus
+        </div>
+      ) : isLoading ? (
         <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
           <Skeleton className="h-44 w-full rounded-xl animate-pulse" />
           <Skeleton className="h-44 w-full rounded-xl animate-pulse" />
