@@ -9,6 +9,7 @@ import { academyService, Enrollment } from '@/services/academy';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
 import {
   Compass,
   ArrowRight,
@@ -19,6 +20,8 @@ import {
   CircleDot,
   CheckCircle,
   Play,
+  AlertTriangle,
+  RefreshCw,
 } from 'lucide-react';
 
 interface RoadmapStep {
@@ -126,7 +129,12 @@ const MOCK_LEARNING_PATHS: LearningPath[] = [
 export default function LearningPathsPage() {
   const user = getStoredAuthUser();
 
-  const { data: enrollments, isLoading } = useQuery<Enrollment[]>({
+  const {
+    data: enrollments,
+    isLoading,
+    isError: isEnrollmentsError,
+    refetch: refetchEnrollments,
+  } = useQuery<Enrollment[]>({
     queryKey: ['student-enrollments-all', user?.id],
     queryFn: async () => {
       try {
@@ -160,6 +168,12 @@ export default function LearningPathsPage() {
     },
   });
 
+  React.useEffect(() => {
+    if (isEnrollmentsError) {
+      toast.error('Koneksi ke Layanan Academy terputus.');
+    }
+  }, [isEnrollmentsError]);
+
   const getStepStatus = React.useCallback(
     (courseId: string) => {
       const enroll = enrollments?.find((e) => e.course_id === courseId);
@@ -187,6 +201,23 @@ export default function LearningPathsPage() {
           <Card className="h-64 animate-pulse bg-slate-100 rounded-2xl" />
           <Card className="h-64 animate-pulse bg-slate-100 rounded-2xl" />
         </div>
+      ) : isEnrollmentsError ? (
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-red-200 bg-red-50 py-16 px-6">
+          <AlertTriangle className="h-8 w-8 text-red-400 mb-3" />
+          <p className="text-sm font-bold text-red-500 mb-1">Gagal Memuat Data Jalur Belajar</p>
+          <p className="text-xs text-red-400 mb-4">
+            Koneksi ke server Academy terputus. Silakan coba lagi.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-red-300 text-red-700 bg-white hover:bg-red-100 font-bold text-xs rounded-xl gap-1.5 cursor-pointer"
+            onClick={() => refetchEnrollments()}
+          >
+            <RefreshCw className="h-3.5 w-3.5" />
+            Coba Hubungkan Kembali
+          </Button>
+        </div>
       ) : (
         <div className="space-y-8">
           {MOCK_LEARNING_PATHS.map((path) => (
@@ -198,7 +229,7 @@ export default function LearningPathsPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <Badge className="bg-emerald-50 border border-emerald-100 text-emerald-700 text-[9px] font-bold uppercase rounded-lg">
+                      <Badge className="bg-slate-50 border border-slate-200 text-slate-700 text-[9px] font-bold uppercase rounded-lg shadow-none">
                         {path.category}
                       </Badge>
                       <span className="text-[10px] font-bold text-slate-400">
@@ -206,12 +237,12 @@ export default function LearningPathsPage() {
                       </span>
                     </div>
                     <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
-                      <Compass className="h-5 w-5 text-green-600 shrink-0" />
+                      <Compass className="h-5 w-5 text-slate-700 shrink-0" />
                       {path.title}
                     </CardTitle>
                   </div>
                   <div className="text-xs font-bold text-slate-500">
-                    <span className="text-green-700">{path.steps_count}</span> Langkah Terpadu
+                    <span className="text-slate-800">{path.steps_count}</span> Langkah Terpadu
                   </div>
                 </div>
                 <CardDescription className="text-xs font-semibold text-slate-500 leading-relaxed mt-2 max-w-3xl">
@@ -240,11 +271,11 @@ export default function LearningPathsPage() {
                         {/* Timeline Node Icon */}
                         <div className="relative shrink-0">
                           {status === 'completed' ? (
-                            <div className="h-7 w-7 sm:h-9 sm:w-9 rounded-full bg-emerald-50 border-2 border-emerald-500 flex items-center justify-center text-emerald-600 shadow-sm">
+                            <div className="h-7 w-7 sm:h-9 sm:w-9 rounded-full bg-slate-100 border-2 border-slate-500 flex items-center justify-center text-slate-600 shadow-sm">
                               <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                             </div>
                           ) : status === 'active' ? (
-                            <div className="h-7 w-7 sm:h-9 sm:w-9 rounded-full bg-green-50 border-2 border-green-600 flex items-center justify-center text-green-600 shadow-sm animate-pulse">
+                            <div className="h-7 w-7 sm:h-9 sm:w-9 rounded-full bg-slate-50 border-2 border-slate-700 flex items-center justify-center text-slate-700 shadow-sm animate-pulse">
                               <CircleDot className="h-4 w-4 sm:h-5 sm:w-5" />
                             </div>
                           ) : (
@@ -264,12 +295,12 @@ export default function LearningPathsPage() {
                                 Langkah {step.step_number} • {step.level}
                               </span>
                               {status === 'completed' && (
-                                <Badge className="bg-emerald-50 text-emerald-700 text-[8px] font-bold rounded-md border border-emerald-100">
+                                <Badge className="bg-slate-50 text-slate-700 text-[8px] font-bold rounded-md border border-slate-200 shadow-none">
                                   Lulus Sertifikat
                                 </Badge>
                               )}
                               {status === 'active' && (
-                                <Badge className="bg-green-50 text-green-700 text-[8px] font-bold rounded-md border border-green-200">
+                                <Badge className="bg-slate-50 text-slate-700 text-[8px] font-bold rounded-md border border-slate-200 shadow-none">
                                   Sedang Ditempuh
                                 </Badge>
                               )}
@@ -299,7 +330,7 @@ export default function LearningPathsPage() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-xs font-semibold border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-xl"
+                                  className="text-xs font-semibold border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl"
                                 >
                                   <Award className="h-3.5 w-3.5 mr-1" />
                                   Lihat Sertifikat
@@ -313,7 +344,7 @@ export default function LearningPathsPage() {
                               >
                                 <Button
                                   size="sm"
-                                  className="bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-xl shadow-sm gap-1"
+                                  className="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl shadow-sm gap-1 cursor-pointer"
                                 >
                                   Lanjutkan
                                   <Play className="h-3 w-3 fill-white" />
