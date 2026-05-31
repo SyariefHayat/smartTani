@@ -102,7 +102,8 @@ export default function StudentNotificationsPage() {
       const parsed = JSON.parse(saved);
       let updated = false;
       const verified = parsed.map((n: Notification, idx: number) => {
-        if (!n.created_at.includes('-') && !n.created_at.includes('T')) {
+        const d = new Date(n.created_at);
+        if (isNaN(d.getTime())) {
           updated = true;
           let dateVal = new Date().toISOString();
           if (idx === 2) dateVal = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -177,9 +178,10 @@ export default function StudentNotificationsPage() {
 
     filteredNotifications.forEach((item) => {
       const date = new Date(item.created_at);
-      if (isToday(date)) {
+      const validDate = isNaN(date.getTime()) ? new Date() : date;
+      if (isToday(validDate)) {
         todayGroup.push(item);
-      } else if (isYesterday(date)) {
+      } else if (isYesterday(validDate)) {
         yesterdayGroup.push(item);
       } else {
         olderGroup.push(item);
@@ -347,10 +349,18 @@ export default function StudentNotificationsPage() {
                             </h3>
                             <span className="text-[10px] font-medium text-slate-400 whitespace-nowrap pt-0.5 flex items-center gap-1">
                               <Clock className="h-3.5 w-3.5" />
-                              {formatDistanceToNow(new Date(item.created_at), {
-                                addSuffix: true,
-                                locale: localeId,
-                              })}
+                              {(() => {
+                                try {
+                                  const d = new Date(item.created_at);
+                                  if (isNaN(d.getTime())) return 'baru saja';
+                                  return formatDistanceToNow(d, {
+                                    addSuffix: true,
+                                    locale: localeId,
+                                  });
+                                } catch {
+                                  return 'baru saja';
+                                }
+                              })()}
                             </span>
                           </div>
                           <p className="text-xs text-slate-500 font-medium leading-relaxed">
