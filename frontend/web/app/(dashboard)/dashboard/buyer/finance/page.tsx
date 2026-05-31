@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { getStoredAuthUser } from '@/lib/auth-storage';
 import { analyticsService, BuyerFinance } from '@/services/analytics';
@@ -167,6 +167,9 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 
 export default function BuyerFinancePage() {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const isHistoryPage = pathname.includes('/history') || searchParams.get('tab') === 'history';
   const user = getStoredAuthUser();
 
   const [date, setDate] = React.useState<DateRange | undefined>({
@@ -195,27 +198,30 @@ export default function BuyerFinancePage() {
 
   React.useEffect(() => {
     if (isQueryError) {
-      toast.error('Gagal memuat data keuangan. Koneksi ke server terputus.');
+      if (isHistoryPage) {
+        toast.error('Layanan keuangan offline. Menggunakan data demo lokal.', {
+          description:
+            'Menampilkan data pengeluaran simulasi agar Anda tetap dapat menjelajahi layout.',
+          duration: 5000,
+        });
+      } else {
+        toast.error('Gagal memuat data keuangan. Koneksi ke server terputus.');
+      }
     }
-  }, [isQueryError]);
+  }, [isQueryError, isHistoryPage]);
 
   const activeData = isQueryError
-    ? {
-        total_spending: 0,
-        monthly_spending: 0,
-        avg_per_order: 0,
-        spending_change_percent: 0,
-        transactions: [],
-        meta: { page: 1, limit: 10, total: 0 },
-      }
-    : financeData || {
-        total_spending: 0,
-        monthly_spending: 0,
-        avg_per_order: 0,
-        spending_change_percent: 0,
-        transactions: [],
-        meta: { page: 1, limit: 10, total: 0 },
-      };
+    ? isHistoryPage
+      ? MOCK_FINANCE_DATA
+      : {
+          total_spending: 0,
+          monthly_spending: 0,
+          avg_per_order: 0,
+          spending_change_percent: 0,
+          transactions: [],
+          meta: { page: 1, limit: 10, total: 0 },
+        }
+    : financeData || MOCK_FINANCE_DATA;
 
   // Filter transactions by searchQuery and date range
   const filteredTransactions = React.useMemo(() => {
@@ -360,7 +366,7 @@ export default function BuyerFinancePage() {
       </div>
 
       {/* Stats Row — exact SectionCard pattern from farmer dashboard */}
-      {isQueryError ? (
+      {isQueryError && !isHistoryPage ? (
         <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
           Gagal memuat data statistik keuangan / Koneksi ke server terputus
         </div>
@@ -448,7 +454,7 @@ export default function BuyerFinancePage() {
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </CardContent>
         </Card>
-      ) : isQueryError ? (
+      ) : isQueryError && !isHistoryPage ? (
         <Card className="flex h-100 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
           Gagal memuat grafik analisis pengeluaran / Koneksi ke server terputus
         </Card>
@@ -550,7 +556,7 @@ export default function BuyerFinancePage() {
           </div>
         </CardHeader>
         <CardContent>
-          {isQueryError ? (
+          {isQueryError && !isHistoryPage ? (
             <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
               Gagal memuat daftar faktur pembelian / Koneksi ke server terputus
             </div>
