@@ -16,6 +16,9 @@ import {
   Camera,
   AlertTriangle,
   Loader2,
+  Shield,
+  Smartphone,
+  CreditCard,
 } from 'lucide-react';
 
 import { useAuthStore } from '@/stores/auth';
@@ -131,10 +134,9 @@ export default function BuyerSettingsPage() {
         setAuth(response.data, accessToken, refreshToken);
       }
     },
-    onError: (error: any) => {
-      toast.error(
-        'Gagal memperbarui profil: ' + (error?.response?.data?.message || error.message)
-      );
+    onError: (error: unknown) => {
+      const err = error as { response?: { data?: { message?: string } }; message?: string };
+      toast.error('Gagal memperbarui profil: ' + (err.response?.data?.message || err.message));
     },
   });
 
@@ -149,19 +151,19 @@ export default function BuyerSettingsPage() {
       toast.success('Kata sandi berhasil diperbarui!');
       securityForm.reset();
     },
-    onError: (error: any) => {
-      toast.error(
-        'Gagal memperbarui kata sandi: ' + (error?.response?.data?.message || error.message)
-      );
+    onError: (error: unknown) => {
+      const err = error as { response?: { data?: { message?: string } }; message?: string };
+      toast.error('Gagal memperbarui kata sandi: ' + (err.response?.data?.message || err.message));
     },
   });
 
   // Notifications State
   const [preferences, setPreferences] = React.useState(notificationPreferences);
-
-  React.useEffect(() => {
+  const [prevPreferences, setPrevPreferences] = React.useState(notificationPreferences);
+  if (notificationPreferences !== prevPreferences) {
+    setPrevPreferences(notificationPreferences);
     setPreferences(notificationPreferences);
-  }, [notificationPreferences]);
+  }
 
   const handleTogglePreference = (key: keyof typeof preferences, checked: boolean) => {
     setPreferences((prev) => ({
@@ -195,19 +197,21 @@ export default function BuyerSettingsPage() {
   }
 
   return (
-    <div className="w-full space-y-6 text-foreground">
+    <div className="w-full space-y-6 text-slate-900 animate-in fade-in duration-500">
       {/* Header */}
-      <div className="flex flex-col gap-2">
-        <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-foreground">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">
           Pengaturan Akun
         </h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-slate-500">
           Kelola profil, keamanan kata sandi, dan preferensi notifikasi Anda.
         </p>
       </div>
 
+      <div className="h-[1px] w-full bg-slate-200" />
+
       {isError && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs animate-fade-in max-w-xl">
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs animate-fade-in">
           <div className="flex items-center gap-2">
             <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
             <p>
@@ -226,40 +230,47 @@ export default function BuyerSettingsPage() {
         </div>
       )}
 
-      <Tabs defaultValue="profile" className="w-full space-y-4">
-        {/* Tabs Bar List */}
-        <TabsList className="grid w-full grid-cols-3 max-w-xl">
-          <TabsTrigger value="profile" className="flex items-center gap-2 text-xs cursor-pointer">
-            <UserIcon className="h-4 w-4" />
-            <span>Profil</span>
-          </TabsTrigger>
-          <TabsTrigger value="security" className="flex items-center gap-2 text-xs cursor-pointer">
-            <LockKeyhole className="h-4 w-4" />
-            <span>Keamanan</span>
-          </TabsTrigger>
-          <TabsTrigger value="notifications" className="flex items-center gap-2 text-xs cursor-pointer">
-            <Bell className="h-4 w-4" />
-            <span>Notifikasi</span>
-          </TabsTrigger>
-        </TabsList>
+      <Tabs defaultValue="profile" className="flex flex-col md:flex-row gap-6 w-full items-start">
+        {/* Sidebar Nav Card */}
+        <div className="w-full md:w-64 shrink-0 rounded-xl border border-slate-200 bg-white p-3 shadow-xs">
+          <TabsList className="flex flex-row md:flex-col h-auto bg-transparent p-0 gap-1 items-start w-full overflow-x-auto md:overflow-x-visible">
+            <TabsTrigger
+              value="profile"
+              className="flex items-center gap-3 w-full justify-start px-3 py-2 text-sm font-semibold rounded-lg transition-all cursor-pointer text-slate-600 data-[state=active]:bg-slate-100 data-[state=active]:text-slate-900 data-[state=active]:shadow-none hover:bg-slate-50 hover:text-slate-900"
+            >
+              <UserIcon className="h-4 w-4 shrink-0" />
+              <span>Profil</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="security"
+              className="flex items-center gap-3 w-full justify-start px-3 py-2 text-sm font-semibold rounded-lg transition-all cursor-pointer text-slate-600 data-[state=active]:bg-slate-100 data-[state=active]:text-slate-900 data-[state=active]:shadow-none hover:bg-slate-50 hover:text-slate-900"
+            >
+              <LockKeyhole className="h-4 w-4 shrink-0" />
+              <span>Keamanan</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="notifications"
+              className="flex items-center gap-3 w-full justify-start px-3 py-2 text-sm font-semibold rounded-lg transition-all cursor-pointer text-slate-600 data-[state=active]:bg-slate-100 data-[state=active]:text-slate-900 data-[state=active]:shadow-none hover:bg-slate-50 hover:text-slate-900"
+            >
+              <Bell className="h-4 w-4 shrink-0" />
+              <span>Notifikasi</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
-        {/* Tab 1: Profile Settings */}
-        <TabsContent value="profile" className="focus-visible:outline-none">
-          <Card className="border border-border shadow-sm bg-card overflow-hidden max-w-xl rounded-xl">
-            <form onSubmit={profileForm.handleSubmit((values) => updateProfileMutation.mutate(values))}>
-              <CardHeader className="pb-3 border-b border-border">
-                <CardTitle className="text-sm font-bold text-foreground">
-                  Informasi Pribadi
-                </CardTitle>
-                <CardDescription className="text-xs text-muted-foreground">
-                  Ubah data diri dan informasi kontak Anda di SmartTani.
-                </CardDescription>
+        {/* Active Content Panel */}
+        <div className="flex-1 w-full">
+          {/* Tab 1: Profile Settings */}
+          <TabsContent value="profile" className="m-0 focus-visible:outline-none">
+            <Card className="border border-slate-200 shadow-xs text-slate-900 bg-white rounded-xl">
+              <CardHeader>
+                <CardTitle>Profil Pembeli</CardTitle>
+                <CardDescription>Perbarui informasi pribadi dan foto profil Anda.</CardDescription>
               </CardHeader>
-              <CardContent className="p-6 space-y-6 text-xs text-foreground">
-                {/* Avatar Section */}
-                <div className="flex items-center gap-6 pb-2 border-b border-border border-dashed">
+              <CardContent className="space-y-6">
+                <div className="flex items-center gap-6">
                   <div className="relative">
-                    <Avatar className="h-20 w-20 border border-border">
+                    <Avatar className="h-24 w-24 border border-slate-100">
                       <AvatarImage
                         src={profileData?.avatar_url || '/images/dashboard/dashboard-logo.png'}
                       />
@@ -270,274 +281,346 @@ export default function BuyerSettingsPage() {
                     <Button
                       size="icon"
                       variant="outline"
-                      className="absolute -bottom-1 -right-1 h-7 w-7 rounded-full bg-background border border-border shadow-3xs cursor-pointer hover:bg-muted"
+                      className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full bg-white border border-slate-200 shadow-3xs cursor-pointer hover:bg-slate-50"
                       disabled
                     >
-                      <Camera className="h-3.5 w-3.5 text-muted-foreground" />
+                      <Camera className="h-4 w-4 text-slate-500" />
                     </Button>
                   </div>
                   <div className="space-y-1">
-                    <h4 className="text-xs font-bold text-foreground">Foto Profil</h4>
-                    <p className="text-[10px] text-muted-foreground">Format JPG, GIF atau PNG. Maksimal 2MB.</p>
-                    <div className="flex gap-2 mt-1">
+                    <h4 className="text-sm font-bold text-slate-800">Foto Profil</h4>
+                    <p className="text-xs text-slate-400">JPG, GIF atau PNG. Maksimal 2MB.</p>
+                    <div className="flex gap-2 mt-2">
                       <Button
-                        type="button"
                         size="sm"
                         variant="outline"
-                        className="cursor-pointer text-[10px] font-semibold text-foreground bg-background border-border hover:bg-muted h-7 px-2.5 shadow-3xs"
+                        className="cursor-pointer text-xs font-semibold text-slate-700 bg-white border-slate-200 hover:bg-slate-50 h-8 shadow-3xs"
                         disabled
                       >
                         Ganti Foto
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="cursor-pointer text-xs font-semibold text-destructive hover:bg-red-50 h-8"
+                        disabled
+                      >
+                        Hapus
                       </Button>
                     </div>
                   </div>
                 </div>
 
-                {/* Input Fields */}
-                <div className="space-y-4">
+                <form
+                  onSubmit={profileForm.handleSubmit((values) =>
+                    updateProfileMutation.mutate(values)
+                  )}
+                  className="space-y-6"
+                >
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="full_name">Nama Lengkap</Label>
+                      <div className="relative">
+                        <UserIcon className="absolute left-3 top-2.5 h-4 w-4 text-slate-400 pointer-events-none" />
+                        <Input
+                          id="full_name"
+                          placeholder="Masukkan nama lengkap"
+                          {...profileForm.register('full_name')}
+                          className="pl-9 bg-white border-slate-200 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs"
+                        />
+                      </div>
+                      {profileForm.formState.errors.full_name && (
+                        <p className="text-xs text-red-500">
+                          {profileForm.formState.errors.full_name.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Alamat Email</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-2.5 h-4 w-4 text-slate-400 pointer-events-none" />
+                        <Input
+                          id="email"
+                          value={profileData?.email || ''}
+                          disabled
+                          className="pl-9 bg-slate-50/80 border-slate-200 text-slate-500 cursor-not-allowed text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Nomor Telepon</Label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-2.5 h-4 w-4 text-slate-400 pointer-events-none" />
+                        <Input
+                          id="phone"
+                          placeholder="Contoh: 081234567890"
+                          {...profileForm.register('phone')}
+                          className="pl-9 bg-white border-slate-200 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs"
+                        />
+                      </div>
+                      {profileForm.formState.errors.phone && (
+                        <p className="text-xs text-red-500">
+                          {profileForm.formState.errors.phone.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="role">Peran</Label>
+                      <div className="relative">
+                        <UserIcon className="absolute left-3 top-2.5 h-4 w-4 text-slate-400 pointer-events-none" />
+                        <Input
+                          id="role"
+                          value={profileData?.role === 'buyer' ? 'Buyer' : profileData?.role || ''}
+                          disabled
+                          className="pl-9 bg-slate-50/80 border-slate-200 text-slate-500 cursor-not-allowed text-xs"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end gap-3 border-t border-slate-100 pt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => profileForm.reset()}
+                      disabled={updateProfileMutation.isPending}
+                      className="cursor-pointer text-xs font-semibold text-slate-700 bg-white border-slate-200 hover:bg-slate-50 h-9"
+                    >
+                      Reset
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="cursor-pointer bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs h-9 min-w-[140px] shadow-2xs"
+                      disabled={updateProfileMutation.isPending}
+                    >
+                      {updateProfileMutation.isPending ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Menyimpan...
+                        </>
+                      ) : (
+                        'Simpan Perubahan'
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Tab 2: Security Settings */}
+          <TabsContent value="security" className="m-0 focus-visible:outline-none">
+            <Card className="border border-slate-200 shadow-xs rounded-xl overflow-hidden bg-white text-slate-900">
+              <CardHeader className="border-b bg-slate-50/50 border-slate-100 rounded-t-xl">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-green-100 text-green-700 rounded-lg">
+                    <Shield className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <CardTitle>Keamanan Akun</CardTitle>
+                    <CardDescription>
+                      Perbarui kata sandi Anda secara berkala untuk menjaga keamanan akun.
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6">
+                <form
+                  onSubmit={securityForm.handleSubmit((values) =>
+                    changePasswordMutation.mutate(values)
+                  )}
+                  className="space-y-6 max-w-md"
+                >
                   <div className="space-y-2">
-                    <Label htmlFor="full_name" className="text-xs font-bold text-foreground">
-                      Nama Lengkap
-                    </Label>
+                    <Label htmlFor="currentPassword">Password Saat Ini</Label>
                     <div className="relative">
-                      <UserIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+                      <LockKeyhole className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
                       <Input
-                        id="full_name"
-                        placeholder="Masukkan nama lengkap Anda"
-                        {...profileForm.register('full_name')}
-                        className="pl-9 h-9 text-xs bg-background border-border focus-visible:ring-ring"
+                        id="currentPassword"
+                        type="password"
+                        placeholder="••••••••"
+                        className="pl-9 bg-white border-slate-200 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs"
+                        {...securityForm.register('currentPassword')}
                       />
                     </div>
-                    {profileForm.formState.errors.full_name && (
-                      <p className="text-[10px] text-destructive font-medium">
-                        {profileForm.formState.errors.full_name.message}
+                    {securityForm.formState.errors.currentPassword && (
+                      <p className="text-xs text-red-500">
+                        {securityForm.formState.errors.currentPassword.message}
                       </p>
                     )}
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="text-xs font-bold text-foreground">
-                      Alamat Email (Tidak dapat diubah)
-                    </Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                      <Input
-                        id="email"
-                        value={profileData?.email || ''}
-                        disabled
-                        className="pl-9 h-9 text-xs bg-muted border-border text-muted-foreground cursor-not-allowed"
+                  <div className="grid gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="newPassword">Password Baru</Label>
+                      <div className="relative">
+                        <LockKeyhole className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                        <Input
+                          id="newPassword"
+                          type="password"
+                          placeholder="••••••••"
+                          className="pl-9 bg-white border-slate-200 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs"
+                          {...securityForm.register('newPassword')}
+                        />
+                      </div>
+                      {securityForm.formState.errors.newPassword && (
+                        <p className="text-xs text-red-500">
+                          {securityForm.formState.errors.newPassword.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPassword">Konfirmasi Password Baru</Label>
+                      <div className="relative">
+                        <LockKeyhole className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                        <Input
+                          id="confirmPassword"
+                          type="password"
+                          placeholder="••••••••"
+                          className="pl-9 bg-white border-slate-200 focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 text-xs"
+                          {...securityForm.register('confirmPassword')}
+                        />
+                      </div>
+                      {securityForm.formState.errors.confirmPassword && (
+                        <p className="text-xs text-red-500">
+                          {securityForm.formState.errors.confirmPassword.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <Button
+                      type="submit"
+                      className="cursor-pointer bg-green-600 hover:bg-green-700 text-white font-semibold text-xs h-9 px-4 w-full sm:w-auto shadow-2xs"
+                      disabled={changePasswordMutation.isPending}
+                    >
+                      {changePasswordMutation.isPending ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Memproses...
+                        </>
+                      ) : (
+                        'Simpan Perubahan'
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Tab 3: Notifications Preferences */}
+          <TabsContent value="notifications" className="m-0 focus-visible:outline-none">
+            <Card className="border border-slate-200 shadow-xs text-slate-900 bg-white rounded-xl">
+              <CardHeader>
+                <CardTitle>Preferensi Notifikasi</CardTitle>
+                <CardDescription>
+                  Pilih jenis informasi dan saluran notifikasi yang ingin Anda terima.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <form onSubmit={handleSaveNotifications} className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50/50 hover:bg-slate-50 transition-colors border-slate-100 border-dashed">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-md bg-blue-50 text-blue-600">
+                          <Mail className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <Label
+                            htmlFor="notify-order"
+                            className="text-sm font-bold cursor-pointer"
+                          >
+                            Notifikasi Transaksi (Email)
+                          </Label>
+                          <p className="text-xs text-slate-500">
+                            Kirim invoice pembayaran, rincian pesanan baru, dan kwitansi belanja via
+                            email.
+                          </p>
+                        </div>
+                      </div>
+                      <Switch
+                        id="notify-order"
+                        checked={preferences.email_new_order}
+                        onCheckedChange={(checked) =>
+                          handleTogglePreference('email_new_order', checked)
+                        }
+                        className="cursor-pointer"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50/50 hover:bg-slate-50 transition-colors border-slate-100 border-dashed">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-md bg-indigo-50 text-indigo-600">
+                          <CreditCard className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <Label
+                            htmlFor="notify-payment"
+                            className="text-sm font-bold cursor-pointer"
+                          >
+                            Notifikasi Pelacakan Kurir (Email)
+                          </Label>
+                          <p className="text-xs text-slate-500">
+                            Terima email pembaruan otomatis saat status transit pengiriman logistik
+                            Anda berubah.
+                          </p>
+                        </div>
+                      </div>
+                      <Switch
+                        id="notify-payment"
+                        checked={preferences.email_payment}
+                        onCheckedChange={(checked) =>
+                          handleTogglePreference('email_payment', checked)
+                        }
+                        className="cursor-pointer"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50/50 hover:bg-slate-50 transition-colors border-slate-100 border-dashed">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-md bg-green-50 text-green-600">
+                          <Smartphone className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <Label htmlFor="notify-push" className="text-sm font-bold cursor-pointer">
+                            Promo & Penawaran Kemitraan (Push)
+                          </Label>
+                          <p className="text-xs text-slate-500">
+                            Kirim newsletter pemberitahuan diskon marketplace dan promo investasi
+                            kemitraan baru.
+                          </p>
+                        </div>
+                      </div>
+                      <Switch
+                        id="notify-push"
+                        checked={preferences.push_notification}
+                        onCheckedChange={(checked) =>
+                          handleTogglePreference('push_notification', checked)
+                        }
+                        className="cursor-pointer"
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-xs font-bold text-foreground">
-                      No. Telepon / WhatsApp
-                    </Label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                      <Input
-                        id="phone"
-                        placeholder="Contoh: 081234567890"
-                        {...profileForm.register('phone')}
-                        className="pl-9 h-9 text-xs bg-background border-border focus-visible:ring-ring"
-                      />
-                    </div>
-                    {profileForm.formState.errors.phone && (
-                      <p className="text-[10px] text-destructive font-medium">
-                        {profileForm.formState.errors.phone.message}
-                      </p>
-                    )}
+                  <div className="flex justify-end pt-4 border-t border-slate-100">
+                    <Button
+                      type="submit"
+                      className="cursor-pointer bg-green-600 text-white hover:bg-green-700 font-semibold text-xs h-9 shadow-2xs px-4"
+                    >
+                      Simpan Pengaturan
+                    </Button>
                   </div>
-                </div>
+                </form>
               </CardContent>
-              <CardFooter className="p-6 pt-0 flex justify-end">
-                <Button
-                  type="submit"
-                  size="sm"
-                  className="h-9 text-xs font-bold cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 px-4"
-                  disabled={updateProfileMutation.isPending}
-                >
-                  {updateProfileMutation.isPending ? (
-                    <span className="flex items-center gap-1.5">
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" /> Menyimpan...
-                    </span>
-                  ) : (
-                    'Simpan Perubahan'
-                  )}
-                </Button>
-              </CardFooter>
-            </form>
-          </Card>
-        </TabsContent>
-
-        {/* Tab 2: Security Settings */}
-        <TabsContent value="security" className="focus-visible:outline-none">
-          <Card className="border border-border shadow-sm bg-card overflow-hidden max-w-xl rounded-xl">
-            <form onSubmit={securityForm.handleSubmit((values) => changePasswordMutation.mutate(values))}>
-              <CardHeader className="pb-3 border-b border-border">
-                <CardTitle className="text-sm font-bold text-foreground">Ubah Kata Sandi</CardTitle>
-                <CardDescription className="text-xs text-muted-foreground">
-                  Perbarui kata sandi Anda secara berkala untuk menjaga keamanan akun.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-6 space-y-4 text-xs text-foreground">
-                <div className="space-y-2">
-                  <Label htmlFor="currentPassword" className="text-xs font-bold text-foreground">
-                    Kata Sandi Saat Ini
-                  </Label>
-                  <div className="relative">
-                    <LockKeyhole className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                    <Input
-                      id="currentPassword"
-                      type="password"
-                      placeholder="Masukkan kata sandi lama"
-                      {...securityForm.register('currentPassword')}
-                      className="pl-9 h-9 text-xs bg-background border-border focus-visible:ring-ring"
-                    />
-                  </div>
-                  {securityForm.formState.errors.currentPassword && (
-                    <p className="text-[10px] text-destructive font-medium">
-                      {securityForm.formState.errors.currentPassword.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="newPassword" className="text-xs font-bold text-foreground">
-                    Kata Sandi Baru
-                  </Label>
-                  <div className="relative">
-                    <LockKeyhole className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                    <Input
-                      id="newPassword"
-                      type="password"
-                      placeholder="Minimal 6 karakter"
-                      {...securityForm.register('newPassword')}
-                      className="pl-9 h-9 text-xs bg-background border-border focus-visible:ring-ring"
-                    />
-                  </div>
-                  {securityForm.formState.errors.newPassword && (
-                    <p className="text-[10px] text-destructive font-medium">
-                      {securityForm.formState.errors.newPassword.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-xs font-bold text-foreground">
-                    Konfirmasi Kata Sandi Baru
-                  </Label>
-                  <div className="relative">
-                    <LockKeyhole className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      placeholder="Ulangi kata sandi baru"
-                      {...securityForm.register('confirmPassword')}
-                      className="pl-9 h-9 text-xs bg-background border-border focus-visible:ring-ring"
-                    />
-                  </div>
-                  {securityForm.formState.errors.confirmPassword && (
-                    <p className="text-[10px] text-destructive font-medium">
-                      {securityForm.formState.errors.confirmPassword.message}
-                    </p>
-                  )}
-                </div>
-              </CardContent>
-              <CardFooter className="p-6 pt-0 flex justify-end">
-                <Button
-                  type="submit"
-                  size="sm"
-                  className="h-9 text-xs font-bold cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 px-4"
-                  disabled={changePasswordMutation.isPending}
-                >
-                  {changePasswordMutation.isPending ? (
-                    <span className="flex items-center gap-1.5">
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" /> Mengubah...
-                    </span>
-                  ) : (
-                    'Ubah Kata Sandi'
-                  )}
-                </Button>
-              </CardFooter>
-            </form>
-          </Card>
-        </TabsContent>
-
-        {/* Tab 3: Notifications Preferences */}
-        <TabsContent value="notifications" className="focus-visible:outline-none">
-          <Card className="border border-border shadow-sm bg-card overflow-hidden max-w-xl rounded-xl">
-            <form onSubmit={handleSaveNotifications}>
-              <CardHeader className="pb-3 border-b border-border">
-                <CardTitle className="text-sm font-bold text-foreground">
-                  Preferensi Notifikasi
-                </CardTitle>
-                <CardDescription className="text-xs text-muted-foreground">
-                  Atur jenis pemberitahuan belanja dan informasi penawaran yang ingin Anda terima.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-6 space-y-5 text-xs text-foreground">
-                <div className="flex items-center justify-between gap-4 p-4 border border-border rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors border-dashed">
-                  <div className="space-y-1 flex-1">
-                    <Label className="text-xs font-bold text-foreground cursor-pointer">
-                      Notifikasi Transaksi (Email)
-                    </Label>
-                    <p className="text-[10px] text-muted-foreground leading-normal font-normal">
-                      Kirim invoice pembayaran, rincian pesanan baru, dan kwitansi belanja via email.
-                    </p>
-                  </div>
-                  <Switch
-                    checked={preferences.email_new_order}
-                    onCheckedChange={(checked) => handleTogglePreference('email_new_order', checked)}
-                    className="cursor-pointer animate-fade-in"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between gap-4 p-4 border border-border rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors border-dashed">
-                  <div className="space-y-1 flex-1">
-                    <Label className="text-xs font-bold text-foreground cursor-pointer">
-                      Notifikasi Pelacakan Kurir (Email)
-                    </Label>
-                    <p className="text-[10px] text-muted-foreground leading-normal font-normal">
-                      Terima email pembaruan otomatis saat status transit pengiriman logistik Anda berubah.
-                    </p>
-                  </div>
-                  <Switch
-                    checked={preferences.email_payment}
-                    onCheckedChange={(checked) => handleTogglePreference('email_payment', checked)}
-                    className="cursor-pointer animate-fade-in"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between gap-4 p-4 border border-border rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors border-dashed">
-                  <div className="space-y-1 flex-1">
-                    <Label className="text-xs font-bold text-foreground cursor-pointer">
-                      Promo & Penawaran Kemitraan (Push)
-                    </Label>
-                    <p className="text-[10px] text-muted-foreground leading-normal font-normal">
-                      Kirim newsletter pemberitahuan diskon marketplace dan promo investasi kemitraan baru.
-                    </p>
-                  </div>
-                  <Switch
-                    checked={preferences.push_notification}
-                    onCheckedChange={(checked) => handleTogglePreference('push_notification', checked)}
-                    className="cursor-pointer animate-fade-in"
-                  />
-                </div>
-              </CardContent>
-              <CardFooter className="p-6 pt-0 flex justify-end">
-                <Button
-                  type="submit"
-                  size="sm"
-                  className="h-9 text-xs font-bold cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90 px-4"
-                >
-                  Simpan Preferensi
-                </Button>
-              </CardFooter>
-            </form>
-          </Card>
-        </TabsContent>
+            </Card>
+          </TabsContent>
+        </div>
       </Tabs>
     </div>
   );
