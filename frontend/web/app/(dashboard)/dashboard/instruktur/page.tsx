@@ -6,9 +6,17 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { instructorService, InstructorAnalytics } from '@/services/instructor';
 import { getStoredAuthUser } from '@/lib/auth-storage';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
 import {
   GraduationCap,
   Users,
@@ -20,6 +28,8 @@ import {
   Calendar,
   MessageSquare,
   TrendingUp,
+  ArrowUp,
+  RefreshCw,
 } from 'lucide-react';
 
 const MOCK_ANALYTICS: InstructorAnalytics = {
@@ -95,20 +105,24 @@ const MOCK_ANALYTICS: InstructorAnalytics = {
 
 export default function InstructorDashboardOverview() {
   const user = getStoredAuthUser();
-  const [isOffline, setIsOffline] = React.useState(false);
-
-  const { data: analytics, isLoading } = useQuery<InstructorAnalytics>({
+  const {
+    data: analytics,
+    isLoading,
+    isError: isAnalyticsError,
+    refetch: refetchAnalytics,
+  } = useQuery<InstructorAnalytics>({
     queryKey: ['instructor-overview-analytics', user?.id],
     queryFn: async () => {
-      try {
-        if (!user?.id) throw new Error('Unauthenticated');
-        return await instructorService.getInstructorAnalytics(user.id);
-      } catch {
-        setIsOffline(true);
-        return MOCK_ANALYTICS;
-      }
+      if (!user?.id) throw new Error('Unauthenticated');
+      return await instructorService.getInstructorAnalytics(user.id);
     },
   });
+
+  React.useEffect(() => {
+    if (isAnalyticsError) {
+      toast.error('Koneksi ke Layanan Academy terputus.');
+    }
+  }, [isAnalyticsError]);
 
   if (isLoading) {
     return (
@@ -142,262 +156,279 @@ export default function InstructorDashboardOverview() {
         </p>
       </div>
 
-      {isOffline && (
-        <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-4 flex items-start gap-3 shadow-sm">
-          <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-xs font-bold text-amber-800">Modus Simulasi Luring Aktif</h4>
-            <p className="text-[11px] font-semibold text-amber-600 mt-0.5">
-              Academy Service backend sedang tidak terhubung. Anda sedang menjelajahi dashboard
-              dalam modus simulasi dengan data luring di memori browser.
-            </p>
-          </div>
+      {isAnalyticsError ? (
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-red-200 bg-red-50 py-16 px-6">
+          <AlertTriangle className="h-8 w-8 text-red-400 mb-3 animate-pulse" />
+          <p className="text-sm font-bold text-red-500 mb-1">Gagal Memuat Data Statistik</p>
+          <p className="text-xs text-red-400 mb-4">
+            Koneksi ke server Academy terputus. Silakan coba lagi.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-red-300 text-red-700 bg-white hover:bg-red-100 font-bold text-xs rounded-xl gap-1.5 cursor-pointer"
+            onClick={() => refetchAnalytics()}
+          >
+            <RefreshCw className="h-3.5 w-3.5" />
+            Coba Hubungkan Kembali
+          </Button>
         </div>
-      )}
-
-      {/* KPI Stats Panel */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Metric 1: Total Courses */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardContent className="pt-6 flex items-center gap-3.5">
-            <div className="h-10 w-10 shrink-0 rounded-xl bg-green-50 flex items-center justify-center text-green-600 border border-green-100">
-              <BookOpen className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-slate-800">{activeStats.total_courses}</div>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">
-                Total Kelas
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Metric 2: Total Students */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardContent className="pt-6 flex items-center gap-3.5">
-            <div className="h-10 w-10 shrink-0 rounded-xl bg-green-50 flex items-center justify-center text-green-600 border border-green-100">
-              <Users className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="flex items-baseline gap-1.5">
-                <div className="text-2xl font-bold text-slate-800">
-                  {activeStats.total_students}
-                </div>
-                <span className="text-[10px] font-bold text-emerald-600 flex items-center">
-                  <TrendingUp className="h-3 w-3 mr-0.5" />+{activeStats.students_this_month}
-                </span>
-              </div>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">
-                Total Peserta
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Metric 3: Average Rating */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardContent className="pt-6 flex items-center gap-3.5">
-            <div className="h-10 w-10 shrink-0 rounded-xl bg-green-50 flex items-center justify-center text-green-600 border border-green-100">
-              <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-slate-800">{activeStats.avg_rating}</div>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">
-                Rating Rata-rata
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Metric 4: Published Courses */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardContent className="pt-6 flex items-center gap-3.5">
-            <div className="h-10 w-10 shrink-0 rounded-xl bg-green-50 flex items-center justify-center text-green-600 border border-green-100">
-              <FileCheck className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-slate-800">
-                {activeStats.published_courses}
-              </div>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">
-                Kelas Terpublikasi
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Main Content Grid */}
-      <div className="grid gap-6 md:grid-cols-3">
-        {/* Left 2 Columns: Top Courses & Recent Enrollments */}
-        <div className="md:col-span-2 space-y-6">
-          {/* Top Courses */}
-          <Card className="border-slate-200 shadow-sm bg-white">
-            <CardHeader className="pb-3 flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-sm font-bold text-slate-800">Kelas Terpopuler</CardTitle>
-                <CardDescription className="text-[11px] font-semibold mt-0.5">
-                  Daftar kelas dengan peserta dan kepuasan belajar tertinggi.
-                </CardDescription>
-              </div>
-              <Link href="/dashboard/instruktur/courses" passHref legacyBehavior>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-xs font-bold text-green-600 hover:text-green-700 hover:bg-green-50 rounded-xl gap-1"
-                >
-                  Kelola Kelas
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Button>
-              </Link>
-            </CardHeader>
-            <CardContent className="p-0 border-t border-slate-100 divide-y divide-slate-100">
-              {activeStats.top_courses.map((course) => (
-                <div
-                  key={course.id}
-                  className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors"
-                >
-                  <div className="space-y-1">
-                    <h4 className="text-xs font-bold text-slate-800">{course.title}</h4>
-                    <p className="text-[10px] text-slate-400 font-semibold uppercase">
-                      ID: {course.id}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-6 text-right text-xs font-bold text-slate-700">
-                    <div>
-                      <div>{course.enrolled_count} Murid</div>
-                      <p className="text-[9px] text-slate-400 font-semibold uppercase mt-0.5">
-                        Terdaftar
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 bg-amber-50 border border-amber-100 text-amber-700 px-2 py-0.5 rounded-lg text-[10px]">
-                      <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-                      {course.rating}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-
-          {/* Recent Enrollments */}
-          <Card className="border-slate-200 shadow-sm bg-white">
-            <CardHeader className="pb-3 flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-sm font-bold text-slate-800">
-                  Pendaftaran Peserta Terkini
+      ) : (
+        <>
+          {/* KPI Stats Panel */}
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+            {/* Metric 1: Total Courses */}
+            <Card className="min-w-0">
+              <CardHeader className="gap-1">
+                <CardDescription className="truncate text-xs">Total Kelas</CardDescription>
+                <CardTitle className="truncate text-xl font-semibold tabular-nums lg:text-2xl">
+                  {activeStats.total_courses}
                 </CardTitle>
-                <CardDescription className="text-[11px] font-semibold mt-0.5">
-                  Murid-murid baru yang baru saja masuk ke kelas Anda.
-                </CardDescription>
-              </div>
-              <Link href="/dashboard/instruktur/students" passHref legacyBehavior>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-xs font-bold text-green-600 hover:text-green-700 hover:bg-green-50 rounded-xl gap-1"
-                >
-                  Semua Murid
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Button>
-              </Link>
-            </CardHeader>
-            <CardContent className="p-0 border-t border-slate-100 divide-y divide-slate-100">
-              {activeStats.recent_enrollments.map((enrollment, idx) => {
-                const enrollDate = new Date(enrollment.enrolled_at).toLocaleDateString('id-ID', {
-                  day: 'numeric',
-                  month: 'short',
-                  year: 'numeric',
-                });
+              </CardHeader>
+              <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                <div className="flex w-full min-w-0 items-center gap-1 font-medium">
+                  <BookOpen className="size-4 shrink-0 text-slate-400" />
+                  <span className="truncate text-muted-foreground">Kelas dalam kurikulum</span>
+                </div>
+              </CardFooter>
+            </Card>
 
-                return (
-                  <div
-                    key={idx}
-                    className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-full bg-green-50 border border-green-100 flex items-center justify-center text-green-600 font-bold text-xs shrink-0">
-                        {enrollment.student_name.charAt(0)}
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-slate-800">
-                          {enrollment.student_name}
-                        </h4>
-                        <p className="text-[10px] text-slate-400 font-semibold leading-relaxed">
-                          Mendaftar pada:{' '}
-                          <span className="text-slate-600 italic font-bold">
-                            {enrollment.course_title}
-                          </span>
+            {/* Metric 2: Total Students */}
+            <Card className="min-w-0">
+              <CardHeader className="gap-1">
+                <CardDescription className="truncate text-xs">Total Peserta</CardDescription>
+                <CardTitle className="truncate text-xl font-semibold tabular-nums lg:text-2xl">
+                  {activeStats.total_students}
+                </CardTitle>
+              </CardHeader>
+              <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                <div className="flex w-full min-w-0 items-center gap-1 font-medium">
+                  <span className="text-xs text-green-600 flex items-center font-bold">
+                    <ArrowUp className="h-3.5 w-3.5 mr-0.5" />+{activeStats.students_change_percent}
+                    %
+                  </span>
+                  <span className="truncate text-muted-foreground">
+                    +{activeStats.students_this_month} bulan ini
+                  </span>
+                </div>
+              </CardFooter>
+            </Card>
+
+            {/* Metric 3: Average Rating */}
+            <Card className="min-w-0">
+              <CardHeader className="gap-1">
+                <CardDescription className="truncate text-xs">Rating Rata-rata</CardDescription>
+                <CardTitle className="truncate text-xl font-semibold tabular-nums lg:text-2xl">
+                  {activeStats.avg_rating}
+                </CardTitle>
+              </CardHeader>
+              <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                <div className="flex w-full min-w-0 items-center gap-1 font-medium">
+                  <Star className="size-4 shrink-0 text-amber-500 fill-amber-500" />
+                  <span className="truncate text-muted-foreground">
+                    Dari {activeStats.total_reviews} ulasan murid
+                  </span>
+                </div>
+              </CardFooter>
+            </Card>
+
+            {/* Metric 4: Published Courses */}
+            <Card className="min-w-0">
+              <CardHeader className="gap-1">
+                <CardDescription className="truncate text-xs">Kelas Terpublikasi</CardDescription>
+                <CardTitle className="truncate text-xl font-semibold tabular-nums lg:text-2xl">
+                  {activeStats.published_courses}
+                </CardTitle>
+              </CardHeader>
+              <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                <div className="flex w-full min-w-0 items-center gap-1 font-medium">
+                  <FileCheck className="size-4 shrink-0 text-slate-400" />
+                  <span className="truncate text-xs text-muted-foreground">
+                    Siap diakses secara online
+                  </span>
+                </div>
+              </CardFooter>
+            </Card>
+          </div>
+
+          {/* Main Content Grid */}
+          <div className="grid gap-6 md:grid-cols-3">
+            {/* Left 2 Columns: Top Courses & Recent Enrollments */}
+            <div className="md:col-span-2 space-y-6">
+              {/* Top Courses */}
+              <Card className="border-slate-200 shadow-sm bg-white">
+                <CardHeader className="pb-3 flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle className="text-sm font-bold text-slate-800">
+                      Kelas Terpopuler
+                    </CardTitle>
+                    <CardDescription className="text-[11px] font-semibold mt-0.5">
+                      Daftar kelas dengan peserta dan kepuasan belajar tertinggi.
+                    </CardDescription>
+                  </div>
+                  <Link href="/dashboard/instruktur/courses" passHref legacyBehavior>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-xl gap-1 cursor-pointer"
+                    >
+                      Kelola Kelas
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Button>
+                  </Link>
+                </CardHeader>
+                <CardContent className="p-0 border-t border-slate-100 divide-y divide-slate-100">
+                  {activeStats.top_courses.map((course) => (
+                    <div
+                      key={course.id}
+                      className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors"
+                    >
+                      <div className="space-y-1">
+                        <h4 className="text-xs font-bold text-slate-800">{course.title}</h4>
+                        <p className="text-[10px] text-slate-400 font-semibold uppercase">
+                          ID: {course.id}
                         </p>
                       </div>
+                      <div className="flex items-center gap-6 text-right text-xs font-bold text-slate-700">
+                        <div>
+                          <div>{course.enrolled_count} Murid</div>
+                          <p className="text-[9px] text-slate-400 font-semibold uppercase mt-0.5">
+                            Terdaftar
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1 bg-amber-50 border border-amber-100 text-amber-700 px-2 py-0.5 rounded-lg text-[10px]">
+                          <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                          {course.rating}
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-[10px] font-bold text-slate-400 flex items-center gap-1 uppercase">
-                      <Calendar className="h-3.5 w-3.5 text-slate-300" />
-                      {enrollDate}
-                    </div>
-                  </div>
-                );
-              })}
-            </CardContent>
-          </Card>
-        </div>
+                  ))}
+                </CardContent>
+              </Card>
 
-        {/* Right 1 Column: Recent Reviews */}
-        <div className="space-y-6">
-          <Card className="border-slate-200 shadow-sm bg-white h-full flex flex-col justify-between">
-            <div>
-              <CardHeader className="pb-3 border-b border-slate-100">
-                <CardTitle className="text-sm font-bold text-slate-800">
-                  Ulasan Murid Terkini
-                </CardTitle>
-                <CardDescription className="text-[11px] font-semibold mt-0.5">
-                  Komentar dan tingkat kepuasan yang diisi oleh siswa.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-4 space-y-4">
-                {activeStats.recent_reviews.map((review, idx) => (
-                  <div
-                    key={idx}
-                    className="space-y-2 bg-slate-50/60 border border-slate-100/50 rounded-xl p-3.5"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="font-bold text-slate-800 text-[11px]">
-                        {review.student_name}
-                      </div>
-                      <div className="flex items-center gap-0.5">
-                        {[1, 2, 3, 4, 5].map((s) => (
-                          <Star
-                            key={s}
-                            className={`h-3 w-3 ${
-                              s <= review.rating
-                                ? 'text-amber-500 fill-amber-500'
-                                : 'text-slate-200'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">
-                      Kelas: {review.course_title}
-                    </div>
-                    <p className="text-[11px] font-semibold text-slate-500 leading-relaxed italic">
-                      &quot;{review.comment}&quot;
-                    </p>
+              {/* Recent Enrollments */}
+              <Card className="border-slate-200 shadow-sm bg-white">
+                <CardHeader className="pb-3 flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle className="text-sm font-bold text-slate-800">
+                      Pendaftaran Peserta Terkini
+                    </CardTitle>
+                    <CardDescription className="text-[11px] font-semibold mt-0.5">
+                      Murid-murid baru yang baru saja masuk ke kelas Anda.
+                    </CardDescription>
                   </div>
-                ))}
-              </CardContent>
+                  <Link href="/dashboard/instruktur/students" passHref legacyBehavior>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-xl gap-1 cursor-pointer"
+                    >
+                      Semua Murid
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Button>
+                  </Link>
+                </CardHeader>
+                <CardContent className="p-0 border-t border-slate-100 divide-y divide-slate-100">
+                  {activeStats.recent_enrollments.map((enrollment, idx) => {
+                    const enrollDate = new Date(enrollment.enrolled_at).toLocaleDateString(
+                      'id-ID',
+                      {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                      }
+                    );
+
+                    return (
+                      <div
+                        key={idx}
+                        className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="h-9 w-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 font-bold text-xs shrink-0">
+                            {enrollment.student_name.charAt(0)}
+                          </div>
+                          <div>
+                            <h4 className="text-xs font-bold text-slate-800">
+                              {enrollment.student_name}
+                            </h4>
+                            <p className="text-[10px] text-slate-400 font-semibold leading-relaxed">
+                              Mendaftar pada:{' '}
+                              <span className="text-slate-600 italic font-bold">
+                                {enrollment.course_title}
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-[10px] font-bold text-slate-400 flex items-center gap-1 uppercase">
+                          <Calendar className="h-3.5 w-3.5 text-slate-300" />
+                          {enrollDate}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </CardContent>
+              </Card>
             </div>
-            <div className="p-4 border-t border-slate-100/60 bg-slate-50/20">
-              <Link href="/dashboard/instruktur/analytics" passHref legacyBehavior>
-                <Button className="w-full bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs font-bold shadow-sm gap-1.5 py-4">
-                  <MessageSquare className="h-3.5 w-3.5" />
-                  Lihat Seluruh Analisis Ulasan
-                </Button>
-              </Link>
+
+            {/* Right 1 Column: Recent Reviews */}
+            <div className="space-y-6">
+              <Card className="border-slate-200 shadow-sm bg-white h-full flex flex-col justify-between">
+                <div>
+                  <CardHeader className="pb-3 border-b border-slate-100">
+                    <CardTitle className="text-sm font-bold text-slate-800">
+                      Ulasan Murid Terkini
+                    </CardTitle>
+                    <CardDescription className="text-[11px] font-semibold mt-0.5">
+                      Komentar dan tingkat kepuasan yang diisi oleh siswa.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-4 space-y-4">
+                    {activeStats.recent_reviews.map((review, idx) => (
+                      <div
+                        key={idx}
+                        className="space-y-2 bg-slate-50/60 border border-slate-100/50 rounded-xl p-3.5"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="font-bold text-slate-800 text-[11px]">
+                            {review.student_name}
+                          </div>
+                          <div className="flex items-center gap-0.5">
+                            {[1, 2, 3, 4, 5].map((s) => (
+                              <Star
+                                key={s}
+                                className={`h-3 w-3 ${
+                                  s <= review.rating
+                                    ? 'text-amber-500 fill-amber-500'
+                                    : 'text-slate-200'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">
+                          Kelas: {review.course_title}
+                        </div>
+                        <p className="text-[11px] font-semibold text-slate-500 leading-relaxed italic">
+                          &quot;{review.comment}&quot;
+                        </p>
+                      </div>
+                    ))}
+                  </CardContent>
+                </div>
+                <div className="p-4 border-t border-slate-100/60 bg-slate-50/20">
+                  <Link href="/dashboard/instruktur/analytics" passHref legacyBehavior>
+                    <Button className="w-full bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold shadow-sm gap-1.5 py-4 cursor-pointer">
+                      <MessageSquare className="h-3.5 w-3.5" />
+                      Lihat Seluruh Analisis Ulasan
+                    </Button>
+                  </Link>
+                </div>
+              </Card>
             </div>
-          </Card>
-        </div>
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
