@@ -433,13 +433,6 @@ export default function BuyerDashboardOverview() {
                       new Date(v).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
                     }
                   />
-                  <YAxis
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                    tick={{ fontSize: 11, fill: '#64748b' }}
-                    tickFormatter={(v) => `Rp ${(v / 1000).toLocaleString('id-ID')}k`}
-                  />
                   <ChartTooltip
                     cursor={false}
                     content={
