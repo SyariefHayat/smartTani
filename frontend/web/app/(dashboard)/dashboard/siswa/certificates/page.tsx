@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { academyService, Certificate } from '@/services/academy';
 import { getStoredAuthUser } from '@/lib/auth-storage';
+import { toast } from 'sonner';
 import {
   Card,
   CardContent,
@@ -27,6 +28,7 @@ import {
   AwardIcon,
   BookOpen,
   FileCheck,
+  RefreshCw,
 } from 'lucide-react';
 
 const MOCK_CERTIFICATES: Certificate[] = [
@@ -88,35 +90,25 @@ const MOCK_CERTIFICATES: Certificate[] = [
 
 export default function StudentCertificatesPage() {
   const user = getStoredAuthUser();
-  const [isOffline, setIsOffline] = React.useState(false);
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const searchQueryState = React.useState('');
+  const searchQuery = searchQueryState[0];
+  const setSearchQuery = searchQueryState[1];
 
-  const { data: certificates, isLoading } = useQuery<Certificate[]>({
+  const {
+    data: certificates,
+    isLoading,
+    isError: isCertificatesError,
+    refetch: refetchCertificates,
+  } = useQuery<Certificate[]>({
     queryKey: ['student-certificates', user?.id],
-    queryFn: async () => {
-      try {
-        const res = await academyService.getMyCertificates();
-        if (!res || res.length === 0) throw new Error('No certificates from API');
-        return res;
-      } catch {
-        setIsOffline(true);
-        // Fallback: load from localStorage + merge with mock data for rich UX
-        const certKey = `certificates-${user?.id}`;
-        const localData = localStorage.getItem(certKey);
-        const localCerts = localData ? JSON.parse(localData) : [];
-
-        // Merge without duplicates based on course_id
-        const merged = [...localCerts];
-        MOCK_CERTIFICATES.forEach((mock) => {
-          if (!merged.some((c) => c.course_id === mock.course_id)) {
-            merged.push(mock);
-          }
-        });
-
-        return merged;
-      }
-    },
+    queryFn: () => academyService.getMyCertificates(),
   });
+
+  React.useEffect(() => {
+    if (isCertificatesError) {
+      toast.error('Koneksi ke Layanan Academy terputus.');
+    }
+  }, [isCertificatesError]);
 
   const filteredCerts = React.useMemo(() => {
     if (!certificates) return [];
@@ -159,19 +151,6 @@ export default function StudentCertificatesPage() {
         </p>
       </div>
 
-      {isOffline && (
-        <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-4 flex items-start gap-3 shadow-sm">
-          <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-xs font-bold text-amber-800">Modus Simulasi Luring Aktif</h4>
-            <p className="text-[11px] font-semibold text-amber-600 mt-0.5">
-              Academy Service sedang tidak terhubung. Menampilkan sertifikat yang disimpan secara
-              lokal di peramban Anda.
-            </p>
-          </div>
-        </div>
-      )}
-
       {/* Control bar */}
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
         <div className="relative flex-1 max-w-md">
@@ -190,7 +169,23 @@ export default function StudentCertificatesPage() {
       </div>
 
       {/* Certificates Grid */}
-      {filteredCerts.length === 0 ? (
+      {isCertificatesError ? (
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 p-8 text-center text-red-500 font-semibold text-sm">
+          <AlertTriangle className="h-8 w-8 text-red-600 mb-2 animate-pulse" />
+          <p className="font-bold">Gagal memuat sertifikat belajar</p>
+          <p className="text-xs text-red-400 font-normal mt-1 mb-4">
+            Koneksi ke server Layanan Academy terputus. Silakan coba hubungkan kembali.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold text-xs cursor-pointer"
+            onClick={() => refetchCertificates()}
+          >
+            <RefreshCw className="h-3 w-3 mr-1" /> Coba Hubungkan Kembali
+          </Button>
+        </div>
+      ) : filteredCerts.length === 0 ? (
         <Card className="border-dashed border-slate-200 bg-slate-50/50 py-12 flex flex-col items-center justify-center text-center">
           <div className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-3 border border-slate-200">
             <Award className="h-6 w-6" />

@@ -1,5 +1,5 @@
 'use client';
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import * as React from 'react';
 import Link from 'next/link';
@@ -20,6 +20,7 @@ import {
   Share2,
   AlertTriangle,
   QrCode,
+  RefreshCw,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -88,29 +89,21 @@ export default function CertificateDetailPage({ params }: PageProps) {
   const router = useRouter();
   const user = getStoredAuthUser();
   const { id } = React.use(params);
-  const [isOffline, setIsOffline] = React.useState(false);
-
-  const { data: cert, isLoading } = useQuery<Certificate | null>({
+  const {
+    data: cert,
+    isLoading,
+    isError: isCertError,
+    refetch: refetchCert,
+  } = useQuery<Certificate | null>({
     queryKey: ['student-certificate', id, user?.id],
-    queryFn: async () => {
-      try {
-        const res = await academyService.getCertificateById(id);
-        return res;
-      } catch {
-        setIsOffline(true);
-        // Look in localStorage
-        const certKey = `certificates-${user?.id}`;
-        const localData = localStorage.getItem(certKey);
-        const localCerts = localData ? JSON.parse(localData) : [];
-
-        // Find in local or fallback mock
-        const found =
-          localCerts.find((c: any) => c.id === id) || MOCK_CERTIFICATES.find((c) => c.id === id);
-
-        return found || null;
-      }
-    },
+    queryFn: () => academyService.getCertificateById(id),
   });
+
+  React.useEffect(() => {
+    if (isCertError) {
+      toast.error('Koneksi ke Layanan Academy terputus.');
+    }
+  }, [isCertError]);
 
   const handlePrint = () => {
     window.print();
@@ -124,6 +117,37 @@ export default function CertificateDetailPage({ params }: PageProps) {
       toast.error('Gagal menyalin tautan.');
     }
   };
+
+  if (isCertError) {
+    return (
+      <div className="w-full py-12 flex flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 p-8 text-center text-red-500 font-semibold text-sm">
+        <AlertTriangle className="h-8 w-8 text-red-600 mb-2 animate-pulse" />
+        <p className="font-bold">Gagal memuat detail sertifikat</p>
+        <p className="text-xs text-red-400 font-normal mt-1 mb-4">
+          Koneksi ke server Layanan Academy terputus. Silakan coba hubungkan kembali.
+        </p>
+        <div className="flex items-center gap-3">
+          <Link href="/dashboard/siswa/certificates" passHref legacyBehavior>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-slate-300 text-slate-700 bg-white hover:bg-slate-50 font-bold text-xs cursor-pointer"
+            >
+              Kembali ke Daftar
+            </Button>
+          </Link>
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold text-xs cursor-pointer"
+            onClick={() => refetchCert()}
+          >
+            <RefreshCw className="h-3 w-3 mr-1" /> Coba Hubungkan Kembali
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -208,12 +232,6 @@ export default function CertificateDetailPage({ params }: PageProps) {
               Kembali
             </Button>
           </Link>
-          {isOffline && (
-            <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-600">
-              <AlertTriangle className="h-3 w-3" />
-              Mode Offline
-            </span>
-          )}
         </div>
 
         <div className="flex items-center gap-2">
