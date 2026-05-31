@@ -29,6 +29,7 @@ import {
   AlertTriangle,
   ArrowRight,
   User,
+  RefreshCw,
 } from 'lucide-react';
 
 const MOCK_ENROLLMENTS: Enrollment[] = [
@@ -119,37 +120,25 @@ const MOCK_ENROLLMENTS: Enrollment[] = [
 export default function StudentMyCoursesPage() {
   const user = getStoredAuthUser();
   const [activeTab, setActiveTab] = React.useState('all');
-  const [isOffline, setIsOffline] = React.useState(false);
 
   // Fetch my enrollments
-  const { data: enrollments, isLoading } = useQuery({
+  const {
+    data: enrollments,
+    isLoading,
+    isError: isEnrollmentsError,
+    refetch: refetchEnrollments,
+  } = useQuery({
     queryKey: ['student-enrollments-all', user?.id],
-    queryFn: async () => {
-      try {
-        return await academyService.getMyEnrollments();
-      } catch {
-        setIsOffline(true);
-        // Fallback to local storage progress cache or mocks
-        const key1 = `progress-course-001-${user?.id}`;
-        const key2 = `progress-course-002-${user?.id}`;
-        const storage1 = localStorage.getItem(key1);
-        const storage2 = localStorage.getItem(key2);
-
-        const list = [...MOCK_ENROLLMENTS];
-        if (storage1) {
-          const parsed = JSON.parse(storage1);
-          list[0] = parsed.enrollment;
-        }
-        if (storage2) {
-          const parsed = JSON.parse(storage2);
-          list[1] = parsed.enrollment;
-        }
-        return list;
-      }
-    },
+    queryFn: () => academyService.getMyEnrollments(),
   });
 
-  const activeEnrollments = enrollments || MOCK_ENROLLMENTS;
+  React.useEffect(() => {
+    if (isEnrollmentsError) {
+      toast.error('Koneksi ke Layanan Academy terputus.');
+    }
+  }, [isEnrollmentsError]);
+
+  const activeEnrollments = enrollments || [];
 
   const filteredEnrollments = activeEnrollments.filter((e) => {
     if (activeTab === 'all') return true;
@@ -168,19 +157,6 @@ export default function StudentMyCoursesPage() {
           sertifikat kelulusan emas Anda.
         </p>
       </div>
-
-      {isOffline && (
-        <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-4 flex items-start gap-3 shadow-sm">
-          <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-xs font-bold text-amber-800">Modus Simulasi Luring Aktif</h4>
-            <p className="text-[11px] font-semibold text-amber-600 mt-0.5">
-              Academy Service luring. Menampilkan rekapitulasi kelas terdaftar dari memori luring
-              browser Anda.
-            </p>
-          </div>
-        </div>
-      )}
 
       {/* Tabs list */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-6">
@@ -202,7 +178,23 @@ export default function StudentMyCoursesPage() {
           </TabsTrigger>
         </TabsList>
 
-        {isLoading ? (
+        {isEnrollmentsError ? (
+          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-red-200 bg-red-50 p-8 text-center text-red-500 font-semibold text-sm">
+            <AlertTriangle className="h-8 w-8 text-red-600 mb-2 animate-pulse" />
+            <p className="font-bold">Gagal memuat daftar kelas saya</p>
+            <p className="text-xs text-red-400 font-normal mt-1 mb-4">
+              Koneksi ke server Layanan Academy terputus. Silakan coba hubungkan kembali.
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold text-xs"
+              onClick={() => refetchEnrollments()}
+            >
+              <RefreshCw className="h-3 w-3 mr-1" /> Coba Hubungkan Kembali
+            </Button>
+          </div>
+        ) : isLoading ? (
           <div className="grid gap-6 sm:grid-cols-2">
             <Skeleton className="h-48" />
             <Skeleton className="h-48" />
