@@ -30,9 +30,22 @@ import {
   ArrowUp,
   ArrowDown,
 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { DatePickerWithRange } from '@/components/sections/dashboard/farmer/DatePickerRange';
 import { exportToCSV } from '@/lib/export-csv';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/ui/chart';
+
+const chartConfig = {
+  spending: {
+    label: 'Total Belanja',
+    color: '#16a34a',
+  },
+} satisfies ChartConfig;
 
 // High-fidelity fallback simulated data if backend analytics service is offline
 const MOCK_BUYER_ANALYTICS: BuyerAnalytics = {
@@ -213,9 +226,18 @@ export default function BuyerDashboardOverview() {
       const summaryData = [
         { metrik: 'Total Belanja', nilai: formatCurrency(activeAnalytics.total_spending || 0) },
         { metrik: 'Pesanan Aktif', nilai: `${activeAnalytics.active_orders || 0} Transaksi` },
-        { metrik: 'Total Produk Dibeli', nilai: `${activeAnalytics.total_products_bought || 0} Unit` },
-        { metrik: 'Total Ulasan Diberikan', nilai: `${activeAnalytics.total_reviews_given || 0} Ulasan` },
-        { metrik: 'Belanja Bulan Ini', nilai: formatCurrency(activeAnalytics.monthly_spending || 0) },
+        {
+          metrik: 'Total Produk Dibeli',
+          nilai: `${activeAnalytics.total_products_bought || 0} Unit`,
+        },
+        {
+          metrik: 'Total Ulasan Diberikan',
+          nilai: `${activeAnalytics.total_reviews_given || 0} Ulasan`,
+        },
+        {
+          metrik: 'Belanja Bulan Ini',
+          nilai: formatCurrency(activeAnalytics.monthly_spending || 0),
+        },
         {
           metrik: 'Perubahan Belanja',
           nilai: `${(activeAnalytics.spending_change_percent || 0).toFixed(1)}%`,
@@ -336,7 +358,11 @@ export default function BuyerDashboardOverview() {
             let percentageText = '0.0%';
 
             if (hasCompare) {
-              colorClass = isUp ? 'text-green-500' : isDown ? 'text-red-500' : 'text-muted-foreground';
+              colorClass = isUp
+                ? 'text-green-500'
+                : isDown
+                  ? 'text-red-500'
+                  : 'text-muted-foreground';
               Icon = isUp ? ArrowUp : isDown ? ArrowDown : null;
               percentageText = `${Math.abs(kpi.change).toFixed(1)}%`;
             }
@@ -367,216 +393,222 @@ export default function BuyerDashboardOverview() {
         </div>
       )}
 
-        {/* Chart Column */}
-        {isLoading ? (
-          <Skeleton className="h-[350px] w-full rounded-xl" />
-        ) : (
-          <Card className="border-slate-200 shadow-sm bg-white">
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardTitle className="text-base font-bold text-slate-800">
-                    Tren Pengeluaran Belanja
-                  </CardTitle>
-                  <CardDescription className="text-xs">
-                    Grafik total belanja harian Anda.
-                  </CardDescription>
-                </div>
-                <div className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded">
-                  {activeAnalytics.spending_change_percent >= 0 ? '+' : ''}
-                  {activeAnalytics.spending_change_percent}% dibanding bln lalu
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[300px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={activeChart} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    <XAxis
-                      dataKey="date"
-                      tickLine={false}
-                      axisLine={false}
-                      tickMargin={8}
-                      tick={{ fontSize: 11, fill: '#64748b' }}
-                      tickFormatter={(v) =>
-                        new Date(v).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
-                      }
-                    />
-                    <YAxis
-                      tickLine={false}
-                      axisLine={false}
-                      tickMargin={8}
-                      tick={{ fontSize: 11, fill: '#64748b' }}
-                      tickFormatter={(v) => `Rp ${(v / 1000).toLocaleString('id-ID')}k`}
-                    />
-                    <Tooltip
-                      content={({ active, payload, label }) => {
-                        if (active && payload && payload.length) {
-                          return (
-                            <div className="rounded-lg border border-slate-200 bg-white p-3 shadow-md">
-                              <p className="mb-1 text-xs font-semibold text-slate-500">
-                                {label
-                                  ? new Date(label).toLocaleDateString('id-ID', {
-                                      day: 'numeric',
-                                      month: 'long',
-                                      year: 'numeric',
-                                    })
-                                  : ''}
-                              </p>
-                              <p className="text-sm font-bold text-green-600">
-                                {formatCurrency(payload[0].value as number)}
-                              </p>
-                              <p className="text-[10px] text-slate-400 font-medium mt-0.5">
-                                {payload[0].payload.orders_count} Pesanan
-                              </p>
-                            </div>
-                          );
-                        }
-                        return null;
-                      }}
-                    />
-                    <Bar dataKey="spending" fill="#16a34a" radius={[4, 4, 0, 0]} barSize={28} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Lower Row */}
-        <div className="grid gap-6 lg:grid-cols-3">
-          {/* Left Column (60%): Recent Orders */}
-          <div className="lg:col-span-2 space-y-4">
+      {/* Chart Column */}
+      {isLoading ? (
+        <Skeleton className="h-[350px] w-full rounded-xl" />
+      ) : (
+        <Card className="border-slate-200 shadow-sm bg-white">
+          <CardHeader>
             <div className="flex justify-between items-center">
-              <h2 className="text-base font-bold text-slate-800">Pesanan Terbaru</h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs text-slate-500 font-semibold flex items-center gap-1 hover:text-green-600"
-                onClick={() => router.push('/dashboard/buyer/orders')}
-              >
-                Semua Pesanan <ArrowRight className="h-3 w-3" />
-              </Button>
+              <div>
+                <CardTitle className="text-base font-bold text-slate-800">
+                  Tren Pengeluaran Belanja
+                </CardTitle>
+                <CardDescription className="text-xs">
+                  Grafik total belanja harian Anda.
+                </CardDescription>
+              </div>
+              <div className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded">
+                {activeAnalytics.spending_change_percent >= 0 ? '+' : ''}
+                {activeAnalytics.spending_change_percent}% dibanding bln lalu
+              </div>
             </div>
-            {isLoading ? (
-              <div className="space-y-3">
-                <Skeleton className="h-20 w-full rounded-xl" />
-                <Skeleton className="h-20 w-full rounded-xl" />
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {(activeOrders as unknown[]).map((rawOrder) => {
-                  const order = rawOrder as (typeof MOCK_RECENT_ORDERS)[0];
-                  const productTitle = order.items?.[0]?.product?.title || 'Produk Kategori Tani';
-                  const isCompleted = order.status === 'completed';
-                  const isShipped = order.status === 'shipped';
-                  return (
-                    <Card
-                      key={order.id}
-                      className="border border-slate-200 bg-white hover:bg-slate-50/50 transition-colors shadow-xs"
-                    >
-                      <CardContent className="p-4 flex items-center justify-between gap-4">
-                        <div className="space-y-1 flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-xs text-slate-500 font-semibold">
-                              #{order.id}
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px] w-full">
+              <ChartContainer config={chartConfig} className="h-full w-full aspect-auto">
+                <BarChart
+                  accessibilityLayer
+                  data={activeChart}
+                  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                >
+                  <CartesianGrid vertical={false} stroke="#f1f5f9" />
+                  <XAxis
+                    dataKey="date"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={10}
+                    tick={{ fontSize: 11, fill: '#64748b' }}
+                    tickFormatter={(v) =>
+                      new Date(v).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+                    }
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    tick={{ fontSize: 11, fill: '#64748b' }}
+                    tickFormatter={(v) => `Rp ${(v / 1000).toLocaleString('id-ID')}k`}
+                  />
+                  <ChartTooltip
+                    cursor={false}
+                    content={
+                      <ChartTooltipContent
+                        labelFormatter={(value) => {
+                          return new Date(value).toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          });
+                        }}
+                        formatter={(value, name, item) => (
+                          <div className="flex flex-col gap-1">
+                            <div className="flex items-center gap-1.5">
+                              <span className="h-2.5 w-2.5 rounded-full bg-green-600 shrink-0" />
+                              <span className="text-[10px] text-muted-foreground uppercase font-semibold">
+                                Total Belanja
+                              </span>
+                            </div>
+                            <span className="text-sm font-bold text-slate-800">
+                              {formatCurrency(value as number)}
                             </span>
-                            <span
-                              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold border ${
-                                isCompleted
-                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                  : isShipped
-                                    ? 'bg-blue-50 text-blue-700 border-blue-200'
-                                    : 'bg-amber-50 text-amber-700 border-amber-200'
-                              }`}
-                            >
-                              <span
-                                className={`h-1 w-1 rounded-full ${isCompleted ? 'bg-emerald-500 animate-pulse' : isShipped ? 'bg-blue-500' : 'bg-amber-500'}`}
-                              />
-                              {isCompleted ? 'Selesai' : isShipped ? 'Dikirim' : 'Menunggu'}
+                            <span className="text-[10px] text-slate-400 font-medium mt-0.5">
+                              {item.payload.orders_count} Pesanan
                             </span>
                           </div>
-                          <h4 className="text-sm font-semibold text-slate-800 truncate max-w-xs sm:max-w-sm">
-                            {productTitle}{' '}
-                            {order.items?.length > 1 ? `(+${order.items.length - 1} lainnya)` : ''}
-                          </h4>
-                          <p className="text-xs text-slate-400">
-                            {format(new Date(order.created_at), 'dd MMM yyyy, HH:mm')}
-                          </p>
-                        </div>
-                        <div className="text-right space-y-1">
-                          <p className="text-sm font-bold text-slate-800">
-                            {formatCurrency(order.total_amount)}
-                          </p>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-7 cursor-pointer"
-                            onClick={() => router.push(`/dashboard/buyer/orders/${order.id}`)}
-                          >
-                            <Eye className="mr-1 h-3.5 w-3.5" /> Detail
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                        )}
+                      />
+                    }
+                  />
+                  <Bar dataKey="spending" fill="var(--color-spending)" radius={8} barSize={28} />
+                </BarChart>
+              </ChartContainer>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
-          {/* Right Column (40%): Top Products */}
-          <div className="space-y-4">
-            <h2 className="text-base font-bold text-slate-800">Sering Dibeli</h2>
-            {isLoading ? (
-              <Skeleton className="h-[250px] w-full rounded-xl" />
-            ) : (
-              <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-bold">Rekomendasi Restok</CardTitle>
-                  <CardDescription className="text-xs">
-                    Produk terlaris berdasarkan frekuensi pembelian Anda.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="divide-y divide-slate-100">
-                    {activeAnalytics.top_products?.map((prod) => (
-                      <div
-                        key={prod.product_id}
-                        className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-lg bg-green-50 border border-green-100 flex items-center justify-center text-green-600 shrink-0 font-bold text-xs uppercase">
-                            {prod.title.slice(0, 2)}
-                          </div>
-                          <div>
-                            <h4 className="text-xs font-semibold text-slate-800 line-clamp-1">
-                              {prod.title}
-                            </h4>
-                            <p className="text-[10px] text-slate-400 mt-0.5">
-                              Dipesan {prod.buy_count} kali
-                            </p>
-                          </div>
+      {/* Lower Row */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Left Column (60%): Recent Orders */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-base font-bold text-slate-800">Pesanan Terbaru</h2>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs text-slate-500 font-semibold flex items-center gap-1 hover:text-green-600"
+              onClick={() => router.push('/dashboard/buyer/orders')}
+            >
+              Semua Pesanan <ArrowRight className="h-3 w-3" />
+            </Button>
+          </div>
+          {isLoading ? (
+            <div className="space-y-3">
+              <Skeleton className="h-20 w-full rounded-xl" />
+              <Skeleton className="h-20 w-full rounded-xl" />
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {(activeOrders as unknown[]).map((rawOrder) => {
+                const order = rawOrder as (typeof MOCK_RECENT_ORDERS)[0];
+                const productTitle = order.items?.[0]?.product?.title || 'Produk Kategori Tani';
+                const isCompleted = order.status === 'completed';
+                const isShipped = order.status === 'shipped';
+                return (
+                  <Card
+                    key={order.id}
+                    className="border border-slate-200 bg-white hover:bg-slate-50/50 transition-colors shadow-xs"
+                  >
+                    <CardContent className="p-4 flex items-center justify-between gap-4">
+                      <div className="space-y-1 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-xs text-slate-500 font-semibold">
+                            #{order.id}
+                          </span>
+                          <span
+                            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold border ${
+                              isCompleted
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                : isShipped
+                                  ? 'bg-blue-50 text-blue-700 border-blue-200'
+                                  : 'bg-amber-50 text-amber-700 border-amber-200'
+                            }`}
+                          >
+                            <span
+                              className={`h-1 w-1 rounded-full ${isCompleted ? 'bg-emerald-500 animate-pulse' : isShipped ? 'bg-blue-500' : 'bg-amber-500'}`}
+                            />
+                            {isCompleted ? 'Selesai' : isShipped ? 'Dikirim' : 'Menunggu'}
+                          </span>
                         </div>
+                        <h4 className="text-sm font-semibold text-slate-800 truncate max-w-xs sm:max-w-sm">
+                          {productTitle}{' '}
+                          {order.items?.length > 1 ? `(+${order.items.length - 1} lainnya)` : ''}
+                        </h4>
+                        <p className="text-xs text-slate-400">
+                          {format(new Date(order.created_at), 'dd MMM yyyy, HH:mm')}
+                        </p>
+                      </div>
+                      <div className="text-right space-y-1">
+                        <p className="text-sm font-bold text-slate-800">
+                          {formatCurrency(order.total_amount)}
+                        </p>
                         <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 cursor-pointer"
-                          onClick={() => router.push(`/marketplace/${prod.product_id}`)}
+                          variant="outline"
+                          size="sm"
+                          className="h-7 cursor-pointer"
+                          onClick={() => router.push(`/dashboard/buyer/orders/${order.id}`)}
                         >
-                          <Eye className="h-4 w-4" />
+                          <Eye className="mr-1 h-3.5 w-3.5" /> Detail
                         </Button>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
         </div>
-      </DateRangeContext.Provider>
+
+        {/* Right Column (40%): Top Products */}
+        <div className="space-y-4">
+          <h2 className="text-base font-bold text-slate-800">Sering Dibeli</h2>
+          {isLoading ? (
+            <Skeleton className="h-[250px] w-full rounded-xl" />
+          ) : (
+            <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-bold">Rekomendasi Restok</CardTitle>
+                <CardDescription className="text-xs">
+                  Produk terlaris berdasarkan frekuensi pembelian Anda.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="divide-y divide-slate-100">
+                  {activeAnalytics.top_products?.map((prod) => (
+                    <div
+                      key={prod.product_id}
+                      className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-lg bg-green-50 border border-green-100 flex items-center justify-center text-green-600 shrink-0 font-bold text-xs uppercase">
+                          {prod.title.slice(0, 2)}
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-semibold text-slate-800 line-clamp-1">
+                            {prod.title}
+                          </h4>
+                          <p className="text-[10px] text-slate-400 mt-0.5">
+                            Dipesan {prod.buy_count} kali
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 cursor-pointer"
+                        onClick={() => router.push(`/marketplace/${prod.product_id}`)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+    </DateRangeContext.Provider>
   );
 }
-
-
