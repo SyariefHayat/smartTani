@@ -84,11 +84,11 @@ export default function BuyerWishlistPage() {
 
   React.useEffect(() => {
     if (isQueryError) {
-      toast.error('Layanan sedang offline. Menggunakan data demo lokal.');
+      toast.error('Gagal memuat daftar produk favorit. Koneksi ke server terputus.');
     }
   }, [isQueryError]);
 
-  const activeItems = isQueryError ? MOCK_WISHLIST : wishlistItems || MOCK_WISHLIST;
+  const activeItems = isQueryError ? [] : wishlistItems || [];
 
   // 2. Remove mutation
   const removeMutation = useMutation({
@@ -116,10 +116,6 @@ export default function BuyerWishlistPage() {
   });
 
   const handleRemove = (productId: string) => {
-    if (isQueryError) {
-      toast.success('Produk berhasil dihapus dari Wishlist (Simulasi)');
-      return;
-    }
     removeMutation.mutate(productId);
   };
 
@@ -128,43 +124,15 @@ export default function BuyerWishlistPage() {
       toast.error('Stok produk sedang habis');
       return;
     }
-    if (isQueryError) {
-      toast.success('Produk berhasil ditambahkan ke keranjang belanja! (Simulasi)');
-      return;
-    }
     addToCartMutation.mutate(productId);
   };
 
   return (
-    <div className="w-full space-y-6 text-slate-900">
-      {/* Reconnect Banner */}
-      {isQueryError && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-800 font-semibold shadow-xs">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 animate-pulse" />
-            <p>
-              Layanan Wishlist Offline: Gagal memuat data teraktual. Menggunakan data demo lokal.
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7 cursor-pointer border-red-300 text-red-800 bg-white hover:bg-red-100 font-bold shrink-0 text-[10px]"
-            onClick={() => refetch()}
-            disabled={isRefetching}
-          >
-            <RefreshCw className={`mr-1 h-3 w-3 ${isRefetching ? 'animate-spin' : ''}`} />
-            {isRefetching ? 'Hubungkan...' : 'Coba Hubungkan Kembali'}
-          </Button>
-        </div>
-      )}
-
+    <div className="w-full space-y-4">
       {/* Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight lg:text-2xl text-slate-800">
-            Wishlist & Pinned
-          </h1>
+          <h1 className="text-xl font-bold tracking-tight lg:text-2xl">Wishlist & Pinned</h1>
           <p className="text-sm text-slate-500">
             Daftar produk favorit yang ingin Anda beli kembali.
           </p>
@@ -172,7 +140,11 @@ export default function BuyerWishlistPage() {
       </div>
 
       {/* Grid of Wishlist Items */}
-      {isLoading ? (
+      {isQueryError ? (
+        <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+          Gagal memuat daftar produk favorit / Koneksi ke server terputus
+        </div>
+      ) : isLoading ? (
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
             <Skeleton key={i} className="h-72 w-full rounded-xl animate-pulse" />
