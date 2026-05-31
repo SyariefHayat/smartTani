@@ -198,29 +198,19 @@ export default function BuyerFinancePage() {
 
   React.useEffect(() => {
     if (isQueryError) {
-      if (isHistoryPage) {
-        toast.error('Layanan keuangan offline. Menggunakan data demo lokal.', {
-          description:
-            'Menampilkan data pengeluaran simulasi agar Anda tetap dapat menjelajahi layout.',
-          duration: 5000,
-        });
-      } else {
-        toast.error('Gagal memuat data keuangan. Koneksi ke server terputus.');
-      }
+      toast.error('Gagal memuat data keuangan. Koneksi ke server terputus.');
     }
-  }, [isQueryError, isHistoryPage]);
+  }, [isQueryError]);
 
   const activeData = isQueryError
-    ? isHistoryPage
-      ? MOCK_FINANCE_DATA
-      : {
-          total_spending: 0,
-          monthly_spending: 0,
-          avg_per_order: 0,
-          spending_change_percent: 0,
-          transactions: [],
-          meta: { page: 1, limit: 10, total: 0 },
-        }
+    ? {
+        total_spending: 0,
+        monthly_spending: 0,
+        avg_per_order: 0,
+        spending_change_percent: 0,
+        transactions: [],
+        meta: { page: 1, limit: 10, total: 0 },
+      }
     : financeData || MOCK_FINANCE_DATA;
 
   // Filter transactions by searchQuery and date range
@@ -563,7 +553,11 @@ export default function BuyerFinancePage() {
             </div>
           </CardHeader>
           <CardContent>
-            {isLoading ? (
+            {isQueryError ? (
+              <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-sm">
+                Gagal memuat daftar faktur pembelian / Koneksi ke server terputus
+              </div>
+            ) : isLoading ? (
               <div className="space-y-2">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Skeleton key={i} className="h-12 w-full" />
