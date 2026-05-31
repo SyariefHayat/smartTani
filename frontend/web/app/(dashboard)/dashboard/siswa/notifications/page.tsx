@@ -4,6 +4,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getStoredAuthUser } from '@/lib/auth-storage';
+import { notificationService, NotificationItem } from '@/services/notification';
 import { formatDistanceToNow, isToday, isYesterday } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -89,87 +90,68 @@ export default function StudentNotificationsPage() {
   const [activeTab, setActiveTab] = React.useState<NotificationType>('all');
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const { data: notifications, isLoading } = useQuery<Notification[]>({
+  const [deletedIds, setDeletedIds] = React.useState<string[]>([]);
+
+  const {
+    data: notifications,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery<Notification[]>({
     queryKey: ['student-notifications', user?.id],
     queryFn: async () => {
-      const key = `notifications-${user?.id}`;
-      const saved = localStorage.getItem(key);
-      if (!saved) {
-        localStorage.setItem(key, JSON.stringify(MOCK_NOTIFICATIONS));
-        return MOCK_NOTIFICATIONS;
-      }
-
-      const parsed = JSON.parse(saved);
-      let updated = false;
-      const verified = parsed.map((n: Notification, idx: number) => {
-        const d = new Date(n.created_at);
-        if (isNaN(d.getTime())) {
-          updated = true;
-          let dateVal = new Date().toISOString();
-          if (idx === 2) dateVal = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-          if (idx === 3) dateVal = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString();
-          return { ...n, created_at: dateVal };
-        }
-        return n;
-      });
-      if (updated) {
-        localStorage.setItem(key, JSON.stringify(verified));
-      }
-      return verified;
+      const res = await notificationService.getNotifications();
+      return res.map((n: NotificationItem) => ({
+        id: n.id,
+        title: n.title,
+        content: n.message,
+        type: n.type === 'order' ? 'learning' : n.type === 'promo' ? 'webinar' : 'system',
+        is_read: n.is_read,
+        created_at: n.created_at,
+      }));
     },
   });
 
   const markReadMutation = useMutation({
     mutationFn: async (id: string) => {
-      const key = `notifications-${user?.id}`;
-      const current = notifications || [];
-      const updated = current.map((n) => (n.id === id ? { ...n, is_read: true } : n));
-      localStorage.setItem(key, JSON.stringify(updated));
-      return updated;
+      await notificationService.markAsRead(id);
     },
-    onSuccess: (data) => {
-      queryClient.setQueryData(['student-notifications', user?.id], data);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['student-notifications', user?.id] });
     },
   });
 
   const markAllReadMutation = useMutation({
     mutationFn: async () => {
-      const key = `notifications-${user?.id}`;
-      const current = notifications || [];
-      const updated = current.map((n) => ({ ...n, is_read: true }));
-      localStorage.setItem(key, JSON.stringify(updated));
-      return updated;
+      await notificationService.markAllAsRead();
     },
-    onSuccess: (data) => {
-      queryClient.setQueryData(['student-notifications', user?.id], data);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['student-notifications', user?.id] });
       toast.success('Semua notifikasi ditandai telah dibaca.');
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const key = `notifications-${user?.id}`;
-      const current = notifications || [];
-      const updated = current.filter((n) => n.id !== id);
-      localStorage.setItem(key, JSON.stringify(updated));
-      return updated;
+      setDeletedIds((prev) => [...prev, id]);
     },
-    onSuccess: (data) => {
-      queryClient.setQueryData(['student-notifications', user?.id], data);
+    onSuccess: () => {
       toast.success('Notifikasi berhasil dihapus.');
     },
   });
 
   const filteredNotifications = React.useMemo(() => {
     if (!notifications) return [];
-    return notifications.filter((item) => {
-      const matchesTab = activeTab === 'all' ? true : item.type === activeTab;
-      const matchesSearch =
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.content.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesTab && matchesSearch;
-    });
-  }, [notifications, activeTab, searchQuery]);
+    return notifications
+      .filter((n) => !deletedIds.includes(n.id))
+      .filter((item) => {
+        const matchesTab = activeTab === 'all' ? true : item.type === activeTab;
+        const matchesSearch =
+          item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.content.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesTab && matchesSearch;
+      });
+  }, [notifications, activeTab, searchQuery, deletedIds]);
 
   const groupedNotifications = React.useMemo(() => {
     const todayGroup: Notification[] = [];
