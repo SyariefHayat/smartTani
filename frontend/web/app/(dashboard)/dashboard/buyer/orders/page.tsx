@@ -12,13 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Search,
-  ShoppingBag,
-  RefreshCw,
-  AlertTriangle,
-  MoreHorizontal,
-} from 'lucide-react';
+import { Search, ShoppingBag, RefreshCw, AlertTriangle, MoreHorizontal } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -90,13 +84,8 @@ export default function BuyerOrdersPage() {
   const pathname = usePathname();
   const user = getStoredAuthUser();
 
-  const defaultTab = pathname.includes('/history') || searchParams.get('tab') === 'history' ? 'history' : 'active';
-  const [activeTab, setActiveTab] = React.useState<'active' | 'history'>(defaultTab);
-
-  React.useEffect(() => {
-    const nextTab = pathname.includes('/history') || searchParams.get('tab') === 'history' ? 'history' : 'active';
-    setActiveTab(nextTab);
-  }, [pathname, searchParams]);
+  const activeTab =
+    pathname.includes('/history') || searchParams.get('tab') === 'history' ? 'history' : 'active';
   const [searchQuery, setSearchQuery] = React.useState('');
 
   // 1. Fetch Orders
@@ -144,10 +133,6 @@ export default function BuyerOrdersPage() {
 
   const [currentPage, setCurrentPage] = React.useState(1);
   const ITEMS_PER_PAGE = 10;
-
-  React.useEffect(() => {
-    setCurrentPage(1);
-  }, [activeTab, searchQuery]);
 
   const totalRows = filteredOrders.length;
   const totalPages = Math.ceil(totalRows / ITEMS_PER_PAGE);
@@ -209,7 +194,7 @@ export default function BuyerOrdersPage() {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight lg:text-2xl">
-            Pesanan Saya
+            {activeTab === 'history' ? 'Riwayat Pesanan' : 'Pesanan Aktif'}
           </h1>
           <p className="text-sm text-slate-500">
             Kelola dan pantau status pengiriman transaksi pembelian Anda.
@@ -220,28 +205,15 @@ export default function BuyerOrdersPage() {
       {/* Main Card Wrapper */}
       <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
         <CardHeader className="pb-3 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100">
-          {/* Tab buttons */}
-          <div className="flex bg-slate-100 p-0.5 rounded-lg w-fit">
-            <button
-              onClick={() => setActiveTab('active')}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-                activeTab === 'active'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              Pesanan Aktif
-            </button>
-            <button
-              onClick={() => setActiveTab('history')}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-                activeTab === 'history'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              Riwayat Pesanan
-            </button>
+          <div>
+            <CardTitle className="text-sm font-bold">
+              {activeTab === 'history' ? 'Daftar Riwayat Transaksi' : 'Daftar Transaksi Aktif'}
+            </CardTitle>
+            <CardDescription className="text-xs">
+              {activeTab === 'history'
+                ? 'Menampilkan semua transaksi pembelian Anda yang telah selesai atau dibatalkan.'
+                : 'Menampilkan transaksi Anda yang sedang berjalan, dikirim, atau menunggu pembayaran.'}
+            </CardDescription>
           </div>
 
           {/* Search bar */}
@@ -251,7 +223,10 @@ export default function BuyerOrdersPage() {
               placeholder="Cari ID pesanan atau produk..."
               className="h-9 rounded-md border-slate-200 bg-white pl-9 pr-4 text-xs text-slate-900 focus-visible:ring-green-500"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
             />
           </div>
         </CardHeader>
@@ -272,12 +247,24 @@ export default function BuyerOrdersPage() {
                 {isLoading ? (
                   [...Array(5)].map((_, i) => (
                     <TableRow key={i}>
-                      <TableCell><Skeleton className="h-4 w-20 bg-slate-100 rounded" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-24 bg-slate-100 rounded" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-40 bg-slate-100 rounded" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-24 bg-slate-100 rounded" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-24 bg-slate-100 rounded" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-28 bg-slate-100 rounded" /></TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-20 bg-slate-100 rounded" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-24 bg-slate-100 rounded" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-40 bg-slate-100 rounded" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-24 bg-slate-100 rounded" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-24 bg-slate-100 rounded" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-28 bg-slate-100 rounded" />
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : filteredOrders.length === 0 ? (
@@ -304,10 +291,7 @@ export default function BuyerOrdersPage() {
                     const isCancelled = order.status === 'cancelled';
 
                     return (
-                      <TableRow
-                        key={order.id}
-                        className="hover:bg-slate-50/50 transition-colors"
-                      >
+                      <TableRow key={order.id} className="hover:bg-slate-50/50 transition-colors">
                         <TableCell className="font-mono text-xs font-medium text-muted-foreground">
                           #{order.id}
                         </TableCell>
