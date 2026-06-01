@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:24-alpine AS builder
+FROM node:24-slim AS builder
 WORKDIR /app
 COPY package*.json ./
 COPY shared ./shared
@@ -9,7 +9,7 @@ WORKDIR /app/services/api-gateway
 RUN npm run build
 
 # Stage 2: Production
-FROM node:24-alpine AS production
+FROM node:24-slim AS production
 WORKDIR /app/services/api-gateway
 ENV NODE_ENV=production
 COPY services/api-gateway/package*.json ./

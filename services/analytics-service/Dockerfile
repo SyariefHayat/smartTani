@@ -1,6 +1,6 @@
 # Stage 1: Build
-FROM node:24-alpine AS builder
-RUN apk add --no-cache openssl
+FROM node:24-slim AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY package*.json ./
 COPY shared ./shared
@@ -11,8 +11,8 @@ RUN npx prisma generate
 RUN npm run build
 
 # Stage 2: Production
-FROM node:24-alpine AS production
-RUN apk add --no-cache openssl
+FROM node:24-slim AS production
+RUN apt-get update && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app/services/analytics-service
 ENV NODE_ENV=production
 COPY services/analytics-service/package*.json ./
