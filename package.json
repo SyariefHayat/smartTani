@@ -51,6 +51,7 @@
     "express": "^5.2.1",
     "isomorphic-dompurify": "^3.13.0",
     "jsonwebtoken": "^9.0.3",
-    "uuid": "^14.0.0"
+    "uuid": "^14.0.0",
+    "axios": "^1.6.0"
   }
 }
