@@ -9,5 +9,12 @@
     "forceConsistentCasingInFileNames": true,
     "types": ["node", "jest"]
   },
-  "include": ["src/**/*", "../../shared/**/*", "jest.setup.ts", "jest.config.js"]
+  "include": ["src/**/*", "../../shared/**/*", "jest.setup.ts", "jest.config.js"],
+  "exclude": [
+    "src/**/*.test.ts",
+    "src/**/*.spec.ts",
+    "**/__tests__/**/*",
+    "jest.config.js",
+    "jest.setup.ts"
+  ]
 }
