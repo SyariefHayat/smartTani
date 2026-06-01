@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const GATEWAY_URL = 'http://localhost:3000';
+const GATEWAY_URL = process.env.GATEWAY_URL || 'http://localhost:3000';
 const PASSWORD = 'password123';
 
 const ACCOUNTS_TO_CREATE = [
