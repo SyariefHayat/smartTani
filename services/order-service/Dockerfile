@@ -1,5 +1,6 @@
 # Stage 1: Build
 FROM node:24-alpine AS builder
+RUN apk add --no-cache openssl
 WORKDIR /app
 COPY package*.json ./
 COPY shared ./shared
@@ -11,6 +12,7 @@ RUN npm run build
 
 # Stage 2: Production
 FROM node:24-alpine AS production
+RUN apk add --no-cache openssl
 WORKDIR /app/services/order-service
 ENV NODE_ENV=production
 COPY services/order-service/package*.json ./
