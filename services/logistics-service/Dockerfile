@@ -1,10 +1,11 @@
 # Stage 1: Build
 FROM node:24-alpine AS builder
 WORKDIR /app
+COPY package*.json ./
 COPY shared ./shared
 COPY services/logistics-service ./services/logistics-service
-WORKDIR /app/services/logistics-service
 RUN npm install
+WORKDIR /app/services/logistics-service
 RUN npm run build
 
 # Stage 2: Production

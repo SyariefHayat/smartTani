@@ -1,10 +1,11 @@
 # Stage 1: Build
 FROM node:24-alpine AS builder
 WORKDIR /app
+COPY package*.json ./
 COPY shared ./shared
 COPY services/api-gateway ./services/api-gateway
-WORKDIR /app/services/api-gateway
 RUN npm install
+WORKDIR /app/services/api-gateway
 RUN npm run build
 
 # Stage 2: Production

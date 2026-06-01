@@ -1,10 +1,11 @@
 # Stage 1: Build
 FROM node:24-alpine AS builder
 WORKDIR /app
+COPY package*.json ./
 COPY shared ./shared
 COPY services/investment-service ./services/investment-service
-WORKDIR /app/services/investment-service
 RUN npm install
+WORKDIR /app/services/investment-service
 RUN npx prisma generate
 RUN npm run build
 

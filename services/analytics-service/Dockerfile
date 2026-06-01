@@ -1,10 +1,11 @@
 # Stage 1: Build
 FROM node:24-alpine AS builder
 WORKDIR /app
+COPY package*.json ./
 COPY shared ./shared
 COPY services/analytics-service ./services/analytics-service
-WORKDIR /app/services/analytics-service
 RUN npm install
+WORKDIR /app/services/analytics-service
 RUN npx prisma generate
 RUN npm run build
 

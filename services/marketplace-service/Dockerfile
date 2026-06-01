@@ -1,10 +1,11 @@
 # Stage 1: Build
 FROM node:24-alpine AS builder
 WORKDIR /app
+COPY package*.json ./
 COPY shared ./shared
 COPY services/marketplace-service ./services/marketplace-service
-WORKDIR /app/services/marketplace-service
 RUN npm install
+WORKDIR /app/services/marketplace-service
 RUN npm run build
 
 # Stage 2: Production
