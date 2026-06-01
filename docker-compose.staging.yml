@@ -11,6 +11,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: always
+    networks:
+      - smarttani
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -26,6 +28,13 @@ services:
     volumes:
       - mongo_data:/data/db
     restart: always
+    networks:
+      - smarttani
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7-alpine
@@ -33,6 +42,13 @@ services:
     volumes:
       - redis_data:/data
     restart: always
+    networks:
+      - smarttani
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   rabbitmq:
     image: rabbitmq:3.13-management-alpine
@@ -42,6 +58,13 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     restart: always
+    networks:
+      - smarttani
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Services
   api-gateway:
@@ -67,9 +90,13 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - redis
-      - rabbitmq
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: always
+    networks:
+      - smarttani
 
   auth-service:
     build:
@@ -90,8 +117,10 @@ services:
       postgres:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
     restart: always
+    networks:
+      - smarttani
 
   marketplace-service:
     build:
@@ -109,9 +138,13 @@ services:
       - AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
       - AWS_REGION=${AWS_REGION}
     depends_on:
-      - mongodb
-      - redis
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: always
+    networks:
+      - smarttani
 
   order-service:
     build:
@@ -130,7 +163,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: always
+    networks:
+      - smarttani
 
   investment-service:
     build:
@@ -146,7 +183,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: always
+    networks:
+      - smarttani
 
   logistics-service:
     build:
@@ -160,8 +201,13 @@ services:
       - REDIS_URL=redis://redis:6379
       - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@rabbitmq:5672
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: always
+    networks:
+      - smarttani
 
   notification-service:
     build:
@@ -177,6 +223,13 @@ services:
       - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
       - FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL}
     restart: always
+    networks:
+      - smarttani
+    depends_on:
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   analytics-service:
     build:
@@ -192,7 +245,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: always
+    networks:
+      - smarttani
 
   # Frontend (Disabled: Hosted on Vercel)
   # frontend:
@@ -227,8 +284,13 @@ services:
   #     - ./infra/docker/certbot/www:/var/www/certbot
   #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done'"
 
+networks:
+  smarttani:
+    driver: bridge
+
 volumes:
   postgres_data:
   mongo_data:
   redis_data:
   rabbitmq_data:
+
