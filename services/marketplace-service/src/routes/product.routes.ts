@@ -280,17 +280,17 @@ router.patch(
  *         description: Forbidden
  */
 router.delete(
-  '/:id',
-  gatewayAuthMiddleware,
-  authorize(['petani', 'admin']),
-  productController.deactivateProduct
-);
-
-router.delete(
   '/:id/permanent',
   gatewayAuthMiddleware,
   authorize(['petani', 'admin']),
   productController.deleteProduct
+);
+
+router.delete(
+  '/:id',
+  gatewayAuthMiddleware,
+  authorize(['petani', 'admin']),
+  productController.deactivateProduct
 );
 
 /**
