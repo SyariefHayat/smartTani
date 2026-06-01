@@ -239,7 +239,7 @@ services:
       - NODE_ENV=production
       - NODE_OPTIONS=--dns-result-order=ipv4first
       - PORT=3007
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=auth&connection_limit=5
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=analytics&connection_limit=5
       - REDIS_URL=redis://redis:6379
       - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@rabbitmq:5672
     depends_on:
