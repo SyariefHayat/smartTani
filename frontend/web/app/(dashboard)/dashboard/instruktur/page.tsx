@@ -267,13 +267,9 @@ export default function InstructorDashboardOverview() {
                     </CardDescription>
                   </div>
                   <Link href="/dashboard/instruktur/courses" passHref legacyBehavior>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-xl gap-1 cursor-pointer"
-                    >
+                    <Button variant="ghost" size="sm">
                       Kelola Kelas
-                      <ArrowRight className="h-3.5 w-3.5" />
+                      <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>
                 </CardHeader>
@@ -318,13 +314,9 @@ export default function InstructorDashboardOverview() {
                     </CardDescription>
                   </div>
                   <Link href="/dashboard/instruktur/students" passHref legacyBehavior>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-xl gap-1 cursor-pointer"
-                    >
+                    <Button variant="ghost" size="sm">
                       Semua Murid
-                      <ArrowRight className="h-3.5 w-3.5" />
+                      <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>
                 </CardHeader>
@@ -418,8 +410,8 @@ export default function InstructorDashboardOverview() {
                 </div>
                 <div className="p-4 border-t border-slate-100/60 bg-slate-50/20">
                   <Link href="/dashboard/instruktur/analytics" passHref legacyBehavior>
-                    <Button className="w-full bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold shadow-sm gap-1.5 py-4 cursor-pointer">
-                      <MessageSquare className="h-3.5 w-3.5" />
+                    <Button className="w-full">
+                      <MessageSquare className="h-4 w-4" />
                       Lihat Seluruh Analisis Ulasan
                     </Button>
                   </Link>

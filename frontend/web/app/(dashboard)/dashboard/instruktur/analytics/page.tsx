@@ -5,9 +5,26 @@ import * as React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getStoredAuthUser } from '@/lib/auth-storage';
 import { instructorService, InstructorPerformanceResponse } from '@/services/instructor';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { toast } from 'sonner';
 import {
   AreaChart,
   Area,
@@ -21,6 +38,12 @@ import {
   Cell,
 } from 'recharts';
 import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/ui/chart';
+import {
   TrendingUp,
   Award,
   Star,
@@ -29,6 +52,7 @@ import {
   Users,
   AlertTriangle,
   HelpCircle,
+  RefreshCw,
 } from 'lucide-react';
 
 const MOCK_PERFORMANCE: InstructorPerformanceResponse = {
@@ -80,6 +104,40 @@ const MOCK_PERFORMANCE: InstructorPerformanceResponse = {
   },
 };
 
+const chartConfig = {
+  count: {
+    label: 'Murid Baru',
+    color: '#475569',
+  },
+  completion_rate: {
+    label: 'Kelulusan',
+    color: '#475569',
+  },
+  jumlah: {
+    label: 'Ulasan',
+  },
+  star5: {
+    label: '5 Bintang',
+    color: '#1e293b',
+  },
+  star4: {
+    label: '4 Bintang',
+    color: '#334155',
+  },
+  star3: {
+    label: '3 Bintang',
+    color: '#475569',
+  },
+  star2: {
+    label: '2 Bintang',
+    color: '#64748b',
+  },
+  star1: {
+    label: '1 Bintang',
+    color: '#94a3b8',
+  },
+} satisfies ChartConfig;
+
 export default function InstructorAnalyticsPage() {
   const user = getStoredAuthUser();
   const [isOffline, setIsOffline] = React.useState(false);
@@ -92,6 +150,7 @@ export default function InstructorAnalyticsPage() {
         return await instructorService.getCoursePerformance(user.id);
       } catch {
         setIsOffline(true);
+        toast.error('Koneksi ke server terputus. Gagal memuat data teraktual.');
         return MOCK_PERFORMANCE;
       }
     },
@@ -112,12 +171,21 @@ export default function InstructorAnalyticsPage() {
   const activePerf = performance || MOCK_PERFORMANCE;
 
   // Transform rating distribution for Recharts
-  const ratingData = Object.entries(activePerf.rating_distribution).map(([key, val]) => ({
-    name: key,
-    jumlah: val,
-  }));
-
-  const COLORS = ['#10b981', '#34d399', '#f59e0b', '#ef4444', '#b91c1c'];
+  const ratingData = Object.entries(activePerf.rating_distribution).map(([key, val]) => {
+    const keyMap: Record<string, string> = {
+      '5 Star': 'star5',
+      '4 Star': 'star4',
+      '3 Star': 'star3',
+      '2 Star': 'star2',
+      '1 Star': 'star1',
+    };
+    const keyId = keyMap[key] || 'star5';
+    return {
+      stars: key,
+      jumlah: val,
+      fill: `var(--color-${keyId})`,
+    };
+  });
 
   return (
     <div className="w-full space-y-6 text-slate-900 pb-12">
@@ -132,232 +200,257 @@ export default function InstructorAnalyticsPage() {
         </p>
       </div>
 
-      {isOffline && (
-        <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-4 flex items-start gap-3 shadow-sm">
-          <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-xs font-bold text-amber-800">Modus Simulasi Luring Aktif</h4>
-            <p className="text-[11px] font-semibold text-amber-600 mt-0.5">
-              Academy Service sedang tidak terhubung. Menampilkan grafik data performa luring.
-            </p>
-          </div>
-        </div>
-      )}
-
       {/* Main Charts Row 1: Line & Bar */}
       <div className="grid gap-6 md:grid-cols-2">
         {/* Trend Area Chart */}
-        <Card className="border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden">
+        <Card className="border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between">
           <CardHeader className="pb-3 border-b border-slate-100 bg-slate-50/20">
-            <CardTitle className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-              <TrendingUp className="h-4.5 w-4.5 text-green-600 shrink-0" />
+            <CardTitle className="text-xs font-black text-slate-850 uppercase tracking-wider flex items-center gap-1.5">
+              <TrendingUp className="h-4.5 w-4.5 text-slate-400 shrink-0" />
               Pendaftaran Murid Baru (Bulanan)
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-6">
-            <div className="h-[250px] w-full text-slate-800">
-              <ResponsiveContainer width="100%" height="100%">
+            {isOffline ? (
+              <div className="flex h-[250px] items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-xs px-4 text-center">
+                Gagal memuat data statistik pendaftaran / Koneksi ke server Academy terputus
+              </div>
+            ) : (
+              <ChartContainer config={chartConfig} className="h-[250px] w-full text-slate-800">
                 <AreaChart
+                  accessibilityLayer
                   data={activePerf.enrollment_trend}
-                  margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
+                  margin={{
+                    left: 12,
+                    right: 12,
+                  }}
                 >
-                  <defs>
-                    <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#16a34a" stopOpacity={0.2} />
-                      <stop offset="95%" stopColor="#16a34a" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <CartesianGrid vertical={false} stroke="#f1f5f9" />
                   <XAxis
                     dataKey="month"
-                    stroke="#94a3b8"
-                    fontSize={10}
-                    fontWeight="bold"
-                    tickLine={false}
-                  />
-                  <YAxis
-                    stroke="#94a3b8"
-                    fontSize={10}
-                    fontWeight="bold"
                     tickLine={false}
                     axisLine={false}
+                    tickMargin={8}
+                    stroke="#94a3b8"
+                    fontSize={10}
+                    fontWeight="bold"
                   />
-                  <Tooltip
-                    contentStyle={{
-                      background: '#ffffff',
-                      borderRadius: '12px',
-                      borderColor: '#e2e8f0',
-                      fontSize: '11px',
-                      fontWeight: 'bold',
-                    }}
-                  />
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
                   <Area
-                    type="monotone"
                     dataKey="count"
-                    stroke="#16a34a"
+                    type="natural"
+                    fill="var(--color-count)"
+                    fillOpacity={0.2}
+                    stroke="var(--color-count)"
                     strokeWidth={2}
-                    fillOpacity={1}
-                    fill="url(#colorCount)"
-                    name="Murid Baru"
                   />
                 </AreaChart>
-              </ResponsiveContainer>
-            </div>
+              </ChartContainer>
+            )}
           </CardContent>
+          <CardFooter className="border-t border-slate-100 bg-slate-50/20 p-4 mt-auto">
+            <div className="flex w-full items-start gap-2 text-xs">
+              <div className="grid gap-1">
+                <div className="flex items-center gap-1.5 leading-none font-bold text-slate-800">
+                  Pendaftaran meningkat 50% bulan ini{' '}
+                  <TrendingUp className="h-4 w-4 text-emerald-500" />
+                </div>
+                <div className="flex items-center gap-1.5 leading-none text-slate-400 font-semibold">
+                  Januari - Mei 2026
+                </div>
+              </div>
+            </div>
+          </CardFooter>
         </Card>
 
         {/* Completion Rates Chart */}
-        <Card className="border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden">
+        <Card className="border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between">
           <CardHeader className="pb-3 border-b border-slate-100 bg-slate-50/20">
-            <CardTitle className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-              <Award className="h-4.5 w-4.5 text-green-600 shrink-0" />
+            <CardTitle className="text-xs font-black text-slate-850 uppercase tracking-wider flex items-center gap-1.5">
+              <Award className="h-4.5 w-4.5 text-slate-400 shrink-0" />
               Tingkat Kelulusan per Kelas (%)
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-6">
-            <div className="h-[250px] w-full text-slate-800">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={activePerf.courses}
-                  margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+            {isOffline ? (
+              <div className="flex h-[250px] items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-xs px-4 text-center">
+                Gagal memuat data statistik kelulusan / Koneksi ke server Academy terputus
+              </div>
+            ) : (
+              <ChartContainer config={chartConfig} className="h-[250px] w-full text-slate-800">
+                <BarChart accessibilityLayer data={activePerf.courses}>
+                  <CartesianGrid vertical={false} stroke="#f1f5f9" />
                   <XAxis
                     dataKey="id"
-                    stroke="#94a3b8"
-                    fontSize={10}
-                    fontWeight="bold"
                     tickLine={false}
-                  />
-                  <YAxis
-                    stroke="#94a3b8"
-                    fontSize={10}
-                    fontWeight="bold"
-                    tickLine={false}
+                    tickMargin={10}
                     axisLine={false}
+                    stroke="#94a3b8"
+                    fontSize={10}
+                    fontWeight="bold"
                   />
-                  <Tooltip
-                    contentStyle={{
-                      background: '#ffffff',
-                      borderRadius: '12px',
-                      borderColor: '#e2e8f0',
-                      fontSize: '11px',
-                      fontWeight: 'bold',
-                    }}
-                    formatter={(val) => [`${val}%`, 'Kelulusan']}
-                  />
-                  <Bar
-                    dataKey="completion_rate"
-                    fill="#059669"
-                    radius={[4, 4, 0, 0]}
-                    name="Completion Rate"
-                  >
-                    {activePerf.courses.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#059669' : '#10b981'} />
-                    ))}
-                  </Bar>
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                  <Bar dataKey="completion_rate" fill="var(--color-completion_rate)" radius={8} />
                 </BarChart>
-              </ResponsiveContainer>
-            </div>
+              </ChartContainer>
+            )}
           </CardContent>
+          <CardFooter className="border-t border-slate-100 bg-slate-50/20 p-4 mt-auto">
+            <div className="flex w-full items-start gap-2 text-xs">
+              <div className="grid gap-1">
+                <div className="flex items-center gap-1.5 leading-none font-bold text-slate-800">
+                  Rata-rata tingkat kelulusan stabil{' '}
+                  <TrendingUp className="h-4 w-4 text-emerald-500" />
+                </div>
+                <div className="flex items-center gap-1.5 leading-none text-slate-400 font-semibold">
+                  Berdasarkan seluruh materi kelas
+                </div>
+              </div>
+            </div>
+          </CardFooter>
         </Card>
       </div>
 
       {/* Row 2: Grid and Ratings Distribution */}
       <div className="grid gap-6 md:grid-cols-3">
         {/* Rating distribution pie/bar */}
-        <Card className="border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden">
+        <Card className="border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between">
           <CardHeader className="pb-3 border-b border-slate-100 bg-slate-50/20">
-            <CardTitle className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-              <Star className="h-4.5 w-4.5 text-amber-500 fill-amber-500 shrink-0" />
+            <CardTitle className="text-xs font-black text-slate-850 uppercase tracking-wider flex items-center gap-1.5">
+              <Star className="h-4.5 w-4.5 text-slate-400 shrink-0" />
               Sebaran Bintang Penilaian
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-6">
-            <div className="h-[220px] w-full text-slate-800">
-              <ResponsiveContainer width="100%" height="100%">
+            {isOffline ? (
+              <div className="flex h-[220px] items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-xs px-4 text-center">
+                Gagal memuat data sebaran bintang / Koneksi ke server Academy terputus
+              </div>
+            ) : (
+              <ChartContainer config={chartConfig} className="h-[220px] w-full text-slate-800">
                 <BarChart
+                  accessibilityLayer
                   data={ratingData}
                   layout="vertical"
-                  margin={{ top: 5, right: 15, left: -10, bottom: 5 }}
+                  margin={{
+                    left: 0,
+                  }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
-                  <XAxis
-                    type="number"
-                    stroke="#94a3b8"
-                    fontSize={10}
-                    fontWeight="bold"
-                    tickLine={false}
-                  />
                   <YAxis
-                    dataKey="name"
+                    dataKey="stars"
                     type="category"
+                    tickLine={false}
+                    tickMargin={10}
+                    axisLine={false}
+                    tickFormatter={(value) => {
+                      const keyMap: Record<string, string> = {
+                        '5 Star': 'star5',
+                        '4 Star': 'star4',
+                        '3 Star': 'star3',
+                        '2 Star': 'star2',
+                        '1 Star': 'star1',
+                      };
+                      const keyId = keyMap[value] || 'star5';
+                      return (
+                        (chartConfig[keyId as keyof typeof chartConfig]?.label as string) || value
+                      );
+                    }}
                     stroke="#94a3b8"
                     fontSize={10}
                     fontWeight="bold"
-                    tickLine={false}
-                    axisLine={false}
                   />
-                  <Tooltip
-                    contentStyle={{
-                      background: '#ffffff',
-                      borderRadius: '12px',
-                      borderColor: '#e2e8f0',
-                      fontSize: '11px',
-                      fontWeight: 'bold',
-                    }}
-                  />
-                  <Bar dataKey="jumlah" radius={[0, 4, 4, 0]} name="Ulasan">
-                    {ratingData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Bar>
+                  <XAxis dataKey="jumlah" type="number" hide />
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                  <Bar dataKey="jumlah" radius={5} />
                 </BarChart>
-              </ResponsiveContainer>
-            </div>
+              </ChartContainer>
+            )}
           </CardContent>
+          <CardFooter className="border-t border-slate-100 bg-slate-50/20 p-4 mt-auto">
+            <div className="flex w-full items-start gap-2 text-xs">
+              <div className="grid gap-1">
+                <div className="flex items-center gap-1.5 leading-none font-bold text-slate-800">
+                  Kepuasan belajar sangat tinggi{' '}
+                  <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                </div>
+                <div className="flex items-center gap-1.5 leading-none text-slate-400 font-semibold">
+                  Berdasarkan penilaian terbaru peserta
+                </div>
+              </div>
+            </div>
+          </CardFooter>
         </Card>
 
         {/* Engagement Stats table */}
-        <Card className="border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden md:col-span-2">
+        <Card className="border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden md:col-span-2 flex flex-col justify-between">
           <CardHeader className="pb-3 border-b border-slate-100 bg-slate-50/20">
-            <CardTitle className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-              <Clock className="h-4.5 w-4.5 text-green-600 shrink-0" />
+            <CardTitle className="text-xs font-black text-slate-850 uppercase tracking-wider flex items-center gap-1.5">
+              <Clock className="h-4.5 w-4.5 text-slate-400 shrink-0" />
               Rincian Efisiensi & Kemajuan per Kelas
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-slate-50/50 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    <th className="py-2.5 px-4">Judul Kelas</th>
-                    <th className="py-2.5 px-4 text-center">Rerata Kelulusan</th>
-                    <th className="py-2.5 px-4 text-center">Drop-Off Rate</th>
-                    <th className="py-2.5 px-4 text-right">Rerata Hari Lulus</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 text-xs font-semibold text-slate-700">
+          <CardContent className="p-4">
+            {isOffline ? (
+              <div className="flex h-[220px] items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-xs px-4 text-center">
+                Gagal memuat data rincian efisiensi / Koneksi ke server Academy terputus
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent bg-slate-50/55 border-b border-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    <TableHead className="py-3 px-4 h-10 font-bold text-slate-500">
+                      Judul Kelas
+                    </TableHead>
+                    <TableHead className="py-3 px-4 h-10 text-center font-bold text-slate-500">
+                      Rerata Kelulusan
+                    </TableHead>
+                    <TableHead className="py-3 px-4 h-10 text-center font-bold text-slate-500">
+                      Drop-Off Rate
+                    </TableHead>
+                    <TableHead className="py-3 px-4 h-10 text-right font-bold text-slate-500">
+                      Rerata Hari Lulus
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="text-xs font-semibold text-slate-700">
                   {activePerf.courses.map((course) => (
-                    <tr key={course.id} className="hover:bg-slate-50/30 transition-colors">
-                      <td className="py-3 px-4 text-slate-800 font-bold">{course.title}</td>
-                      <td className="py-3 px-4 text-center">
-                        <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-100 font-bold text-[10px]">
+                    <TableRow
+                      key={course.id}
+                      className="hover:bg-slate-50/40 transition-colors border-b border-slate-100"
+                    >
+                      <TableCell className="py-4 px-4 font-bold text-slate-800 text-xs">
+                        {course.title}
+                      </TableCell>
+                      <TableCell className="py-4 px-4 text-center">
+                        <Badge className="bg-slate-100 hover:bg-slate-200 border-none text-slate-700 font-bold text-[10px]">
                           {course.completion_rate}%
                         </Badge>
-                      </td>
-                      <td className="py-3 px-4 text-center text-red-500 font-bold">
+                      </TableCell>
+                      <TableCell className="py-4 px-4 text-center text-slate-500 font-bold font-mono">
                         {course.drop_rate}%
-                      </td>
-                      <td className="py-3 px-4 text-right font-mono font-bold text-slate-500">
+                      </TableCell>
+                      <TableCell className="py-4 px-4 text-right font-bold font-mono text-slate-600">
                         {course.avg_completion_days} Hari
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </TableBody>
+              </Table>
+            )}
           </CardContent>
+          <CardFooter className="border-t border-slate-100 bg-slate-50/20 p-4 mt-auto">
+            <div className="flex w-full items-start gap-2 text-xs">
+              <div className="grid gap-1">
+                <div className="flex items-center gap-1.5 leading-none font-bold text-slate-800">
+                  Efisiensi belajar kelas di atas rata-rata nasional{' '}
+                  <Clock className="h-4 w-4 text-emerald-500" />
+                </div>
+                <div className="flex items-center gap-1.5 leading-none text-slate-400 font-semibold">
+                  Penyelesaian kelas rata-rata dalam 14 hari kerja
+                </div>
+              </div>
+            </div>
+          </CardFooter>
         </Card>
       </div>
     </div>

@@ -6,11 +6,19 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { getStoredAuthUser } from '@/lib/auth-storage';
 import { instructorService, InstructorEarningsResponse } from '@/services/instructor';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '@/lib/utils';
+import { toast } from 'sonner';
 import {
   Wallet,
   Calendar,
@@ -20,7 +28,16 @@ import {
   AlertTriangle,
   BookOpen,
   ArrowRight,
+  Users,
 } from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 const MOCK_EARNINGS: InstructorEarningsResponse = {
   total_earnings: 2450000,
@@ -51,6 +68,8 @@ const MOCK_EARNINGS: InstructorEarningsResponse = {
 export default function InstructorEarningsPage() {
   const user = getStoredAuthUser();
   const [isOffline, setIsOffline] = React.useState(false);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const itemsPerPage = 5;
 
   const { data: earnings, isLoading } = useQuery<InstructorEarningsResponse>({
     queryKey: ['instructor-earnings', user?.id],
@@ -59,6 +78,7 @@ export default function InstructorEarningsPage() {
         return await instructorService.getEarnings();
       } catch {
         setIsOffline(true);
+        toast.error('Koneksi ke server keuangan terputus. Gagal memuat data teraktual.');
         return MOCK_EARNINGS;
       }
     },
@@ -81,6 +101,13 @@ export default function InstructorEarningsPage() {
 
   const activeEarnings = earnings || MOCK_EARNINGS;
 
+  const totalRows = activeEarnings.courses.length;
+  const totalPages = Math.ceil(totalRows / itemsPerPage) || 1;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedCourses = activeEarnings.courses.slice(startIndex, startIndex + itemsPerPage);
+  const fromRow = totalRows === 0 ? 0 : startIndex + 1;
+  const toRow = Math.min(startIndex + itemsPerPage, totalRows);
+
   return (
     <div className="w-full space-y-6 text-slate-900 pb-12">
       {/* Header */}
@@ -94,159 +121,182 @@ export default function InstructorEarningsPage() {
         </p>
       </div>
 
-      {isOffline && (
-        <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-4 flex items-start gap-3 shadow-sm">
-          <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-xs font-bold text-amber-800">Modus Simulasi Luring Aktif</h4>
-            <p className="text-[11px] font-semibold text-amber-600 mt-0.5">
-              Academy Service sedang tidak terhubung. Menampilkan data buku besar pendapatan luring.
-            </p>
-          </div>
+      {/* Stats row */}
+      {isOffline ? (
+        <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-xs px-4 text-center">
+          Gagal memuat data statistik pendapatan / Koneksi ke server keuangan terputus
+        </div>
+      ) : (
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+          {/* Metric 1 */}
+          <Card className="min-w-0">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs">Total Pendapatan</CardDescription>
+              <CardTitle className="truncate text-xl font-semibold tabular-nums lg:text-2xl">
+                {formatCurrency(activeEarnings.total_earnings)}
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium">
+                <Wallet className="size-4 shrink-0 text-slate-400" />
+                <span className="truncate text-muted-foreground">Akumulasi pendapatan bersih</span>
+              </div>
+            </CardFooter>
+          </Card>
+
+          {/* Metric 2 */}
+          <Card className="min-w-0">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs">Penghasilan Bulan Ini</CardDescription>
+              <CardTitle className="truncate text-xl font-semibold tabular-nums lg:text-2xl">
+                {formatCurrency(activeEarnings.monthly_earnings)}
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium">
+                <Calendar className="size-4 shrink-0 text-slate-400" />
+                <span className="truncate text-muted-foreground">Periode berjalan Juni 2026</span>
+              </div>
+            </CardFooter>
+          </Card>
+
+          {/* Metric 3 */}
+          <Card className="min-w-0">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs">Siswa Berbayar</CardDescription>
+              <CardTitle className="truncate text-xl font-semibold tabular-nums lg:text-2xl">
+                {activeEarnings.paid_students} Murid
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium">
+                <Users className="size-4 shrink-0 text-slate-400" />
+                <span className="truncate text-muted-foreground">Materi kelas premium</span>
+              </div>
+            </CardFooter>
+          </Card>
+
+          {/* Metric 4 */}
+          <Card className="min-w-0">
+            <CardHeader className="gap-1">
+              <CardDescription className="truncate text-xs">Biaya Layanan Platform</CardDescription>
+              <CardTitle className="truncate text-xl font-semibold tabular-nums lg:text-2xl">
+                10%
+              </CardTitle>
+            </CardHeader>
+            <CardFooter className="flex-col items-start gap-1.5 text-sm">
+              <div className="flex w-full min-w-0 items-center gap-1 font-medium">
+                <Percent className="size-4 shrink-0 text-slate-400" />
+                <span className="truncate text-muted-foreground">Tarif platform tetap</span>
+              </div>
+            </CardFooter>
+          </Card>
         </div>
       )}
-
-      {/* Stats row */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Metric 1 */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardContent className="pt-6 flex items-center gap-3.5">
-            <div className="h-10 w-10 shrink-0 rounded-xl bg-green-50 flex items-center justify-center text-green-600 border border-green-100">
-              <Wallet className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-xl font-bold text-slate-800">
-                {formatCurrency(activeEarnings.total_earnings)}
-              </div>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">
-                Total Pendapatan
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Metric 2 */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardContent className="pt-6 flex items-center gap-3.5">
-            <div className="h-10 w-10 shrink-0 rounded-xl bg-green-50 flex items-center justify-center text-green-600 border border-green-100">
-              <Calendar className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-xl font-bold text-slate-800">
-                {formatCurrency(activeEarnings.monthly_earnings)}
-              </div>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">
-                Penghasilan Bulan Ini
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Metric 3 */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardContent className="pt-6 flex items-center gap-3.5">
-            <div className="h-10 w-10 shrink-0 rounded-xl bg-green-50 flex items-center justify-center text-green-600 border border-green-100">
-              <DollarSign className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-xl font-bold text-slate-800">
-                {activeEarnings.paid_students} Murid
-              </div>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">
-                Siswa Berbayar
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Metric 4 */}
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-          <CardContent className="pt-6 flex items-center gap-3.5">
-            <div className="h-10 w-10 shrink-0 rounded-xl bg-green-50 flex items-center justify-center text-green-600 border border-green-100">
-              <Percent className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-xl font-bold text-slate-800">10%</div>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">
-                Biaya Layanan Platform
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Earning Table Ledger */}
       <Card className="border-slate-200 bg-white rounded-2xl shadow-sm overflow-hidden">
         <CardHeader className="pb-3 border-b border-slate-100 bg-slate-50/20">
-          <CardTitle className="text-sm font-bold text-slate-800">
+          <CardTitle className="text-xs font-black text-slate-850 uppercase tracking-wider flex items-center gap-1.5">
+            <BookOpen className="h-4.5 w-4.5 text-slate-400 shrink-0" />
             Buku Besar Payout Penjualan
           </CardTitle>
           <CardDescription className="text-[10px] font-semibold mt-0.5 uppercase tracking-wide">
             Daftar komisi bersih bagi hasil yang berhak Anda cairkan.
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-slate-50/30 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  <th className="py-3 px-4">Nama Kelas Ajar</th>
-                  <th className="py-3 px-4 text-center">Harga Jual</th>
-                  <th className="py-3 px-4 text-center">Siswa Premium</th>
-                  <th className="py-3 px-4 text-center">Pendapatan Kotor</th>
-                  <th className="py-3 px-4 text-right">Penghasilan Bersih</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-xs font-semibold text-slate-700">
-                {activeEarnings.courses.map((course, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50/30 transition-colors">
-                    <td className="py-4 px-4 text-slate-800 font-bold">{course.title}</td>
-                    <td className="py-4 px-4 text-center font-mono text-[11px] font-bold">
-                      {course.price > 0 ? (
-                        formatCurrency(course.price)
-                      ) : (
-                        <Badge className="bg-green-50 border border-green-150 text-green-700 text-[9px] font-bold rounded-lg uppercase">
-                          Gratis
-                        </Badge>
-                      )}
-                    </td>
-                    <td className="py-4 px-4 text-center">{course.students} Siswa</td>
-                    <td className="py-4 px-4 text-center font-mono text-slate-500 font-bold">
-                      {formatCurrency(course.revenue)}
-                    </td>
-                    <td className="py-4 px-4 text-right font-mono font-bold text-emerald-600 text-[13px]">
-                      {course.price > 0 ? formatCurrency(course.net) : <span>Rp 0</span>}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+        <CardContent className="p-4">
+          {isOffline ? (
+            <div className="flex h-[250px] items-center justify-center rounded-lg border border-dashed border-red-200 bg-red-50 text-red-500 font-semibold text-xs px-4 text-center">
+              Gagal memuat data buku besar payout / Koneksi ke server keuangan terputus
+            </div>
+          ) : (
+            <>
+              <Table>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent bg-slate-50/55 border-b border-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    <TableHead className="py-3 px-4 h-10 font-bold text-slate-500">
+                      Nama Kelas Ajar
+                    </TableHead>
+                    <TableHead className="py-3 px-4 h-10 text-center font-bold text-slate-500">
+                      Harga Jual
+                    </TableHead>
+                    <TableHead className="py-3 px-4 h-10 text-center font-bold text-slate-500">
+                      Siswa Premium
+                    </TableHead>
+                    <TableHead className="py-3 px-4 h-10 text-center font-bold text-slate-500">
+                      Pendapatan Kotor
+                    </TableHead>
+                    <TableHead className="py-3 px-4 h-10 text-right font-bold text-slate-500">
+                      Penghasilan Bersih
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="text-xs font-semibold text-slate-700">
+                  {paginatedCourses.map((course, idx) => (
+                    <TableRow
+                      key={idx}
+                      className="hover:bg-slate-50/40 transition-colors border-b border-slate-100"
+                    >
+                      <TableCell className="py-4 px-4 font-bold text-slate-800 text-xs">
+                        {course.title}
+                      </TableCell>
+                      <TableCell className="py-4 px-4 text-center font-bold">
+                        {course.price > 0 ? (
+                          <span className="font-mono text-[11px]">
+                            {formatCurrency(course.price)}
+                          </span>
+                        ) : (
+                          <Badge className="bg-slate-100 hover:bg-slate-200 border-none text-slate-700 font-bold text-[9px] rounded-lg uppercase">
+                            Gratis
+                          </Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="py-4 px-4 text-center font-bold text-slate-600">
+                        {course.students} Siswa
+                      </TableCell>
+                      <TableCell className="py-4 px-4 text-center font-bold font-mono text-slate-500">
+                        {formatCurrency(course.revenue)}
+                      </TableCell>
+                      <TableCell className="py-4 px-4 text-right font-bold font-mono text-emerald-600 text-[13px]">
+                        {course.price > 0 ? formatCurrency(course.net) : <span>Rp 0</span>}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
 
-      {/* Info Monetize call-to-action */}
-      <Card className="border-emerald-100 bg-emerald-50/20 rounded-2xl p-5 border flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <h4 className="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
-            <BookOpen className="h-4.5 w-4.5 text-emerald-700" />
-            Ingin Memonetisasi Keahlian Anda Lebih Lanjut?
-          </h4>
-          <p className="text-[11px] font-semibold text-emerald-600 leading-relaxed max-w-2xl">
-            Buat kursus premium berbayar dengan mengubah spec harga di halaman Edit Kursus. Murid
-            akan melunasi biaya registrasi di checkout gateway SmartTani, and dana bagi hasil bersih
-            akan otomatis tercatat di payout ledger ini.
-          </p>
-        </div>
-        <Link href="/dashboard/instruktur/courses" passHref legacyBehavior>
-          <Button
-            size="sm"
-            className="bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs font-bold shadow-sm shrink-0 gap-1 mt-2 md:mt-0"
-          >
-            Mulai Monetisasi
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Button>
-        </Link>
+              {/* Pagination */}
+              <div className="flex items-center justify-between gap-4 pt-4 border-t border-slate-100 mt-4 bg-slate-50/10">
+                <div className="text-xs font-semibold text-slate-500">
+                  Menampilkan{' '}
+                  <span className="font-bold text-slate-800">
+                    {fromRow}–{toRow}
+                  </span>{' '}
+                  dari <span className="font-bold text-slate-800">{totalRows}</span> kelas
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1 || totalRows === 0}
+                  >
+                    Sebelumnya
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages || totalRows === 0}
+                  >
+                    Berikutnya
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
+        </CardContent>
       </Card>
     </div>
   );

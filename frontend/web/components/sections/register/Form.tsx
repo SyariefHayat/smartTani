@@ -126,7 +126,7 @@ function RegisterFormContent() {
     } else if (selectedRole === 'admin_perusahaan') {
       apiRole = 'admin';
     } else if (selectedRole === 'academy') {
-      apiRole = 'buyer';
+      apiRole = 'siswa';
     }
 
     try {

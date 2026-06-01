@@ -20,6 +20,14 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { toast } from 'sonner';
 import {
   BookOpen,
@@ -34,6 +42,7 @@ import {
   Archive,
   AlertTriangle,
   Calendar,
+  RefreshCw,
 } from 'lucide-react';
 
 const MOCK_COURSES: Course[] = [
@@ -106,45 +115,39 @@ export default function InstructorCoursesPage() {
   const user = getStoredAuthUser();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [isOffline, setIsOffline] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [statusFilter, setStatusFilter] = React.useState<'all' | 'published' | 'draft'>('all');
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const itemsPerPage = 5;
 
-  const { data: courses, isLoading } = useQuery<Course[]>({
+  React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter]);
+
+  const {
+    data: courses,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery<Course[]>({
     queryKey: ['instructor-courses', user?.id],
     queryFn: async () => {
-      try {
-        const res = await instructorService.getMyCourses();
-        if (!res || !res.courses || res.courses.length === 0) throw new Error('Empty');
-        return res.courses;
-      } catch {
-        setIsOffline(true);
-        // Load from local storage or merge
-        const key = `courses-${user?.id}`;
-        const local = localStorage.getItem(key);
-        if (!local) {
-          localStorage.setItem(key, JSON.stringify(MOCK_COURSES));
-          return MOCK_COURSES;
-        }
-        return JSON.parse(local);
-      }
+      const res = await instructorService.getMyCourses();
+      if (!res || !res.courses) throw new Error('Gagal memuat daftar kursus');
+      return res.courses;
     },
   });
 
+  React.useEffect(() => {
+    if (isError) {
+      toast.error('Koneksi ke Layanan Academy terputus.');
+    }
+  }, [isError]);
+
   const publishMutation = useMutation({
     mutationFn: async (args: { id: string; publish: boolean }) => {
-      try {
-        await instructorService.publishCourse(args.id, args.publish);
-      } catch {
-        // Local state toggle update
-        const key = `courses-${user?.id}`;
-        const current = courses || [];
-        const updated = current.map((c) =>
-          c.id === args.id ? { ...c, is_published: args.publish } : c
-        );
-        localStorage.setItem(key, JSON.stringify(updated));
-        queryClient.setQueryData(['instructor-courses', user?.id], updated);
-      }
+      await instructorService.publishCourse(args.id, args.publish);
     },
     onSuccess: (_, variables) => {
       toast.success(
@@ -152,7 +155,10 @@ export default function InstructorCoursesPage() {
           ? 'Kursus berhasil terpublikasi ke katalog murid!'
           : 'Kursus ditarik dari publikasi katalog.'
       );
-      queryClient.invalidateQueries({ queryKey: ['instructor-courses'] });
+      queryClient.invalidateQueries({ queryKey: ['instructor-courses', user?.id] });
+    },
+    onError: () => {
+      toast.error('Gagal memperbarui status publikasi kursus.');
     },
   });
 
@@ -167,6 +173,16 @@ export default function InstructorCoursesPage() {
       return matchSearch && matchStatus;
     });
   }, [courses, searchQuery, statusFilter]);
+
+  const totalRows = filteredCourses.length;
+  const totalPages = Math.ceil(totalRows / itemsPerPage);
+  const fromRow = totalRows === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+  const toRow = Math.min(currentPage * itemsPerPage, totalRows);
+
+  const paginatedCourses = React.useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredCourses.slice(start, start + itemsPerPage);
+  }, [filteredCourses, currentPage, itemsPerPage]);
 
   if (isLoading) {
     return (
@@ -187,6 +203,38 @@ export default function InstructorCoursesPage() {
     );
   }
 
+  if (isError) {
+    return (
+      <div className="w-full space-y-6 text-slate-900 pb-12">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-800">
+            Daftar Kursus Saya 📚
+          </h1>
+          <p className="text-xs font-semibold text-slate-500">
+            Kembangkan kurikulum, kelola urutan modul, and tinjau ulasan kelas pertanian.
+          </p>
+        </div>
+
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-red-200 bg-red-50 py-16 px-6">
+          <AlertTriangle className="h-8 w-8 text-red-400 mb-3 animate-pulse" />
+          <p className="text-sm font-bold text-red-500 mb-1">Gagal Memuat Daftar Kursus</p>
+          <p className="text-xs text-red-400 mb-4">
+            Koneksi ke server Academy terputus. Silakan coba lagi.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-red-300 text-red-700 bg-white hover:bg-red-100 font-bold text-xs gap-1.5"
+            onClick={() => refetch()}
+          >
+            <RefreshCw className="h-3.5 w-3.5" />
+            Coba Hubungkan Kembali
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full space-y-6 text-slate-900 pb-12">
       {/* Header */}
@@ -200,25 +248,12 @@ export default function InstructorCoursesPage() {
           </p>
         </div>
         <Link href="/dashboard/instruktur/courses/create" passHref legacyBehavior>
-          <Button className="bg-slate-800 hover:bg-slate-900 text-white text-xs font-black px-4 py-2 rounded-xl shadow-sm gap-1.5 cursor-pointer">
-            <Plus className="h-4.5 w-4.5" />
+          <Button className="gap-2">
+            <Plus className="h-4 w-4" />
             Buat Kelas Baru
           </Button>
         </Link>
       </div>
-
-      {isOffline && (
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-start gap-3">
-          <AlertTriangle className="h-5 w-5 text-slate-500 shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-xs font-bold text-slate-800">Modus Simulasi Luring Aktif</h4>
-            <p className="text-[11px] font-medium text-slate-500 mt-0.5">
-              Academy Service backend sedang tidak terhubung. Anda tetap dapat mengedit draf,
-              mengurutkan bab modul belajar, and publish/unpublish kelas di peramban Anda.
-            </p>
-          </div>
-        </div>
-      )}
 
       {/* Control Bar */}
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
@@ -234,35 +269,23 @@ export default function InstructorCoursesPage() {
 
         <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl max-w-fit self-end sm:self-auto">
           <Button
+            variant={statusFilter === 'all' ? 'default' : 'ghost'}
             onClick={() => setStatusFilter('all')}
             size="sm"
-            className={`text-[10px] font-bold rounded-lg px-3 py-1 cursor-pointer transition-colors ${
-              statusFilter === 'all'
-                ? 'bg-slate-800 text-white hover:bg-slate-900'
-                : 'text-slate-600 hover:bg-slate-200/60 hover:text-slate-900'
-            }`}
           >
             Semua
           </Button>
           <Button
+            variant={statusFilter === 'published' ? 'default' : 'ghost'}
             onClick={() => setStatusFilter('published')}
             size="sm"
-            className={`text-[10px] font-bold rounded-lg px-3 py-1 cursor-pointer transition-colors ${
-              statusFilter === 'published'
-                ? 'bg-slate-800 text-white hover:bg-slate-900'
-                : 'text-slate-600 hover:bg-slate-200/60 hover:text-slate-900'
-            }`}
           >
             Published
           </Button>
           <Button
+            variant={statusFilter === 'draft' ? 'default' : 'ghost'}
             onClick={() => setStatusFilter('draft')}
             size="sm"
-            className={`text-[10px] font-bold rounded-lg px-3 py-1 cursor-pointer transition-colors ${
-              statusFilter === 'draft'
-                ? 'bg-slate-800 text-white hover:bg-slate-900'
-                : 'text-slate-600 hover:bg-slate-200/60 hover:text-slate-900'
-            }`}
           >
             Draft
           </Button>
@@ -283,10 +306,7 @@ export default function InstructorCoursesPage() {
           </p>
           {!searchQuery && (
             <Link href="/dashboard/instruktur/courses/create" passHref legacyBehavior>
-              <Button
-                size="sm"
-                className="mt-4 bg-slate-800 hover:bg-slate-900 text-xs font-semibold text-white rounded-xl shadow-sm gap-2"
-              >
+              <Button size="sm" className="mt-4">
                 <Plus className="h-4 w-4" />
                 Mulai Susun Kursus Pertama
               </Button>
@@ -294,146 +314,169 @@ export default function InstructorCoursesPage() {
           )}
         </Card>
       ) : (
-        <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-slate-50/70 border-b border-slate-150 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  <th className="py-3 px-4">Kelas & Kategori</th>
-                  <th className="py-3 px-4">Kemajuan Modul</th>
-                  <th className="py-3 px-4">Peserta</th>
-                  <th className="py-3 px-4">Rating Kepuasan</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4 text-right">Kelola</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-xs font-semibold text-slate-700">
-                {filteredCourses.map((course) => {
-                  const createdDate = course.created_at
-                    ? new Date(course.created_at).toLocaleDateString('id-ID', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                      })
-                    : '-';
+        <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm p-4">
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent bg-slate-50/70 border-b border-slate-150 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                <TableHead className="py-3 px-4">Kelas & Kategori</TableHead>
+                <TableHead className="py-3 px-4">Kemajuan Modul</TableHead>
+                <TableHead className="py-3 px-4">Peserta</TableHead>
+                <TableHead className="py-3 px-4">Rating Kepuasan</TableHead>
+                <TableHead className="py-3 px-4">Status</TableHead>
+                <TableHead className="py-3 px-4 text-right">Kelola</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody className="text-xs font-semibold text-slate-700">
+              {paginatedCourses.map((course) => {
+                const createdDate = course.created_at
+                  ? new Date(course.created_at).toLocaleDateString('id-ID', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })
+                  : '-';
 
-                  return (
-                    <tr key={course.id} className="hover:bg-slate-50/40 transition-colors">
-                      <td className="py-4 px-4 space-y-1">
-                        <h4 className="font-bold text-slate-800 text-[12px]">{course.title}</h4>
-                        <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-wide">
-                          <span>{course.category}</span>
-                          <span>•</span>
-                          <span className="flex items-center gap-0.5">
-                            <Calendar className="h-3 w-3 text-slate-300" />
-                            Dibuat: {createdDate}
+                return (
+                  <TableRow key={course.id} className="hover:bg-slate-50/40 transition-colors">
+                    <TableCell className="py-4 px-4 space-y-1">
+                      <h4 className="font-bold text-slate-800 text-[12px]">{course.title}</h4>
+                      <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-wide">
+                        <span>{course.category}</span>
+                        <span>•</span>
+                        <span className="flex items-center gap-0.5">
+                          <Calendar className="h-3 w-3 text-slate-300" />
+                          Dibuat: {createdDate}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-4 px-4 font-mono font-bold text-slate-500">
+                      {course.duration_hours} Jam Belajar
+                    </TableCell>
+                    <TableCell className="py-4 px-4">
+                      <div className="flex items-center gap-1">
+                        <Users className="h-4.5 w-4.5 text-slate-400" />
+                        <span>{course.enrolled_count} Murid</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-4 px-4">
+                      {course.average_rating > 0 ? (
+                        <div className="flex items-center gap-1 bg-slate-50 border border-slate-200 text-slate-600 px-2 py-0.5 rounded-lg text-[10px] max-w-fit">
+                          <Star className="h-3 w-3 text-slate-400" />
+                          <span>
+                            {course.average_rating} ({course.review_count} Ulasan)
                           </span>
                         </div>
-                      </td>
-                      <td className="py-4 px-4 font-mono font-bold text-slate-500">
-                        {course.duration_hours} Jam Belajar
-                      </td>
-                      <td className="py-4 px-4">
-                        <div className="flex items-center gap-1">
-                          <Users className="h-4.5 w-4.5 text-slate-400" />
-                          <span>{course.enrolled_count} Murid</span>
-                        </div>
-                      </td>
-                      <td className="py-4 px-4">
-                        {course.average_rating > 0 ? (
-                          <div className="flex items-center gap-1 bg-slate-50 border border-slate-200 text-slate-600 px-2 py-0.5 rounded-lg text-[10px] max-w-fit">
-                            <Star className="h-3 w-3 text-slate-400" />
-                            <span>
-                              {course.average_rating} ({course.review_count} Ulasan)
-                            </span>
-                          </div>
-                        ) : (
-                          <span className="text-[10px] text-slate-400 font-medium">Belum Ada</span>
-                        )}
-                      </td>
-                      <td className="py-4 px-4">
-                        {course.is_published ? (
-                          <span className="inline-flex items-center rounded-md bg-slate-50 px-2 py-0.5 text-[10px] font-medium text-slate-600 border border-slate-200/60">
-                            Terpublikasi
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500 border border-transparent">
-                            Draf
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-4 px-4 text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-8 w-8 p-0 rounded-full hover:bg-slate-100"
-                            >
-                              <MoreVertical className="h-4 w-4 text-slate-500" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent
-                            align="end"
-                            className="w-40 bg-white border border-slate-200 rounded-xl shadow-md p-1.5 text-slate-700"
+                      ) : (
+                        <span className="text-[10px] text-slate-400 font-medium">Belum Ada</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="py-4 px-4">
+                      {course.is_published ? (
+                        <span className="inline-flex items-center rounded-md bg-slate-50 px-2 py-0.5 text-[10px] font-medium text-slate-600 border border-slate-200/60">
+                          Terpublikasi
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500 border border-transparent">
+                          Draf
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell className="py-4 px-4 text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="rounded-full">
+                            <MoreVertical className="h-4 w-4 text-slate-500" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          align="end"
+                          className="w-40 bg-white border border-slate-200 rounded-xl shadow-md p-1.5 text-slate-700"
+                        >
+                          <DropdownMenuItem
+                            onClick={() =>
+                              router.push(`/dashboard/instruktur/courses/${course.id}/edit`)
+                            }
+                            className="rounded-lg text-xs cursor-pointer gap-2 py-2"
                           >
+                            <Edit2 className="h-3.5 w-3.5 text-slate-400" />
+                            Edit Deskripsi
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() =>
+                              router.push(`/dashboard/instruktur/courses/${course.id}/modules`)
+                            }
+                            className="rounded-lg text-xs cursor-pointer gap-2 py-2"
+                          >
+                            <ListOrdered className="h-3.5 w-3.5 text-slate-400" />
+                            Kelola Modul
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() =>
+                              router.push(`/dashboard/instruktur/courses/${course.id}/students`)
+                            }
+                            className="rounded-lg text-xs cursor-pointer gap-2 py-2"
+                          >
+                            <Users className="h-3.5 w-3.5 text-slate-400" />
+                            Lihat Murid
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator className="bg-slate-100 my-1" />
+                          {course.is_published ? (
                             <DropdownMenuItem
                               onClick={() =>
-                                router.push(`/dashboard/instruktur/courses/${course.id}/edit`)
+                                publishMutation.mutate({ id: course.id, publish: false })
                               }
-                              className="rounded-lg text-xs cursor-pointer gap-2 py-2"
+                              className="rounded-lg text-xs cursor-pointer gap-2 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                             >
-                              <Edit2 className="h-3.5 w-3.5 text-slate-400" />
-                              Edit Deskripsi
+                              <Archive className="h-3.5 w-3.5 text-slate-400" />
+                              Unpublish
                             </DropdownMenuItem>
+                          ) : (
                             <DropdownMenuItem
                               onClick={() =>
-                                router.push(`/dashboard/instruktur/courses/${course.id}/modules`)
+                                publishMutation.mutate({ id: course.id, publish: true })
                               }
-                              className="rounded-lg text-xs cursor-pointer gap-2 py-2"
+                              className="rounded-lg text-xs cursor-pointer gap-2 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100"
                             >
-                              <ListOrdered className="h-3.5 w-3.5 text-slate-400" />
-                              Kelola Modul
+                              <Globe className="h-3.5 w-3.5" />
+                              Publish Kelas
                             </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() =>
-                                router.push(`/dashboard/instruktur/courses/${course.id}/students`)
-                              }
-                              className="rounded-lg text-xs cursor-pointer gap-2 py-2"
-                            >
-                              <Users className="h-3.5 w-3.5 text-slate-400" />
-                              Lihat Murid
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator className="bg-slate-100 my-1" />
-                            {course.is_published ? (
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  publishMutation.mutate({ id: course.id, publish: false })
-                                }
-                                className="rounded-lg text-xs cursor-pointer gap-2 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-                              >
-                                <Archive className="h-3.5 w-3.5 text-slate-400" />
-                                Unpublish
-                              </DropdownMenuItem>
-                            ) : (
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  publishMutation.mutate({ id: course.id, publish: true })
-                                }
-                                className="rounded-lg text-xs cursor-pointer gap-2 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100"
-                              >
-                                <Globe className="h-3.5 w-3.5" />
-                                Publish Kelas
-                              </DropdownMenuItem>
-                            )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+
+          {/* Pagination */}
+          <div className="flex items-center justify-between gap-4 pt-4 border-t border-slate-100 mt-4">
+            <div className="text-xs font-semibold text-slate-500">
+              Menampilkan{' '}
+              <span className="font-bold text-slate-800">
+                {fromRow}–{toRow}
+              </span>{' '}
+              dari <span className="font-bold text-slate-800">{totalRows}</span> kelas
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1 || totalRows === 0}
+              >
+                Sebelumnya
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages || totalRows === 0}
+              >
+                Berikutnya
+              </Button>
+            </div>
           </div>
         </div>
       )}
