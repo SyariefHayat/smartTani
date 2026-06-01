@@ -19,4 +19,4 @@ COPY --from=builder /app/services/auth-service/dist ./dist
 COPY --from=builder /app/services/auth-service/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/services/auth-service/node_modules/@prisma/client ./node_modules/@prisma/client
 EXPOSE 3001
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/services/auth-service/src/index.js"]

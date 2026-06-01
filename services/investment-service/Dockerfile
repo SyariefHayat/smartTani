@@ -19,4 +19,4 @@ COPY --from=builder /app/services/investment-service/dist ./dist
 COPY --from=builder /app/services/investment-service/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/services/investment-service/node_modules/@prisma/client ./node_modules/@prisma/client
 EXPOSE 3004
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/services/investment-service/src/index.js"]

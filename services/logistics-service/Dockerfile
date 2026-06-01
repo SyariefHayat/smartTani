@@ -16,4 +16,4 @@ COPY services/logistics-service/package*.json ./
 RUN npm install --omit=dev
 COPY --from=builder /app/services/logistics-service/dist ./dist
 EXPOSE 3005
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/services/logistics-service/src/index.js"]

@@ -16,4 +16,4 @@ COPY services/notification-service/package*.json ./
 RUN npm install --omit=dev
 COPY --from=builder /app/services/notification-service/dist ./dist
 EXPOSE 3006
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/services/notification-service/src/index.js"]

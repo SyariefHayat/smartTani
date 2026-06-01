@@ -19,4 +19,4 @@ COPY --from=builder /app/services/order-service/dist ./dist
 COPY --from=builder /app/services/order-service/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/services/order-service/node_modules/@prisma/client ./node_modules/@prisma/client
 EXPOSE 3003
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/services/order-service/src/index.js"]

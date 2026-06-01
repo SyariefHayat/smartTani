@@ -16,4 +16,4 @@ COPY services/marketplace-service/package*.json ./
 RUN npm install --omit=dev
 COPY --from=builder /app/services/marketplace-service/dist ./dist
 EXPOSE 3002
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/services/marketplace-service/src/index.js"]
