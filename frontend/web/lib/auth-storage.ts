@@ -32,15 +32,20 @@ export function getStoredAuthUser(): StoredUser | null {
       return null;
     }
 
-    if ('state' in parsedAuth && parsedAuth.state?.user) {
-      return parsedAuth.state.user;
+    if ('state' in parsedAuth) {
+      return parsedAuth.state?.user || null;
     }
 
-    if ('user' in parsedAuth && parsedAuth.user) {
-      return parsedAuth.user;
+    if ('user' in parsedAuth) {
+      return parsedAuth.user || null;
     }
 
-    return parsedAuth as StoredUser;
+    const rawUser = parsedAuth as StoredUser;
+    if (rawUser.id || rawUser.email) {
+      return rawUser;
+    }
+
+    return null;
   } catch {
     return null;
   }
