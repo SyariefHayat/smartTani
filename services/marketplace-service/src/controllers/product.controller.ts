@@ -79,6 +79,18 @@ export class ProductController {
     }
   }
 
+  async deleteProduct(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const userId = (req as AppRequest).user!.id;
+      const role = (req as AppRequest).user!.role as string;
+      const result = await productService.deleteProduct(userId, role, id as string);
+      return res.status(200).json(successResponse(result));
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async uploadImage(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;

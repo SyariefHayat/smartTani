@@ -17,6 +17,10 @@ export class ProductRepository {
     return Product.findByIdAndUpdate(id, data, { new: true });
   }
 
+  async delete(id: string): Promise<IProduct | null> {
+    return Product.findByIdAndDelete(id);
+  }
+
   async reduceStock(id: string, quantity: number): Promise<IProduct | null> {
     return Product.findOneAndUpdate(
       { _id: id, stock: { $gte: quantity }, status: 'active' },

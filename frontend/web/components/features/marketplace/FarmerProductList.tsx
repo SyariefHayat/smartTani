@@ -62,6 +62,8 @@ export function FarmerProductList() {
   const [detailDialogOpen, setDetailDialogOpen] = React.useState(false);
   const [deleteProduct, setDeleteProduct] = React.useState<UIProduct | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [deactivateProduct, setDeactivateProduct] = React.useState<UIProduct | null>(null);
+  const [deactivateDialogOpen, setDeactivateDialogOpen] = React.useState(false);
 
   // Fetch products
   const { data, isLoading, isError, error, refetch } = useQuery({
@@ -115,11 +117,26 @@ export function FarmerProductList() {
       toast.success('Produk berhasil dinonaktifkan');
       queryClient.invalidateQueries({ queryKey: ['farmer-products'] });
       refetch(); // Force refetch the products list immediately to update UI status
+      setDeactivateDialogOpen(false);
+      setDeactivateProduct(null);
+    },
+    onError: (err: { response?: { data?: { message?: string } } }) => {
+      toast.error(err.response?.data?.message || 'Gagal menonaktifkan produk');
+    },
+  });
+
+  // Permanent delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => marketplaceService.deleteProductPermanently(id),
+    onSuccess: () => {
+      toast.success('Produk berhasil dihapus secara permanen');
+      queryClient.invalidateQueries({ queryKey: ['farmer-products'] });
+      refetch();
       setDeleteDialogOpen(false);
       setDeleteProduct(null);
     },
     onError: (err: { response?: { data?: { message?: string } } }) => {
-      toast.error(err.response?.data?.message || 'Gagal menonaktifkan produk');
+      toast.error(err.response?.data?.message || 'Gagal menghapus produk secara permanen');
     },
   });
 
@@ -231,6 +248,10 @@ export function FarmerProductList() {
       onDelete: (product) => {
         setDeleteProduct(product);
         setDeleteDialogOpen(true);
+      },
+      onDeactivate: (product) => {
+        setDeactivateProduct(product);
+        setDeactivateDialogOpen(true);
       },
     }),
     []
@@ -366,14 +387,50 @@ export function FarmerProductList() {
         }}
       />
 
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+      {/* Deactivate Confirmation Dialog */}
+      <AlertDialog open={deactivateDialogOpen} onOpenChange={setDeactivateDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Nonaktifkan Produk</AlertDialogTitle>
             <AlertDialogDescription>
-              Apakah Anda yakin ingin menonaktifkan produk <strong>{deleteProduct?.name}</strong>?
-              Produk tidak akan ditampilkan di marketplace setelah dinonaktifkan.
+              Apakah Anda yakin ingin menonaktifkan produk{' '}
+              <strong>{deactivateProduct?.name}</strong>? Produk tidak akan ditampilkan di
+              marketplace setelah dinonaktifkan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => {
+                setDeactivateDialogOpen(false);
+                setDeactivateProduct(null);
+              }}
+            >
+              Batal
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-amber-600 text-white hover:bg-amber-700"
+              onClick={() => {
+                if (deactivateProduct) {
+                  deactivateMutation.mutate(deactivateProduct.id);
+                }
+              }}
+              disabled={deactivateMutation.isPending}
+            >
+              {deactivateMutation.isPending ? 'Memproses...' : 'Nonaktifkan'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-red-600">Hapus Produk Permanen</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin menghapus produk <strong>{deleteProduct?.name}</strong> secara
+              permanen? Tindakan ini tidak dapat dibatalkan dan produk akan dihapus sepenuhnya dari
+              database.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -386,15 +443,15 @@ export function FarmerProductList() {
               Batal
             </AlertDialogCancel>
             <AlertDialogAction
-              className="bg-destructive text-white hover:bg-destructive/90"
+              className="bg-red-600 text-white hover:bg-red-700"
               onClick={() => {
                 if (deleteProduct) {
-                  deactivateMutation.mutate(deleteProduct.id);
+                  deleteMutation.mutate(deleteProduct.id);
                 }
               }}
-              disabled={deactivateMutation.isPending}
+              disabled={deleteMutation.isPending}
             >
-              {deactivateMutation.isPending ? 'Memproses...' : 'Nonaktifkan'}
+              {deleteMutation.isPending ? 'Memproses...' : 'Hapus Permanen'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

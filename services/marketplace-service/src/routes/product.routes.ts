@@ -286,6 +286,13 @@ router.delete(
   productController.deactivateProduct
 );
 
+router.delete(
+  '/:id/permanent',
+  gatewayAuthMiddleware,
+  authorize(['petani', 'admin']),
+  productController.deleteProduct
+);
+
 /**
  * @swagger
  * /products/{id}/images:

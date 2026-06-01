@@ -16,4 +16,5 @@ export interface ProductTableActions {
   onViewDetail: (product: Product) => void;
   onEdit: (product: Product) => void;
   onDelete: (product: Product) => void;
+  onDeactivate?: (product: Product) => void;
 }

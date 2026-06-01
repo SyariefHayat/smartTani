@@ -27,3 +27,18 @@ export function useUpdateProduct() {
     },
   });
 }
+
+export function useDeleteProductPermanently() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => marketplaceService.deleteProductPermanently(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['farmer-products'] });
+      toast.success('Produk berhasil dihapus secara permanen');
+    },
+    onError: (error: { response?: { data?: { message?: string } } }) => {
+      toast.error(error.response?.data?.message || 'Gagal menghapus produk secara permanen');
+    },
+  });
+}

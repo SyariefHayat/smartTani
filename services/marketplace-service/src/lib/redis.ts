@@ -59,6 +59,14 @@ class RedisClient {
   public static async setex(key: string, seconds: number, value: unknown): Promise<void> {
     await this.set(key, value, seconds);
   }
+
+  public static async delByPattern(pattern: string): Promise<void> {
+    const client = RedisClient.getInstance();
+    const keys = await client.keys(pattern);
+    if (keys.length > 0) {
+      await client.del(...keys);
+    }
+  }
 }
 
 export default RedisClient;

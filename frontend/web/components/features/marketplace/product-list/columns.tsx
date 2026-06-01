@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, Edit, Eye, MoreHorizontal, Star, Trash2 } from 'lucide-react';
+import { ArrowUpDown, Edit, Eye, EyeOff, MoreHorizontal, Star, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
@@ -197,7 +197,7 @@ export const columns: ColumnDef<Product>[] = [
               <MoreHorizontal />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuContent align="end" className="w-44">
             <DropdownMenuItem asChild className="cursor-pointer text-sm">
               <Link href={`/dashboard/farmer/products/${product.id}`}>
                 <Eye className="mr-2 h-4 w-4 text-slate-500" /> Detail
@@ -210,11 +210,19 @@ export const columns: ColumnDef<Product>[] = [
               <Edit className="mr-2 h-4 w-4 text-slate-500" /> Edit
             </DropdownMenuItem>
             <DropdownMenuSeparator />
+            {product.status !== 'Nonaktif' && (
+              <DropdownMenuItem
+                className="cursor-pointer text-amber-600 focus:text-amber-600 text-sm"
+                onClick={() => meta?.onDeactivate?.(product)}
+              >
+                <EyeOff className="mr-2 h-4 w-4" /> Nonaktifkan
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               className="cursor-pointer text-destructive focus:text-destructive text-sm"
               onClick={() => meta?.onDelete(product)}
             >
-              <Trash2 className="mr-2 h-4 w-4" /> Hapus
+              <Trash2 className="mr-2 h-4 w-4" /> Hapus Permanen
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

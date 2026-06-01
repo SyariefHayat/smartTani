@@ -18,7 +18,7 @@ export class ProductService {
 
   async createProduct(farmerId: string, input: CreateProductInput) {
     // Invalidate cache
-    await RedisClient.del(this.CACHE_KEY + '*');
+    await RedisClient.delByPattern(this.CACHE_KEY + '*');
 
     // Generate search_text
     const searchText = `${input.title} ${input.description} ${input.category} ${input.location.city} ${input.location.province}`;
@@ -123,12 +123,14 @@ export class ProductService {
       throw error;
     }
 
+    // Invalidate cache
+    await RedisClient.delByPattern(this.CACHE_KEY + '*');
     return updatedProduct;
   }
 
   async deactivateProduct(userId: string, role: string, productId: string) {
     // Invalidate cache
-    await RedisClient.del(this.CACHE_KEY + '*');
+    await RedisClient.delByPattern(this.CACHE_KEY + '*');
 
     const product = await productRepository.findById(productId);
     if (!product) {
@@ -237,6 +239,36 @@ export class ProductService {
     } as Record<string, unknown>);
 
     return { imageUrl };
+  }
+
+  async deleteProduct(userId: string, role: string, productId: string) {
+    // Invalidate cache
+    await RedisClient.delByPattern(this.CACHE_KEY + '*');
+
+    const product = await productRepository.findById(productId);
+    if (!product) {
+      const error = new Error('Produk tidak ditemukan') as AppError;
+      error.statusCode = 404;
+      error.code = 'MARKET_001';
+      throw error;
+    }
+
+    // Ownership validation (except admin)
+    if (role !== 'admin' && product.farmer_id !== userId) {
+      const error = new Error('Anda tidak memiliki akses untuk menghapus produk ini') as AppError;
+      error.statusCode = 403;
+      error.code = 'AUTH_011';
+      throw error;
+    }
+
+    const deleted = await productRepository.delete(productId);
+    if (!deleted) {
+      const error = new Error('Gagal menghapus produk') as AppError;
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return { message: 'Produk berhasil dihapus secara permanen' };
   }
 }
 

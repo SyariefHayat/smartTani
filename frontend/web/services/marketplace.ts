@@ -184,6 +184,11 @@ export const marketplaceService = {
     return response.data;
   },
 
+  deleteProductPermanently: async (id: string) => {
+    const response = await api.delete(`/products/${id}/permanent`);
+    return response.data;
+  },
+
   updateProductStatus: async (
     id: string,
     status: 'active' | 'inactive' | 'pending'
