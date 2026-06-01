@@ -1,17 +1,21 @@
 # Stage 1: Build
 FROM node:24-alpine AS builder
 WORKDIR /app
-COPY package*.json ./
+COPY shared ./shared
+COPY services/auth-service ./services/auth-service
+WORKDIR /app/services/auth-service
 RUN npm install
-COPY . .
+RUN npx prisma generate
 RUN npm run build
 
 # Stage 2: Production
 FROM node:24-alpine AS production
-WORKDIR /app
+WORKDIR /app/services/auth-service
 ENV NODE_ENV=production
-COPY package*.json ./
+COPY services/auth-service/package*.json ./
 RUN npm install --omit=dev
-COPY --from=builder /app/dist ./dist
-EXPOSE 3000
+COPY --from=builder /app/services/auth-service/dist ./dist
+COPY --from=builder /app/services/auth-service/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/services/auth-service/node_modules/@prisma/client ./node_modules/@prisma/client
+EXPOSE 3001
 CMD ["node", "dist/index.js"]
