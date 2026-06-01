@@ -43,14 +43,19 @@ export const app = express();
 
 app.use(
   cors({
-    origin: env.CORS_ORIGIN === '*' ? '*' : env.CORS_ORIGIN.split(','),
+    origin: env.CORS_ORIGIN === '*' ? '*' : env.CORS_ORIGIN.split(',').map((s) => s.trim()),
     credentials: true,
   })
 );
 
 // HTTPS Enforcement (for production/staging)
 app.use((req, res, next) => {
-  if (env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
+  // Skip HTTPS redirect for OPTIONS preflight — browsers reject 302 on preflight
+  if (
+    env.NODE_ENV === 'production' &&
+    req.method !== 'OPTIONS' &&
+    req.headers['x-forwarded-proto'] !== 'https'
+  ) {
     return res.redirect(`https://${req.headers.host}${req.url}`);
   }
   next();
