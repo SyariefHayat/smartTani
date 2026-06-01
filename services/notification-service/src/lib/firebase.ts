@@ -4,6 +4,12 @@ import { env } from '../config/env';
 
 export const initFirebase = () => {
   try {
+    if (!env.FIREBASE_PROJECT_ID || !env.FIREBASE_CLIENT_EMAIL || !env.FIREBASE_PRIVATE_KEY) {
+      logger.warn(
+        '⚠️ Firebase credentials not fully configured. Push notifications will be disabled/mocked.'
+      );
+      return;
+    }
     if (admin.apps.length === 0) {
       admin.initializeApp({
         credential: admin.credential.cert({
