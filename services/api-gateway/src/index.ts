@@ -177,11 +177,24 @@ app.use(errorHandlerMiddleware);
 
 export const bootstrap = async () => {
   try {
-    // Initialize Redis
-    RedisClient.getInstance();
+    // Initialize Redis (non-fatal — gateway can still proxy without cache)
+    try {
+      RedisClient.getInstance();
+      logger.info('✅ Redis connected');
+    } catch (redisError) {
+      logger.error('⚠️ Redis connection failed — gateway will operate without cache:', redisError);
+    }
 
-    // Initialize RabbitMQ
-    await MessageBroker.connect();
+    // Initialize RabbitMQ (non-fatal — gateway can still proxy without messaging)
+    try {
+      await MessageBroker.connect();
+      logger.info('✅ RabbitMQ connected');
+    } catch (mqError) {
+      logger.error(
+        '⚠️ RabbitMQ connection failed — gateway will operate without messaging:',
+        mqError
+      );
+    }
 
     if (process.env.NODE_ENV !== 'test') {
       app.listen(env.PORT, () => {

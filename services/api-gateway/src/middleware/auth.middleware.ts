@@ -18,6 +18,11 @@ export const gatewayAuthMiddleware = (req: Request, res: Response, next: NextFun
   const { method, path } = req;
   const appReq = req as AppRequest;
 
+  // Always allow CORS preflight requests through — the cors() middleware handles them
+  if (method === 'OPTIONS') {
+    return next();
+  }
+
   // Check if current request is a public endpoint
   const isPublic = PUBLIC_ENDPOINTS.some((endpoint) => {
     return endpoint.method === method && endpoint.path.test(path);

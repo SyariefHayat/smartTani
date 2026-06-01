@@ -50,6 +50,7 @@ services:
       dockerfile: services/api-gateway/Dockerfile
     environment:
       - NODE_ENV=production
+      - NODE_OPTIONS=--dns-result-order=ipv4first
       - UV_THREADPOOL_SIZE=64
       - PORT=3000
       - REDIS_URL=redis://redis:6379
@@ -76,6 +77,7 @@ services:
       dockerfile: services/auth-service/Dockerfile
     environment:
       - NODE_ENV=production
+      - NODE_OPTIONS=--dns-result-order=ipv4first
       - UV_THREADPOOL_SIZE=64
       - PORT=3001
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=auth&connection_limit=20
@@ -97,6 +99,7 @@ services:
       dockerfile: services/marketplace-service/Dockerfile
     environment:
       - NODE_ENV=production
+      - NODE_OPTIONS=--dns-result-order=ipv4first
       - PORT=3002
       - MONGODB_URL=mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017/smarttani_marketplace?authSource=admin
       - REDIS_URL=redis://redis:6379
@@ -116,6 +119,7 @@ services:
       dockerfile: services/order-service/Dockerfile
     environment:
       - NODE_ENV=production
+      - NODE_OPTIONS=--dns-result-order=ipv4first
       - PORT=3003
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=order&connection_limit=20
       - REDIS_URL=redis://redis:6379
@@ -134,6 +138,7 @@ services:
       dockerfile: services/investment-service/Dockerfile
     environment:
       - NODE_ENV=production
+      - NODE_OPTIONS=--dns-result-order=ipv4first
       - PORT=3004
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=investment&connection_limit=20
       - REDIS_URL=redis://redis:6379
@@ -149,6 +154,7 @@ services:
       dockerfile: services/logistics-service/Dockerfile
     environment:
       - NODE_ENV=production
+      - NODE_OPTIONS=--dns-result-order=ipv4first
       - PORT=3005
       - MONGODB_URL=mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongodb:27017/smarttani_logistics?authSource=admin
       - REDIS_URL=redis://redis:6379
@@ -163,6 +169,7 @@ services:
       dockerfile: services/notification-service/Dockerfile
     environment:
       - NODE_ENV=production
+      - NODE_OPTIONS=--dns-result-order=ipv4first
       - PORT=3006
       - REDIS_URL=redis://redis:6379
       - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@rabbitmq:5672
@@ -177,6 +184,7 @@ services:
       dockerfile: services/analytics-service/Dockerfile
     environment:
       - NODE_ENV=production
+      - NODE_OPTIONS=--dns-result-order=ipv4first
       - PORT=3007
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=auth&connection_limit=5
       - REDIS_URL=redis://redis:6379

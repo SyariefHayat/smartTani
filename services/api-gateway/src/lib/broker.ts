@@ -27,8 +27,10 @@ class MessageBroker {
         logger.error(`❌ RabbitMQ Connection Failed. Retries left: ${retries - 1}`, err);
         retries -= 1;
         if (retries === 0) {
-          logger.error('❌ Could not connect to RabbitMQ. Exiting...');
-          process.exit(1);
+          logger.error('❌ Could not connect to RabbitMQ after all retries.');
+          throw new Error('RabbitMQ connection failed after exhausting all retries', {
+            cause: err,
+          });
         }
         await new Promise((resolve) => setTimeout(resolve, 5000));
       }
