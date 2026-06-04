@@ -122,6 +122,15 @@ export class AuthController {
       next(error);
     }
   }
+
+  async getCommodities(req: Request, res: Response, next: NextFunction) {
+    try {
+      const commodities = await authService.getCommodities();
+      return res.status(200).json(successResponse(commodities));
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new AuthController();

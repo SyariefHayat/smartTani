@@ -9,6 +9,7 @@ import {
   UpdateProfileInput,
 } from '../schemas/auth.schema';
 import userRepository from '../repositories/user.repository';
+import prisma from '../lib/prisma';
 import RedisClient from '../lib/redis';
 import MessageBroker from '../lib/broker';
 import { BROKER_EXCHANGES, BROKER_ROUTING_KEYS } from '../../../../shared/constants/broker';
@@ -346,6 +347,12 @@ export class AuthService {
     await RedisClient.invalidateUserRefreshTokens(userId);
 
     return { message: 'Password berhasil diubah' };
+  }
+
+  async getCommodities() {
+    return prisma.commodity.findMany({
+      orderBy: { name: 'asc' },
+    });
   }
 }
 

@@ -24,6 +24,7 @@ import metricsRoutes from './routes/metrics.routes';
 import authRoutes from './routes/auth.routes';
 import landRoutes from './routes/land.routes';
 import harvestRoutes from './routes/harvest.routes';
+import { seedCommodities } from './scripts/seed-commodities';
 import { metricsMiddleware as _metricsMiddleware } from './middleware/metrics.middleware';
 
 import cluster from 'cluster';
@@ -71,6 +72,9 @@ export const bootstrap = async () => {
 
       // Initialize RabbitMQ
       await MessageBroker.connect();
+
+      // Seed commodities (idempotent)
+      await seedCommodities();
 
       if (process.env.NODE_ENV !== 'test') {
         app.listen(env.PORT, () => {

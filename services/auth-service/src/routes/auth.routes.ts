@@ -254,7 +254,12 @@ router.patch('/me', authenticate, validate(UpdateProfileSchema), authController.
 // Address Management
 router.get('/me/addresses', authenticate, addressController.getAll);
 router.post('/me/addresses', authenticate, validate(CreateAddressSchema), addressController.create);
-router.patch('/me/addresses/:id', authenticate, validate(UpdateAddressSchema), addressController.update);
+router.patch(
+  '/me/addresses/:id',
+  authenticate,
+  validate(UpdateAddressSchema),
+  addressController.update
+);
 router.delete('/me/addresses/:id', authenticate, addressController.delete);
 router.patch('/me/addresses/:id/default', authenticate, addressController.setDefault);
 
@@ -357,5 +362,7 @@ router.patch(
   validate(UpdateUserStatusSchema),
   authController.updateStatus
 );
+
+router.get('/commodities', authController.getCommodities);
 
 export default router;

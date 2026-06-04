@@ -7,6 +7,7 @@ const PUBLIC_ENDPOINTS = [
   { method: 'POST', path: /^\/auth\/register$/ },
   { method: 'POST', path: /^\/auth\/login$/ },
   { method: 'POST', path: /^\/auth\/refresh$/ },
+  { method: 'GET', path: /^\/auth\/commodities$/ },
   { method: 'GET', path: /^\/products(\/.*)?$/ },
   { method: 'GET', path: /^\/categories(\/.*)?$/ },
   { method: 'GET', path: /^\/health$/ },

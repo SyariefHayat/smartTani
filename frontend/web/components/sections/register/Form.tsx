@@ -43,6 +43,7 @@ import {
 } from '@/components/ui/select';
 import { showToast } from '@/lib/toast';
 import { authService } from '@/services/auth';
+import api from '@/lib/api';
 
 const roleImages: Record<string, string> = {
   petani: '/images/register/farmer.webp',
@@ -76,6 +77,29 @@ function RegisterFormContent() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [commoditiesList, setCommoditiesList] = useState<string[]>([
+    'Padi',
+    'Jagung',
+    'Sayuran',
+    'Buah-buahan',
+    'Lainnya',
+  ]);
+
+  React.useEffect(() => {
+    const fetchCommodities = async () => {
+      try {
+        const response = await api.get('/auth/commodities');
+        if (response.data && Array.isArray(response.data.data)) {
+          const names = response.data.data.map((c: { name: string }) => c.name);
+          setCommoditiesList(names);
+        }
+      } catch (error) {
+        console.error('Error fetching commodities, using fallback list', error);
+      }
+    };
+    fetchCommodities();
+  }, []);
 
   const getPasswordStrength = () => {
     if (!password) return { label: '', color: '' };
@@ -187,7 +211,7 @@ function RegisterFormContent() {
             label: 'Komoditas Utama',
             placeholder: 'Pilih komoditas',
             type: 'select',
-            options: ['Padi', 'Jagung', 'Sayuran', 'Buah-buahan', 'Lainnya'],
+            options: commoditiesList,
           },
         } as RoleFields;
       case 'distributor':
@@ -630,6 +654,61 @@ function RegisterFormContent() {
                         </div>
                       )}
                     </div>
+
+                    {/* Petani Extra Fields: NIK, Luas Lahan, Varietas */}
+                    {selectedRole === 'petani' && (
+                      <>
+                        {/* NIK */}
+                        <div className="space-y-2">
+                          <Label className="text-sm font-bold text-gray-700">
+                            NIK (Nomor Induk Kependudukan)
+                          </Label>
+                          <div className="relative">
+                            <User className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
+                            <Input
+                              name="nik"
+                              required
+                              placeholder="Masukkan 16 digit NIK Anda"
+                              className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white transition-all"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Luas Lahan */}
+                        <div className="space-y-2">
+                          <Label className="text-sm font-bold text-gray-700">
+                            Luas Lahan (Hektar / Ha)
+                          </Label>
+                          <div className="relative">
+                            <TrendingUp className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
+                            <Input
+                              name="farmSize"
+                              required
+                              type="number"
+                              step="0.01"
+                              placeholder="Contoh: 1.5"
+                              className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white transition-all"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Varietas */}
+                        <div className="space-y-2 md:col-span-2">
+                          <Label className="text-sm font-bold text-gray-700">
+                            Varietas Komoditas
+                          </Label>
+                          <div className="relative">
+                            <Sprout className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
+                            <Input
+                              name="variety"
+                              required
+                              placeholder="Contoh: Inpari 32, Ciherang, IR64, dll."
+                              className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white transition-all"
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </>
                 )}
 
