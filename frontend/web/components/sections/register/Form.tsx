@@ -129,6 +129,45 @@ function RegisterFormContent() {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
     const confirmPassword = formData.get('confirmPassword') as string;
+    const phone = formData.get('phone') as string;
+    const province = formData.get('province') as string;
+    const city = formData.get('city') as string;
+
+    // Combine address
+    const farmAddress = province && city ? `${city}, ${province}` : undefined;
+
+    // Get dynamic role fields
+    let farmName: string | undefined = undefined;
+    let farmSizeHa: number | undefined = undefined;
+    let commodities: string[] | undefined = undefined;
+    let nik: string | undefined = undefined;
+    let variety: string | undefined = undefined;
+
+    if (selectedRole === 'petani') {
+      const farmGroupName = formData.get('farmGroupName') as string;
+      const commodity = formData.get('commodity') as string;
+      const farmSize = formData.get('farmSize') as string;
+      const varietyVal = formData.get('variety') as string;
+      const nikVal = formData.get('nik') as string;
+
+      farmName = farmGroupName || undefined;
+      farmSizeHa = farmSize ? parseFloat(farmSize) : undefined;
+      commodities = commodity ? [commodity] : undefined;
+      variety = varietyVal || undefined;
+      nik = nikVal || undefined;
+    } else if (selectedRole === 'distributor') {
+      const storeName = formData.get('storeName') as string;
+      farmName = storeName || undefined;
+    } else if (selectedRole === 'mitra_bisnis') {
+      const companyName = formData.get('companyName') as string;
+      farmName = companyName || undefined;
+    } else if (selectedRole === 'admin_perusahaan') {
+      const officialCompanyName = formData.get('officialCompanyName') as string;
+      farmName = officialCompanyName || undefined;
+    } else if (selectedRole === 'academy') {
+      const institutionName = formData.get('institutionName') as string;
+      farmName = institutionName || undefined;
+    }
 
     // Client-side validations
     if (password.length < 8) {
@@ -159,6 +198,13 @@ function RegisterFormContent() {
         password,
         full_name: fullName,
         role: apiRole,
+        phone,
+        farm_name: farmName,
+        farm_address: farmAddress,
+        farm_size_ha: farmSizeHa,
+        commodities,
+        nik,
+        variety,
       });
 
       showToast('Pendaftaran berhasil! Silakan masuk dengan akun Anda.', 'success');
@@ -440,7 +486,6 @@ function RegisterFormContent() {
                     <Phone className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
                     <Input
                       name="phone"
-                      required
                       placeholder={REGISTER_FORM_PLACEHOLDERS.nomorHp}
                       className="h-12 rounded-xl border-slate-200 bg-slate-50/50 pl-12 focus:bg-white transition-all focus:ring-1 focus:ring-primary/20"
                     />

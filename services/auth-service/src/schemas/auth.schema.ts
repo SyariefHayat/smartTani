@@ -10,6 +10,13 @@ export const RegisterSchema = z.object({
     }
   ),
   full_name: z.string().min(3, 'Nama lengkap minimal 3 karakter'),
+  phone: z.string().optional().nullable(),
+  farm_name: z.string().optional().nullable(),
+  farm_address: z.string().optional().nullable(),
+  farm_size_ha: z.number().optional().nullable(),
+  commodities: z.any().optional().nullable(),
+  nik: z.string().optional().nullable(),
+  variety: z.string().optional().nullable(),
 });
 
 export type RegisterInput = z.infer<typeof RegisterSchema>;

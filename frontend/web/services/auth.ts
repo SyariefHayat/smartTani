@@ -5,6 +5,13 @@ export interface RegisterInput {
   password: string;
   full_name: string;
   role: string;
+  phone?: string;
+  farm_name?: string;
+  farm_address?: string;
+  farm_size_ha?: number;
+  commodities?: string[];
+  nik?: string;
+  variety?: string;
 }
 
 export interface LoginInput {

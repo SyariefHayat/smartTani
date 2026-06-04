@@ -41,6 +41,13 @@ export class AuthService {
       role: input.role,
       full_name: input.full_name,
       status,
+      phone: input.phone || undefined,
+      farm_name: input.farm_name || undefined,
+      farm_address: input.farm_address || undefined,
+      farm_size_ha: input.farm_size_ha || undefined,
+      commodities: input.commodities || undefined,
+      nik: input.nik || undefined,
+      variety: input.variety || undefined,
     });
 
     // 4. Generate email verification token (random 32 bytes -> hex)

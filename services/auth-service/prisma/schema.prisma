@@ -22,6 +22,8 @@ model User {
   farm_size_ha     Float?
   commodities      Json?    @default("[]")
   farm_description String?  @db.Text
+  nik              String?  @db.VarChar(16)
+  variety          String?  @db.VarChar(255)
   created_at       DateTime @default(now()) @db.Timestamptz
   updated_at       DateTime @updatedAt @db.Timestamptz
   farm_lands       FarmLand[]
