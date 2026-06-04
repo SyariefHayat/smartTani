@@ -17,8 +17,9 @@ WORKDIR /app/services/order-service
 ENV NODE_ENV=production
 COPY services/order-service/package*.json ./
 RUN npm install --omit=dev
+COPY services/order-service/prisma ./prisma
 COPY --from=builder /app/services/order-service/dist ./dist
 COPY --from=builder /app/services/order-service/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/services/order-service/node_modules/@prisma/client ./node_modules/@prisma/client
 EXPOSE 3003
-CMD ["node", "dist/services/order-service/src/index.js"]
+CMD ["sh", "-c", "npx prisma db push && node dist/services/order-service/src/index.js"]

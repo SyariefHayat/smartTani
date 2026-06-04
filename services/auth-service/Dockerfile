@@ -17,8 +17,9 @@ WORKDIR /app/services/auth-service
 ENV NODE_ENV=production
 COPY services/auth-service/package*.json ./
 RUN npm install --omit=dev
+COPY services/auth-service/prisma ./prisma
 COPY --from=builder /app/services/auth-service/dist ./dist
 COPY --from=builder /app/services/auth-service/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/services/auth-service/node_modules/@prisma/client ./node_modules/@prisma/client
 EXPOSE 3001
-CMD ["node", "dist/services/auth-service/src/index.js"]
+CMD ["sh", "-c", "npx prisma db push && node dist/services/auth-service/src/index.js"]

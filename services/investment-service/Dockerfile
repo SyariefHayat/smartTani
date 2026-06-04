@@ -17,8 +17,9 @@ WORKDIR /app/services/investment-service
 ENV NODE_ENV=production
 COPY services/investment-service/package*.json ./
 RUN npm install --omit=dev
+COPY services/investment-service/prisma ./prisma
 COPY --from=builder /app/services/investment-service/dist ./dist
 COPY --from=builder /app/services/investment-service/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/services/investment-service/node_modules/@prisma/client ./node_modules/@prisma/client
 EXPOSE 3004
-CMD ["node", "dist/services/investment-service/src/index.js"]
+CMD ["sh", "-c", "npx prisma db push && node dist/services/investment-service/src/index.js"]

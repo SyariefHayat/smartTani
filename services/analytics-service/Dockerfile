@@ -17,8 +17,9 @@ WORKDIR /app/services/analytics-service
 ENV NODE_ENV=production
 COPY services/analytics-service/package*.json ./
 RUN npm install --omit=dev
+COPY services/analytics-service/prisma ./prisma
 COPY --from=builder /app/services/analytics-service/dist ./dist
 COPY --from=builder /app/services/analytics-service/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/services/analytics-service/node_modules/@prisma/client ./node_modules/@prisma/client
 EXPOSE 3007
-CMD ["node", "dist/services/analytics-service/src/index.js"]
+CMD ["sh", "-c", "npx prisma db push && node dist/services/analytics-service/src/index.js"]
